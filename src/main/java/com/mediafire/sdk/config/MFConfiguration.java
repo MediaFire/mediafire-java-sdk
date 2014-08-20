@@ -1,5 +1,7 @@
 package com.mediafire.sdk.config;
 
+import com.mediafire.sdk.http.MFNetworkConnectivityMonitor;
+
 public final class MFConfiguration {
     private final int httpReadTimeout;
     private final int httpConnectionTimeout;
@@ -8,6 +10,7 @@ public final class MFConfiguration {
     private final String appId;
     private final String apiKey;
     private final MFCredentials mfCredentials;
+    private final MFNetworkConnectivityMonitor mfNetworkConnectivityMonitor;
     private static MFLogger staticMFLogger;
 
     /**
@@ -21,9 +24,9 @@ public final class MFConfiguration {
         this.maximumSessionTokens = mfConfigurationBuilder.maximumSessionTokens;
         this.appId = mfConfigurationBuilder.appId;
         this.apiKey = mfConfigurationBuilder.apiKey;
-        MFLogger mfLogger = mfConfigurationBuilder.mfLogger;
         this.mfCredentials = mfConfigurationBuilder.mfCredentials;
-        staticMFLogger = mfLogger;
+        this.mfNetworkConnectivityMonitor = mfConfigurationBuilder.mfNetworkConnectivityMonitor;
+        staticMFLogger = mfConfigurationBuilder.mfLogger;
     }
 
     /**
@@ -86,8 +89,16 @@ public final class MFConfiguration {
      * gets the MFCredentials set when this object was constructed.
      * @return MFCredentials
      */
-    public MFCredentials getMfCredentials() {
+    public MFCredentials getMFCredentials() {
         return mfCredentials;
+    }
+
+    /**
+     * gets the MFNetworkConnectivityMonitor set when this object was constructed.
+     * @return MFNetworkConnectivityMonitor.
+     */
+    public MFNetworkConnectivityMonitor getMfNetworkConnectivityMonitor() {
+        return mfNetworkConnectivityMonitor;
     }
 
     public static class MFConfigurationBuilder {
@@ -97,6 +108,7 @@ public final class MFConfiguration {
         private static final int DEFAULT_MAXIMUM_SESSION_TOKENS = 3;
         private static final MFLogger DEFAULT_MF_LOGGER = new MFDefaultLogger();
         private static final MFCredentials DEFAULT_MF_CREDENTIALS = new MFDefaultCredentials();
+        private static final MFNetworkConnectivityMonitor DEFAULT_MF_CONNECTIVITY_MONITOR = new MFDefaultNetworkConnectivityMonitor();
 
         private int httpReadTimeout = DEFAULT_HTTP_READ_TIMEOUT;
         private int httpConnectionTimeout = DEFAULT_HTTP_CONNECTION_TIMEOUT;
@@ -104,6 +116,7 @@ public final class MFConfiguration {
         private int maximumSessionTokens = DEFAULT_MAXIMUM_SESSION_TOKENS;
         private MFLogger mfLogger = DEFAULT_MF_LOGGER;
         private MFCredentials mfCredentials = DEFAULT_MF_CREDENTIALS;
+        private MFNetworkConnectivityMonitor mfNetworkConnectivityMonitor = DEFAULT_MF_CONNECTIVITY_MONITOR;
         private String apiKey;
         private final String appId;
 
@@ -211,6 +224,22 @@ public final class MFConfiguration {
         }
 
         /**
+<<<<<<< HEAD
+=======
+         * sets the network connectivity monitor.
+         * @param mfNetworkConnectivityMonitor - MFNetworkConnectivityMonitor implementation.
+         * @return static MFConfigurationBuilder object to allow chaining calls.
+         */
+        public MFConfigurationBuilder mfNetworkConnectivityMonitor(MFNetworkConnectivityMonitor mfNetworkConnectivityMonitor) {
+            if (mfNetworkConnectivityMonitor == null) {
+                throw new IllegalArgumentException("MFNetworkConnectivityMonitor cannot be null");
+            }
+            this.mfNetworkConnectivityMonitor = mfNetworkConnectivityMonitor;
+            return this;
+        }
+
+        /**
+>>>>>>> firstcommit
          * constructs an MFConfiguration object.
          * @return - a new MFConfiguration object.
          */

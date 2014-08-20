@@ -19,10 +19,13 @@ public final class MFHttpClient extends MFHttp {
     private static final String TAG = MFHttpClient.class.getCanonicalName();
     private final int readTimeout;
     private final int connectionTimeout;
+    private final MFNetworkConnectivityMonitor mfNetworkConnectivityMonitor;
+
     public MFHttpClient(MFConfiguration mfConfiguration) {
         super(mfConfiguration);
         this.readTimeout = mfConfiguration.getHttpReadTimeout();
         this.connectionTimeout = mfConfiguration.getHttpConnectionTimeout();
+        this.mfNetworkConnectivityMonitor = mfConfiguration.getMfNetworkConnectivityMonitor();
     }
 
     /**
@@ -32,6 +35,11 @@ public final class MFHttpClient extends MFHttp {
      */
     public MFResponse sendRequest(MFRequester mfRequester) {
         MFConfiguration.getStaticMFLogger().d(TAG, "sendRequest()");
+        // if no network connection as per network connectivity monitor, return failed mf response (null values and -1 status)
+        if (!mfNetworkConnectivityMonitor.haveNetworkConnection()) {
+            return new MFResponse(-1, null, null, mfRequester);
+        }
+
         URLConnection connection = null;
         MFResponse mfResponse = null;
 
@@ -42,9 +50,12 @@ public final class MFHttpClient extends MFHttp {
             postData(mfRequester, connection);
             // receive response from request
             mfResponse = getResponseFromStream(connection, mfRequester);
-            if (mfResponse != null) {
-                MFConfiguration.getStaticMFLogger().d(TAG, "response: " + mfResponse.getResponseAsString());
+
+            if (mfResponse == null) {
+                mfResponse = new MFResponse(-1, null, null, mfRequester);
             }
+            MFConfiguration.getStaticMFLogger().d(TAG, "response: " + mfResponse.getResponseAsString());
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {

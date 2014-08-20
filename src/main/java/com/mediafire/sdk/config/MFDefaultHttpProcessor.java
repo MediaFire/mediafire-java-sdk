@@ -41,12 +41,13 @@ public final class MFDefaultHttpProcessor implements MFHttpProcessor {
                     }
                 }
             });
-
             thread.start();
         } catch (UnsupportedEncodingException e) {
-            return null;
+            e.printStackTrace();
+            mfResponse = new MFResponse(-1, null, null, mfRequester);
         } catch (MFHttpException e) {
-            return null;
+            e.printStackTrace();
+            mfResponse = new MFResponse(-1, null, null, mfRequester);
         }
 
         return mfResponse;

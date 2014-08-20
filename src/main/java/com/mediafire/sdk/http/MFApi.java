@@ -35,7 +35,7 @@ public enum MFApi {
     USER_UNLINK_TWITTER("/api/1.0/user/unlink_twitter.php", TokenType.V2, TokenType.V2, TokenType.V2, true),
     USER_GET_AVATAR("/api/1.0/user/get_avatar.php", TokenType.V2, TokenType.V2, TokenType.V2, true),
     USER_SET_AVATAR("/api/1.0/user/set_avatar.php", TokenType.V2, TokenType.V2, TokenType.V2, true),
-    USER_GET_SESSION_TOKEN("/api/1.0/user/get_session_token.php", TokenType.NEW, TokenType.NEW, TokenType.NEW, true),
+    USER_GET_SESSION_TOKEN("/api/1.2/user/get_session_token.php", TokenType.NEW, TokenType.NEW, TokenType.NEW, true),
     USER_GET_UPLOAD_TOKEN("/api/1.0/user/get_action_token.php", TokenType.V2, TokenType.V2, TokenType.UPLOAD, true),
     USER_GET_IMAGE_TOKEN("/api/1.0/user/get_action_token.php", TokenType.V2, TokenType.V2, TokenType.IMAGE, true),
     // upload api calls
@@ -45,7 +45,9 @@ public enum MFApi {
     UPLOAD_RESUMABLE("/api/upload/resumable.php", TokenType.UPLOAD, TokenType.NONE, TokenType.NONE, false),
     // device api calls
     DEVICE_GET_CHANGES("/api/1.0/device/get_changes.php", TokenType.V2, TokenType.V2, TokenType.V2, true),
-    DEVICE_GET_STATUS("/api/1.0/device/get_status.php", TokenType.V2, TokenType.V2, TokenType.V2, true);
+    DEVICE_GET_STATUS("/api/1.0/device/get_status.php", TokenType.V2, TokenType.V2, TokenType.V2, true),
+    // empty custom mfapi that should not be passed
+    CUSTOM_API_USED();
 
     private final String uri;
     private final TokenType typeOfTokenToBorrow;
@@ -59,6 +61,14 @@ public enum MFApi {
         this.typeOfSignatureToAdd = typeOfSignatureToAdd;
         this.typeOfTokenToReturn = typeOfTokenToReturn;
         this.queryPostable = queryPostable;
+    }
+
+    private MFApi() {
+        uri = "custom api used";
+        typeOfTokenToBorrow = TokenType.NONE;
+        typeOfSignatureToAdd = TokenType.NONE;
+        typeOfTokenToReturn = TokenType.NONE;
+        queryPostable = false;
     }
 
     /**

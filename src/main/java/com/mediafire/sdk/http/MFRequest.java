@@ -18,10 +18,12 @@ public final class MFRequest implements MFRequester {
     private final Map<String, String> headers;
     private final byte[] payload;
     private MFToken mfToken;
+    private MFApi mfApi;
 
     private MFRequest(MFRequestBuilder mfRequestBuilder) {
         this.transferProtocol = mfRequestBuilder.transferProtocol;
         this.host = mfRequestBuilder.host;
+        this.mfApi = mfRequestBuilder.mfApi;
         this.uri = mfRequestBuilder.uri;
         this.typeOfTokenToBorrow = mfRequestBuilder.typeOfTokenToBorrow;
         this.typeOfSignatureToAdd = mfRequestBuilder.typeOfSignatureToAdd;
@@ -40,9 +42,9 @@ public final class MFRequest implements MFRequester {
         }
 
         requestParameters.put("response_format", "json");
-
         this.transferProtocol = mfHost.getTransferProtocol();
         this.host = mfHost.getHost();
+        this.mfApi = mfApi;
         this.uri = mfApi.getUri();
         this.typeOfTokenToBorrow = mfApi.getTypeOfTokenToBorrow();
         this.typeOfSignatureToAdd = mfApi.getTypeOfSignatureToAdd();
@@ -109,6 +111,11 @@ public final class MFRequest implements MFRequester {
     }
 
     @Override
+    public MFApi getMFApiUsed() {
+        return mfApi;
+    }
+
+    @Override
     public MFApi.TokenType getTypeOfTokenToReturn() {
         return typeOfTokenToReturn;
     }
@@ -126,6 +133,7 @@ public final class MFRequest implements MFRequester {
     public static class MFRequestBuilder {
         private MFHost.TransferProtocol transferProtocol = MFHost.TransferProtocol.HTTP;
         private MFHost.Host host = MFHost.Host.LIVE;
+        private MFApi mfApi;
         private String uri = "/api/system/get_info.php";
         private MFApi.TokenType typeOfTokenToBorrow = MFApi.TokenType.NONE;
         private MFApi.TokenType typeOfSignatureToAdd = MFApi.TokenType.NONE;
@@ -142,6 +150,7 @@ public final class MFRequest implements MFRequester {
             }
             this.transferProtocol = mfHost.getTransferProtocol();
             this.host = mfHost.getHost();
+            this.mfApi = mfApi;
             this.uri = mfApi.getUri();
             this.typeOfTokenToBorrow = mfApi.getTypeOfTokenToBorrow();
             this.typeOfSignatureToAdd = mfApi.getTypeOfSignatureToAdd();
@@ -156,6 +165,7 @@ public final class MFRequest implements MFRequester {
             }
             this.transferProtocol = mfHost.getTransferProtocol();
             this.host = mfHost.getHost();
+            this.mfApi = MFApi.CUSTOM_API_USED;
             this.uri = uri;
         }
 

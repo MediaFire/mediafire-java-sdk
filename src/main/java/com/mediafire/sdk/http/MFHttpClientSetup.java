@@ -19,6 +19,7 @@ public final class MFHttpClientSetup extends MFHttp {
 
     private final MFTokenFarmCallback mfTokenFarmCallback;
     private final MFCredentials mfCredentials;
+    private final MFNetworkConnectivityMonitor mfNetworkConnectivityMonitor;
 
     /**
      * Constructor to help set up an http request to mediafire.
@@ -28,7 +29,8 @@ public final class MFHttpClientSetup extends MFHttp {
     public MFHttpClientSetup(MFTokenFarmCallback mfTokenFarmCallback, MFConfiguration mfConfiguration) {
         super(mfConfiguration);
         this.mfTokenFarmCallback = mfTokenFarmCallback;
-        this.mfCredentials = mfConfiguration.getMfCredentials();
+        this.mfCredentials = mfConfiguration.getMFCredentials();
+        this.mfNetworkConnectivityMonitor = mfConfiguration.getMfNetworkConnectivityMonitor();
     }
 
     /**
@@ -38,10 +40,14 @@ public final class MFHttpClientSetup extends MFHttp {
      * and calculating a signature if needed.
      * @param mfRequester - the MFRequester.
      * @throws UnsupportedEncodingException  - if UTF-8 encoding is not available.
-     * @throws MFHttpException - if credentials are not set.
+     * @throws MFHttpException - if credentials are not set or if no network connection
      */
     public void prepareMFRequestForHttpClient(MFRequester mfRequester) throws UnsupportedEncodingException, MFHttpException {
         MFConfiguration.getStaticMFLogger().d(TAG, "prepareMFRequestForHttpClient()");
+        // if no network connection as per network connectivity monitor, return failed mf response (null values and -1 status)
+        if (!mfNetworkConnectivityMonitor.haveNetworkConnection()) {
+            throw new MFHttpException("no network connection");
+        }
         // borrow token, if necessary
         borrowToken(mfRequester);
         // add token, if necessary, to request parameters

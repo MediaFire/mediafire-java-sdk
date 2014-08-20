@@ -32,5 +32,7 @@ public interface MFRequester {
 
     public MFApi.TokenType getTypeOfSignatureToAdd();
 
+    public MFApi getMFApiUsed();
+
     public boolean isTokenRequired();
 }

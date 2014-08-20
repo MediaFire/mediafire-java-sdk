@@ -2,6 +2,7 @@ package com.mediafire.sdk.token;
 
 import com.mediafire.sdk.config.MFConfiguration;
 import com.mediafire.sdk.config.MFDefaultHttpProcessor;
+import com.mediafire.sdk.config.MFHttpProcessor;
 import com.mediafire.sdk.http.MFApi;
 import com.mediafire.sdk.http.MFHost;
 import com.mediafire.sdk.http.MFRequest;
@@ -18,7 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class MFTokenFarm implements MFTokenFarmCallback {
     private static final String TAG = MFTokenFarm.class.getCanonicalName();
     private final MFConfiguration mfConfiguration;
-    private final MFDefaultHttpProcessor mfDefaultHttpProcessor;
+    private final MFHttpProcessor mfHttpProcessor;
     private final int minimumSessionTokens;
     private final int maximumSessionTokens;
 
@@ -38,11 +39,11 @@ public final class MFTokenFarm implements MFTokenFarmCallback {
         this.minimumSessionTokens = mfConfiguration.getMinimumSessionTokens();
         this.maximumSessionTokens = mfConfiguration.getMaximumSessionTokens();
         this.mfSessionTokens = new LinkedBlockingQueue<MFSessionToken>(maximumSessionTokens);
-        this.mfDefaultHttpProcessor = new MFDefaultHttpProcessor(mfConfiguration, this);
+        this.mfHttpProcessor = new MFDefaultHttpProcessor(mfConfiguration, this);
     }
 
-    public MFDefaultHttpProcessor getMFHttpRunner() {
-        return mfDefaultHttpProcessor;
+    public MFHttpProcessor getMFHttpRunner() {
+        return mfHttpProcessor;
     }
 
     public MFConfiguration getMFConfiguration() {
@@ -57,7 +58,7 @@ public final class MFTokenFarm implements MFTokenFarmCallback {
         MFRequest.MFRequestBuilder mfRequestBuilder = new MFRequest.MFRequestBuilder(MFHost.LIVE_HTTPS, MFApi.USER_GET_SESSION_TOKEN);
         mfRequestBuilder.requestParameters(requestParameters);
         MFRequest mfRequest = mfRequestBuilder.build();
-        mfDefaultHttpProcessor.doRequest(mfRequest);
+        mfHttpProcessor.doRequest(mfRequest);
     }
 
     private void getNewImageActionToken() {
@@ -69,7 +70,7 @@ public final class MFTokenFarm implements MFTokenFarmCallback {
         MFRequest.MFRequestBuilder mfRequestBuilder = new MFRequest.MFRequestBuilder(MFHost.LIVE_HTTP, MFApi.USER_GET_IMAGE_TOKEN);
         mfRequestBuilder.requestParameters(requestParameters);
         MFRequest mfRequest = mfRequestBuilder.build();
-        mfDefaultHttpProcessor.doRequest(mfRequest);
+        mfHttpProcessor.doRequest(mfRequest);
     }
 
     private void getNewUploadActionToken() {
@@ -81,7 +82,7 @@ public final class MFTokenFarm implements MFTokenFarmCallback {
         MFRequest.MFRequestBuilder mfRequestBuilder = new MFRequest.MFRequestBuilder(MFHost.LIVE_HTTP, MFApi.USER_GET_UPLOAD_TOKEN);
         mfRequestBuilder.requestParameters(requestParameters);
         MFRequest mfRequest = mfRequestBuilder.build();
-        mfDefaultHttpProcessor.doRequest(mfRequest);
+        mfHttpProcessor.doRequest(mfRequest);
     }
 
     /**
@@ -89,7 +90,7 @@ public final class MFTokenFarm implements MFTokenFarmCallback {
      */
     public void shutdown() {
         MFConfiguration.getStaticMFLogger().d(TAG, "shutdown()");
-        mfConfiguration.getMfCredentials().clearCredentials();
+        mfConfiguration.getMFCredentials().clearCredentials();
         mfSessionTokens.clear();
         mfUploadActionToken = null;
         mfImageActionToken = null;
@@ -271,6 +272,8 @@ public final class MFTokenFarm implements MFTokenFarmCallback {
         lockBorrowUploadToken.lock();
         mfImageActionToken = null;
         mfUploadActionToken = null;
+        getNewUploadActionToken();
+        getNewImageActionToken();
         lockBorrowImageToken.unlock();
         lockBorrowUploadToken.unlock();
     }
@@ -288,7 +291,7 @@ public final class MFTokenFarm implements MFTokenFarmCallback {
     }
 
     private boolean haveStoredCredentials() {
-        return !mfConfiguration.getMfCredentials().getCredentials().isEmpty();
+        return !mfConfiguration.getMFCredentials().getCredentials().isEmpty();
     }
 
     private void startThreadForNewSessionToken() {

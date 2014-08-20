@@ -1,4 +1,4 @@
-package com.mediafire.sdk.tmp;
+package com.mediafire.sdk;
 
 /**
  * Created by Chris Najar on 8/20/2014.

@@ -1,11 +1,13 @@
 apply plugin: 'java'
 apply plugin: 'maven-publish'
-apply plugin: 'build-version'
+//apply plugin: 'build-version'
 
-version = buildVersion.version
+//version = buildVersion.version
+version = "1.0.1"
+
 buildscript {
     repositories {
-        maven { url "http://git.site.com:8081/nexus/content/groups/public" }
+//        maven { url "http://git.site.com:8081/nexus/content/groups/public" }
         maven { url 'https://geonet.artifactoryonline.com/geonet/public-releases' }
         mavenCentral()
     }
@@ -34,27 +36,41 @@ task sourceJar(type: Jar) {
 publishing {
     publications {
         maven(MavenPublication) {
-            artifactId = 'arkhive-sdk'
-            groupId = 'com.mediafire'
+            groupId = 'jars'
             from components.java
-
-            artifact sourceJar {
-                classifier "sources"
-            }
         }
     }
     repositories {
         maven {
-            credentials {
-                username "admin"
-                password "qwpo1998"
-            }
-
-            if(project.version.endsWith('-SNAPSHOT')) {
-                url "http://git.site.com:8081/nexus/content/repositories/snapshots"
-            } else {
-                url "http://git.site.com:8081/nexus/content/repositories/releases"
-            }
+            url "c:/mfsdk/java-sdk-misc/"
         }
     }
 }
+
+//publishing {
+//    publications {
+//        maven(MavenPublication) {
+//            artifactId = 'arkhive-sdk'
+//            groupId = 'com.mediafire'
+//            from components.java
+//
+//            artifact sourceJar {
+//                classifier "sources"
+//            }
+//        }
+//    }
+//    repositories {
+//        maven {
+//            credentials {
+//                username "admin"
+//                password "qwpo1998"
+//            }
+//
+//            if(project.version.endsWith('-SNAPSHOT')) {
+//                url "http://git.site.com:8081/nexus/content/repositories/snapshots"
+//            } else {
+//                url "http://git.site.com:8081/nexus/content/repositories/releases"
+//            }
+//        }
+//    }
+//}

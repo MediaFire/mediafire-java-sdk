@@ -224,8 +224,6 @@ public final class MFConfiguration {
         }
 
         /**
-<<<<<<< HEAD
-=======
          * sets the network connectivity monitor.
          * @param mfNetworkConnectivityMonitor - MFNetworkConnectivityMonitor implementation.
          * @return static MFConfigurationBuilder object to allow chaining calls.
@@ -239,7 +237,6 @@ public final class MFConfiguration {
         }
 
         /**
->>>>>>> firstcommit
          * constructs an MFConfiguration object.
          * @return - a new MFConfiguration object.
          */

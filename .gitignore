@@ -6,3 +6,5 @@ build/
 .idea
 src/test
 .idea/dictionaries/Chris_Najar.xml
+build.gradle
+mediafire-sdk.iml

@@ -42,7 +42,7 @@ publishing {
     }
     repositories {
         maven {
-            url "c:/mfsdk/java-sdk-misc/"
+            url "c:/mfsdk/java-sdk/jars/"
         }
     }
 }

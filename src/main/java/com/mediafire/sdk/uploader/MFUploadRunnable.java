@@ -255,6 +255,11 @@ public class MFUploadRunnable implements Runnable {
             return;
         }
 
+        if (response.hasError()) {
+            notifyUploadListenerCancelled();
+            return;
+        }
+
         mfUploadItem.getChunkData().setNumberOfUnits(response.getResumableUpload().getNumberOfUnits());
         mfUploadItem.getChunkData().setUnitSize(response.getResumableUpload().getUnitSize());
         int count = response.getResumableUpload().getBitmap().getCount();

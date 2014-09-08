@@ -16,7 +16,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public final class MFTokenFarm implements MFTokenFarmCallback {
+public final class MFTokenFarm implements MFTokenFarmCallback, MFActionTokenCallback {
     private static final String TAG = MFTokenFarm.class.getCanonicalName();
     private final MFConfiguration mfConfiguration;
     private final MFHttpProcessor mfHttpProcessor;
@@ -29,6 +29,7 @@ public final class MFTokenFarm implements MFTokenFarmCallback {
 
     // borrow token locks
     private final Object sessionTokenLock = new Object();
+    private final Object actionTokenLock = new Object();
     private final Lock lockBorrowImageToken = new ReentrantLock();
     private final Lock lockBorrowUploadToken = new ReentrantLock();
     private final Condition conditionImageTokenNotExpired = lockBorrowImageToken.newCondition();
@@ -232,11 +233,12 @@ public final class MFTokenFarm implements MFTokenFarmCallback {
             }
         } catch (InterruptedException e) {
             MFConfiguration.getStaticMFLogger().e(TAG, "exception while trying to borrow an upload action token", e);
+            return null;
         } finally {
             lockBorrowUploadToken.unlock();
         }
         MFConfiguration.getStaticMFLogger().v(TAG, "loaning MFToken: " + mfUploadActionToken.toString());
-        return new MFActionToken(mfUploadActionToken);
+        return mfUploadActionToken;
     }
 
     @Override
@@ -258,12 +260,13 @@ public final class MFTokenFarm implements MFTokenFarmCallback {
             }
         } catch (InterruptedException e) {
             MFConfiguration.getStaticMFLogger().e(TAG, "exception while trying to borrow an image action token", e);
+            return null;
         } finally {
             // attach new one to apiRequestObject
             lockBorrowImageToken.unlock();
         }
-        MFConfiguration.getStaticMFLogger().v(TAG, "loaning MFToken: " + mfImageActionToken.toString());
-        return new MFActionToken(mfImageActionToken);
+        MFConfiguration.getStaticMFLogger().d(TAG, "loaning MFToken: " + mfImageActionToken.toString());
+        return mfImageActionToken;
     }
 
     @Override

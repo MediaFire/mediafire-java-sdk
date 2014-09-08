@@ -60,7 +60,6 @@ public class GetInfoResponse extends ApiResponse {
         }
     }
 
-
     public class FileInfo {
         protected String password_protected;
         protected String owner_name;

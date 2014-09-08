@@ -37,6 +37,8 @@ public class MFUploadItem {
 
         //set Object fields so they won't be null
         fileData = new MFFileData(path);
+        fileData.setFileSize();
+        fileData.setFileHash();
         pollUploadKey = "";
         mfChunkData = new MFChunkData();
         bitmap = new MFResumableBitmap(0, new ArrayList<Integer>());

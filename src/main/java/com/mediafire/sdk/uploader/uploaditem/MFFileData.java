@@ -40,13 +40,12 @@ public class MFFileData {
         return fileHash;
     }
 
-    private void setFileSize() {
+    public void setFileSize() {
         File file = new File(getFilePath());
         fileSize = file.length();
     }
 
-    @SuppressWarnings("UnusedAssignment")
-    private void setFileHash() {
+    public void setFileHash() {
         File file = new File(filePath);
         FileInputStream fileInputStream;
         BufferedInputStream fileUri;

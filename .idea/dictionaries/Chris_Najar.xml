@@ -9,9 +9,11 @@
       <w>ekey</w>
       <w>filedrop</w>
       <w>fileerror</w>
+      <w>filetype</w>
       <w>folderkey</w>
       <w>foldername</w>
       <w>gmail</w>
+      <w>mimetype</w>
       <w>misformatted</w>
       <w>mtime</w>
       <w>najar</w>

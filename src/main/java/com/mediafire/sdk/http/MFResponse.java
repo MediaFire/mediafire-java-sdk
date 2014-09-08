@@ -51,6 +51,9 @@ public final class MFResponse {
      * @return response as a String
      */
     public String getResponseAsString() {
+        if (bodyBytes == null) {
+            return null;
+        }
         return new String(bodyBytes);
     }
 

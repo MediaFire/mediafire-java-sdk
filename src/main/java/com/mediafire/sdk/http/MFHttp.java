@@ -8,14 +8,8 @@ import java.util.Map;
 
 public abstract class MFHttp {
     private static final String TAG = MFHttp.class.getCanonicalName();
-    protected final MFConfiguration mfConfiguration;
 
-    public MFHttp (MFConfiguration mfConfiguration) {
-        if (mfConfiguration == null) {
-            throw new IllegalArgumentException("configuration cannot be null");
-        }
-        this.mfConfiguration = mfConfiguration;
-    }
+    public MFHttp () {}
 
     protected final String makeQueryString(Map<String, String> requestParameters, boolean urlEncode) throws UnsupportedEncodingException {
         MFConfiguration.getStaticMFLogger().d(TAG, "makeQueryString(encode=" + urlEncode + ")");

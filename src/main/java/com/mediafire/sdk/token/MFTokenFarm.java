@@ -16,7 +16,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public final class MFTokenFarm implements MFTokenFarmCallback, MFActionTokenCallback {
+public final class MFTokenFarm implements MFTokenFarmCallback {
     private static final String TAG = MFTokenFarm.class.getCanonicalName();
     private final MFConfiguration mfConfiguration;
     private final MFHttpProcessor mfHttpProcessor;
@@ -29,7 +29,6 @@ public final class MFTokenFarm implements MFTokenFarmCallback, MFActionTokenCall
 
     // borrow token locks
     private final Object sessionTokenLock = new Object();
-    private final Object actionTokenLock = new Object();
     private final Lock lockBorrowImageToken = new ReentrantLock();
     private final Lock lockBorrowUploadToken = new ReentrantLock();
     private final Condition conditionImageTokenNotExpired = lockBorrowImageToken.newCondition();
@@ -84,6 +83,16 @@ public final class MFTokenFarm implements MFTokenFarmCallback, MFActionTokenCall
         mfRequestBuilder.requestParameters(requestParameters);
         MFRequest mfRequest = mfRequestBuilder.build();
         mfHttpProcessor.doRequest(mfRequest);
+    }
+
+    @Override
+    public void fill() {
+        startup();
+    }
+
+    @Override
+    public void empty() {
+        shutdown();
     }
 
     /**

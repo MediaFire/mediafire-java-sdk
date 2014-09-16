@@ -22,7 +22,6 @@ public final class MFHttpClient extends MFHttp {
     private final MFNetworkConnectivityMonitor mfNetworkConnectivityMonitor;
 
     public MFHttpClient(MFConfiguration mfConfiguration) {
-        super(mfConfiguration);
         this.readTimeout = mfConfiguration.getHttpReadTimeout();
         this.connectionTimeout = mfConfiguration.getHttpConnectionTimeout();
         this.mfNetworkConnectivityMonitor = mfConfiguration.getMfNetworkConnectivityMonitor();
@@ -194,7 +193,8 @@ public final class MFHttpClient extends MFHttp {
     private URL makeFullUrl(MFRequester mfRequester) throws MalformedURLException, UnsupportedEncodingException {
         MFConfiguration.getStaticMFLogger().d(TAG, "makeFullUrl()");
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(makeBaseUrl(mfRequester));
+        String baseUrl = makeBaseUrl(mfRequester);
+        stringBuilder.append(baseUrl);
 
         if (!mfRequester.isQueryPostable()) {
             String queryString = makeQueryString(mfRequester.getRequestParameters());

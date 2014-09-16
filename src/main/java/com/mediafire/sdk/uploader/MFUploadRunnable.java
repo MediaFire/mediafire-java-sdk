@@ -417,12 +417,12 @@ public class MFUploadRunnable implements Runnable {
                 MFRequest mfRequest = mfRequestBuilder.build();
                 MFResponse mfResponse = mfHttpProcessor.doRequest(mfRequest);
 
-                MFConfiguration.getStaticMFLogger().d(TAG, "response string: " + mfResponse.getResponseAsString());
-
                 if (mfResponse == null) {
                     notifyUploadListenerCancelled();
                     return;
                 }
+
+                MFConfiguration.getStaticMFLogger().d(TAG, "response string: " + mfResponse.getResponseAsString());
 
                 if (mfResponse.getResponseAsBytes() == null) {
                     notifyUploadListenerCancelled();

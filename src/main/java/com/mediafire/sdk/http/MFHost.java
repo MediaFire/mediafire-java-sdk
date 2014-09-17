@@ -51,7 +51,7 @@ public enum MFHost {
 
     public enum Host {
         LIVE("www.mediafire.com"),
-        DEV("www.mediafire.com");
+        DEV("dev.mediafire.com");
 
         private final String host;
 

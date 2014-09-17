@@ -20,6 +20,7 @@ public final class MFHttpClientSetup extends MFHttp {
     private final MFTokenFarmCallback mfTokenFarmCallback;
     private final MFCredentials mfCredentials;
     private final MFNetworkConnectivityMonitor mfNetworkConnectivityMonitor;
+    private final MFConfiguration mfConfiguration;
 
     /**
      * Constructor to help set up an http request to mediafire.
@@ -27,8 +28,8 @@ public final class MFHttpClientSetup extends MFHttp {
      * @param mfConfiguration - the configuration used by the MFTokenFarm.
      */
     public MFHttpClientSetup(MFTokenFarmCallback mfTokenFarmCallback, MFConfiguration mfConfiguration) {
-        super(mfConfiguration);
         this.mfTokenFarmCallback = mfTokenFarmCallback;
+        this.mfConfiguration = mfConfiguration;
         this.mfCredentials = mfConfiguration.getMFCredentials();
         this.mfNetworkConnectivityMonitor = mfConfiguration.getMfNetworkConnectivityMonitor();
     }
@@ -56,11 +57,11 @@ public final class MFHttpClientSetup extends MFHttp {
         addSignatureToRequestParameters(mfRequester);
     }
 
-    private void addRequestParametersForNewSessionToken(MFRequester mfRequest) {
+    private void addRequestParametersForNewSessionToken(MFRequester mfRequester) {
         MFConfiguration.getStaticMFLogger().d(TAG, "addRequestParametersForNewSessionToken()");
         Map<String, String> credentialsMap = mfCredentials.getCredentials();
-        mfRequest.getRequestParameters().putAll(credentialsMap);
-        mfRequest.getRequestParameters().put("application_id", mfConfiguration.getAppId());
+        mfRequester.getRequestParameters().putAll(credentialsMap);
+        mfRequester.getRequestParameters().put("application_id", mfConfiguration.getAppId());
     }
 
     private void addSignatureToRequestParameters(MFRequester mfRequester) throws UnsupportedEncodingException, MFHttpException {
@@ -77,7 +78,7 @@ public final class MFHttpClientSetup extends MFHttp {
             case NEW:
                 // add additional request parameters required for this signature
                 addRequestParametersForNewSessionToken(mfRequester);
-                String newSessionTokenSignature = calculateSignatureForNewSessionToken(mfConfiguration, mfCredentials);
+                String newSessionTokenSignature = calculateSignatureForNewSessionToken();
                 mfRequester.getRequestParameters().put("signature", newSessionTokenSignature);
                 break;
             default:
@@ -87,27 +88,27 @@ public final class MFHttpClientSetup extends MFHttp {
         }
     }
 
-    private String calculateSignatureForNewSessionToken(MFConfiguration mfConfiguration, MFCredentials credentials) throws MFHttpException {
+    private String calculateSignatureForNewSessionToken() throws MFHttpException {
         MFConfiguration.getStaticMFLogger().d(TAG, "calculateSignatureForNewSessionToken()");
         // email + password + app id + api key
         // fb access token + app id + api key
         // tw oauth token + tw oauth token secret + app id + api key
 
         String userInfoPortionOfHashTarget = null;
-        switch (credentials.getUserCredentialsType()) {
+        switch (mfCredentials.getUserCredentialsType()) {
             case FACEBOOK:
                 String fb_token_key = MFDefaultCredentials.FACEBOOK_PARAMETER_FB_ACCESS_TOKEN;
-                userInfoPortionOfHashTarget = credentials.getCredentials().get(fb_token_key);
+                userInfoPortionOfHashTarget = mfCredentials.getCredentials().get(fb_token_key);
                 break;
             case TWITTER:
                 String tw_oauth_token = MFDefaultCredentials.TWITTER_PARAMETER_TW_OAUTH_TOKEN;
                 String tw_oauth_token_secret = MFDefaultCredentials.TWITTER_PARAMETER_TW_OAUTH_TOKEN_SECRET;
-                userInfoPortionOfHashTarget = credentials.getCredentials().get(tw_oauth_token) + credentials.getCredentials().get(tw_oauth_token_secret);
+                userInfoPortionOfHashTarget = mfCredentials.getCredentials().get(tw_oauth_token) + mfCredentials.getCredentials().get(tw_oauth_token_secret);
                 break;
             case MEDIAFIRE:
                 String mf_email = MFDefaultCredentials.MEDIAFIRE_PARAMETER_EMAIL;
                 String mf_pass = MFDefaultCredentials.MEDIAFIRE_PARAMETER_PASSWORD;
-                userInfoPortionOfHashTarget = credentials.getCredentials().get(mf_email) + credentials.getCredentials().get(mf_pass);
+                userInfoPortionOfHashTarget = mfCredentials.getCredentials().get(mf_email) + mfCredentials.getCredentials().get(mf_pass);
                 break;
             case UNSET:
                 throw new MFHttpException("credentials must be set to call /api/user/get_session_token");
@@ -153,8 +154,6 @@ public final class MFHttpClientSetup extends MFHttp {
         if (mfRequester.isTokenRequired() && mfRequester.getToken() != null) {
             String tokenString = mfRequester.getToken().getTokenString();
             mfRequester.getRequestParameters().put("session_token", tokenString);
-        } else {
-            // token not required
         }
     }
 

@@ -8,12 +8,11 @@ import com.mediafire.sdk.token.MFActionToken;
 import com.mediafire.sdk.token.MFSessionToken;
 import com.mediafire.sdk.token.MFTokenFarmCallback;
 
-public final class MFHttpClientCleanup extends MFHttp {
+public final class MFHttpClientCleanup {
     private static final String TAG = MFHttpClientCleanup.class.getCanonicalName();
     private final MFTokenFarmCallback mfTokenFarmCallback;
 
-    public MFHttpClientCleanup(MFTokenFarmCallback mfTokenFarmCallback, MFConfiguration mfConfiguration) {
-        super(mfConfiguration);
+    public MFHttpClientCleanup(MFTokenFarmCallback mfTokenFarmCallback) {
         this.mfTokenFarmCallback = mfTokenFarmCallback;
     }
 

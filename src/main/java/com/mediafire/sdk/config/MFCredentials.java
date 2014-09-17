@@ -2,9 +2,6 @@ package com.mediafire.sdk.config;
 
 import java.util.Map;
 
-/**
- * TODO: doc
- */
 public interface MFCredentials {
     /**
      * sets user credentials.

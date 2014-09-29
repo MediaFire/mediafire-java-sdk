@@ -28,6 +28,10 @@ public class MFActionToken extends MFToken {
         return (System.currentTimeMillis() + 3600000) >= expiration;
     }
 
+    public long getExpiration() {
+        return expiration;
+    }
+
     /**
      * gets the type of this Token.
      * @return the type of this token (image or upload).

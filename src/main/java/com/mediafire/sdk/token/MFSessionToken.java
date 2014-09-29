@@ -5,16 +5,22 @@ import com.mediafire.sdk.config.MFConfiguration;
 public final class MFSessionToken extends MFToken {
     private static final String TAG = MFSessionToken.class.getCanonicalName();
     private final String time;
+    private final String permanentToken;
     private String secretKey;
     private final String pkey;
     private final String ekey;
 
     public MFSessionToken(String tokenString, String secretKey, String time, String pkey, String ekey) {
+        this(tokenString, secretKey, time, pkey, ekey, null);
+    }
+
+    public MFSessionToken(String tokenString, String secretKey, String time, String pkey, String ekey, String permanentToken) {
         super(tokenString);
         this.secretKey = secretKey;
         this.time = time;
         this.pkey = pkey;
         this.ekey = ekey;
+        this.permanentToken = permanentToken;
     }
 
     /**
@@ -35,7 +41,7 @@ public final class MFSessionToken extends MFToken {
 
     /**
      * gets the pkey value for this Token.
-     * @return the pkey for this Token
+     * @return the pkey for this Token.
      */
     public String getPkey() {
         return pkey;
@@ -47,6 +53,14 @@ public final class MFSessionToken extends MFToken {
      */
     public String getEkey() {
         return ekey;
+    }
+
+    /**
+     * gets the permanent token value for this Token.
+     * @return the permanent token for this Token.
+     */
+    public String getPermanentToken() {
+        return permanentToken;
     }
 
     /**

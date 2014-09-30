@@ -20,10 +20,4 @@ public interface MFCredentialsInterface {
      * clears any credentials which were stored.
      */
     public void clearCredentials();
-
-    /**
-     * gets the MFCredentialsType of credentials stored.
-     * @return MFCredentialsType representing the current stored credentials.
-     */
-    public MFCredentialsType getUserCredentialsType();
 }

@@ -2,7 +2,7 @@ package com.mediafire.sdk.config;
 
 import java.util.Map;
 
-public interface MFCredentials {
+public interface MFCredentialsInterface {
     /**
      * sets user credentials.
      * @param userCredentials - a map of user credentials.

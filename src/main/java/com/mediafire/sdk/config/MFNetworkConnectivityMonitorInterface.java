@@ -1,6 +1,6 @@
-package com.mediafire.sdk.http;
+package com.mediafire.sdk.config;
 
-public interface MFNetworkConnectivityMonitor {
+public interface MFNetworkConnectivityMonitorInterface {
     /**
      * Gets network status. blocking call.
      * @return - true if network is available, false otherwise.

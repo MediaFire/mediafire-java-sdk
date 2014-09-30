@@ -1,7 +1,5 @@
 package com.mediafire.sdk.uploader.uploaditem;
 
-import com.mediafire.sdk.config.MFConfiguration;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -58,7 +56,6 @@ public class MFUploadItem {
     }
 
     public int getUploadAttemptCount() {
-        MFConfiguration.getStaticMFLogger().v(TAG, "getUploadAttemptCount(" + uploadAttemptCount + ")");
         uploadAttemptCount++;
         return uploadAttemptCount;
     }
@@ -94,7 +91,6 @@ public class MFUploadItem {
 
     public MFResumableBitmap getBitmap() {
         if (bitmap == null) {
-            MFConfiguration.getStaticMFLogger().v(TAG, "  resumable bitmap reference lost");
             bitmap = new MFResumableBitmap(0, new ArrayList<Integer>());
         }
         return bitmap;

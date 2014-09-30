@@ -1,33 +1,36 @@
-package com.mediafire.sdk.token;
+package com.mediafire.sdk.config;
 
-public interface MFTokenFarmCallback extends MFSessionTokenFarmInterface, MFActionTokenFarmInterface {
+import com.mediafire.sdk.token.MFActionToken;
+import com.mediafire.sdk.token.MFSessionToken;
+
+public interface MFTokenFarmInterface extends MFSessionTokenFarmInterface, MFActionTokenFarmInterface {
     /**
      * called when a session token is being returned.
-     * @param mfSessionToken
+     * @param mfSessionToken the session token being returned
      */
     public void returnSessionToken(MFSessionToken mfSessionToken);
 
     /**
      * called when a session token is out of sync and unrecoverable.
-     * @param mfSessionToken
+     * @param mfSessionToken the session token which failed
      */
     public void sessionTokenSpoiled(MFSessionToken mfSessionToken);
 
     /**
      * called when a new session token is being returned
-     * @param mfSessionToken
+     * @param mfSessionToken the new session token received
      */
     public void receiveNewSessionToken(MFSessionToken mfSessionToken);
 
     /**
      * called when a new image action token is being returned.
-     * @param mfImageActionToken
+     * @param mfImageActionToken the new image action token received
      */
     public void receiveNewImageActionToken(MFActionToken mfImageActionToken);
 
     /**
      * called when a new upload action token is being returned.
-     * @param mfUploadActionToken
+     * @param mfUploadActionToken the new upload action token received
      */
     public void receiveNewUploadActionToken(MFActionToken mfUploadActionToken);
 

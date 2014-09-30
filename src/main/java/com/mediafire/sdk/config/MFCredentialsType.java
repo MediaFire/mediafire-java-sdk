@@ -8,5 +8,5 @@ public enum MFCredentialsType {
     TWITTER,
     MEDIAFIRE,
     EKEY,
-    UNSET;
+    UNSET,
 }

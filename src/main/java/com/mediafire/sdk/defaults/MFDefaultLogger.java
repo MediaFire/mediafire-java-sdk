@@ -1,12 +1,13 @@
-package com.mediafire.sdk.config;
+package com.mediafire.sdk.defaults;
 
+import com.mediafire.sdk.config.MFLoggerInterface;
 import com.mediafire.sdk.http.*;
 import com.mediafire.sdk.token.MFToken;
 
 import java.util.List;
 import java.util.Map;
 
-public class MFDefaultLogger implements MFLogger {
+public class MFDefaultLogger implements MFLoggerInterface {
     @Override
     public void v(String source, String message) {
         e(source, message);

@@ -1,9 +1,9 @@
-package com.mediafire.sdk.token;
+package com.mediafire.sdk.config;
 
 /**
  * Created by Chris Najar on 9/16/2014.
  */
-public interface MFTokenFarmInterface {
+abstract interface MFAbstractContainerInterface {
     /**
      * called when tokens need to be filled (populated)
      */

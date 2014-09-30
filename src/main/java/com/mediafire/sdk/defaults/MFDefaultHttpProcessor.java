@@ -1,7 +1,9 @@
-package com.mediafire.sdk.config;
+package com.mediafire.sdk.defaults;
 
+import com.mediafire.sdk.config.MFConfiguration;
+import com.mediafire.sdk.config.MFHttpProcessor;
+import com.mediafire.sdk.config.MFTokenFarmInterface;
 import com.mediafire.sdk.http.*;
-import com.mediafire.sdk.token.MFTokenFarmCallback;
 
 import java.io.UnsupportedEncodingException;
 
@@ -10,21 +12,23 @@ public final class MFDefaultHttpProcessor implements MFHttpProcessor {
     private final MFHttpClientSetup mfHttpClientSetup;
     private final MFHttpClient mfHttpClient;
     private final MFHttpClientCleanup mfHttpClientCleanup;
+    private MFConfiguration mfConfiguration;
 
     /**
-     * Implementation of MFHttpProcessor. This constructor requires an MFConfiguration and MFTokenFarmCallback
+     * Implementation of MFHttpProcessor. This constructor requires an MFConfiguration and MFTokenFarmInterface
      * @param mfConfiguration
      * @param mfTokenFarmCallback
      */
-    public MFDefaultHttpProcessor(MFConfiguration mfConfiguration, MFTokenFarmCallback mfTokenFarmCallback) {
-        this.mfHttpClientSetup = new MFHttpClientSetup(mfTokenFarmCallback, mfConfiguration);
+    public MFDefaultHttpProcessor(MFConfiguration mfConfiguration, MFTokenFarmInterface mfTokenFarmCallback) {
+        this.mfConfiguration = mfConfiguration;
+        this.mfHttpClientSetup = new MFHttpClientSetup(mfConfiguration, mfTokenFarmCallback);
         this.mfHttpClient = new MFHttpClient(mfConfiguration);
-        this.mfHttpClientCleanup = new MFHttpClientCleanup(mfTokenFarmCallback);
+        this.mfHttpClientCleanup = new MFHttpClientCleanup(mfConfiguration, mfTokenFarmCallback);
     }
 
     @Override
     public MFResponse doRequest(final MFRequester mfRequester) {
-        MFConfiguration.getStaticMFLogger().d(TAG, "doRequest()");
+        mfConfiguration.getMFLogger().d(TAG, "doRequest()");
 
         MFResponse mfResponse;
         try {
@@ -37,7 +41,7 @@ public final class MFDefaultHttpProcessor implements MFHttpProcessor {
                     try {
                         mfHttpClientCleanup.returnToken(mfRequester, finalMfResponse);
                     } catch (MFHttpException e) {
-                        MFConfiguration.getStaticMFLogger().e(TAG, e.getMessage(), e);
+                        mfConfiguration.getMFLogger().e(TAG, e.getMessage(), e);
                     }
                 }
             });

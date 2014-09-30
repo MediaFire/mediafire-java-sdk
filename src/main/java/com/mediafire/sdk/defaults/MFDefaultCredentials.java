@@ -1,4 +1,7 @@
-package com.mediafire.sdk.config;
+package com.mediafire.sdk.defaults;
+
+import com.mediafire.sdk.config.MFCredentialsInterface;
+import com.mediafire.sdk.config.MFCredentialsType;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -7,7 +10,7 @@ import java.util.Map;
 /**
  * TODO: doc
  */
-public final class MFDefaultCredentials implements MFCredentials {
+public final class MFDefaultCredentials implements MFCredentialsInterface {
     public static final String MEDIAFIRE_PARAMETER_EMAIL = "email";
     public static final String MEDIAFIRE_PARAMETER_PASSWORD = "password";
     public static final String TWITTER_PARAMETER_TW_OAUTH_TOKEN = "tw_oauth_token";
@@ -18,7 +21,7 @@ public final class MFDefaultCredentials implements MFCredentials {
     private MFCredentialsType mfCredentialsType;
 
     /**
-     * A default MFCredentials implementation.
+     * A default MFCredentialsInterface implementation.
      * This constructor sets the MFCredentialsType to UNSET.
      */
     public MFDefaultCredentials() {

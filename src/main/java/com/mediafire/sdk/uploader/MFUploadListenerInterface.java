@@ -2,7 +2,7 @@ package com.mediafire.sdk.uploader;
 
 import com.mediafire.sdk.uploader.uploaditem.MFUploadItem;
 
-public interface MFUploadListener {
+public interface MFUploadListenerInterface {
 
     public void onCancelled(MFUploadItem mfUploadItem);
 

@@ -1,18 +1,20 @@
-package com.mediafire.sdk.token;
+package com.mediafire.sdk.config;
+
+import com.mediafire.sdk.token.MFActionToken;
 
 /**
  * Created by Chris Najar on 9/16/2014.
  */
-public interface MFActionTokenFarmInterface extends MFTokenFarmInterface {
+public interface MFActionTokenFarmInterface extends MFAbstractContainerInterface {
     /**
      * called when a new image action token is being returned.
-     * @param mfImageActionToken
+     * @param mfImageActionToken - the new image action token received
      */
     public void receiveNewImageActionToken(MFActionToken mfImageActionToken);
 
     /**
      * called when a new upload action token is being returned.
-     * @param mfUploadActionToken
+     * @param mfUploadActionToken - the new upload action token received
      */
     public void receiveNewUploadActionToken(MFActionToken mfUploadActionToken);
 

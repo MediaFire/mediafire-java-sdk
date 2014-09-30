@@ -1,11 +1,10 @@
 package com.mediafire.sdk.http;
 
-import com.mediafire.sdk.config.MFConfiguration;
-import com.mediafire.sdk.config.MFCredentials;
-import com.mediafire.sdk.config.MFDefaultCredentials;
+import com.mediafire.sdk.config.*;
+import com.mediafire.sdk.defaults.MFDefaultCredentials;
 import com.mediafire.sdk.token.MFActionToken;
 import com.mediafire.sdk.token.MFSessionToken;
-import com.mediafire.sdk.token.MFTokenFarmCallback;
+import com.mediafire.sdk.config.MFTokenFarmInterface;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -17,21 +16,22 @@ public final class MFHttpClientSetup extends MFHttp {
     private static final String SHA1 = "SHA-1";
     private static final String MD5 = "MD5";
 
-    private final MFTokenFarmCallback mfTokenFarmCallback;
-    private final MFCredentials mfCredentials;
-    private final MFNetworkConnectivityMonitor mfNetworkConnectivityMonitor;
+    private final MFTokenFarmInterface mfTokenFarmCallback;
+    private final MFCredentialsInterface mfCredentials;
+    private final MFNetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor;
     private final MFConfiguration mfConfiguration;
 
     /**
      * Constructor to help set up an http request to mediafire.
+     * @param mfConfiguration - the configuration used by the MFDefaultTokenFarm.
      * @param mfTokenFarmCallback - callback used to borrow Tokens
-     * @param mfConfiguration - the configuration used by the MFTokenFarm.
      */
-    public MFHttpClientSetup(MFTokenFarmCallback mfTokenFarmCallback, MFConfiguration mfConfiguration) {
+    public MFHttpClientSetup(MFConfiguration mfConfiguration, MFTokenFarmInterface mfTokenFarmCallback) {
+        super(mfConfiguration);
         this.mfTokenFarmCallback = mfTokenFarmCallback;
         this.mfConfiguration = mfConfiguration;
         this.mfCredentials = mfConfiguration.getMFCredentials();
-        this.mfNetworkConnectivityMonitor = mfConfiguration.getMfNetworkConnectivityMonitor();
+        this.mfNetworkConnectivityMonitor = mfConfiguration.getMFNetworkConnectivityMonitor();
     }
 
     /**
@@ -44,7 +44,7 @@ public final class MFHttpClientSetup extends MFHttp {
      * @throws MFHttpException - if credentials are not set or if no network connection
      */
     public void prepareMFRequestForHttpClient(MFRequester mfRequester) throws UnsupportedEncodingException, MFHttpException {
-        MFConfiguration.getStaticMFLogger().d(TAG, "prepareMFRequestForHttpClient()");
+        mfConfiguration.getMFLogger().d(TAG, "prepareMFRequestForHttpClient()");
         // if no network connection as per network connectivity monitor, return failed mf response (null values and -1 status)
         if (!mfNetworkConnectivityMonitor.haveNetworkConnection()) {
             throw new MFHttpException("no network connection");
@@ -58,22 +58,22 @@ public final class MFHttpClientSetup extends MFHttp {
     }
 
     private void addRequestParametersForNewSessionToken(MFRequester mfRequester) {
-        MFConfiguration.getStaticMFLogger().d(TAG, "addRequestParametersForNewSessionToken()");
+        mfConfiguration.getMFLogger().d(TAG, "addRequestParametersForNewSessionToken()");
         Map<String, String> credentialsMap = mfCredentials.getCredentials();
         mfRequester.getRequestParameters().putAll(credentialsMap);
         mfRequester.getRequestParameters().put("application_id", mfConfiguration.getAppId());
     }
 
     private void addSignatureToRequestParameters(MFRequester mfRequester) throws UnsupportedEncodingException, MFHttpException {
-        MFConfiguration.getStaticMFLogger().d(TAG, "addSignatureToRequestParameters(type: " + mfRequester.getTypeOfSignatureToAdd()+ ")");
+        mfConfiguration.getMFLogger().d(TAG, "addSignatureToRequestParameters(type: " + mfRequester.getTypeOfSignatureToAdd()+ ")");
         switch (mfRequester.getTypeOfSignatureToAdd()) {
             case V2:
                 mfRequester.getRequestParameters().remove("signature");
-                MFConfiguration.getStaticMFLogger().v(TAG, "request parameters before signature: " + mfRequester.getRequestParameters().toString());
+                mfConfiguration.getMFLogger().v(TAG, "request parameters before signature: " + mfRequester.getRequestParameters().toString());
                 String recycledSessionTokenSignature = calculateSignatureForApiRequest(mfRequester);
-                MFConfiguration.getStaticMFLogger().v(TAG, "signature calculated: " + recycledSessionTokenSignature);
+                mfConfiguration.getMFLogger().v(TAG, "signature calculated: " + recycledSessionTokenSignature);
                 mfRequester.getRequestParameters().put("signature", recycledSessionTokenSignature);
-                MFConfiguration.getStaticMFLogger().v(TAG, "request parameters  after signature: " + mfRequester.getRequestParameters().toString());
+                mfConfiguration.getMFLogger().v(TAG, "request parameters  after signature: " + mfRequester.getRequestParameters().toString());
                 break;
             case NEW:
                 // add additional request parameters required for this signature
@@ -89,7 +89,7 @@ public final class MFHttpClientSetup extends MFHttp {
     }
 
     private String calculateSignatureForNewSessionToken() throws MFHttpException {
-        MFConfiguration.getStaticMFLogger().d(TAG, "calculateSignatureForNewSessionToken()");
+        mfConfiguration.getMFLogger().d(TAG, "calculateSignatureForNewSessionToken()");
         // email + password + app id + api key
         // fb access token + app id + api key
         // tw oauth token + tw oauth token secret + app id + api key
@@ -132,7 +132,7 @@ public final class MFHttpClientSetup extends MFHttp {
     }
 
     private String calculateSignatureForApiRequest(MFRequester mfRequester) throws UnsupportedEncodingException {
-        MFConfiguration.getStaticMFLogger().d(TAG, "calculateSignatureForApiRequest()");
+        mfConfiguration.getMFLogger().d(TAG, "calculateSignatureForApiRequest()");
         // session token secret key + time + uri (concatenated)
         MFSessionToken sessionToken = (MFSessionToken) mfRequester.getToken();
         int secretKeyMod256 = Integer.valueOf(sessionToken.getSecretKey()) % 256;
@@ -142,15 +142,15 @@ public final class MFHttpClientSetup extends MFHttp {
         String baseUri = mfRequester.getUri();
         String fullUri = baseUri + urlAttachableQueryString;
 
-        MFConfiguration.getStaticMFLogger().v(TAG, "going to calculate signature for secretKeyMod256: " + secretKeyMod256 + ", time: " + time + ", fullUri: " + fullUri);
+        mfConfiguration.getMFLogger().v(TAG, "going to calculate signature for secretKeyMod256: " + secretKeyMod256 + ", time: " + time + ", fullUri: " + fullUri);
         String nonUrlEncodedString = secretKeyMod256 + time + fullUri;
 
-        MFConfiguration.getStaticMFLogger().v(TAG, "going to calculate signature for nonUrlEncodedString: " + nonUrlEncodedString);
+        mfConfiguration.getMFLogger().v(TAG, "going to calculate signature for nonUrlEncodedString: " + nonUrlEncodedString);
         return hashString(nonUrlEncodedString, MD5);
     }
 
     private void addTokenToRequestParameters(MFRequester mfRequester) {
-        MFConfiguration.getStaticMFLogger().d(TAG, "addTokenToRequestParameters()");
+        mfConfiguration.getMFLogger().d(TAG, "addTokenToRequestParameters()");
         if (mfRequester.isTokenRequired() && mfRequester.getToken() != null) {
             String tokenString = mfRequester.getToken().getTokenString();
             mfRequester.getRequestParameters().put("session_token", tokenString);
@@ -158,7 +158,7 @@ public final class MFHttpClientSetup extends MFHttp {
     }
 
     private void borrowToken(MFRequester mfRequester) {
-        MFConfiguration.getStaticMFLogger().d(TAG, "borrowToken(type: " + mfRequester.getTypeOfTokenToBorrow() + ")");
+        mfConfiguration.getMFLogger().d(TAG, "borrowToken(type: " + mfRequester.getTypeOfTokenToBorrow() + ")");
         switch (mfRequester.getTypeOfTokenToBorrow()) {
             case V2:
                 MFSessionToken sessionToken = mfTokenFarmCallback.borrowMFSessionToken();
@@ -179,7 +179,7 @@ public final class MFHttpClientSetup extends MFHttp {
     }
 
     private String hashString(String target, String hashAlgorithm) {
-        MFConfiguration.getStaticMFLogger().d(TAG, "hashString()");
+        mfConfiguration.getMFLogger().d(TAG, "hashString()");
         String hash;
         try {
             MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
@@ -198,7 +198,7 @@ public final class MFHttpClientSetup extends MFHttp {
             e.printStackTrace();
             hash = target;
         }
-        MFConfiguration.getStaticMFLogger().v(TAG, hashAlgorithm + " hashed " + target + " to " + hash + ")");
+        mfConfiguration.getMFLogger().v(TAG, hashAlgorithm + " hashed " + target + " to " + hash + ")");
         return hash;
     }
 }

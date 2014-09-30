@@ -1,7 +1,5 @@
 package com.mediafire.sdk.uploader.uploaditem;
 
-import com.mediafire.sdk.config.MFConfiguration;
-
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -53,7 +51,7 @@ public class MFFileData {
         try {
             fileInputStream = new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            MFConfiguration.getStaticMFLogger().v(TAG, "Exception: " + e);
+            e.printStackTrace();
             fileHash = "";
             return;
         }
@@ -83,10 +81,10 @@ public class MFFileData {
             fileUri.close();
             in.close();
         } catch (NoSuchAlgorithmException e) {
-            MFConfiguration.getStaticMFLogger().v(TAG, "Exception: " + e);
+            e.printStackTrace();
             fileHash = "";
         } catch (IOException e) {
-            MFConfiguration.getStaticMFLogger().v(TAG, "Exception: " + e);
+            e.printStackTrace();
             fileHash = "";
         } finally {
             fileInputStream = null;

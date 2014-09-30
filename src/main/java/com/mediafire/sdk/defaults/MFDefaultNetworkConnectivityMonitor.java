@@ -1,13 +1,13 @@
-package com.mediafire.sdk.config;
+package com.mediafire.sdk.defaults;
 
-import com.mediafire.sdk.http.MFNetworkConnectivityMonitor;
+import com.mediafire.sdk.config.MFNetworkConnectivityMonitorInterface;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class MFDefaultNetworkConnectivityMonitor implements MFNetworkConnectivityMonitor {
+public class MFDefaultNetworkConnectivityMonitor implements MFNetworkConnectivityMonitorInterface {
     private static final String URL_CONNECTION_ADDRESS = "http://www.mediafire.com";
     private static final int PING_TIMEOUT = 500;
 

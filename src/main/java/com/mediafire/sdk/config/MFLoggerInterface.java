@@ -3,7 +3,7 @@ package com.mediafire.sdk.config;
 import com.mediafire.sdk.http.MFRequester;
 import com.mediafire.sdk.http.MFResponse;
 
-public interface MFLogger {
+public interface MFLoggerInterface {
     /**
      * verbose log.
      * @param source - source of message.
@@ -82,7 +82,7 @@ public interface MFLogger {
     /**
      * api error log.
      * @param source - source of api error.
-     * @param mfRequester - the MFRequestor used.
+     * @param mfRequester - the MFRequester used.
      * @param mfResponse - the MFResponse received.
      */
     public void logApiError(String source, MFRequester mfRequester, MFResponse mfResponse);

@@ -1,17 +1,17 @@
 package com.mediafire.sdk.config;
 
-import com.mediafire.sdk.http.MFNetworkConnectivityMonitor;
-
-public final class MFConfiguration {
+public class MFConfiguration {
     private final int httpReadTimeout;
     private final int httpConnectionTimeout;
     private final int minimumSessionTokens;
     private final int maximumSessionTokens;
     private final String appId;
     private final String apiKey;
-    private final MFCredentials mfCredentials;
-    private final MFNetworkConnectivityMonitor mfNetworkConnectivityMonitor;
-    private static MFLogger staticMFLogger;
+    private final MFLoggerInterface mfLogger;
+    private final MFCredentialsInterface mfCredentials;
+    private final MFNetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor;
+    private final MFActionTokenFarmInterface mfActionTokenFarmInterface;
+    private final MFSessionTokenFarmInterface mfSessionTokenFarmInterface;
 
     /**
      * Constructor to create an MFConfiguration instance.
@@ -24,17 +24,11 @@ public final class MFConfiguration {
         this.maximumSessionTokens = mfConfigurationBuilder.maximumSessionTokens;
         this.appId = mfConfigurationBuilder.appId;
         this.apiKey = mfConfigurationBuilder.apiKey;
+        mfLogger = mfConfigurationBuilder.mfLogger;
         this.mfCredentials = mfConfigurationBuilder.mfCredentials;
         this.mfNetworkConnectivityMonitor = mfConfigurationBuilder.mfNetworkConnectivityMonitor;
-        staticMFLogger = mfConfigurationBuilder.mfLogger;
-    }
-
-    /**
-     * gets the MFLogger set when this object was constructed.
-     * @return MFLogger
-     */
-    public static MFLogger getStaticMFLogger() {
-        return staticMFLogger;
+        this.mfActionTokenFarmInterface = mfConfigurationBuilder.mfActionTokenFarmInterface;
+        this.mfSessionTokenFarmInterface = mfConfigurationBuilder.mfSessionTokenFarmInterface;
     }
 
     /**
@@ -86,19 +80,43 @@ public final class MFConfiguration {
     }
 
     /**
-     * gets the MFCredentials set when this object was constructed.
-     * @return MFCredentials
+     * gets the MFLoggerInterface set when this object was constructed.
+     * @return MFLoggerInterface.
      */
-    public MFCredentials getMFCredentials() {
+    public MFLoggerInterface getMFLogger() {
+        return mfLogger;
+    }
+
+    /**
+     * gets the MFCredentialsInterface set when this object was constructed.
+     * @return MFCredentialsInterface
+     */
+    public MFCredentialsInterface getMFCredentials() {
         return mfCredentials;
     }
 
     /**
-     * gets the MFNetworkConnectivityMonitor set when this object was constructed.
-     * @return MFNetworkConnectivityMonitor.
+     * gets the MFNetworkConnectivityMonitorInterface set when this object was constructed.
+     * @return MFNetworkConnectivityMonitorInterface.
      */
-    public MFNetworkConnectivityMonitor getMfNetworkConnectivityMonitor() {
+    public MFNetworkConnectivityMonitorInterface getMFNetworkConnectivityMonitor() {
         return mfNetworkConnectivityMonitor;
+    }
+
+    /**
+     * gets the MFActionTokenFarmInterface set when this object was constructed.
+     * @return MFActionTokenFarmInterface
+     */
+    public MFActionTokenFarmInterface getMFActionTokenFarmInterface() {
+        return mfActionTokenFarmInterface;
+    }
+
+    /**
+     * gets the MFSessionTokenFarmInterface set when this object was constructed.
+     * @return MFSessionTokenFarmInterface
+     */
+    public MFSessionTokenFarmInterface getMFSessionTokenFarmInterface() {
+        return mfSessionTokenFarmInterface;
     }
 
     public static class MFConfigurationBuilder {
@@ -106,17 +124,17 @@ public final class MFConfiguration {
         private static final int DEFAULT_HTTP_CONNECTION_TIMEOUT = 45000;
         private static final int DEFAULT_MINIMUM_SESSION_TOKENS = 1;
         private static final int DEFAULT_MAXIMUM_SESSION_TOKENS = 3;
-        private static final MFLogger DEFAULT_MF_LOGGER = new MFDefaultLogger();
-        private static final MFCredentials DEFAULT_MF_CREDENTIALS = new MFDefaultCredentials();
-        private static final MFNetworkConnectivityMonitor DEFAULT_MF_CONNECTIVITY_MONITOR = new MFDefaultNetworkConnectivityMonitor();
 
         private int httpReadTimeout = DEFAULT_HTTP_READ_TIMEOUT;
         private int httpConnectionTimeout = DEFAULT_HTTP_CONNECTION_TIMEOUT;
         private int minimumSessionTokens = DEFAULT_MINIMUM_SESSION_TOKENS;
         private int maximumSessionTokens = DEFAULT_MAXIMUM_SESSION_TOKENS;
-        private MFLogger mfLogger = DEFAULT_MF_LOGGER;
-        private MFCredentials mfCredentials = DEFAULT_MF_CREDENTIALS;
-        private MFNetworkConnectivityMonitor mfNetworkConnectivityMonitor = DEFAULT_MF_CONNECTIVITY_MONITOR;
+        private final MFLoggerInterface mfLogger;
+        private final MFCredentialsInterface mfCredentials;
+        private final MFNetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor;
+        private final MFActionTokenFarmInterface mfActionTokenFarmInterface;
+        private final MFSessionTokenFarmInterface mfSessionTokenFarmInterface;
+
         private String apiKey;
         private final String appId;
 
@@ -124,11 +142,37 @@ public final class MFConfiguration {
          * Constructs a new MFConfigurationBuilder object.
          * @param appId - the developer's app id.
          */
-        public MFConfigurationBuilder(String appId) {
+        public MFConfigurationBuilder(String appId,
+                                      MFLoggerInterface mfLogger,
+                                      MFCredentialsInterface mfCredentials,
+                                      MFNetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor,
+                                      MFActionTokenFarmInterface mfActionTokenFarmInterface,
+                                      MFSessionTokenFarmInterface mfSessionTokenFarmInterface) {
             if (appId == null) {
                 throw new IllegalArgumentException("app id cannot be null");
             }
+            if (mfLogger == null) {
+                throw new IllegalArgumentException("MFLoggerInterface cannot be null");
+            }
+            if (mfCredentials == null) {
+                throw new IllegalArgumentException("MFCredentialsInterface cannot be null");
+            }
+            if (mfNetworkConnectivityMonitor == null) {
+                throw new IllegalArgumentException("MFNetworkConnectivityMonitorInterface cannot be null");
+            }
+            if (mfActionTokenFarmInterface == null) {
+                throw new IllegalArgumentException("MFActionTokenFarmInterface cannot be null");
+            }
+            if (mfSessionTokenFarmInterface == null) {
+                throw new IllegalArgumentException("MFSessionTokenFarmInterface cannot be null");
+            }
+
             this.appId = appId;
+            this.mfLogger = mfLogger;
+            this.mfCredentials = mfCredentials;
+            this.mfNetworkConnectivityMonitor = mfNetworkConnectivityMonitor;
+            this.mfActionTokenFarmInterface = mfActionTokenFarmInterface;
+            this.mfSessionTokenFarmInterface = mfSessionTokenFarmInterface;
         }
 
         /**
@@ -172,33 +216,7 @@ public final class MFConfiguration {
         }
 
         /**
-         * sets the MFLogger to use.
-         * @param mfLogger - MFLogger implementation.
-         * @return static MFConfigurationBuilder object to allow chaining calls.
-         */
-        public MFConfigurationBuilder mfLogger(MFLogger mfLogger) {
-            if (mfLogger == null) {
-                throw new IllegalArgumentException("MFLogger cannot be null");
-            }
-            this.mfLogger = mfLogger;
-            return this;
-        }
-
-        /**
-         * sets the MFCredentials to use.
-         * @param mfCredentials - MFCredentials implementation.
-         * @return static MFConfigurationBuilder object to allow chaining calls.
-         */
-        public MFConfigurationBuilder mfCredentials(MFCredentials mfCredentials) {
-            if (mfCredentials == null) {
-                throw new IllegalArgumentException("MFCredentials cannot be null");
-            }
-            this.mfCredentials = mfCredentials;
-            return this;
-        }
-
-        /**
-         * set the minimum session tokens retained.
+         * set the minimum session tokens to maintain.
          * @param minimumSessionTokens - min session tokens retained.
          * @return static MFConfigurationBuilder object to allow chaining calls.
          */
@@ -220,19 +238,6 @@ public final class MFConfiguration {
                 throw new IllegalArgumentException("maximum session tokens must be greater than 0");
             }
             this.maximumSessionTokens = maximumSessionTokens;
-            return this;
-        }
-
-        /**
-         * sets the network connectivity monitor.
-         * @param mfNetworkConnectivityMonitor - MFNetworkConnectivityMonitor implementation.
-         * @return static MFConfigurationBuilder object to allow chaining calls.
-         */
-        public MFConfigurationBuilder mfNetworkConnectivityMonitor(MFNetworkConnectivityMonitor mfNetworkConnectivityMonitor) {
-            if (mfNetworkConnectivityMonitor == null) {
-                throw new IllegalArgumentException("MFNetworkConnectivityMonitor cannot be null");
-            }
-            this.mfNetworkConnectivityMonitor = mfNetworkConnectivityMonitor;
             return this;
         }
 

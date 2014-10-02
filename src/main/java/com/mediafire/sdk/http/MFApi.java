@@ -38,6 +38,8 @@ public enum MFApi {
     USER_GET_SESSION_TOKEN("/api/1.2/user/get_session_token.php", TokenType.NEW, TokenType.NEW, TokenType.NEW, true),
     USER_GET_UPLOAD_TOKEN("/api/1.0/user/get_action_token.php", TokenType.V2, TokenType.V2, TokenType.UPLOAD, true),
     USER_GET_IMAGE_TOKEN("/api/1.0/user/get_action_token.php", TokenType.V2, TokenType.V2, TokenType.IMAGE, true),
+    USER_GET_SETTINGS("/api/1.2/user/get_settings.php", TokenType.V2, TokenType.V2, TokenType.V2, true),
+    USER_SET_SETTINGS("/api/1.2/user/set_settings.php", TokenType.V2, TokenType.V2, TokenType.V2, true),
     // upload api calls
     UPLOAD_CHECK("/api/1.0/upload/check.php", TokenType.UPLOAD, TokenType.NONE, TokenType.NONE, true),
     UPLOAD_INSTANT("/api/1.0/upload/instant.php", TokenType.UPLOAD, TokenType.NONE, TokenType.NONE, true),

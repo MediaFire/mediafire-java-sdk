@@ -40,7 +40,7 @@ publishing {
     }
     repositories {
         maven {
-            url "c:/mfsdk/java-sdk/jars/"
+            url "/Users/jondh/Documents/MF_SDK/java-sdk/jars/"
         }
     }
 }

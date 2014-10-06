@@ -58,8 +58,11 @@ public class QueryResponse extends ApiResponse {
                 return created;
             }
 
-            public String getSize() {
-                return size;
+            public long getSize() {
+                if (size == null) {
+                    size = "0";
+                }
+                return Long.parseLong(size);
             }
 
             public String getMimeType() {
@@ -94,20 +97,32 @@ public class QueryResponse extends ApiResponse {
                 return compression;
             }
 
-            public String getXResolution() {
-                return x_resolution;
+            public int getXResolution() {
+                if (x_resolution == null) {
+                    x_resolution = "0";
+                }
+                return Integer.parseInt(x_resolution);
             }
 
-            public String getYResolution() {
-                return y_resolution;
+            public int getYResolution() {
+                if (y_resolution == null) {
+                    y_resolution = "0";
+                }
+                return Integer.parseInt(y_resolution);
             }
 
-            public String getWidth() {
-                return width;
+            public int getWidth() {
+                if (width == null) {
+                    width = "0";
+                }
+                return Integer.parseInt(width);
             }
 
-            public String getHeight() {
-                return height;
+            public int getHeight() {
+                if (height == null) {
+                    height = "0";
+                }
+                return Integer.parseInt(height);
             }
         }
     }

@@ -1,7 +1,5 @@
 package com.mediafire.sdk.uploader.uploaditem;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class MFUploadItem {
@@ -106,12 +104,7 @@ public class MFUploadItem {
 
     private void setFileName(String path) {
         String[] splitName = path.split("/");
-        //just throwing the UnsupportedEncodingException exception to whoever creates the upload item
-        try {
-            this.fileName = URLEncoder.encode(splitName[splitName.length - 1], "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("UTF-8 not supported");
-        }
+        this.fileName = splitName[splitName.length-1];
     }
 
     @Override

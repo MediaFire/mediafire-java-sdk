@@ -233,7 +233,7 @@ public class MFUploadRunnable implements Runnable {
 
         // generate map with request parameters
         Map<String, String> keyValue = generateCheckUploadRequestParameters();
-        MFRequest.MFRequestBuilder mfRequestBuilder = new MFRequest.MFRequestBuilder(MFHost.LIVE_HTTP, MFApi.UPLOAD_CHECK);
+        MFRequest.MFRequestBuilder mfRequestBuilder = new MFRequest.MFRequestBuilder(MFHost.LIVE_HTTPS, MFApi.UPLOAD_CHECK);
         mfRequestBuilder.requestParameters(keyValue);
         MFRequest mfRequest = mfRequestBuilder.build();
         MFResponse mfResponse = mfHttpProcessor.doRequest(mfRequest);
@@ -310,7 +310,7 @@ public class MFUploadRunnable implements Runnable {
 
         // generate map with request parameters
         Map<String, String> keyValue = generateInstantUploadRequestParameters();
-        MFRequest.MFRequestBuilder mfRequestBuilder = new MFRequest.MFRequestBuilder(MFHost.LIVE_HTTP, MFApi.UPLOAD_INSTANT);
+        MFRequest.MFRequestBuilder mfRequestBuilder = new MFRequest.MFRequestBuilder(MFHost.LIVE_HTTPS, MFApi.UPLOAD_INSTANT);
         mfRequestBuilder.requestParameters(keyValue);
         MFRequest mfRequest = mfRequestBuilder.build();
 
@@ -411,7 +411,7 @@ public class MFUploadRunnable implements Runnable {
 
                 printDebugRequestData(headers, parameters);
 
-                MFRequest.MFRequestBuilder mfRequestBuilder = new MFRequest.MFRequestBuilder(MFHost.LIVE_HTTP, MFApi.UPLOAD_RESUMABLE);
+                MFRequest.MFRequestBuilder mfRequestBuilder = new MFRequest.MFRequestBuilder(MFHost.LIVE_HTTPS, MFApi.UPLOAD_RESUMABLE);
                 mfRequestBuilder.requestParameters(parameters);
                 mfRequestBuilder.headers(headers);
                 mfRequestBuilder.payload(uploadChunk);
@@ -497,7 +497,7 @@ public class MFUploadRunnable implements Runnable {
             pollCount++;
             // get api response.
 
-            MFRequest.MFRequestBuilder mfRequestBuilder = new MFRequest.MFRequestBuilder(MFHost.LIVE_HTTP, MFApi.UPLOAD_POLL_UPLOAD);
+            MFRequest.MFRequestBuilder mfRequestBuilder = new MFRequest.MFRequestBuilder(MFHost.LIVE_HTTPS, MFApi.UPLOAD_POLL_UPLOAD);
             mfRequestBuilder.requestParameters(keyValue);
             MFRequest mfRequest = mfRequestBuilder.build();
             MFResponse mfResponse = mfHttpProcessor.doRequest(mfRequest);

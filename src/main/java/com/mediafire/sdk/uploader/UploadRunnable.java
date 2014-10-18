@@ -1,5 +1,9 @@
 package com.mediafire.sdk.uploader;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mediafire.sdk.api_responses.ApiResponse;
 import com.mediafire.sdk.api_responses.upload.CheckResponse;
 import com.mediafire.sdk.api_responses.upload.InstantResponse;
@@ -257,12 +261,12 @@ public class UploadRunnable implements Runnable {
             return;
         }
 
-        if (mfResponse.getResponseObject(ApiResponse.class) == null) {
+        if (getResponseObject(new String(mfResponse.getBytes()), ApiResponse.class) == null) {
             notifyUploadListenerCancelled();
             return;
         }
 
-        CheckResponse response = mfResponse.getResponseObject(CheckResponse.class);
+        CheckResponse response = getResponseObject(new String(mfResponse.getBytes()), CheckResponse.class);
 
         if (response == null) {
             notifyUploadListenerCancelled();
@@ -337,11 +341,12 @@ public class UploadRunnable implements Runnable {
             return;
         }
 
-        if (mfResponse.getResponseObject(ApiResponse.class) == null) {
+        if (getResponseObject(new String(mfResponse.getBytes()), ApiResponse.class) == null) {
             notifyUploadListenerCancelled();
             return;
         }
-        InstantResponse response = mfResponse.getResponseObject(InstantResponse.class);
+
+        InstantResponse response = getResponseObject(new String(mfResponse.getBytes()), InstantResponse.class);
 
         if (response == null) {
             notifyUploadListenerCancelled();
@@ -447,12 +452,12 @@ public class UploadRunnable implements Runnable {
                     return;
                 }
 
-                if (mfResponse.getResponseObject(ApiResponse.class) == null) {
+                if (getResponseObject(new String(mfResponse.getBytes()), ApiResponse.class) == null) {
                     notifyUploadListenerCancelled();
                     return;
                 }
 
-                response = mfResponse.getResponseObject(ResumableResponse.class);
+                response = getResponseObject(new String(mfResponse.getBytes()), ResumableResponse.class);
 
                 // set poll upload key if possible
                 if (shouldSetPollUploadKey(response)) {
@@ -531,12 +536,13 @@ public class UploadRunnable implements Runnable {
                 return;
             }
 
-            if (mfResponse.getResponseObject(ApiResponse.class) == null) {
+
+            if (getResponseObject(new String(mfResponse.getBytes()), ApiResponse.class) == null) {
                 notifyUploadListenerCancelled();
                 return;
             }
 
-            PollResponse response = mfResponse.getResponseObject(PollResponse.class);
+            PollResponse response = getResponseObject(new String(mfResponse.getBytes()), PollResponse.class);
 
             configuration.getMFLogger().d(TAG, "received error code: " + response.getErrorCode());
             //check to see if we need to call pollUploadCompleted or loop again
@@ -1038,6 +1044,28 @@ public class UploadRunnable implements Runnable {
          */
         public UploadRunnable build() {
             return new UploadRunnable(this);
+        }
+    }
+
+    public <ResponseClass extends ApiResponse> ResponseClass getResponseObject(String responseString, Class<ResponseClass> responseClass) {
+        if (responseString == null) {
+            return null;
+        }
+        return new Gson().fromJson(getResponseStringForGson(responseString), responseClass);
+    }
+
+    private String getResponseStringForGson(String response) {
+        if (response == null || response.isEmpty()) {
+            return null;
+        }
+
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(response);
+        if (element.isJsonObject()) {
+            JsonObject jsonResponse = element.getAsJsonObject().get("response").getAsJsonObject();
+            return jsonResponse.toString();
+        } else {
+            return null;
         }
     }
 }

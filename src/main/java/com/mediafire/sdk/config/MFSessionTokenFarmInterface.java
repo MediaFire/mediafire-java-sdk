@@ -1,6 +1,6 @@
 package com.mediafire.sdk.config;
 
-import com.mediafire.sdk.token.MFSessionToken;
+import com.mediafire.sdk.token.SessionToken;
 
 /**
  * Created by Chris Najar on 9/16/2014.
@@ -8,25 +8,25 @@ import com.mediafire.sdk.token.MFSessionToken;
 public interface MFSessionTokenFarmInterface extends MFAbstractContainerInterface {
     /**
      * called when a session token is being returned.
-     * @param mfSessionToken the session token being returned
+     * @param sessionToken the session token being returned
      */
-    public void returnSessionToken(MFSessionToken mfSessionToken);
+    public void returnSessionToken(SessionToken sessionToken);
 
     /**
      * called when a session token is out of sync and unrecoverable.
-     * @param mfSessionToken the session token that failed
+     * @param sessionToken the session token that failed
      */
-    public void sessionTokenSpoiled(MFSessionToken mfSessionToken);
+    public void sessionTokenSpoiled(SessionToken sessionToken);
 
     /**
      * called when a new session token is being returned
-     * @param mfSessionToken the session token that was received
+     * @param sessionToken the session token that was received
      */
-    public void receiveNewSessionToken(MFSessionToken mfSessionToken);
+    public void receiveNewSessionToken(SessionToken sessionToken);
 
     /**
-     * called when there is a request to borrow a MFSessionToken
-     * @return a MFSessionToken
+     * called when there is a request to borrow a SessionToken
+     * @return a SessionToken
      */
-    public MFSessionToken borrowMFSessionToken();
+    public SessionToken borrowMFSessionToken();
 }

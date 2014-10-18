@@ -1,6 +1,6 @@
 package com.mediafire.sdk.http;
 
-public enum MFApi {
+enum MFApi {
     // contact api calls
     CONTACT_ADD("/api/1.0/contact/add.php", TokenType.V2, TokenType.V2, TokenType.V2, true),
     CONTACT_DELETE("/api/1.0/contact/delete.php", TokenType.V2, TokenType.V2, TokenType.V2, true),

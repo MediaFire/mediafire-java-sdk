@@ -1,7 +1,7 @@
 package com.mediafire.sdk.config;
 
-import com.mediafire.sdk.http.MFRequester;
-import com.mediafire.sdk.http.MFResponse;
+import com.mediafire.sdk.http.Request;
+import com.mediafire.sdk.http.Response;
 
 public interface MFLoggerInterface {
     /**
@@ -82,9 +82,9 @@ public interface MFLoggerInterface {
     /**
      * api error log.
      * @param source - source of api error.
-     * @param mfRequester - the MFRequester used.
-     * @param mfResponse - the MFResponse received.
+     * @param requester - the MFRequester used.
+     * @param response - the Response received.
      */
-    public void logApiError(String source, MFRequester mfRequester, MFResponse mfResponse);
+    public void logApiError(String source, Request requester, Response response);
 
 }

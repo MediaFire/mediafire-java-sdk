@@ -7,11 +7,11 @@ public class Configuration {
     private final int maximumSessionTokens;
     private final String appId;
     private final String apiKey;
-    private final MFLoggerInterface mfLogger;
-    private final MFCredentialsInterface mfCredentials;
-    private final MFNetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor;
+    private final LoggerInterface mfLogger;
+    private final UserCredentialsInterface mfCredentials;
+    private final NetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor;
     private final ActionTokenManagerInterface actionTokenManagerInterface;
-    private final MFSessionTokenFarmInterface mfSessionTokenFarmInterface;
+    private final SessionTokenManagerInterface sessionTokenManagerInterface;
 
     private Configuration(MFConfigurationBuilder mfConfigurationBuilder) {
         this.httpReadTimeout = mfConfigurationBuilder.httpReadTimeout;
@@ -24,7 +24,7 @@ public class Configuration {
         this.mfCredentials = mfConfigurationBuilder.mfCredentials;
         this.mfNetworkConnectivityMonitor = mfConfigurationBuilder.mfNetworkConnectivityMonitor;
         this.actionTokenManagerInterface = mfConfigurationBuilder.actionTokenManagerInterface;
-        this.mfSessionTokenFarmInterface = mfConfigurationBuilder.mfSessionTokenFarmInterface;
+        this.sessionTokenManagerInterface = mfConfigurationBuilder.sessionTokenManagerInterface;
     }
 
     public int getHttpReadTimeout() {
@@ -51,15 +51,15 @@ public class Configuration {
         return apiKey;
     }
 
-    public MFLoggerInterface getMFLogger() {
+    public LoggerInterface getMFLogger() {
         return mfLogger;
     }
 
-    public MFCredentialsInterface getMFCredentials() {
+    public UserCredentialsInterface getMFCredentials() {
         return mfCredentials;
     }
 
-    public MFNetworkConnectivityMonitorInterface getMFNetworkConnectivityMonitor() {
+    public NetworkConnectivityMonitorInterface getMFNetworkConnectivityMonitor() {
         return mfNetworkConnectivityMonitor;
     }
 
@@ -67,8 +67,8 @@ public class Configuration {
         return actionTokenManagerInterface;
     }
 
-    public MFSessionTokenFarmInterface getMFSessionTokenFarmInterface() {
-        return mfSessionTokenFarmInterface;
+    public SessionTokenManagerInterface getMFSessionTokenFarmInterface() {
+        return sessionTokenManagerInterface;
     }
 
     public static class MFConfigurationBuilder {
@@ -81,38 +81,38 @@ public class Configuration {
         private int httpConnectionTimeout = DEFAULT_HTTP_CONNECTION_TIMEOUT;
         private int minimumSessionTokens = DEFAULT_MINIMUM_SESSION_TOKENS;
         private int maximumSessionTokens = DEFAULT_MAXIMUM_SESSION_TOKENS;
-        private final MFLoggerInterface mfLogger;
-        private final MFCredentialsInterface mfCredentials;
-        private final MFNetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor;
+        private final LoggerInterface mfLogger;
+        private final UserCredentialsInterface mfCredentials;
+        private final NetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor;
         private final ActionTokenManagerInterface actionTokenManagerInterface;
-        private final MFSessionTokenFarmInterface mfSessionTokenFarmInterface;
+        private final SessionTokenManagerInterface sessionTokenManagerInterface;
 
         private String apiKey;
         private final String appId;
 
         public MFConfigurationBuilder(String appId,
-                                      MFLoggerInterface mfLogger,
-                                      MFCredentialsInterface mfCredentials,
-                                      MFNetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor,
+                                      LoggerInterface mfLogger,
+                                      UserCredentialsInterface mfCredentials,
+                                      NetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor,
                                       ActionTokenManagerInterface actionTokenManagerInterface,
-                                      MFSessionTokenFarmInterface mfSessionTokenFarmInterface) {
+                                      SessionTokenManagerInterface sessionTokenManagerInterface) {
             if (appId == null) {
                 throw new IllegalArgumentException("app id cannot be null");
             }
             if (mfLogger == null) {
-                throw new IllegalArgumentException("MFLoggerInterface cannot be null");
+                throw new IllegalArgumentException("LoggerInterface cannot be null");
             }
             if (mfCredentials == null) {
-                throw new IllegalArgumentException("MFCredentialsInterface cannot be null");
+                throw new IllegalArgumentException("UserCredentialsInterface cannot be null");
             }
             if (mfNetworkConnectivityMonitor == null) {
-                throw new IllegalArgumentException("MFNetworkConnectivityMonitorInterface cannot be null");
+                throw new IllegalArgumentException("NetworkConnectivityMonitorInterface cannot be null");
             }
             if (actionTokenManagerInterface == null) {
                 throw new IllegalArgumentException("ActionTokenManagerInterface cannot be null");
             }
-            if (mfSessionTokenFarmInterface == null) {
-                throw new IllegalArgumentException("MFSessionTokenFarmInterface cannot be null");
+            if (sessionTokenManagerInterface == null) {
+                throw new IllegalArgumentException("SessionTokenManagerInterface cannot be null");
             }
 
             this.appId = appId;
@@ -120,7 +120,7 @@ public class Configuration {
             this.mfCredentials = mfCredentials;
             this.mfNetworkConnectivityMonitor = mfNetworkConnectivityMonitor;
             this.actionTokenManagerInterface = actionTokenManagerInterface;
-            this.mfSessionTokenFarmInterface = mfSessionTokenFarmInterface;
+            this.sessionTokenManagerInterface = sessionTokenManagerInterface;
         }
 
         public MFConfigurationBuilder apiKey(String apiKey) {

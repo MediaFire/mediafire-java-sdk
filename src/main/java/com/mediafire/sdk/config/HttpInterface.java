@@ -1,9 +1,12 @@
 package com.mediafire.sdk.config;
 
-import com.mediafire.sdk.http.Request;
-import com.mediafire.sdk.http.Result;
+import com.mediafire.sdk.http.Response;
+
+import java.util.Map;
 
 public interface HttpInterface {
 
-    public Result doRequest(final Request request);
+    public Response doGet(String url);
+
+    public Response doPost(String url, Map<String, String> headers, byte[] payload);
 }

@@ -19,25 +19,25 @@ import java.util.Map;
 /**
  * Created by Chris Najar on 7/21/2014.
  */
-public class MFUploadRunnable implements Runnable {
-    private static final String TAG = MFUploadRunnable.class.getCanonicalName();
+public class UploadRunnable implements Runnable {
+    private static final String TAG = UploadRunnable.class.getCanonicalName();
     private final int maxPolls;
     private final long millisecondsBetweenPolls;
     private final Configuration configuration;
-    private final MFUploadItem mfUploadItem;
-    private final MFUploadListenerInterface mfUploadListener;
+    private final UploadItem uploadItem;
+    private final UploadListenerInterface mfUploadListener;
     private final int maxUploadAttempts;
     private String utf8EncodedFileName;
-    private final MFNetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor;
+    private final NetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor;
     private final HttpInterface httpInterface;
-    private final MFCredentialsInterface mfCredentials;
+    private final UserCredentialsInterface mfCredentials;
     private final ActionTokenManagerInterface actionTokenManagerInterface;
-    private final MFSessionTokenFarmInterface mfSessionTokenFarmInterface;
+    private final SessionTokenManagerInterface sessionTokenManagerInterface;
 
-    private MFUploadRunnable(Builder builder) {
+    private UploadRunnable(Builder builder) {
         this.maxPolls = builder.maxPolls;
         this.millisecondsBetweenPolls = builder.millisecondsBetweenPolls;
-        this.mfUploadItem = builder.mfUploadItem;
+        this.uploadItem = builder.uploadItem;
         this.mfUploadListener = builder.mfUploadListener;
         this.maxUploadAttempts = builder.maxUploadAttempts;
         this.httpInterface = builder.httpInterface;
@@ -48,7 +48,7 @@ public class MFUploadRunnable implements Runnable {
         this.mfNetworkConnectivityMonitor = configuration.getMFNetworkConnectivityMonitor();
         this.mfCredentials = configuration.getMFCredentials();
         this.actionTokenManagerInterface = configuration.getMFActionTokenFarmInterface();
-        this.mfSessionTokenFarmInterface = configuration.getMFSessionTokenFarmInterface();
+        this.sessionTokenManagerInterface = configuration.getMFSessionTokenFarmInterface();
     }
 
     @Override
@@ -64,23 +64,23 @@ public class MFUploadRunnable implements Runnable {
             encodeFileNameUTF8();
             startOrRestartUpload();
         } catch (UnsupportedEncodingException e) {
-            configuration.getMFLogger().e(TAG, "UnsupportedEncodingException during MFUploadRunnable", e);
+            configuration.getMFLogger().e(TAG, "UnsupportedEncodingException during UploadRunnable", e);
             notifyUploadListenerCancelled();
         } catch (NoSuchAlgorithmException e) {
-            configuration.getMFLogger().e(TAG, "NoSuchAlgorithmException during MFUploadRunnable", e);
+            configuration.getMFLogger().e(TAG, "NoSuchAlgorithmException during UploadRunnable", e);
             notifyUploadListenerCancelled();
         } catch (IOException e) {
-            configuration.getMFLogger().e(TAG, "IOException during MFUploadRunnable", e);
+            configuration.getMFLogger().e(TAG, "IOException during UploadRunnable", e);
             notifyUploadListenerCancelled();
         }
     }
 
     private void encodeFileNameUTF8() throws UnsupportedEncodingException {
         configuration.getMFLogger().d(TAG, "encodeFileNameUTF8");
-        utf8EncodedFileName = new String(mfUploadItem.getFileName().getBytes("UTF-8"), "UTF-8");
+        utf8EncodedFileName = new String(uploadItem.getFileName().getBytes("UTF-8"), "UTF-8");
     }
 
-    private void checkUploadFinished(MFUploadItem mfUploadItem, CheckResponse checkResponse) throws NoSuchAlgorithmException, IOException {
+    private void checkUploadFinished(UploadItem uploadItem, CheckResponse checkResponse) throws NoSuchAlgorithmException, IOException {
         configuration.getMFLogger().d(TAG, "checkUploadFinished()");
         if (checkResponse == null) {
             notifyUploadListenerCancelled();
@@ -92,7 +92,7 @@ public class MFUploadRunnable implements Runnable {
         if (checkResponse.getStorageLimitExceeded()) {
             configuration.getMFLogger().d(TAG, "storage limit is exceeded");
             notifyUploadListenerCancelled();
-        } else if (checkResponse.getResumableUpload().areAllUnitsReady() && !mfUploadItem.getPollUploadKey().isEmpty()) {
+        } else if (checkResponse.getResumableUpload().areAllUnitsReady() && !uploadItem.getPollUploadKey().isEmpty()) {
             configuration.getMFLogger().d(TAG, "all units are ready and poll upload key is not empty");
             // all units are ready and we have the poll upload key. start polling.
             doPollUpload();
@@ -117,8 +117,8 @@ public class MFUploadRunnable implements Runnable {
     private void hashExistsInAccount(CheckResponse checkResponse) {
         configuration.getMFLogger().d(TAG, "hash is in account");
         boolean inFolder = checkResponse.isInFolder();
-        configuration.getMFLogger().d(TAG, "ActionOnInAccount: " + mfUploadItem.getUploadOptions().getActionOnInAccount().toString());
-        switch (mfUploadItem.getUploadOptions().getActionOnInAccount()) {
+        configuration.getMFLogger().d(TAG, "ActionOnInAccount: " + uploadItem.getUploadOptions().getActionOnInAccount().toString());
+        switch (uploadItem.getUploadOptions().getActionOnInAccount()) {
             case UPLOAD_ALWAYS:
                 configuration.getMFLogger().d(TAG, "uploading...");
                 doInstantUpload();
@@ -161,7 +161,7 @@ public class MFUploadRunnable implements Runnable {
             return;
         }
 
-        if (checkResponse.getResumableUpload().areAllUnitsReady() && !mfUploadItem.getPollUploadKey().isEmpty()) {
+        if (checkResponse.getResumableUpload().areAllUnitsReady() && !uploadItem.getPollUploadKey().isEmpty()) {
             configuration.getMFLogger().d(TAG, "all units ready and have a poll upload key");
             // all units are ready and we have the poll upload key. start polling.
             doPollUpload();
@@ -214,28 +214,32 @@ public class MFUploadRunnable implements Runnable {
     private void doCheckUpload() throws IOException, NoSuchAlgorithmException {
         configuration.getMFLogger().d(TAG, "doCheckUpload()");
         if (!haveStoredCredentials()) {
-            configuration.getMFLogger().d(TAG, "no credentials stored, cancelling upload for: " + mfUploadItem.getFileName());
-            mfUploadItem.cancelUpload();
+            configuration.getMFLogger().d(TAG, "no credentials stored, cancelling upload for: " + uploadItem.getFileName());
+            uploadItem.cancelUpload();
             return;
         }
 
         if (!mfNetworkConnectivityMonitor.haveNetworkConnection()) {
-            configuration.getMFLogger().d(TAG, "no network connection, cancelling upload for " + mfUploadItem.getFileName());
+            configuration.getMFLogger().d(TAG, "no network connection, cancelling upload for " + uploadItem.getFileName());
             notifyUploadListenerCancelled();
             return;
         }
         
-        if (mfUploadItem.isCancelled()) {
-            configuration.getMFLogger().d(TAG, "upload was cancelled for " + mfUploadItem.getFileName());
+        if (uploadItem.isCancelled()) {
+            configuration.getMFLogger().d(TAG, "upload was cancelled for " + uploadItem.getFileName());
             notifyUploadListenerCancelled();
             return;
         }
 
         // generate map with request parameters
         Map<String, String> keyValue = generateCheckUploadRequestParameters();
-        Request.MFRequestBuilder mfRequestBuilder = new Request.MFRequestBuilder(MFHost.LIVE_HTTPS, MFApi.UPLOAD_CHECK);
-        mfRequestBuilder.requestParameters(keyValue);
-        Request request = mfRequestBuilder.build();
+
+        Request request = new RequestGenerator().generateRequestObject("1.2", "upload", "check.php");
+
+        for (String key : keyValue.keySet()) {
+            request.addQueryParameter(key, keyValue.get(key));
+        }
+
         Response mfResponse = httpInterface.doRequest(request);
 
         if (mfResponse == null) {
@@ -243,12 +247,12 @@ public class MFUploadRunnable implements Runnable {
             return;
         }
 
-        if (mfResponse.getResponseAsBytes() == null) {
+        if (mfResponse.getBytes() == null) {
             notifyUploadListenerCancelled();
             return;
         }
 
-        if (mfResponse.getResponseAsBytes().length == 0) {
+        if (mfResponse.getBytes().length == 0) {
             notifyUploadListenerCancelled();
             return;
         }
@@ -276,16 +280,16 @@ public class MFUploadRunnable implements Runnable {
             return;
         }
 
-        mfUploadItem.getChunkData().setNumberOfUnits(response.getResumableUpload().getNumberOfUnits());
-        mfUploadItem.getChunkData().setUnitSize(response.getResumableUpload().getUnitSize());
+        uploadItem.getChunkData().setNumberOfUnits(response.getResumableUpload().getNumberOfUnits());
+        uploadItem.getChunkData().setUnitSize(response.getResumableUpload().getUnitSize());
         int count = response.getResumableUpload().getBitmap().getCount();
         List<Integer> words = response.getResumableUpload().getBitmap().getWords();
-        MFResumableBitmap bitmap = new MFResumableBitmap(count, words);
-        mfUploadItem.setBitmap(bitmap);
-        configuration.getMFLogger().d(TAG, mfUploadItem.getFileData().getFilePath() + " upload item bitmap: " + mfUploadItem.getBitmap().getCount() + " count, " + mfUploadItem.getBitmap().getWords().toString() + " words.");
+        ResumableBitmap bitmap = new ResumableBitmap(count, words);
+        uploadItem.setBitmap(bitmap);
+        configuration.getMFLogger().d(TAG, uploadItem.getFileData().getFilePath() + " upload item bitmap: " + uploadItem.getBitmap().getCount() + " count, " + uploadItem.getBitmap().getWords().toString() + " words.");
 
         // notify listeners that check has completed
-        checkUploadFinished(mfUploadItem, response);
+        checkUploadFinished(uploadItem, response);
     }
 
     private void doInstantUpload() {
@@ -293,12 +297,12 @@ public class MFUploadRunnable implements Runnable {
 
         if (!haveStoredCredentials()) {
             configuration.getMFLogger().d(TAG, "no credentials stored, task cancelling()");
-            mfUploadItem.cancelUpload();
+            uploadItem.cancelUpload();
             return;
         }
 
-        if (mfUploadItem.isCancelled()) {
-            configuration.getMFLogger().d(TAG, "upload was cancelled for " + mfUploadItem.getFileName());
+        if (uploadItem.isCancelled()) {
+            configuration.getMFLogger().d(TAG, "upload was cancelled for " + uploadItem.getFileName());
             notifyUploadListenerCancelled();
             return;
         }
@@ -310,9 +314,11 @@ public class MFUploadRunnable implements Runnable {
 
         // generate map with request parameters
         Map<String, String> keyValue = generateInstantUploadRequestParameters();
-        Request.MFRequestBuilder mfRequestBuilder = new Request.MFRequestBuilder(MFHost.LIVE_HTTPS, MFApi.UPLOAD_INSTANT);
-        mfRequestBuilder.requestParameters(keyValue);
-        Request request = mfRequestBuilder.build();
+        Request request = new RequestGenerator().generateRequestObject("1.2", "upload", "instant.php");
+
+        for (String key : keyValue.keySet()) {
+            request.addQueryParameter(key, keyValue.get(key));
+        }
 
         Response mfResponse = httpInterface.doRequest(request);
 
@@ -321,12 +327,12 @@ public class MFUploadRunnable implements Runnable {
             return;
         }
 
-        if (mfResponse.getResponseAsBytes() == null) {
+        if (mfResponse.getBytes() == null) {
             notifyUploadListenerCancelled();
             return;
         }
 
-        if (mfResponse.getResponseAsBytes().length == 0) {
+        if (mfResponse.getBytes().length == 0) {
             notifyUploadListenerCancelled();
             return;
         }
@@ -359,13 +365,13 @@ public class MFUploadRunnable implements Runnable {
         configuration.getMFLogger().d(TAG, "doResumableUpload()");
 
         //get file size. this will be used for chunks.
-        MFFileData fileData = mfUploadItem.getFileData();
+        FileData fileData = uploadItem.getFileData();
         long fileSize = fileData.getFileSize();
 
         // get chunk. these will be used for chunks.
-        MFChunkData MFChunkData = mfUploadItem.getChunkData();
-        int numChunks = MFChunkData.getNumberOfUnits();
-        int unitSize = MFChunkData.getUnitSize();
+        ChunkData ChunkData = uploadItem.getChunkData();
+        int numChunks = ChunkData.getNumberOfUnits();
+        int unitSize = ChunkData.getUnitSize();
 
         // loop through our chunks and create http post with header data and send after we are done looping,
         // let the listener know we are completed
@@ -373,12 +379,12 @@ public class MFUploadRunnable implements Runnable {
         for (int chunkNumber = 0; chunkNumber < numChunks; chunkNumber++) {
             if (!haveStoredCredentials()) {
                 configuration.getMFLogger().d(TAG, "no credentials stored, task cancelling()");
-                mfUploadItem.cancelUpload();
+                uploadItem.cancelUpload();
                 return;
             }
 
-            if (mfUploadItem.isCancelled()) {
-                configuration.getMFLogger().d(TAG, "upload was cancelled for " + mfUploadItem.getFileName());
+            if (uploadItem.isCancelled()) {
+                configuration.getMFLogger().d(TAG, "upload was cancelled for " + uploadItem.getFileName());
                 notifyUploadListenerCancelled();
                 return;
             }
@@ -389,18 +395,18 @@ public class MFUploadRunnable implements Runnable {
             }
 
             // if the bitmap says this chunk number is uploaded then we can just skip it, if not, we upload it.
-            if (!mfUploadItem.getBitmap().isUploaded(chunkNumber)) {
+            if (!uploadItem.getBitmap().isUploaded(chunkNumber)) {
                 // get the chunk size for this chunk
                 int chunkSize = getChunkSize(chunkNumber, numChunks, fileSize, unitSize);
 
-                MFResumableChunkInfo mfResumableChunkInfo = createResumableChunkInfo(unitSize, chunkNumber);
-                if (mfResumableChunkInfo == null) {
+                ResumableChunkInfo resumableChunkInfo = createResumableChunkInfo(unitSize, chunkNumber);
+                if (resumableChunkInfo == null) {
                     notifyUploadListenerCancelled();
                     return;
                 }
 
-                String chunkHash = mfResumableChunkInfo.getChunkHash();
-                byte[] uploadChunk = mfResumableChunkInfo.getUploadChunk();
+                String chunkHash = resumableChunkInfo.getChunkHash();
+                byte[] uploadChunk = resumableChunkInfo.getUploadChunk();
 
                 printDebugCurrentChunk(chunkNumber, numChunks, chunkSize, unitSize, fileSize, chunkHash, uploadChunk);
 
@@ -411,11 +417,19 @@ public class MFUploadRunnable implements Runnable {
 
                 printDebugRequestData(headers, parameters);
 
-                Request.MFRequestBuilder mfRequestBuilder = new Request.MFRequestBuilder(MFHost.LIVE_HTTPS, MFApi.UPLOAD_RESUMABLE);
-                mfRequestBuilder.requestParameters(parameters);
-                mfRequestBuilder.headers(headers);
-                mfRequestBuilder.payload(uploadChunk);
-                Request request = mfRequestBuilder.build();
+
+                Request request = new RequestGenerator().generateRequestObject("1.2", "upload", "instant.php");
+
+                for (String key : parameters.keySet()) {
+                    request.addQueryParameter(key, parameters.get(key));
+                }
+
+                for (String key : headers.keySet()) {
+                    request.addHeader(key, headers.get(key));
+                }
+
+                request.addPayload(uploadChunk);
+
                 Response mfResponse = httpInterface.doRequest(request);
 
                 if (mfResponse == null) {
@@ -423,14 +437,12 @@ public class MFUploadRunnable implements Runnable {
                     return;
                 }
 
-                configuration.getMFLogger().d(TAG, "response string: " + mfResponse.getResponseAsString());
-
-                if (mfResponse.getResponseAsBytes() == null) {
+                if (mfResponse.getBytes() == null) {
                     notifyUploadListenerCancelled();
                     return;
                 }
 
-                if (mfResponse.getResponseAsBytes().length == 0) {
+                if (mfResponse.getBytes().length == 0) {
                     notifyUploadListenerCancelled();
                     return;
                 }
@@ -444,7 +456,7 @@ public class MFUploadRunnable implements Runnable {
 
                 // set poll upload key if possible
                 if (shouldSetPollUploadKey(response)) {
-                    mfUploadItem.setPollUploadKey(response.getDoUpload().getPollUploadKey());
+                    uploadItem.setPollUploadKey(response.getDoUpload().getPollUploadKey());
                 }
 
                 if (shouldCancelUpload(response)) {
@@ -455,9 +467,9 @@ public class MFUploadRunnable implements Runnable {
                 // update the response bitmap
                 int count = response.getResumableUpload().getBitmap().getCount();
                 List<Integer> words = response.getResumableUpload().getBitmap().getWords();
-                MFResumableBitmap bitmap = new MFResumableBitmap(count, words);
-                mfUploadItem.setBitmap(bitmap);
-                configuration.getMFLogger().d(TAG, "(" + mfUploadItem.getFileData().getFilePath() + ") upload item bitmap: " + mfUploadItem.getBitmap().getCount() + " count, (" + mfUploadItem.getBitmap().getWords().toString() + ") words.");
+                ResumableBitmap bitmap = new ResumableBitmap(count, words);
+                uploadItem.setBitmap(bitmap);
+                configuration.getMFLogger().d(TAG, "(" + uploadItem.getFileData().getFilePath() + ") upload item bitmap: " + uploadItem.getBitmap().getCount() + " count, (" + uploadItem.getBitmap().getWords().toString() + ") words.");
 
                 clearReferences(chunkSize, chunkHash, uploadChunk, headers, parameters);
             }
@@ -479,12 +491,12 @@ public class MFUploadRunnable implements Runnable {
         do {
             if (!haveStoredCredentials()) {
                 configuration.getMFLogger().d(TAG, "no credentials stored, task cancelling()");
-                mfUploadItem.cancelUpload();
+                uploadItem.cancelUpload();
                 return;
             }
 
-            if (mfUploadItem.isCancelled()) {
-                configuration.getMFLogger().d(TAG, "upload was cancelled for " + mfUploadItem.getFileName());
+            if (uploadItem.isCancelled()) {
+                configuration.getMFLogger().d(TAG, "upload was cancelled for " + uploadItem.getFileName());
                 notifyUploadListenerCancelled();
                 return;
             }
@@ -497,9 +509,11 @@ public class MFUploadRunnable implements Runnable {
             pollCount++;
             // get api response.
 
-            Request.MFRequestBuilder mfRequestBuilder = new Request.MFRequestBuilder(MFHost.LIVE_HTTPS, MFApi.UPLOAD_POLL_UPLOAD);
-            mfRequestBuilder.requestParameters(keyValue);
-            Request request = mfRequestBuilder.build();
+            Request request = new RequestGenerator().generateRequestObject("1.2", "upload", "poll.php");
+
+            for (String key : keyValue.keySet()) {
+                request.addQueryParameter(key, keyValue.get(key));
+            }
             Response mfResponse = httpInterface.doRequest(request);
 
             if (mfResponse == null) {
@@ -507,12 +521,12 @@ public class MFUploadRunnable implements Runnable {
                 return;
             }
 
-            if (mfResponse.getResponseAsBytes() == null) {
+            if (mfResponse.getBytes() == null) {
                 notifyUploadListenerCancelled();
                 return;
             }
 
-            if (mfResponse.getResponseAsBytes().length == 0) {
+            if (mfResponse.getBytes().length == 0) {
                 notifyUploadListenerCancelled();
                 return;
             }
@@ -569,7 +583,7 @@ public class MFUploadRunnable implements Runnable {
                 return;
             }
 
-            if (mfUploadItem.isCancelled()) {
+            if (uploadItem.isCancelled()) {
                 pollCount = maxPolls;
             }
         } while (pollCount < maxPolls);
@@ -580,7 +594,7 @@ public class MFUploadRunnable implements Runnable {
     private Map<String, String> generatePollRequestParameters() {
         configuration.getMFLogger().d(TAG, "generatePollRequestParameters()");
         LinkedHashMap<String, String> keyValue = new LinkedHashMap<String, String>();
-        keyValue.put("key", mfUploadItem.getPollUploadKey());
+        keyValue.put("key", uploadItem.getPollUploadKey());
         keyValue.put("response_format", "json");
         return keyValue;
     }
@@ -629,15 +643,15 @@ public class MFUploadRunnable implements Runnable {
         return false;
     }
 
-    private MFResumableChunkInfo createResumableChunkInfo(int unitSize, int chunkNumber) throws IOException, NoSuchAlgorithmException {
+    private ResumableChunkInfo createResumableChunkInfo(int unitSize, int chunkNumber) throws IOException, NoSuchAlgorithmException {
         configuration.getMFLogger().d(TAG, "createResumableChunkInfo");
-        MFResumableChunkInfo mfResumableChunkInfo;
+        ResumableChunkInfo resumableChunkInfo;
         // generate the chunk
         FileInputStream fis;
         BufferedInputStream bis;
         String chunkHash;
         byte[] uploadChunk;
-        fis = new FileInputStream(mfUploadItem.getFileData().getFilePath());
+        fis = new FileInputStream(uploadItem.getFileData().getFilePath());
         bis = new BufferedInputStream(fis);
         uploadChunk = createUploadChunk(unitSize, chunkNumber, bis);
         if (uploadChunk == null) {
@@ -645,20 +659,20 @@ public class MFUploadRunnable implements Runnable {
         }
 
         chunkHash = getSHA256(uploadChunk);
-        mfResumableChunkInfo = new MFResumableChunkInfo(chunkHash, uploadChunk);
+        resumableChunkInfo = new ResumableChunkInfo(chunkHash, uploadChunk);
         fis.close();
         bis.close();
-        return mfResumableChunkInfo;
+        return resumableChunkInfo;
     }
 
     private Map<String, String> generateResumableRequestParameters() {
         configuration.getMFLogger().d(TAG, "generateResumableRequestParameters()");
         // get upload options. these will be passed as request parameters
-        MFUploadItemOptions mfUploadItemOptions = mfUploadItem.getUploadOptions();
-        String actionOnDuplicate = mfUploadItemOptions.getActionOnDuplicate();
-        String versionControl = mfUploadItemOptions.getVersionControl();
-        String uploadFolderKey = mfUploadItemOptions.getUploadFolderKey();
-        String uploadPath = mfUploadItemOptions.getUploadPath();
+        UploadItemOptions uploadItemOptions = uploadItem.getUploadOptions();
+        String actionOnDuplicate = uploadItemOptions.getActionOnDuplicate();
+        String versionControl = uploadItemOptions.getVersionControl();
+        String uploadFolderKey = uploadItemOptions.getUploadFolderKey();
+        String uploadPath = uploadItemOptions.getUploadPath();
 
         String actionToken = actionTokenManagerInterface.borrowMFUploadActionToken().getTokenString();
         LinkedHashMap<String, String> parameters = new LinkedHashMap<String, String>();
@@ -681,7 +695,7 @@ public class MFUploadRunnable implements Runnable {
         // these headers are related to the entire file
         headers.put("x-filename", encodedShortFileName);
         headers.put("x-filesize", String.valueOf(fileSize));
-        headers.put("x-filehash", mfUploadItem.getFileData().getFileHash());
+        headers.put("x-filehash", uploadItem.getFileData().getFileHash());
         // these headers are related to the individual chunk
         headers.put("x-unit-id", Integer.toString(chunkNumber));
         headers.put("x-unit-hash", chunkHash);
@@ -739,12 +753,12 @@ public class MFUploadRunnable implements Runnable {
         while ((readSize = fileStream.read(buffer)) > 0 && t <= unitSize) {
             if (!haveStoredCredentials()) {
                 configuration.getMFLogger().d(TAG, "no credentials stored, task cancelling()");
-                mfUploadItem.cancelUpload();
+                uploadItem.cancelUpload();
                 return null;
             }
 
-            if (mfUploadItem.isCancelled()) {
-                configuration.getMFLogger().d(TAG, "upload was cancelled for " + mfUploadItem.getFileName());
+            if (uploadItem.isCancelled()) {
+                configuration.getMFLogger().d(TAG, "upload was cancelled for " + uploadItem.getFileName());
                 notifyUploadListenerCancelled();
                 return null;
             }
@@ -810,16 +824,16 @@ public class MFUploadRunnable implements Runnable {
         // generate map with request parameters
         Map<String, String> keyValue = new LinkedHashMap<String, String>();
         keyValue.put("filename", utf8EncodedFileName);
-        keyValue.put("hash", mfUploadItem.getFileData().getFileHash());
-        keyValue.put("size", Long.toString(mfUploadItem.getFileData().getFileSize()));
+        keyValue.put("hash", uploadItem.getFileData().getFileHash());
+        keyValue.put("size", Long.toString(uploadItem.getFileData().getFileSize()));
         keyValue.put("response_format", "json");
-        if (mfUploadItem.getUploadOptions().getUploadPath() != null && !mfUploadItem.getUploadOptions().getUploadPath().isEmpty()) {
-            keyValue.put("path", mfUploadItem.getUploadOptions().getUploadPath());
+        if (uploadItem.getUploadOptions().getUploadPath() != null && !uploadItem.getUploadOptions().getUploadPath().isEmpty()) {
+            keyValue.put("path", uploadItem.getUploadOptions().getUploadPath());
         } else {
-            keyValue.put("folder_key", mfUploadItem.getUploadOptions().getUploadFolderKey());
+            keyValue.put("folder_key", uploadItem.getUploadOptions().getUploadFolderKey());
         }
 
-        keyValue.put("action_on_duplicate", mfUploadItem.getUploadOptions().getActionOnDuplicate());
+        keyValue.put("action_on_duplicate", uploadItem.getUploadOptions().getActionOnDuplicate());
         return keyValue;
     }
 
@@ -828,14 +842,14 @@ public class MFUploadRunnable implements Runnable {
         // generate map with request parameters
         Map<String, String> keyValue = new LinkedHashMap<String, String>();
         keyValue.put("filename", utf8EncodedFileName);
-        keyValue.put("hash", mfUploadItem.getFileData().getFileHash());
-        keyValue.put("size", Long.toString(mfUploadItem.getFileData().getFileSize()));
-        keyValue.put("resumable", mfUploadItem.getUploadOptions().getResumable());
+        keyValue.put("hash", uploadItem.getFileData().getFileHash());
+        keyValue.put("size", Long.toString(uploadItem.getFileData().getFileSize()));
+        keyValue.put("resumable", uploadItem.getUploadOptions().getResumable());
         keyValue.put("response_format", "json");
-        if (mfUploadItem.getUploadOptions().getUploadPath() != null && !mfUploadItem.getUploadOptions().getUploadPath().isEmpty()) {
-            keyValue.put("path", mfUploadItem.getUploadOptions().getUploadPath());
+        if (uploadItem.getUploadOptions().getUploadPath() != null && !uploadItem.getUploadOptions().getUploadPath().isEmpty()) {
+            keyValue.put("path", uploadItem.getUploadOptions().getUploadPath());
         } else {
-            keyValue.put("folder_key", mfUploadItem.getUploadOptions().getUploadFolderKey());
+            keyValue.put("folder_key", uploadItem.getUploadOptions().getUploadFolderKey());
         }
         return keyValue;
     }
@@ -847,14 +861,14 @@ public class MFUploadRunnable implements Runnable {
 
     private void startOrRestartUpload() throws IOException, NoSuchAlgorithmException {
         configuration.getMFLogger().d(TAG, "startOrRestartUpload()");
-        int uploadAttemptCount = mfUploadItem.getUploadAttemptCount();
+        int uploadAttemptCount = uploadItem.getUploadAttemptCount();
         // don't start upload if cancelled or attempts > maxUploadAttempts
-        if (uploadAttemptCount > maxUploadAttempts || mfUploadItem.isCancelled()) {
+        if (uploadAttemptCount > maxUploadAttempts || uploadItem.isCancelled()) {
             if (uploadAttemptCount > maxUploadAttempts) {
                 configuration.getMFLogger().d(TAG, "upload attempt count > maxUploadAttempts");
             }
 
-            if (mfUploadItem.isCancelled()) {
+            if (uploadItem.isCancelled()) {
                 configuration.getMFLogger().d(TAG, "upload item was cancelled");
             }
 
@@ -862,20 +876,20 @@ public class MFUploadRunnable implements Runnable {
             return;
         }
         //don't add the item to the backlog queue if it is null or the path is null
-        if (mfUploadItem == null) {
+        if (uploadItem == null) {
             configuration.getMFLogger().d(TAG, "upload item is null");
             notifyUploadListenerCancelled();
             return;
         }
 
-        configuration.getMFLogger().d(TAG, "getFileData() path: " + mfUploadItem.getFileData().getFilePath());
-        configuration.getMFLogger().d(TAG, "getFileData() path: " + mfUploadItem.getFileData().getFilePath());
-        configuration.getMFLogger().d(TAG, "getFileData() null: " + (mfUploadItem.getFileData() == null));
-        configuration.getMFLogger().d(TAG, "getFileData().getFilePath() null: " + (mfUploadItem.getFileData().getFilePath() == null ));
-        configuration.getMFLogger().d(TAG, "getFileData().getFilePath().isEmpty(): " + (mfUploadItem.getFileData().getFilePath().isEmpty()));
-        configuration.getMFLogger().d(TAG, "getFileData().getFileHash().isEmpty(): " + (mfUploadItem.getFileData().getFileHash().isEmpty()));
-        configuration.getMFLogger().d(TAG, "getFileData().getFileSize() == 0: " + (mfUploadItem.getFileData().getFileSize() == 0));
-        if (mfUploadItem.getFileData() == null || mfUploadItem.getFileData().getFilePath() == null || mfUploadItem.getFileData().getFilePath().isEmpty() || mfUploadItem.getFileData().getFileHash().isEmpty() || mfUploadItem.getFileData().getFileSize() == 0) {
+        configuration.getMFLogger().d(TAG, "getFileData() path: " + uploadItem.getFileData().getFilePath());
+        configuration.getMFLogger().d(TAG, "getFileData() path: " + uploadItem.getFileData().getFilePath());
+        configuration.getMFLogger().d(TAG, "getFileData() null: " + (uploadItem.getFileData() == null));
+        configuration.getMFLogger().d(TAG, "getFileData().getFilePath() null: " + (uploadItem.getFileData().getFilePath() == null ));
+        configuration.getMFLogger().d(TAG, "getFileData().getFilePath().isEmpty(): " + (uploadItem.getFileData().getFilePath().isEmpty()));
+        configuration.getMFLogger().d(TAG, "getFileData().getFileHash().isEmpty(): " + (uploadItem.getFileData().getFileHash().isEmpty()));
+        configuration.getMFLogger().d(TAG, "getFileData().getFileSize() == 0: " + (uploadItem.getFileData().getFileSize() == 0));
+        if (uploadItem.getFileData() == null || uploadItem.getFileData().getFilePath() == null || uploadItem.getFileData().getFilePath().isEmpty() || uploadItem.getFileData().getFileHash().isEmpty() || uploadItem.getFileData().getFileSize() == 0) {
             configuration.getMFLogger().d(TAG, "one or more required parameters are invalid, not adding item to queue");
             notifyUploadListenerCancelled();
             return;
@@ -892,14 +906,14 @@ public class MFUploadRunnable implements Runnable {
     private void notifyUploadListenerStarted() {
         configuration.getMFLogger().d(TAG, "notifyUploadListenerStarted()");
         if (mfUploadListener != null) {
-            mfUploadListener.onStarted(mfUploadItem);
+            mfUploadListener.onStarted(uploadItem);
         }
     }
 
     private void notifyUploadListenerCompleted() {
         configuration.getMFLogger().d(TAG, "notifyUploadListenerCompleted()");
         if (mfUploadListener != null) {
-            mfUploadListener.onCompleted(mfUploadItem);
+            mfUploadListener.onCompleted(uploadItem);
         }
     }
 
@@ -909,27 +923,27 @@ public class MFUploadRunnable implements Runnable {
             // give number of chunks/numChunks for onProgressUpdate
             int numUploaded = 0;
             for (int chunkNumber = 0; chunkNumber < totalChunks; chunkNumber++) {
-                if (mfUploadItem.getBitmap().isUploaded(chunkNumber)) {
+                if (uploadItem.getBitmap().isUploaded(chunkNumber)) {
                     numUploaded++;
                 }
             }
             configuration.getMFLogger().d(TAG, numUploaded + "/" + totalChunks + " chunks uploaded");
-            mfUploadListener.onProgressUpdate(mfUploadItem, numUploaded, totalChunks);
+            mfUploadListener.onProgressUpdate(uploadItem, numUploaded, totalChunks);
         }
     }
 
     private void notifyUploadListenerOnPolling(String message) {
         configuration.getMFLogger().d(TAG, "notifyUploadListenerOnPolling()");
         if (mfUploadListener != null) {
-            mfUploadListener.onPolling(mfUploadItem, message);
+            mfUploadListener.onPolling(uploadItem, message);
         }
     }
 
     private void notifyUploadListenerCancelled() {
         configuration.getMFLogger().d(TAG, "notifyUploadListenerCancelled()");
-        mfUploadItem.cancelUpload();
+        uploadItem.cancelUpload();
         if (mfUploadListener != null) {
-            mfUploadListener.onCancelled(mfUploadItem);
+            mfUploadListener.onCancelled(uploadItem);
         }
     }
 
@@ -942,22 +956,22 @@ public class MFUploadRunnable implements Runnable {
         private long millisecondsBetweenPolls = DEFAULT_MILLISECONDS_BETWEEN_POLLS;
         private int maxUploadAttempts = DEFAULT_MAX_UPLOAD_ATTEMPTS;
         private final Configuration configuration;
-        private final MFUploadItem mfUploadItem;
-        private MFUploadListenerInterface mfUploadListener;
+        private final UploadItem uploadItem;
+        private UploadListenerInterface mfUploadListener;
         public HttpInterface httpInterface;
 
         /**
-         * Constructor used to create an MFUploadRunnable.
+         * Constructor used to create an UploadRunnable.
          * @param configuration - an MFDefaultTokenFarm to use.
-         * @param mfUploadItem - an MFUploadItem to use.
+         * @param uploadItem - an UploadItem to use.
          */
-        public Builder(Configuration configuration, MFUploadItem mfUploadItem, HttpInterface httpInterface) {
+        public Builder(Configuration configuration, UploadItem uploadItem, HttpInterface httpInterface) {
             if (configuration == null) {
                 throw new IllegalArgumentException("MFDefaultTokenFarm cannot be null");
             }
 
-            if (mfUploadItem == null) {
-                throw new IllegalArgumentException("MFUploadItem cannot be null");
+            if (uploadItem == null) {
+                throw new IllegalArgumentException("UploadItem cannot be null");
             }
 
             if (httpInterface == null) {
@@ -965,14 +979,14 @@ public class MFUploadRunnable implements Runnable {
             }
 
             this.configuration = configuration;
-            this.mfUploadItem = mfUploadItem;
+            this.uploadItem = uploadItem;
             this.httpInterface = httpInterface;
         }
 
         /**
          * sets the max poll attempts for the upload.
          * @param maxPolls the max poll attempts.
-         * @return a static MFUploadRunnable.Builder object to allow chaining calls.
+         * @return a static UploadRunnable.Builder object to allow chaining calls.
          */
         public Builder maxPolls(int maxPolls) {
             if (maxPolls < 1) {
@@ -985,7 +999,7 @@ public class MFUploadRunnable implements Runnable {
         /**
          * sets milliseconds between poll calls.
          * @param millisecondsBetweenPolls milliseconds between polls.
-         * @return a static MFUploadRunnable.Builder object to allow chaining calls.
+         * @return a static UploadRunnable.Builder object to allow chaining calls.
          */
         public Builder millisecondsBetweenPolls(long millisecondsBetweenPolls) {
             if (millisecondsBetweenPolls < 0) {
@@ -998,7 +1012,7 @@ public class MFUploadRunnable implements Runnable {
         /**
          * sets the max attempts to try to upload the file.
          * @param maxUploadAttempts the max upload attempts.
-         * @return a static MFUploadRunnable.Builder object to allow chaining calls.
+         * @return a static UploadRunnable.Builder object to allow chaining calls.
          */
         public Builder maxUploadAttempts(int maxUploadAttempts) {
             if (maxUploadAttempts < 1) {
@@ -1009,21 +1023,21 @@ public class MFUploadRunnable implements Runnable {
         }
 
         /**
-         * sets the MFUploadListenerInterface used for callbacks.
-         * @param mfUploadListener the MFUploadListenerInterface implementation.
-         * @return a static MFUploadRunnable.Builder object to allow chaining calls.
+         * sets the UploadListenerInterface used for callbacks.
+         * @param mfUploadListener the UploadListenerInterface implementation.
+         * @return a static UploadRunnable.Builder object to allow chaining calls.
          */
-        public Builder uploadListener(MFUploadListenerInterface mfUploadListener) {
+        public Builder uploadListener(UploadListenerInterface mfUploadListener) {
             this.mfUploadListener = mfUploadListener;
             return this;
         }
 
         /**
-         * constructs a new MFUploadRunnable.
-         * @return a new MFUploadRunnable.
+         * constructs a new UploadRunnable.
+         * @return a new UploadRunnable.
          */
-        public MFUploadRunnable build() {
-            return new MFUploadRunnable(this);
+        public UploadRunnable build() {
+            return new UploadRunnable(this);
         }
     }
 }

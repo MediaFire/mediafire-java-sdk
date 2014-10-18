@@ -1,6 +1,6 @@
 package com.mediafire.sdk.uploader.uploaditem;
 
-public class MFUploadItemOptions {
+public class UploadItemOptions {
     private final boolean resumable;
     private final String uploadFolderKey;
     private final ActionOnDuplicate actionOnDuplicate;
@@ -11,7 +11,7 @@ public class MFUploadItemOptions {
     private final String modificationTime;
     private final ActionOnInAccount actionOnInAccount;
 
-    private MFUploadItemOptions(Builder builder) {
+    private UploadItemOptions(Builder builder) {
         this.resumable = builder.resumable;
         this.uploadFolderKey = builder.uploadFolderKey;
         this.actionOnDuplicate = builder.actionOnDuplicate;
@@ -90,7 +90,7 @@ public class MFUploadItemOptions {
 
         public Builder() {}
 
-        public Builder(MFUploadItemOptions oldOptions) {
+        public Builder(UploadItemOptions oldOptions) {
             this.resumable = oldOptions.resumable;
             this.actionOnDuplicate = oldOptions.actionOnDuplicate;
             this.versionControl = oldOptions.versionControl;
@@ -172,8 +172,8 @@ public class MFUploadItemOptions {
             return this;
         }
 
-        public MFUploadItemOptions build() {
-            return new MFUploadItemOptions(this);
+        public UploadItemOptions build() {
+            return new UploadItemOptions(this);
         }
     }
 

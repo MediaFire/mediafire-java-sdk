@@ -9,10 +9,10 @@ public class HostObject {
     private String mSubdomain;
     private String mDomain;
 
-    private HostObject(String subdomain, String domain, String transferProtocol, String httpMethod) {
+    public HostObject(String transferProtocol, String subdomain, String domain, String httpMethod) {
+        mTransferProtocol = transferProtocol;
         mSubdomain = subdomain;
         mDomain = domain;
-        mTransferProtocol = transferProtocol;
         mHttpMethod = httpMethod;
     }
 

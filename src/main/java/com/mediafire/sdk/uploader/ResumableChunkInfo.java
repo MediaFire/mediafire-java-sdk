@@ -3,11 +3,11 @@ package com.mediafire.sdk.uploader;
 /**
 * Created by  on 7/8/2014.
 */
-class MFResumableChunkInfo {
+class ResumableChunkInfo {
     private final String chunkHash;
     private final byte[] uploadChunk;
 
-    public MFResumableChunkInfo(String chunkHash, byte[] uploadChunk) {
+    public ResumableChunkInfo(String chunkHash, byte[] uploadChunk) {
         this.chunkHash = chunkHash;
         this.uploadChunk = uploadChunk;
     }

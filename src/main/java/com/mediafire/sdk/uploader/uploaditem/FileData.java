@@ -7,13 +7,13 @@ import java.security.NoSuchAlgorithmException;
 /**
  * file information for an upload item.
  */
-public class MFFileData {
-    private static final String TAG = MFFileData.class.getCanonicalName();
+public class FileData {
+    private static final String TAG = FileData.class.getCanonicalName();
     private final String filePath;
     private long fileSize;
     private String fileHash;
 
-    public MFFileData(String filePath) {
+    public FileData(String filePath) {
         if (filePath == null) {
             throw new IllegalArgumentException("invalid filePath (cannot be null)");
         }

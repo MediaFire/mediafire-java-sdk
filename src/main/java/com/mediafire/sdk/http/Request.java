@@ -6,90 +6,78 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Request {
-    private final HostObject mMFHostObject;
-    private final ApiObject mMFApiObject;
+    private final HostObject mHostObject;
+    private final ApiObject mApiObject;
+    private final VersionObject mVersionObject;
 
-    private Map<String, String> requestParameters = new LinkedHashMap<String, String>();
-    private Map<String, String> headers = new LinkedHashMap<String, String>();
-    private byte[] payload = new byte[0];
-    private Token mMFToken;
+    private Map<String, Object> mQueryParameters;
+    private Map<String, String> mHeaders;
+    private byte[] mPayload;
+    private Token mToken;
 
-    private Request(MFRequestBuilder mfRequestBuilder) {
-        mMFHostObject = mfRequestBuilder.mMFHostObject;
-        mMFApiObject = mfRequestBuilder.mMFApiObject;
-        this.requestParameters = mfRequestBuilder.requestParameters;
-        this.requestParameters.put("response_format", "json");
-        this.headers = mfRequestBuilder.headers;
-        this.payload = mfRequestBuilder.payload;
+    public Request(HostObject hostObject, ApiObject apiObject, VersionObject versionObject) {
+        mHostObject = hostObject;
+        mApiObject = apiObject;
+        mVersionObject = versionObject;
     }
 
-    public HostObject getMFHostObjectHost() {
-        return mMFHostObject;
+    public HostObject getHostObject() {
+        return mHostObject;
     }
 
-    public ApiObject getmMFApiObject() {
-        return mMFApiObject;
+    public ApiObject getApiObject() {
+        return mApiObject;
     }
 
-    public Map<String, String> getRequestParameters() {
-        return requestParameters;
+    public VersionObject getVersionObject() {
+        return mVersionObject;
+    }
+
+    public Map<String, Object> getQueryParameters() {
+        return mQueryParameters;
+    }
+
+    public void addQueryParameter(String key, Object value) {
+        if (key == null || value == null) {
+            return;
+        }
+
+        if (mQueryParameters == null) {
+            mQueryParameters = new LinkedHashMap<String, Object>();
+        }
+
+        mQueryParameters.put(key, value);
     }
 
     public Map<String, String> getHeaders() {
-        return headers;
+        return mHeaders;
+    }
+
+    public void addHeader(String key, String value) {
+        if (key == null || value == null) {
+            return;
+        }
+
+        if (mHeaders == null) {
+            mHeaders = new LinkedHashMap<String, String>();
+        }
+
+        mHeaders.put(key, value);
     }
 
     public byte[] getPayload() {
-        return payload;
+        return mPayload;
+    }
+
+    public void addPayload(byte[] payload) {
+        mPayload = payload;
     }
 
     public Token getToken() {
-        return mMFToken;
+        return mToken;
     }
 
-    public void setToken(Token MFToken) {
-        this.mMFToken = MFToken;
-    }
-
-    public static class MFRequestBuilder {
-        private final HostObject mMFHostObject;
-        private final ApiObject mMFApiObject;
-
-        private Map<String, String> requestParameters = new LinkedHashMap<String, String>();
-        private Map<String, String> headers = new LinkedHashMap<String, String>();
-        private byte[] payload = new byte[0];
-
-        public MFRequestBuilder(HostObject hostObject, ApiObject apiObject) {
-            mMFHostObject = hostObject;
-            mMFApiObject = apiObject;
-        }
-
-        public MFRequestBuilder requestParameters(Map<String, String> requestParameters) {
-            if (requestParameters == null) {
-                requestParameters = new LinkedHashMap<String, String>();
-            }
-            this.requestParameters = requestParameters;
-            return this;
-        }
-
-        public MFRequestBuilder headers(Map<String, String> headers) {
-            if (headers == null) {
-                headers = new LinkedHashMap<String, String>();
-            }
-            this.headers = headers;
-            return this;
-        }
-
-        public MFRequestBuilder payload(byte[] payload) {
-            if (payload == null) {
-                payload = new byte[0];
-            }
-            this.payload = payload;
-            return this;
-        }
-
-        public Request build() {
-            return new Request(this);
-        }
+    public void addToken(Token token) {
+        mToken = token;
     }
 }

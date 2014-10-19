@@ -6,42 +6,14 @@ package com.mediafire.sdk.http;
 public class ApiObject {
     private final String mFile;
     private final String mPath;
-    private final TokenType mBorrowToken;
-    private final SignatureType mSignatureType;
-    private final TokenType mReturnToken;
-    private final boolean mQueryPostable;
 
-    public ApiObject(String path, String file, TokenType borrowToken, SignatureType signatureType, TokenType returnToken, boolean queryPostable) {
+    public ApiObject(String path, String file) {
         mPath = path;
-        mBorrowToken = borrowToken;
-        mSignatureType = signatureType;
-        mReturnToken = returnToken;
-        mQueryPostable = queryPostable;
         mFile = file;
     }
 
     public String getPath() {
         return mPath;
-    }
-
-    public TokenType getTypeOfTokenToBorrow() {
-        return mBorrowToken;
-    }
-
-    public SignatureType getTypeOfSignatureToAdd() {
-        return mSignatureType;
-    }
-
-    public TokenType getTypeOfTokenToReturn() {
-        return mReturnToken;
-    }
-
-    public boolean isQueryPostable() {
-        return mQueryPostable;
-    }
-
-    public boolean isTokenRequired() {
-        return mBorrowToken != TokenType.NO_TOKEN_NEEDS_TO_BE_RETURNED;
     }
 
     public String getFile() {

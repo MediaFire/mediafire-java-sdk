@@ -7,19 +7,18 @@ import com.mediafire.sdk.token.Token;
 
 import java.util.Map;
 
-public class PhpApiClient {
+public class ApiClient {
     private final Configuration mConfiguration;
 
-    public PhpApiClient(Configuration configuration) {
+    public ApiClient(Configuration configuration) {
         mConfiguration = configuration;
     }
 
     public Result doRequest(Request request) {
-        ApiObject apiObject = request.getApiObject();
         // create TokenHelper
         TokenHelper tokenHelper = new TokenHelper(mConfiguration);
         // borrow token, if it's required
-        Token token = tokenHelper.borrowToken(apiObject);
+        Token token = tokenHelper.borrowToken(request.getInstructionsObject());
         // add token to request parameters, if borrowed token
         if (token != null) {
             request.addQueryParameter("session_token", token.getTokenString());
@@ -50,7 +49,7 @@ public class PhpApiClient {
             tokenHelper.updateToken((SessionToken) token);
         }
         // return token, if required and there is no error
-        tokenHelper.returnToken(apiObject, token);
+        tokenHelper.returnToken(request.getInstructionsObject(), token);
         return new Result(response, request);
     }
 
@@ -60,7 +59,7 @@ public class PhpApiClient {
         } else if (method.equalsIgnoreCase("post")) {
             return doPost(request);
         } else {
-            return null;
+            throw new IllegalArgumentException("request method '" + method + "' not supported");
         }
     }
 

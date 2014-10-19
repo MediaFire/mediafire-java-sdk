@@ -22,12 +22,12 @@ public class SignatureHelper {
 
     public String calculateSignature() {
         String signature = null;
-        switch (mRequest.getApiObject().getTypeOfSignatureToAdd()) {
+        switch (mRequest.getInstructionsObject().getSignatureType()) {
             case NEW_SESSION_TOKEN_SIGNATURE:
-                calculateSignatureForNewSessionToken();
+                signature = calculateSignatureForNewSessionToken();
                 break;
             case USING_SESSION_TOKEN_SIGNATURE:
-                calculateSignatureWithSessionToken();
+                signature = calculateSignatureWithSessionToken();
                 break;
             case NO_SIGNATURE_REQUIRED:
                 break;

@@ -24,10 +24,10 @@ public class UrlHelper {
         HostObject hostObject = mRequest.getHostObject();
 
         String baseUrl;
-        if (mRequest.getApiObject().isQueryPostable()) {
-            baseUrl = makeUrlForGetRequest();
-        } else {
+        if (mRequest.getInstructionsObject().postQuery()) {
             baseUrl = getBaseUrlString(hostObject);
+        } else {
+            baseUrl = makeUrlForGetRequest();
         }
 
         return baseUrl;
@@ -99,7 +99,7 @@ public class UrlHelper {
     public byte[] getPayload() {
         byte[] payload;
 
-        if (mRequest.getApiObject().isQueryPostable()) {
+        if (mRequest.getInstructionsObject().postQuery()) {
             payload = new String(getQueryString(mRequest.getQueryParameters(), true)).getBytes();
         } else {
             payload = mRequest.getPayload();

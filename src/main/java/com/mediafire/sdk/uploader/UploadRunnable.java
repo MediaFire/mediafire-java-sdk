@@ -9,10 +9,10 @@ import com.mediafire.sdk.api_responses.upload.CheckResponse;
 import com.mediafire.sdk.api_responses.upload.InstantResponse;
 import com.mediafire.sdk.api_responses.upload.PollResponse;
 import com.mediafire.sdk.api_responses.upload.ResumableResponse;
-import com.mediafire.sdk.client.PhpApiClient;
+import com.mediafire.sdk.client.ApiClient;
 import com.mediafire.sdk.config.*;
 import com.mediafire.sdk.http.Request;
-import com.mediafire.sdk.http.RequestGenerator;
+import com.mediafire.sdk.client.RequestGenerator;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 import com.mediafire.sdk.uploader.uploaditem.*;
@@ -245,7 +245,7 @@ public class UploadRunnable implements Runnable {
             request.addQueryParameter(key, keyValue.get(key));
         }
 
-        Result result = new PhpApiClient(configuration).doRequest(request);
+        Result result = new ApiClient(configuration).doRequest(request);
         Response mfResponse = result.getResponse();
 
         if (mfResponse == null) {
@@ -326,7 +326,7 @@ public class UploadRunnable implements Runnable {
             request.addQueryParameter(key, keyValue.get(key));
         }
 
-        Result result = new PhpApiClient(configuration).doRequest(request);
+        Result result = new ApiClient(configuration).doRequest(request);
         Response mfResponse = result.getResponse();
 
         if (mfResponse == null) {
@@ -438,7 +438,7 @@ public class UploadRunnable implements Runnable {
 
                 request.addPayload(uploadChunk);
 
-                Result result = new PhpApiClient(configuration).doRequest(request);
+                Result result = new ApiClient(configuration).doRequest(request);
                 Response mfResponse = result.getResponse();
 
                 if (mfResponse == null) {
@@ -524,7 +524,7 @@ public class UploadRunnable implements Runnable {
                 request.addQueryParameter(key, keyValue.get(key));
             }
 
-            Result result = new PhpApiClient(configuration).doRequest(request);
+            Result result = new ApiClient(configuration).doRequest(request);
             Response mfResponse = result.getResponse();
 
             if (mfResponse == null) {

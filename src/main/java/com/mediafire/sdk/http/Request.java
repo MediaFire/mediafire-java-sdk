@@ -8,6 +8,7 @@ import java.util.Map;
 public class Request {
     private final HostObject mHostObject;
     private final ApiObject mApiObject;
+    private InstructionsObject mInstructionsObject;
     private final VersionObject mVersionObject;
 
     private Map<String, Object> mQueryParameters;
@@ -15,9 +16,10 @@ public class Request {
     private byte[] mPayload;
     private Token mToken;
 
-    public Request(HostObject hostObject, ApiObject apiObject, VersionObject versionObject) {
+    public Request(HostObject hostObject, ApiObject apiObject, InstructionsObject instructionsObject, VersionObject versionObject) {
         mHostObject = hostObject;
         mApiObject = apiObject;
+        mInstructionsObject = instructionsObject;
         mVersionObject = versionObject;
     }
 
@@ -27,6 +29,10 @@ public class Request {
 
     public ApiObject getApiObject() {
         return mApiObject;
+    }
+
+    public InstructionsObject getInstructionsObject() {
+        return mInstructionsObject;
     }
 
     public VersionObject getVersionObject() {

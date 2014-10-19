@@ -4,7 +4,7 @@ import com.mediafire.sdk.api_responses.ApiResponse;
 import com.mediafire.sdk.api_responses.user.GetActionTokenResponse;
 import com.mediafire.sdk.api_responses.user.GetSessionTokenResponse;
 import com.mediafire.sdk.config.Configuration;
-import com.mediafire.sdk.http.ApiObject;
+import com.mediafire.sdk.http.InstructionsObject;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.token.ActionToken;
 import com.mediafire.sdk.token.SessionToken;
@@ -28,8 +28,8 @@ public class TokenHelper {
         return apiResponse.needNewKey();
     }
 
-    public void returnToken(ApiObject apiObject, Token token) {
-        switch (apiObject.getTypeOfTokenToReturn()) {
+    public void returnToken(InstructionsObject instructionsObject, Token token) {
+        switch (instructionsObject.getReturnTokenType()) {
             case VERSION_2:
                 mConfiguration.getSessionTokenManagerInterface().receiveSessionToken((SessionToken) token);
                 break;
@@ -44,9 +44,9 @@ public class TokenHelper {
         }
     }
 
-    public Token borrowToken(ApiObject apiObject) {
+    public Token borrowToken(InstructionsObject instructionsObject) {
         Token token = null;
-        switch (apiObject.getTypeOfTokenToBorrow()) {
+        switch (instructionsObject.getBorrowTokenType()) {
             case VERSION_2:
                 token = mConfiguration.getSessionTokenManagerInterface().borrowSessionToken();
                 break;

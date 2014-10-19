@@ -39,7 +39,7 @@ public class ApiClient {
         Response response = doRequest(request, httpMethod);
 
         // create ResponseHelper
-        ResponseHelper responseHelper = new ResponseHelper();
+        ResponseHelper responseHelper = new ResponseHelper(response);
 
         // determine if token needs updating
         boolean tokenNeedsUpdating = tokenHelper.determineIfTokenNeedsUpdating(responseHelper.getApiResponse());

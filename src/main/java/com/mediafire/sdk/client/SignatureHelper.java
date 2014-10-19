@@ -36,7 +36,7 @@ public class SignatureHelper {
     }
 
     private String calculateSignatureForNewSessionToken() {
-        String userInfoPortionOfHashTarget = mConfiguration.getUserCredentialsInterface().getConcatenatedUserCredentials();
+        String userInfoPortionOfHashTarget = mConfiguration.getUserCredentialsInterface().getConcatenatedCredentials();
         String appId = mConfiguration.getAppId();
         String apiKey = mConfiguration.getApiKey();
 

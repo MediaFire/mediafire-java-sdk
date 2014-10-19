@@ -10,5 +10,5 @@ public interface UserCredentialsInterface {
 
     public void clearCredentials();
 
-    public String getConcatenatedUserCredentials();
+    public String getConcatenatedCredentials();
 }

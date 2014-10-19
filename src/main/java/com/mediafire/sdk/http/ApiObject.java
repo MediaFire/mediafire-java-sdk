@@ -7,11 +7,11 @@ public class ApiObject {
     private final String mFile;
     private final String mPath;
     private final TokenType mBorrowToken;
-    private final TokenType mSignatureType;
+    private final SignatureType mSignatureType;
     private final TokenType mReturnToken;
     private final boolean mQueryPostable;
 
-    public ApiObject(String path, String file, TokenType borrowToken, TokenType signatureType, TokenType returnToken, boolean queryPostable) {
+    public ApiObject(String path, String file, TokenType borrowToken, SignatureType signatureType, TokenType returnToken, boolean queryPostable) {
         mPath = path;
         mBorrowToken = borrowToken;
         mSignatureType = signatureType;
@@ -28,7 +28,7 @@ public class ApiObject {
         return mBorrowToken;
     }
 
-    public TokenType getTypeOfSignatureToAdd() {
+    public SignatureType getTypeOfSignatureToAdd() {
         return mSignatureType;
     }
 
@@ -41,7 +41,7 @@ public class ApiObject {
     }
 
     public boolean isTokenRequired() {
-        return mBorrowToken != TokenType.NONE;
+        return mBorrowToken != TokenType.NO_TOKEN_NEEDS_TO_BE_RETURNED;
     }
 
     public String getFile() {

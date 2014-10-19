@@ -7,11 +7,7 @@ import com.mediafire.sdk.token.SessionToken;
  */
 public interface SessionTokenManagerInterface {
 
-    public void returnSessionToken(SessionToken sessionToken);
+    public void receiveSessionToken(SessionToken token);
 
-    public void sessionTokenSpoiled(SessionToken sessionToken);
-
-    public void receiveNewSessionToken(SessionToken sessionToken);
-
-    public SessionToken borrowMFSessionToken();
+    public SessionToken borrowSessionToken();
 }

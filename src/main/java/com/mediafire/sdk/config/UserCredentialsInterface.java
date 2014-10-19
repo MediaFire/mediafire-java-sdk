@@ -9,4 +9,6 @@ public interface UserCredentialsInterface {
     public Map<String, String> getCredentials();
 
     public void clearCredentials();
+
+    public String getConcatenatedUserCredentials();
 }

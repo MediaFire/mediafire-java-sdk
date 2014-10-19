@@ -16,14 +16,6 @@ public class HostObject {
         mHttpMethod = httpMethod;
     }
 
-    public String getSubDomainAndHostName() {
-        return mSubdomain + "." + mDomain;
-    }
-
-    public String getFullUrl() {
-        return mTransferProtocol + "://" + getSubDomainAndHostName();
-    }
-
     public String getSubdomain() {
         return mSubdomain;
     }

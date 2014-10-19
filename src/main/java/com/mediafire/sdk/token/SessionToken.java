@@ -44,10 +44,10 @@ public final class SessionToken extends Token {
         return permanentToken;
     }
 
-    public static void updateSessionToken(SessionToken sessionToken) {
-        long newKey = Long.valueOf(sessionToken.secretKey) * 16807;
+    public void updateSessionToken() {
+        long newKey = Long.valueOf(secretKey) * 16807;
         newKey = newKey % 2147483647;
         String newSecretKey = String.valueOf(newKey);
-        sessionToken.secretKey = newSecretKey;
+        secretKey = newSecretKey;
     }
 }

@@ -5,21 +5,21 @@ import com.mediafire.sdk.token.SessionToken;
 
 public interface TokenManagerInterface extends SessionTokenManagerInterface, ActionTokenManagerInterface {
 
-    public void returnSessionToken(SessionToken sessionToken);
+    public void receiveSessionToken(SessionToken sessionToken);
 
     public void sessionTokenSpoiled(SessionToken sessionToken);
 
-    public void receiveNewSessionToken(SessionToken sessionToken);
+    public void receiveNewSessionToken(SessionToken token);
 
-    public void receiveNewImageActionToken(ActionToken mfImageActionToken);
+    public void receiveImageActionToken(ActionToken mfImageActionToken);
 
-    public void receiveNewUploadActionToken(ActionToken mfUploadActionToken);
+    public void receiveUploadActionToken(ActionToken mfUploadActionToken);
 
-    public SessionToken borrowMFSessionToken();
+    public SessionToken borrowSessionToken();
 
-    public ActionToken borrowMFUploadActionToken();
+    public ActionToken borrowUploadActionToken();
 
-    public ActionToken borrowMFImageActionToken();
+    public ActionToken borrowImageActionToken();
 
     public void actionTokenSpoiled();
 }

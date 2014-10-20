@@ -1,7 +1,6 @@
 package com.mediafire.sdk.config.defaults;
 
 import com.mediafire.sdk.config.HttpWorkerInterface;
-import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 
 import java.io.ByteArrayOutputStream;
@@ -17,12 +16,12 @@ public final class DefaultHttpWorker implements HttpWorkerInterface {
     private final int READ_TIMEOUT_MILLISECONDS = 45000;
 
     @Override
-    public Response doGet(Request request, String url) {
+    public Response doGet(String url, Map<String, String> headers) {
         return null;
     }
 
     @Override
-    public Response doPost(Request request, String url, Map<String, String> headers, byte[] payload) {
+    public Response doPost(String url, Map<String, String> headers, byte[] payload) {
         return null;
     }
 

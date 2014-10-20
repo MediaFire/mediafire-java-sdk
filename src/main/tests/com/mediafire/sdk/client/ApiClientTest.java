@@ -1,9 +1,7 @@
 package com.mediafire.sdk.client;
 
 import com.mediafire.sdk.config.Configuration;
-import com.mediafire.sdk.http.Request;
-import com.mediafire.sdk.http.Response;
-import com.mediafire.sdk.http.Result;
+import com.mediafire.sdk.http.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,9 +25,13 @@ public class ApiClientTest {
     }
 
     @Test
-    public void testResultNotNull() throws Exception {
+    public void testSystemGetStatusGet() throws Exception {
         ApiClient apiClient = new ApiClient(mConfiguration);
-        Request request = new RequestGenerator().generateRequestObject("1.0", "system", "get_info.php");
+        HostObject hostObject = new HostObject("http", "www", "mediafire.com", "get");
+        ApiObject apiObject = new ApiObject("system", "get_status.php");
+        InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, false);
+        VersionObject versionObject = new VersionObject("1.2");
+        Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
         request.addQueryParameter("response_format", "json");
         Result result = apiClient.doRequest(request);
 
@@ -37,26 +39,16 @@ public class ApiClientTest {
     }
 
     @Test
-    public void testResultResponseNotNull() throws Exception {
+    public void testSystemGetStatusPost() throws Exception {
         ApiClient apiClient = new ApiClient(mConfiguration);
-        Request request = new RequestGenerator().generateRequestObject("1.0", "system", "get_info.php");
+        HostObject hostObject = new HostObject("http", "www", "mediafire.com", "post");
+        ApiObject apiObject = new ApiObject("system", "get_status.php");
+        InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, true);
+        VersionObject versionObject = new VersionObject("1.2");
+        Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
         request.addQueryParameter("response_format", "json");
         Result result = apiClient.doRequest(request);
 
-        Response response = result.getResponse();
-
-        assertNotNull(response);
-    }
-
-    @Test
-    public void testResultRequestNotNull() throws Exception {
-        ApiClient apiClient = new ApiClient(mConfiguration);
-        Request request = new RequestGenerator().generateRequestObject("1.0", "system", "get_info.php");
-        request.addQueryParameter("response_format", "json");
-        Result result = apiClient.doRequest(request);
-
-        Request requestFromResult = result.getRequest();
-
-        assertNotNull(requestFromResult);
+        assertNotNull(result);
     }
 }

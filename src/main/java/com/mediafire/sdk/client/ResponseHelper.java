@@ -30,6 +30,14 @@ public class ResponseHelper {
     }
 
     public String getResponseAsString() {
+        if (mResponse == null) {
+            return null;
+        }
+
+        if (mResponse.getBytes() == null) {
+            return null;
+        }
+
         return new String(mResponse.getBytes());
     }
 

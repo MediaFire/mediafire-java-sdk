@@ -1,16 +1,19 @@
 package com.mediafire.sdk.config;
 
-import com.mediafire.sdk.token.ActionToken;
+import com.mediafire.sdk.token.ImageActionToken;
+import com.mediafire.sdk.token.UploadActionToken;
 
 /**
  * Created by Chris Najar on 9/16/2014.
  */
 public interface ActionTokenManagerInterface {
-    public void receiveImageActionToken(ActionToken mfImageActionToken);
+    public void receiveImageActionToken(ImageActionToken mfImageActionToken);
 
-    public void receiveUploadActionToken(ActionToken mfUploadActionToken);
+    public void receiveUploadActionToken(UploadActionToken mfUploadActionToken);
 
-    public ActionToken borrowUploadActionToken();
+    public UploadActionToken borrowUploadActionToken();
 
-    public ActionToken borrowImageActionToken();
+    public ImageActionToken borrowImageActionToken();
+
+    public void tokensFailed();
 }

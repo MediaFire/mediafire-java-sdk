@@ -15,35 +15,22 @@ public class ApiClient {
     }
 
     public Result doRequest(Request request) {
-        TokenHelper tokenHelper = new TokenHelper(mConfiguration);
+        ApiClientHelper apiClientHelper = new ApiClientHelper(mConfiguration);
 
-        Token token = tokenHelper.borrowToken(request.getInstructionsObject());
-
-        if (token != null) {
-            request.addQueryParameter("session_token", token.getTokenString());
-        }
-
-        SignatureHelper signatureHelper = new SignatureHelper(request, mConfiguration);
-
-        String signature = signatureHelper.calculateSignature();
-
-        if (signature != null) {
-            request.addQueryParameter("signature", signature);
-        }
+        // setup should handle the following:
+        // 1. getting an ActionToken or SessionToken (if required) as per InstructionsObject
+        // 2. calling Request.addToken() to add the token to the request.
+        // 3. adding the session_token parameter to the query parameters via Request.addQueryParameter()
+        // 4. calculate a signature (if required) as per InstructionsObject
+        // 5. add signature parameters to the query parameters via Request.addQueryParameter()
+        // 6. return Token or notify Token manager interfaces if a Token is invalid.
+        apiClientHelper.setup(request);
 
         String httpMethod = request.getHostObject().getHttpMethod();
 
         Response response = doRequest(request, httpMethod);
 
-        ResponseHelper responseHelper = new ResponseHelper(response);
-
-        boolean tokenNeedsUpdating = tokenHelper.determineIfTokenNeedsUpdating(responseHelper.getApiResponse());
-
-        if (tokenNeedsUpdating) {
-            tokenHelper.updateToken((SessionToken) token);
-        }
-
-        tokenHelper.returnToken(request.getInstructionsObject(), token);
+        apiClientHelper.cleanup(response);
 
         return new Result(response, request);
     }
@@ -63,7 +50,6 @@ public class ApiClient {
         // add headers to request
         HeadersHelper headersHelper = new HeadersHelper(request);
         headersHelper.addGetHeaders();
-
         return mConfiguration.getHttpWorkerInterface().doGet(url, null);
     }
 

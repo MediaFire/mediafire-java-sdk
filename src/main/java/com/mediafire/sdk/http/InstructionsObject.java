@@ -5,19 +5,19 @@ package com.mediafire.sdk.http;
  */
 public class InstructionsObject {
 
-    private final TokenType mBorrowToken;
+    private final BorrowTokenType mBorrowToken;
     private final SignatureType mSignatureType;
-    private final TokenType mReturnToken;
+    private final ReturnTokenType mReturnToken;
     private final boolean mPostQuery;
 
-    public InstructionsObject(TokenType borrowToken, SignatureType signatureType, TokenType returnToken, boolean postQuery) {
+    public InstructionsObject(BorrowTokenType borrowToken, SignatureType signatureType, ReturnTokenType returnToken, boolean postQuery) {
         mBorrowToken = borrowToken;
         mSignatureType = signatureType;
         mReturnToken = returnToken;
         mPostQuery = postQuery;
     }
 
-    public TokenType getBorrowTokenType() {
+    public BorrowTokenType getBorrowTokenType() {
         return mBorrowToken;
     }
 
@@ -25,7 +25,7 @@ public class InstructionsObject {
         return mSignatureType;
     }
 
-    public TokenType getReturnTokenType() {
+    public ReturnTokenType getReturnTokenType() {
         return mReturnToken;
     }
 

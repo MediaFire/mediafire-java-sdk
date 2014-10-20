@@ -3,6 +3,6 @@ package com.mediafire.sdk.http;
 /**
 * Created by Chris Najar on 10/18/2014.
 */
-public enum TokenType {
-    VERSION_2, NEW_UPLOAD, NEW_IMAGE, NONE
+public enum ReturnTokenType {
+    NEW_V2, V2, NEW_IMAGE, NEW_UPLOAD, NONE,
 }

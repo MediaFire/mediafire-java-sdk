@@ -21,12 +21,10 @@ public class UrlHelper {
     }
 
     public String makeUrlForPostRequest() {
-        HostObject hostObject = mRequest.getHostObject();
-
         String baseUrl;
         if (mRequest.getInstructionsObject().postQuery()) {
-            baseUrl = getBaseUrlString(hostObject);
-            baseUrl += getBaseUriString(mRequest.getApiObject(), mRequest.getVersionObject());
+            baseUrl = getBaseUrlString();
+            baseUrl += getBaseUriString();
         } else {
             baseUrl = makeUrlForGetRequest();
         }
@@ -35,21 +33,17 @@ public class UrlHelper {
     }
 
     public String makeUrlForGetRequest() {
-        ApiObject apiObject = mRequest.getApiObject();
-        HostObject hostObject = mRequest.getHostObject();
-        Map<String, Object> queryParameters = mRequest.getQueryParameters();
-        VersionObject versionObject = mRequest.getVersionObject();
+        String baseUrl = getBaseUrlString();
 
-        String baseUrl = getBaseUrlString(hostObject);
+        String baseUri = getBaseUriString();
 
-        String baseUri = getBaseUriString(apiObject, versionObject);
-
-        String query = getQueryString(queryParameters, true);
+        String query = getQueryString(true);
 
         return baseUrl + baseUri + query;
     }
 
-    public String getBaseUrlString(HostObject hostObject) {
+    public String getBaseUrlString() {
+        HostObject hostObject = mRequest.getHostObject();
         String transferProtocol = hostObject.getTransferProtocol();
 
         String subdomain = hostObject.getSubdomain();
@@ -59,7 +53,10 @@ public class UrlHelper {
         return transferProtocol + "://" + subdomain + "." + domain;
     }
 
-    public String getBaseUriString(ApiObject apiObject, VersionObject versionObject) {
+    public String getBaseUriString() {
+        ApiObject apiObject = mRequest.getApiObject();
+        VersionObject versionObject = mRequest.getVersionObject();
+
         String apiVersion = versionObject.getApiVersion();
 
         String path = apiObject.getPath();
@@ -80,7 +77,8 @@ public class UrlHelper {
         return baseUri;
     }
 
-    public String getQueryString(Map<String, Object> queryParameters, boolean encoded) {
+    public String getQueryString(boolean encoded) {
+        Map<String, Object> queryParameters = mRequest.getQueryParameters();
         if (queryParameters == null) {
             return "";
         }
@@ -103,7 +101,7 @@ public class UrlHelper {
         byte[] payload;
 
         if (mRequest.getInstructionsObject().postQuery()) {
-            payload = new String(getQueryString(mRequest.getQueryParameters(), true)).getBytes();
+            payload = new String(getQueryString(true)).getBytes();
         } else {
             payload = mRequest.getPayload();
         }

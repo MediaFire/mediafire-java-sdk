@@ -9,7 +9,7 @@ public class ResponseApiClientError extends Response {
     private Throwable mThrowable;
 
     public ResponseApiClientError(String message, Throwable throwable) {
-        super(0, null);
+        super(-1, null);
         mMessage = message;
         mThrowable = throwable;
     }

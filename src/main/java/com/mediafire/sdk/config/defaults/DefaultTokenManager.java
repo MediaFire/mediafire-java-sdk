@@ -12,12 +12,11 @@ import com.mediafire.sdk.token.UploadActionToken;
 public class DefaultTokenManager implements SessionTokenManagerInterface, ActionTokenManagerInterface {
 
     @Override
-    public void receiveImageActionToken(ImageActionToken mfImageActionToken) {
-
+    public void receiveImageActionToken(ImageActionToken token) {
     }
 
     @Override
-    public void receiveUploadActionToken(UploadActionToken mfUploadActionToken) {
+    public void receiveUploadActionToken(UploadActionToken token) {
 
     }
 
@@ -38,7 +37,6 @@ public class DefaultTokenManager implements SessionTokenManagerInterface, Action
 
     @Override
     public void receiveSessionToken(SessionToken token) {
-
     }
 
     @Override

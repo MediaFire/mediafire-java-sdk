@@ -59,25 +59,34 @@ public class Configuration {
         private static final LoggerInterface DEFAULT_LOGGER = new DefaultLogger();
         private static final CredentialsInterface DEFAULT_CREDENTIALS = new DefaultCredentials();
         private static final NetworkConnectivityMonitorInterface DEFAULT_NET_MONITOR = new DefaultNetworkConnectivityMonitor();
-        private static final DefaultTokenManager DEFAULT_TOKEN_MANAGER = new DefaultTokenManager();
         private static final HttpWorkerInterface DEFAULT_HTTP_WORKER = new DefaultHttpWorker();
 
         private LoggerInterface mLoggerInterface = DEFAULT_LOGGER;
         private CredentialsInterface mCredentialsInterface = DEFAULT_CREDENTIALS;
         private NetworkConnectivityMonitorInterface mNetworkConnectivityMonitorInterface = DEFAULT_NET_MONITOR;
-        private ActionTokenManagerInterface mActionTokenManagerInterface = DEFAULT_TOKEN_MANAGER;
-        private SessionTokenManagerInterface mSessionTokenManagerInterface = DEFAULT_TOKEN_MANAGER;
         private HttpWorkerInterface mHttpWorkerInterface = DEFAULT_HTTP_WORKER;
+        private ActionTokenManagerInterface mActionTokenManagerInterface;
+        private SessionTokenManagerInterface mSessionTokenManagerInterface;
 
         private String mApiKey;
         private final String mAppId;
 
-        public Builder(String appId) {
+        public Builder(String appId, ActionTokenManagerInterface actionTokenManagerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
             if (appId == null) {
                 throw new IllegalArgumentException("app id cannot be null");
             }
 
+            if (actionTokenManagerInterface == null) {
+                throw new IllegalArgumentException("ActionTokenManagerInterface cannot be null");
+            }
+
+            if (sessionTokenManagerInterface == null) {
+                throw new IllegalArgumentException("SessionTokenManagerInterface cannot be null");
+            }
+
             mAppId = appId;
+            mActionTokenManagerInterface = actionTokenManagerInterface;
+            mSessionTokenManagerInterface = sessionTokenManagerInterface;
         }
 
         public Builder apiKey(String apiKey) {
@@ -112,24 +121,6 @@ public class Configuration {
             }
 
             mNetworkConnectivityMonitorInterface = networkConnectivityMonitor;
-            return this;
-        }
-
-        public Builder actionTokenManager(ActionTokenManagerInterface actionTokenManager) {
-            if (actionTokenManager == null) {
-                return this;
-            }
-
-            mActionTokenManagerInterface = actionTokenManager;
-            return this;
-        }
-
-        public Builder sessionTokenManager(SessionTokenManagerInterface sessionTokenManager) {
-            if (sessionTokenManager == null) {
-                return this;
-            }
-
-            mSessionTokenManagerInterface = sessionTokenManager;
             return this;
         }
 

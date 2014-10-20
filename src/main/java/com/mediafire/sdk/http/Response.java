@@ -3,7 +3,7 @@ package com.mediafire.sdk.http;
 import java.util.List;
 import java.util.Map;
 
-public final class Response {
+public class Response {
     private final int status;
     private final Map<String, List<String>> headers;
     private final byte[] bodyBytes;

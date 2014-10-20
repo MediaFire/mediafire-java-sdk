@@ -6,9 +6,7 @@ import com.mediafire.sdk.api_responses.user.GetSessionTokenResponse;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.http.InstructionsObject;
 import com.mediafire.sdk.http.Request;
-import com.mediafire.sdk.token.ActionToken;
-import com.mediafire.sdk.token.SessionToken;
-import com.mediafire.sdk.token.Token;
+import com.mediafire.sdk.token.*;
 
 /**
  * Created by Chris Najar on 10/18/2014.
@@ -39,7 +37,7 @@ public class TokenHelper {
             case NEW_IMAGE:
                 mConfiguration.getActionTokenManagerInterface().receiveImageActionToken((ActionToken) token);
                 break;
-            case NO_TOKEN_NEEDS_TO_BE_RETURNED:
+            case NONE:
                 break;
         }
     }
@@ -60,12 +58,22 @@ public class TokenHelper {
         return token;
     }
 
-    private ActionToken createActionToken(ActionToken.Type type, GetActionTokenResponse getActionTokenResponse, Request request) {
+    private ActionToken createActionToken(GetActionTokenResponse getActionTokenResponse, Request request) {
+        if (request == null) {
+            return null;
+        }
+
         if (getActionTokenResponse == null) {
             return null;
         }
 
         if (getActionTokenResponse.hasError()) {
+            return null;
+        }
+
+        String type = String.valueOf(request.getQueryParameters().get("type"));
+
+        if (type == null) {
             return null;
         }
 
@@ -76,7 +84,16 @@ public class TokenHelper {
         } else {
             tokenExpiry = 0L;
         }
-        ActionToken actionToken = new ActionToken(tokenString, type, tokenExpiry);
+
+        ActionToken actionToken;
+        if (type.equals("image")) {
+            actionToken = new ImageActionToken(tokenString, tokenExpiry);
+        } else if (type.equals("upload")) {
+            actionToken = new UploadActionToken(tokenString, tokenExpiry);
+        } else {
+            actionToken = null;
+        }
+
         return actionToken;
     }
 

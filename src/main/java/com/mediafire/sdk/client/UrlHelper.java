@@ -26,6 +26,7 @@ public class UrlHelper {
         String baseUrl;
         if (mRequest.getInstructionsObject().postQuery()) {
             baseUrl = getBaseUrlString(hostObject);
+            baseUrl += getBaseUriString(mRequest.getApiObject(), mRequest.getVersionObject());
         } else {
             baseUrl = makeUrlForGetRequest();
         }
@@ -68,9 +69,11 @@ public class UrlHelper {
         String baseUri = new String("/");
         if (apiVersion != null) {
             baseUri += "api/" + apiVersion + "/";
+        } else {
+            baseUri += "api/";
         }
 
-        baseUri += path + "api/";
+        baseUri += path + "/";
 
         baseUri += file;
 

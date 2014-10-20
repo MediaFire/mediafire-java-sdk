@@ -28,6 +28,10 @@ public class RequestGenerator {
         return request;
     }
 
+    public Request generateRequestObject(String path, String file) {
+        return generateRequestObject(null, path, file);
+    }
+
     static {
         // contact api calls
         holderMap.put("contact/add.php", new Holder(
@@ -95,14 +99,14 @@ public class RequestGenerator {
         // system api calls
         holderMap.put("system/get_info.php", new Holder(
                 new ApiObject("system", "get_info.php"),
-                new InstructionsObject(TokenType.NO_TOKEN_NEEDS_TO_BE_RETURNED, SignatureType.NO_SIGNATURE_REQUIRED, TokenType.NO_TOKEN_NEEDS_TO_BE_RETURNED, true)));
+                new InstructionsObject(TokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, TokenType.NONE, true)));
         // user api calls
         holderMap.put("user/get_info.php", new Holder(
                 new ApiObject("user", "get_info.php"),
                 new InstructionsObject(TokenType.VERSION_2, SignatureType.USING_SESSION_TOKEN_SIGNATURE, TokenType.VERSION_2, true)));
         holderMap.put("user/register.php", new Holder(
                 new ApiObject("user", "register.php"),
-                new InstructionsObject(TokenType.NO_TOKEN_NEEDS_TO_BE_RETURNED, SignatureType.NO_SIGNATURE_REQUIRED, TokenType.NO_TOKEN_NEEDS_TO_BE_RETURNED, true)));
+                new InstructionsObject(TokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, TokenType.NONE, true)));
         holderMap.put("user/get_avatar.php", new Holder(
                 new ApiObject("user", "get_avatar.php"),
                 new InstructionsObject(TokenType.VERSION_2, SignatureType.USING_SESSION_TOKEN_SIGNATURE, TokenType.VERSION_2, true)));
@@ -127,16 +131,16 @@ public class RequestGenerator {
         // upload api calls
         holderMap.put("upload/check.php", new Holder(
                 new ApiObject("upload", "check.php"),
-                new InstructionsObject(TokenType.NEW_UPLOAD, SignatureType.NO_SIGNATURE_REQUIRED, TokenType.NO_TOKEN_NEEDS_TO_BE_RETURNED, true)));
+                new InstructionsObject(TokenType.NEW_UPLOAD, SignatureType.NO_SIGNATURE_REQUIRED, TokenType.NONE, true)));
         holderMap.put("upload/instant.php", new Holder(
                 new ApiObject("upload", "instant.php"),
-                new InstructionsObject(TokenType.NEW_UPLOAD, SignatureType.NO_SIGNATURE_REQUIRED, TokenType.NO_TOKEN_NEEDS_TO_BE_RETURNED, true)));
+                new InstructionsObject(TokenType.NEW_UPLOAD, SignatureType.NO_SIGNATURE_REQUIRED, TokenType.NONE, true)));
         holderMap.put("upload/poll_upload.php", new Holder(
                 new ApiObject("upload", "poll_upload.php"),
-                new InstructionsObject(TokenType.NO_TOKEN_NEEDS_TO_BE_RETURNED, SignatureType.NO_SIGNATURE_REQUIRED, TokenType.NO_TOKEN_NEEDS_TO_BE_RETURNED, true)));
+                new InstructionsObject(TokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, TokenType.NONE, true)));
         holderMap.put("upload/resumable.php", new Holder(
                 new ApiObject("upload", "resumable.php"),
-                new InstructionsObject(TokenType.NEW_UPLOAD, SignatureType.NO_SIGNATURE_REQUIRED, TokenType.NO_TOKEN_NEEDS_TO_BE_RETURNED, false)));
+                new InstructionsObject(TokenType.NEW_UPLOAD, SignatureType.NO_SIGNATURE_REQUIRED, TokenType.NONE, false)));
         // device api calls
         holderMap.put("device/get_changes.php", new Holder(
                 new ApiObject("device", "get_changes.php"),

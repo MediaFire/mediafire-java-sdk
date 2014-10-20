@@ -37,7 +37,7 @@ public class UploadRunnable implements Runnable {
     private final int maxUploadAttempts;
     private String utf8EncodedFileName;
     private final NetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor;
-    private final UserCredentialsInterface mfCredentials;
+    private final CredentialsInterface mfCredentials;
     private final ActionTokenManagerInterface actionTokenManagerInterface;
     private final SessionTokenManagerInterface sessionTokenManagerInterface;
 

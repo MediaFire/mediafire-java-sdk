@@ -1,11 +1,9 @@
 package com.mediafire.sdk.client;
 
 import com.mediafire.sdk.config.Configuration;
-import com.mediafire.sdk.http.*;
-import com.mediafire.sdk.token.SessionToken;
-import com.mediafire.sdk.token.Token;
-
-import java.util.Map;
+import com.mediafire.sdk.http.Request;
+import com.mediafire.sdk.http.Response;
+import com.mediafire.sdk.http.Result;
 
 public class ApiClient {
     private final Configuration mConfiguration;
@@ -50,7 +48,7 @@ public class ApiClient {
         // add headers to request
         HeadersHelper headersHelper = new HeadersHelper(request);
         headersHelper.addGetHeaders();
-        return mConfiguration.getHttpWorkerInterface().doGet(url, null);
+        return mConfiguration.getHttpWorkerInterface().doGet(url, request.getHeaders());
     }
 
     private Response doPost(Request request) {
@@ -60,8 +58,7 @@ public class ApiClient {
 
         HeadersHelper headersHelper = new HeadersHelper(request);
         headersHelper.addPostHeaders(payload);
-        Map<String, String> headers = request.getHeaders();
 
-        return mConfiguration.getHttpWorkerInterface().doPost(url, headers, payload);
+        return mConfiguration.getHttpWorkerInterface().doPost(url, request.getHeaders(), payload, request.getInstructionsObject().postQuery());
     }
 }

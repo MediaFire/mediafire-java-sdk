@@ -77,7 +77,7 @@ public class UrlHelper {
         return baseUri;
     }
 
-    public String getQueryString(boolean encoded) {
+    public String getQueryString(boolean encoded, boolean rawKeyValue) {
         Map<String, Object> queryParameters = mRequest.getQueryParameters();
         if (queryParameters == null) {
             return "";
@@ -94,14 +94,23 @@ public class UrlHelper {
             }
         }
 
-        return queryString.replaceFirst("&", "?");
+        if (rawKeyValue) {
+            return queryString.replaceFirst("&", "");
+        } else {
+            return queryString.replaceFirst("&", "?");
+        }
+    }
+
+    public String getQueryString(boolean encoded) {
+        return getQueryString(encoded, false);
     }
 
     public byte[] getPayload() {
         byte[] payload;
 
         if (mRequest.getInstructionsObject().postQuery()) {
-            payload = new String(getQueryString(true)).getBytes();
+            String queryString = getQueryString(true, true);
+            payload = new String(queryString).getBytes();
         } else {
             payload = mRequest.getPayload();
         }

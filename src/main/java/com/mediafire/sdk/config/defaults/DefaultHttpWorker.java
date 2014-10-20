@@ -9,8 +9,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Map;
 
 /**
@@ -22,110 +22,80 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
 
     @Override
     public Response doGet(String url, Map<String, String> headers) {
-        if (url.startsWith("http")) {
-            return doGetHttp(url, headers);
-        } else if (url.startsWith("https")) {
-            return doGetHttps(url, headers);
-        } else {
-            return new ResponseApiClientError("Url did not start with http or https");
-        }
-    }
-
-    private Response doGetHttp(String url, Map<String, String> headers) {
-        HttpURLConnection connection;
+        System.out.println("doGet - url: " + url);
         try {
-            connection = (HttpURLConnection) new URL(url).openConnection();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return new ResponseApiClientError("Exception: " + e, e);
+            HttpURLConnection connection = getURLConnection(url);
+            setTimeouts(connection);
+            addGenericHeaders(connection, headers);
+            InputStream inputStream = connection.getInputStream();
+            byte[] response = readStream(inputStream);
+            int responseCode = connection.getResponseCode();
+            return new Response(responseCode, response);
         } catch (IOException e) {
             e.printStackTrace();
-            return new ResponseApiClientError("Exception: " + e, e);
+            return new ResponseApiClientError("IOException while trying to do GET on url '" + url + "'", e);
+        } finally {
         }
-
-        for (String key : headers.keySet()) {
-            if (headers.get(key) != null) {
-                connection.addRequestProperty(key, headers.get(key));
-            }
-        }
-
-        InputStream response;
-        try {
-            response = connection.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseApiClientError("Exception while trying to get input stream: " + e, e);
-        }
-        byte[] responseStream;
-        try {
-            responseStream = readStream(response);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseApiClientError("Exception while trying to read input stream: " + e, e);
-        }
-
-        int responseCode;
-        try {
-            responseCode = connection.getResponseCode();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseApiClientError("Exception while trying to get response code: " + e, e);
-        }
-
-        connection.disconnect();
-
-        return new Response(responseCode, responseStream);
-    }
-
-    private Response doGetHttps(String url, Map<String, String> headers) {
-        HttpsURLConnection connection;
-        try {
-            connection = (HttpsURLConnection) new URL(url).openConnection();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return new ResponseApiClientError("Exception: " + e, e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseApiClientError("Exception: " + e, e);
-        }
-
-        for (String key : headers.keySet()) {
-            if (headers.get(key) != null) {
-                connection.addRequestProperty(key, headers.get(key));
-            }
-        }
-
-        InputStream response;
-        try {
-            response = connection.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseApiClientError("Exception while trying to get input stream: " + e, e);
-        }
-        byte[] responseStream;
-        try {
-            responseStream = readStream(response);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseApiClientError("Exception while trying to read input stream: " + e, e);
-        }
-
-        int responseCode;
-        try {
-            responseCode = connection.getResponseCode();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseApiClientError("Exception while trying to get response code: " + e, e);
-        }
-
-        connection.disconnect();
-
-        return new Response(responseCode, responseStream);
     }
 
     @Override
-    public Response doPost(String url, Map<String, String> headers, byte[] payload) {
-        return new ResponseApiClientError("post not implemented yet");
+    public Response doPost(String url, Map<String, String> headers, byte[] payload, boolean payloadIsQuery) {
+        System.out.println("doPost - url: " + url + ", payload size: " + payload.length + ", payload is query: " + payloadIsQuery);
+        try{
+            HttpURLConnection connection = getURLConnection(url);
+            setTimeouts(connection);
+            connection.setDoOutput(true);
+            addGenericHeaders(connection, headers);
+            postData(connection, payload, payloadIsQuery);
+            InputStream inputStream = connection.getInputStream();
+            byte[] response = readStream(inputStream);
+            int responseCode = connection.getResponseCode();
+            return new Response(responseCode, response);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseApiClientError("IOException while trying to do POST on url '" + url + "'", e);
+        }
+    }
+
+    private HttpURLConnection getURLConnection(String url) throws IOException {
+        String urlScheme = url.substring(0, 5);
+
+        if (urlScheme.equals("http:")) {
+            return (HttpURLConnection) new URL(url).openConnection();
+        }
+
+        if (urlScheme.equals("https")) {
+            return (HttpsURLConnection) new URL(url).openConnection();
+        }
+
+        return null;
+    }
+
+    private void addGenericHeaders(URLConnection connection, Map<String, String> headers) {
+        for (String key : headers.keySet()) {
+            if (headers.get(key) != null) {
+                connection.addRequestProperty(key, headers.get(key));
+            }
+        }
+    }
+
+    private void setTimeouts(URLConnection connection) {
+        connection.setConnectTimeout(CONNECTION_TIMEOUT_MILLISECONDS);
+        connection.setReadTimeout(READ_TIMEOUT_MILLISECONDS);
+    }
+
+    private void postData(URLConnection connection, byte[] payload, boolean payloadIsQuery) throws IOException {
+        if (payloadIsQuery) {
+            connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        } else if (payload != null) {
+            connection.addRequestProperty("Content-Type", "application/octet-stream");
+        }
+
+        if (payload != null) {
+            connection.addRequestProperty("Content-Length", String.valueOf(payload.length));
+            connection.getOutputStream().write(payload);
+        }
     }
 
     private byte[] readStream(InputStream inputStream) throws IOException {

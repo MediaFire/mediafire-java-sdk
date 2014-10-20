@@ -51,8 +51,9 @@ public class ApiClientHelper {
                 ImageActionToken imageActionToken = mConfiguration.getActionTokenManagerInterface().borrowImageActionToken();
                 mRequest.addToken(imageActionToken);
                 break;
+            case NONE:
+                break;
             default:
-                // for type NONE, NEW there is no need to request a token.
                 break;
         }
     }
@@ -167,9 +168,6 @@ public class ApiClientHelper {
                 }
                 break;
             case NONE:
-                // for types NONE
-                // there is no need to return a token
-
                 // if a token is invalid then there needs to be a call made to TokenFarm to notify
                 if (responseHelper.getResponseObject(ApiResponse.class).hasError()) {
                     mConfiguration.getActionTokenManagerInterface().tokensFailed();

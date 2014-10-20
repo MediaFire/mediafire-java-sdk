@@ -88,10 +88,8 @@ public class TokenHelper {
         ActionToken actionToken;
         if (type.equals("image")) {
             actionToken = new ImageActionToken(tokenString, tokenExpiry);
-        } else if (type.equals("upload")) {
-            actionToken = new UploadActionToken(tokenString, tokenExpiry);
         } else {
-            actionToken = null;
+            actionToken = new UploadActionToken(tokenString, tokenExpiry);
         }
 
         return actionToken;

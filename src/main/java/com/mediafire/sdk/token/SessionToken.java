@@ -1,6 +1,6 @@
 package com.mediafire.sdk.token;
 
-public final class SessionToken extends Token {
+public class SessionToken extends Token {
     private final String time;
     private final String permanentToken;
     private String secretKey;
@@ -46,7 +46,7 @@ public final class SessionToken extends Token {
 
     public void updateSessionToken() {
         long newKey = Long.valueOf(secretKey) * 16807;
-        newKey = newKey % 2147483647;
+        newKey %= 2147483647;
         String newSecretKey = String.valueOf(newKey);
         secretKey = newSecretKey;
     }

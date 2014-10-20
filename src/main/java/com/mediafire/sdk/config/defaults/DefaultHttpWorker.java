@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by Chris Najar on 10/19/2014.
  */
-public final class DefaultHttpWorker implements HttpWorkerInterface {
+public class DefaultHttpWorker implements HttpWorkerInterface {
     private final int CONNECTION_TIMEOUT_MILLISECONDS = 5000;
     private final int READ_TIMEOUT_MILLISECONDS = 45000;
 

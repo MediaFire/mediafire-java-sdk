@@ -1,9 +1,11 @@
-package com.mediafire.sdk.client;
+package com.mediafire.sdk.clients;
 
 import com.mediafire.sdk.api_responses.ApiResponse;
 import com.mediafire.sdk.api_responses.user.GetActionTokenResponse;
 import com.mediafire.sdk.api_responses.user.GetSessionTokenResponse;
-import com.mediafire.sdk.config.Configuration;
+import com.mediafire.sdk.config.ActionTokenManagerInterface;
+import com.mediafire.sdk.config.CredentialsInterface;
+import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.ActionToken;
@@ -19,12 +21,20 @@ import java.util.Map;
  * Created by Chris Najar on 10/20/2014.
  */
 public class ApiClientHelper {
-    private Configuration mConfiguration;
+    private SessionTokenManagerInterface mSessionTokenManager;
+    private ActionTokenManagerInterface mActionTokenManager;
+    private CredentialsInterface mCredentials;
+    private String mAppId;
+    private String mApiKey;
     private Request mRequest;
     private Response mResponse;
 
-    public ApiClientHelper(Configuration configuration) {
-        mConfiguration = configuration;
+    public ApiClientHelper(SessionTokenManagerInterface sessionTokenManager, ActionTokenManagerInterface actionTokenManager, CredentialsInterface credentials, String appId, String apiKey) {
+        mSessionTokenManager = sessionTokenManager;
+        mActionTokenManager = actionTokenManager;
+        mCredentials = credentials;
+        mAppId = appId;
+        mApiKey = apiKey;
     }
 
     public void setup(Request request) {
@@ -40,15 +50,15 @@ public class ApiClientHelper {
     private void borrowToken() {
         switch (mRequest.getInstructionsObject().getBorrowTokenType()) {
             case V2:
-                SessionToken sessionToken = mConfiguration.getSessionTokenManagerInterface().borrowSessionToken();
+                SessionToken sessionToken = mSessionTokenManager.borrowSessionToken();
                 mRequest.addToken(sessionToken);
                 break;
             case UPLOAD:
-                UploadActionToken uploadActionToken = mConfiguration.getActionTokenManagerInterface().borrowUploadActionToken();
+                UploadActionToken uploadActionToken = mActionTokenManager.borrowUploadActionToken();
                 mRequest.addToken(uploadActionToken);
                 break;
             case IMAGE:
-                ImageActionToken imageActionToken = mConfiguration.getActionTokenManagerInterface().borrowImageActionToken();
+                ImageActionToken imageActionToken = mActionTokenManager.borrowImageActionToken();
                 mRequest.addToken(imageActionToken);
                 break;
             case NONE:
@@ -91,10 +101,10 @@ public class ApiClientHelper {
         // fb access token + app id + api key
         // tw oauth token + tw oauth token secret + app id + api key
 
-        String userInfoPortionOfHashTarget = mConfiguration.getUserCredentialsInterface().getConcatenatedCredentials();
+        String userInfoPortionOfHashTarget = mCredentials.getConcatenatedCredentials();
 
-        String appId = mConfiguration.getAppId();
-        String apiKey = mConfiguration.getApiKey();
+        String appId = mAppId;
+        String apiKey = mApiKey;
 
         // apiKey is not required, but may be passed into the MFConfiguration object
         // Note: If the app does not have the "Require Secret Key" option checked,
@@ -111,12 +121,12 @@ public class ApiClientHelper {
     }
 
     private void addRequiredParametersForNewSessionToken() {
-        Map<String, String> credentialsMap = mConfiguration.getUserCredentialsInterface().getCredentials();
+        Map<String, String> credentialsMap = mCredentials.getCredentials();
         for (String key : credentialsMap.keySet()) {
             mRequest.addQueryParameter(key, credentialsMap.get(key));
         }
 
-        mRequest.addQueryParameter("application_id", mConfiguration.getAppId());
+        mRequest.addQueryParameter("application_id", mAppId);
     }
 
     public void cleanup(Response response) {
@@ -135,7 +145,7 @@ public class ApiClientHelper {
                 GetSessionTokenResponse newSessionTokenResponse = responseHelper.getResponseObject(GetSessionTokenResponse.class);
                 SessionToken newSessionToken = createNewSessionToken(newSessionTokenResponse);
                 if (newSessionToken != null) {
-                    mConfiguration.getSessionTokenManagerInterface().receiveSessionToken(newSessionToken);
+                    mSessionTokenManager.receiveSessionToken(newSessionToken);
                 }
                 break;
             case V2:
@@ -146,31 +156,31 @@ public class ApiClientHelper {
                     if (apiResponse.needNewKey()) {
                         ((SessionToken) mRequest.getToken()).updateSessionToken();
                     }
-                    mConfiguration.getSessionTokenManagerInterface().receiveSessionToken(((SessionToken) mRequest.getToken()));
+                    mSessionTokenManager.receiveSessionToken(((SessionToken) mRequest.getToken()));
                 }
                 break;
             case NEW_UPLOAD:
                 GetActionTokenResponse uploadActionTokenResponse = responseHelper.getResponseObject(GetActionTokenResponse.class);
                 if (uploadActionTokenResponse.hasError() && uploadActionTokenResponse.getError() == 105 || uploadActionTokenResponse.getError() == 127) {
-                    mConfiguration.getActionTokenManagerInterface().tokensFailed();
+                    mActionTokenManager.tokensFailed();
                 } else {
                     UploadActionToken uploadActionToken = (UploadActionToken) createActionToken(UploadActionToken.class, uploadActionTokenResponse);
-                    mConfiguration.getActionTokenManagerInterface().receiveUploadActionToken(uploadActionToken);
+                    mActionTokenManager.receiveUploadActionToken(uploadActionToken);
                 }
                 break;
             case NEW_IMAGE:
                 GetActionTokenResponse imageActionTokenResponse = responseHelper.getResponseObject(GetActionTokenResponse.class);
                 if (imageActionTokenResponse.hasError() && imageActionTokenResponse.getError() == 105 || imageActionTokenResponse.getError() == 127) {
-                    mConfiguration.getActionTokenManagerInterface().tokensFailed();
+                    mActionTokenManager.tokensFailed();
                 } else {
                     ImageActionToken mfImageActionToken = (ImageActionToken) createActionToken(ImageActionToken.class, imageActionTokenResponse);
-                    mConfiguration.getActionTokenManagerInterface().receiveImageActionToken(mfImageActionToken);
+                    mActionTokenManager.receiveImageActionToken(mfImageActionToken);
                 }
                 break;
             case NONE:
                 // if a token is invalid then there needs to be a call made to TokenFarm to notify
                 if (responseHelper.getResponseObject(ApiResponse.class).hasError()) {
-                    mConfiguration.getActionTokenManagerInterface().tokensFailed();
+                    mActionTokenManager.tokensFailed();
                 }
                 break;
         }

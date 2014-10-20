@@ -1,19 +1,33 @@
-package com.mediafire.sdk.client;
+package com.mediafire.sdk.clients;
 
-import com.mediafire.sdk.config.Configuration;
+import com.mediafire.sdk.config.*;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 
 public class ApiClient {
-    private final Configuration mConfiguration;
+    private HttpWorkerInterface mHttpWorker;
+    private SessionTokenManagerInterface mSessionTokenManager;
+    private ActionTokenManagerInterface mActionTokenManager;
+    private CredentialsInterface mCredentials;
+    private String mAppId;
+    private String mApiKey;
+
+    public ApiClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManager, ActionTokenManagerInterface actionTokenManager, CredentialsInterface credentialsInterface, String appId, String apiKey) {
+        this.mHttpWorker = httpWorkerInterface;
+        mSessionTokenManager = sessionTokenManager;
+        mActionTokenManager = actionTokenManager;
+        mCredentials = credentialsInterface;
+        mAppId = appId;
+        mApiKey = apiKey;
+    }
 
     public ApiClient(Configuration configuration) {
-        mConfiguration = configuration;
+        this(configuration.getHttpWorkerInterface(), configuration.getSessionTokenManagerInterface(), configuration.getActionTokenManagerInterface(), configuration.getUserCredentialsInterface(), configuration.getAppId(), configuration.getApiKey());
     }
 
     public Result doRequest(Request request) {
-        ApiClientHelper apiClientHelper = new ApiClientHelper(mConfiguration);
+        ApiClientHelper apiClientHelper = new ApiClientHelper(mSessionTokenManager, mActionTokenManager, mCredentials, mAppId, mApiKey);
 
         // setup should handle the following:
         // 1. getting an ActionToken or SessionToken (if required) as per InstructionsObject
@@ -48,7 +62,7 @@ public class ApiClient {
         // add headers to request
         HeadersHelper headersHelper = new HeadersHelper(request);
         headersHelper.addGetHeaders();
-        return mConfiguration.getHttpWorkerInterface().doGet(url, request.getHeaders());
+        return mHttpWorker.doGet(url, request.getHeaders());
     }
 
     private Response doPost(Request request) {
@@ -59,6 +73,6 @@ public class ApiClient {
         HeadersHelper headersHelper = new HeadersHelper(request);
         headersHelper.addPostHeaders(payload);
 
-        return mConfiguration.getHttpWorkerInterface().doPost(url, request.getHeaders(), payload, request.getInstructionsObject().postQuery());
+        return mHttpWorker.doPost(url, request.getHeaders(), payload, request.getInstructionsObject().postQuery());
     }
 }

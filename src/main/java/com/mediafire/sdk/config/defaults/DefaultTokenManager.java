@@ -1,6 +1,6 @@
 package com.mediafire.sdk.config.defaults;
 
-import com.mediafire.sdk.client.ApiClient;
+import com.mediafire.sdk.clients.ApiClient;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;

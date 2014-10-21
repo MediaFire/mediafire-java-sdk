@@ -1,4 +1,4 @@
-package com.mediafire.sdk.client;
+package com.mediafire.sdk.clients;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

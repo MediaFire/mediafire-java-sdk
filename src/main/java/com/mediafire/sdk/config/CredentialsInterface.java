@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface CredentialsInterface {
 
-    public void setCredentials(Map<String, String> userCredentials);
+    public void setCredentials(Map<String, String> credentials);
 
     public Map<String, String> getCredentials();
 

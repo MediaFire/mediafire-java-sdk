@@ -1,4 +1,4 @@
-package com.mediafire.sdk.client;
+package com.mediafire.sdk.clients;
 
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.http.*;
@@ -6,17 +6,29 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import static junit.framework.TestCase.assertNotNull;
 
 /**
- * Created by Chris Najar on 10/19/2014.
+ * Created by Chris Najar on 10/21/2014.
  */
 public class ApiClientTest {
     Configuration mConfiguration;
 
     @Before
     public void setUp() throws Exception {
-        mConfiguration = new Configuration.Builder("40767").build();
+        mConfiguration = new Configuration.Builder().build();
+
+        Map<String, String> devCredentials = new LinkedHashMap<String, String>();
+        devCredentials.put("application_id", "18");
+        mConfiguration.getDeveloperCredentials().setCredentials(devCredentials);
+
+        Map<String, String> userCredentials = new LinkedHashMap<String, String>();
+        userCredentials.put("email", "javasdktest@example.com");
+        userCredentials.put("password", "74107410");
+        mConfiguration.getUserCredentials().setCredentials(userCredentials);
     }
 
     @After
@@ -26,7 +38,7 @@ public class ApiClientTest {
 
     @Test
     public void testSystemGetStatusGet() throws Exception {
-        ApiClient apiClient = new ApiClient(mConfiguration);
+        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
         HostObject hostObject = new HostObject("http", "www", "mediafire.com", "get");
         ApiObject apiObject = new ApiObject("system", "get_status.php");
         InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, false);
@@ -40,7 +52,7 @@ public class ApiClientTest {
 
     @Test
     public void testSystemGetStatusPost() throws Exception {
-        ApiClient apiClient = new ApiClient(mConfiguration);
+        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
         HostObject hostObject = new HostObject("http", "www", "mediafire.com", "post");
         ApiObject apiObject = new ApiObject("system", "get_status.php");
         InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, true);

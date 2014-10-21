@@ -1,28 +1,19 @@
 package com.mediafire.sdk.config.defaults;
 
-import com.mediafire.sdk.client.ApiClient;
+import com.mediafire.sdk.clients.ApiClientActionTokenManager;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
-import com.mediafire.sdk.config.Configuration;
+import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.*;
 import com.mediafire.sdk.token.ImageActionToken;
-import com.mediafire.sdk.token.SessionToken;
 import com.mediafire.sdk.token.UploadActionToken;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 /**
- * Created by Chris Najar on 10/19/2014.
+ * Created by Chris Najar on 10/21/2014.
  */
-public class DefaultTokenManager implements SessionTokenManagerInterface, ActionTokenManagerInterface {
+public class DefaultActionTokenManager implements ActionTokenManagerInterface {
+    private ApiClientActionTokenManager mApiClient;
 
-    private Configuration mConfiguration;
-    private ApiClient mApiClient;
-
-    private static final int MIN_SESSION_TOKEN = 3;
-    private static final int MAX_SESSION_TOKEN = 7;
-    private static final BlockingQueue<SessionToken> mSessionTokens = new LinkedBlockingQueue<SessionToken>(MAX_SESSION_TOKEN);
 
     private static ImageActionToken mImageActionToken;
     private static UploadActionToken mUploadActionToken;
@@ -30,9 +21,8 @@ public class DefaultTokenManager implements SessionTokenManagerInterface, Action
     private static final Object mImageActionTokenLock = new Object();
     private static final Object mUploadActionTokenLock = new Object();
 
-    public DefaultTokenManager(Configuration configuration){
-        mConfiguration = configuration;
-        mApiClient = new ApiClient(configuration);
+    public DefaultActionTokenManager(HttpWorkerInterface httpWorker, SessionTokenManagerInterface sessionTokenManager){
+        mApiClient = new ApiClientActionTokenManager(httpWorker, sessionTokenManager, this);
     }
 
     @Override
@@ -119,46 +109,4 @@ public class DefaultTokenManager implements SessionTokenManagerInterface, Action
         borrowImageActionToken();
         borrowUploadActionToken();
     }
-
-    @Override
-    public void receiveSessionToken(SessionToken token) {
-        addNewSessionToken(token);
-    }
-
-    @Override
-    public SessionToken borrowSessionToken() {
-        return getNewSessionToken();
-    }
-
-    private synchronized void addNewSessionToken(SessionToken token) {
-        if(mSessionTokens.size() < MAX_SESSION_TOKEN) {
-            mSessionTokens.offer(token);
-        }
-    }
-
-    private synchronized SessionToken getNewSessionToken() {
-
-        if(mSessionTokens.size() <= MIN_SESSION_TOKEN) {
-            for(int i = mSessionTokens.size(); i <= MIN_SESSION_TOKEN + 1; i++) {
-                requestNewSessionToken();
-            }
-        }
-
-        try {
-            return mSessionTokens.take();
-        } catch (InterruptedException e) {
-            return null;
-        }
-    }
-
-    private void requestNewSessionToken() {
-        HostObject hostObject = new HostObject("http", "www", "mediafire.com", "post");
-        ApiObject apiObject = new ApiObject("user", "get_session_token");
-        InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NEW_SESSION_TOKEN_SIGNATURE, ReturnTokenType.NEW_V2, true);
-        VersionObject versionObject = new VersionObject("1.2");
-        Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
-        request.addQueryParameter("application_id", mConfiguration.getAppId());
-        mApiClient.doRequest(request);
-    }
-
 }

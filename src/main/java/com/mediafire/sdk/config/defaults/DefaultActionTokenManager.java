@@ -1,9 +1,8 @@
 package com.mediafire.sdk.config.defaults;
 
-import com.mediafire.sdk.clients.ApiClientActionTokenManager;
+import com.mediafire.sdk.clients.ApiClient;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
-import com.mediafire.sdk.config.HttpWorkerInterface;
-import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.http.*;
 import com.mediafire.sdk.token.ImageActionToken;
 import com.mediafire.sdk.token.UploadActionToken;
@@ -13,16 +12,27 @@ import com.mediafire.sdk.token.UploadActionToken;
  */
 public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private static final String TAG = DefaultActionTokenManager.class.getCanonicalName();
-    private ApiClientActionTokenManager mApiClient;
+    private ApiClient mApiClient;
 
     private ImageActionToken mImageActionToken;
     private UploadActionToken mUploadActionToken;
 
     private static final Object mImageActionTokenLock = new Object();
     private static final Object mUploadActionTokenLock = new Object();
+    private Configuration mConfiguration;
 
-    public DefaultActionTokenManager(HttpWorkerInterface httpWorker, SessionTokenManagerInterface sessionTokenManager){
-        mApiClient = new ApiClientActionTokenManager(httpWorker, sessionTokenManager, this);
+    public DefaultActionTokenManager() { }
+
+    @Override
+    public void initialize(Configuration configuration) {
+        DefaultLogger.log().v(TAG, "initialize");
+        mConfiguration = configuration;
+        mApiClient = new ApiClient(configuration);
+    }
+
+    @Override
+    public void shutdown() {
+        DefaultLogger.log().v(TAG, "shutdown");
     }
 
     @Override

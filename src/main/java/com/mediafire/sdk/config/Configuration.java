@@ -10,6 +10,7 @@ public class Configuration {
     private ActionTokenManagerInterface mActionTokenManager;
     private LoggerInterface mLogger;
     private NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor;
+    private boolean initialized = false;
 
     private Configuration(Builder builder) {
         mHttpWorker = builder.mHttpWorker;
@@ -21,31 +22,58 @@ public class Configuration {
         mNetworkConnectivityMonitor = builder.mNetworkConnectivityMonitor;
     }
 
+    public void init() {
+        initialized = true;
+        mSessionTokenManager.initialize(this);
+        mActionTokenManager.initialize(this);
+    }
+
     public HttpWorkerInterface getHttpWorker() {
+        if (!initialized) {
+            throw new IllegalStateException("Configuration.init() must be called to finish configuration");
+        }
         return mHttpWorker;
     }
 
     public CredentialsInterface getUserCredentials() {
+        if (!initialized) {
+            throw new IllegalStateException("Configuration.init() must be called to finish configuration");
+        }
         return mUserCredentials;
     }
 
     public CredentialsInterface getDeveloperCredentials() {
+        if (!initialized) {
+            throw new IllegalStateException("Configuration.init() must be called to finish configuration");
+        }
         return mDeveloperCredentials;
     }
 
     public SessionTokenManagerInterface getSessionTokenManager() {
+        if (!initialized) {
+            throw new IllegalStateException("Configuration.init() must be called to finish configuration");
+        }
         return mSessionTokenManager;
     }
 
     public ActionTokenManagerInterface getActionTokenManager() {
+        if (!initialized) {
+            throw new IllegalStateException("Configuration.init() must be called to finish configuration");
+        }
         return mActionTokenManager;
     }
 
     public LoggerInterface getLogger() {
+        if (!initialized) {
+            throw new IllegalStateException("Configuration.init() must be called to finish configuration");
+        }
         return mLogger;
     }
 
     public NetworkConnectivityMonitorInterface getNetworkConnectivityMonitor() {
+        if (!initialized) {
+            throw new IllegalStateException("Configuration.init() must be called to finish configuration");
+        }
         return mNetworkConnectivityMonitor;
     }
 
@@ -53,8 +81,8 @@ public class Configuration {
         private static final HttpWorkerInterface DEFAULT_HTTP_WORKER = new DefaultHttpWorker();
         private static final CredentialsInterface DEFAULT_USER_CREDENTIALS = new DefaultCredentials("user");
         private static final CredentialsInterface DEFAULT_DEVELOPER_CREDENTIALS = new DefaultCredentials("dev");
-        private static final SessionTokenManagerInterface DEFAULT_SESSION_TOKEN_MANAGER = new DefaultSessionTokenManager(DEFAULT_HTTP_WORKER, DEFAULT_USER_CREDENTIALS, DEFAULT_DEVELOPER_CREDENTIALS);
-        private static final ActionTokenManagerInterface DEFAULT_ACTION_TOKEN_MANAGER = new DefaultActionTokenManager(DEFAULT_HTTP_WORKER, DEFAULT_SESSION_TOKEN_MANAGER);
+        private static final SessionTokenManagerInterface DEFAULT_SESSION_TOKEN_MANAGER = new DefaultSessionTokenManager();
+        private static final ActionTokenManagerInterface DEFAULT_ACTION_TOKEN_MANAGER = new DefaultActionTokenManager();
         private static final LoggerInterface DEFAULT_LOGGER = new DefaultLogger();
         private static final NetworkConnectivityMonitorInterface DEFAULT_NET_MONITOR = new DefaultNetworkConnectivityMonitor();
 

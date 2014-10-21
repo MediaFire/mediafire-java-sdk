@@ -6,7 +6,7 @@ import com.mediafire.sdk.token.SessionToken;
 /**
  * Created by Chris Najar on 9/16/2014.
  */
-public interface SessionTokenManagerInterface {
+public interface SessionTokenManagerInterface extends Initializable {
 
     public void receiveSessionToken(SessionToken token);
 

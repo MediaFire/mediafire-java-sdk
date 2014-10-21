@@ -5,12 +5,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mediafire.sdk.api_responses.ApiResponse;
+import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.Response;
 
 /**
  * Created by Chris Najar on 10/18/2014.
  */
 public class ResponseHelper {
+    private static final String TAG = ResponseHelper.class.getCanonicalName();
     private Response mResponse;
 
     public ResponseHelper(Response response) {
@@ -38,7 +40,9 @@ public class ResponseHelper {
             return null;
         }
 
-        return new String(mResponse.getBytes());
+        String responseString = new String(mResponse.getBytes());
+        DefaultLogger.log().v(TAG, "getResponseAsString - " + responseString);
+        return responseString;
     }
 
     private String getResponseStringForGson(String response) {

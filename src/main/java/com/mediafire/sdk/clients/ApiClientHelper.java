@@ -6,6 +6,7 @@ import com.mediafire.sdk.api_responses.user.GetSessionTokenResponse;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.config.CredentialsInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.token.ActionToken;
 import com.mediafire.sdk.token.ImageActionToken;
 import com.mediafire.sdk.token.SessionToken;
@@ -17,6 +18,8 @@ import java.util.Map;
  * Created by Chris Najar on 10/20/2014.
  */
 public class ApiClientHelper extends AbstractApiClientHelper {
+    private static final String TAG = ApiClientHelper.class.getCanonicalName();
+
     private SessionTokenManagerInterface mSessionTokenManager;
     private ActionTokenManagerInterface mActionTokenManager;
     private CredentialsInterface mUserCredentials;
@@ -31,6 +34,7 @@ public class ApiClientHelper extends AbstractApiClientHelper {
 
     @Override
     public void borrowToken() {
+        DefaultLogger.log().v(TAG, "borrowToken - " + mRequest.getInstructionsObject().getBorrowTokenType());
         switch (mRequest.getInstructionsObject().getBorrowTokenType()) {
             case V2:
                 SessionToken sessionToken = mSessionTokenManager.borrowSessionToken();
@@ -55,6 +59,8 @@ public class ApiClientHelper extends AbstractApiClientHelper {
     public void addTokenToRequestParameters() {
         if (mRequest.getToken() != null) {
             String tokenString = mRequest.getToken().getTokenString();
+
+            DefaultLogger.log().v(TAG, "addTokenToRequestParameters - " + tokenString);
             mRequest.addQueryParameter("session_token", tokenString);
         }
     }
@@ -77,6 +83,7 @@ public class ApiClientHelper extends AbstractApiClientHelper {
         }
 
         if (signature != null) {
+            DefaultLogger.log().v(TAG, "addSignatureToRequestParameters - " + signature);
             mRequest.addQueryParameter("signature", signature);
         }
     }
@@ -94,7 +101,9 @@ public class ApiClientHelper extends AbstractApiClientHelper {
         // However, this should only be done when sufficient domain and/or network restrictions are in place.
         String hashTarget = userInfoPortionOfHashTarget + mDeveloperCredentials.getConcatenatedCredentials();
 
-        return hashString(hashTarget, "SHA-1");
+        String signature = hashString(hashTarget, "SHA-1");
+        DefaultLogger.log().v(TAG, "makeSignatureForNewSessionToken - " + signature);
+        return signature;
     }
 
     private void addRequiredParametersForNewSessionToken() {
@@ -102,6 +111,8 @@ public class ApiClientHelper extends AbstractApiClientHelper {
         for (String key : credentialsMap.keySet()) {
             mRequest.addQueryParameter(key, credentialsMap.get(key));
         }
+
+        DefaultLogger.log().v(TAG, "addRequiredParametersForNewSessionToken");
 
         mRequest.addQueryParameter("application_id", mDeveloperCredentials.getCredentials().get("application_id"));
     }
@@ -111,8 +122,11 @@ public class ApiClientHelper extends AbstractApiClientHelper {
         ResponseHelper responseHelper = new ResponseHelper(mResponse);
 
         if (mResponse == null || responseHelper.getResponseObject(ApiResponse.class) == null) {
+            DefaultLogger.log().v(TAG, "returnToken - not returning a token. response null or couldn't find api response");
             return;
         }
+
+        DefaultLogger.log().v(TAG, "returnToken - " + mRequest.getInstructionsObject().getReturnTokenType());
         switch (mRequest.getInstructionsObject().getReturnTokenType()) {
             case NEW_V2:
                 GetSessionTokenResponse newSessionTokenResponse = responseHelper.getResponseObject(GetSessionTokenResponse.class);
@@ -160,6 +174,7 @@ public class ApiClientHelper extends AbstractApiClientHelper {
     }
 
     public String makeSignatureForApiRequest() {
+        DefaultLogger.log().v(TAG, "makeSignatureForApiRequest");
         // session token secret key + time + uri (concatenated)
         SessionToken sessionToken = (SessionToken) mRequest.getToken();
         int secretKeyMod256 = Integer.valueOf(sessionToken.getSecretKey()) % 256;
@@ -178,6 +193,7 @@ public class ApiClientHelper extends AbstractApiClientHelper {
     }
 
     private ActionToken createActionToken(Class<? extends ActionToken> clazz, GetActionTokenResponse getActionTokenResponse) {
+        DefaultLogger.log().v(TAG, "createActionToken");
         if (getActionTokenResponse == null) {
             return null;
         }
@@ -204,6 +220,7 @@ public class ApiClientHelper extends AbstractApiClientHelper {
     }
 
     public SessionToken createNewSessionToken(GetSessionTokenResponse getSessionTokenResponse) {
+        DefaultLogger.log().v(TAG, "createNewSessionToken");
         if (getSessionTokenResponse == null) {
             return null;
         }

@@ -1,6 +1,7 @@
 package com.mediafire.sdk.clients;
 
 import com.mediafire.sdk.api_responses.user.GetSessionTokenResponse;
+import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.SessionToken;
@@ -12,10 +13,12 @@ import java.security.NoSuchAlgorithmException;
  * Created by Chris Najar on 10/20/2014.
  */
 public abstract class AbstractApiClientHelper {
+    private static final String TAG = AbstractApiClientHelper.class.getCanonicalName();
     protected Request mRequest;
     protected Response mResponse;
 
     public final void setup(Request request) {
+        DefaultLogger.log().v(TAG, "setup");
         mRequest = request;
         borrowToken();
         addTokenToRequestParameters();
@@ -23,6 +26,7 @@ public abstract class AbstractApiClientHelper {
     }
 
     public final void cleanup(Response response) {
+        DefaultLogger.log().v(TAG, "cleanup");
         mResponse = response;
         returnToken();
     }
@@ -36,6 +40,7 @@ public abstract class AbstractApiClientHelper {
     public abstract void returnToken();
 
     protected SessionToken createNewSessionToken(GetSessionTokenResponse getSessionTokenResponse) {
+        DefaultLogger.log().v(TAG, "createNewSessionToken");
         if (getSessionTokenResponse == null) {
             return null;
         }
@@ -54,6 +59,7 @@ public abstract class AbstractApiClientHelper {
     }
 
     protected String makeSignatureForApiRequest() {
+        DefaultLogger.log().v(TAG, "makeSignatureForApiRequest");
         // session token secret key + time + uri (concatenated)
         SessionToken sessionToken = (SessionToken) mRequest.getToken();
         int secretKeyMod256 = Integer.valueOf(sessionToken.getSecretKey()) % 256;
@@ -72,7 +78,7 @@ public abstract class AbstractApiClientHelper {
     }
 
     protected String hashString(String target, String hashAlgorithm) {
-        String hash;
+        DefaultLogger.log().v(TAG, "hashString");
         try {
             MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
 
@@ -85,11 +91,10 @@ public abstract class AbstractApiClientHelper {
             for (byte aByteData : byteData) {
                 sb.append(Integer.toString((aByteData & 0xff) + 0x100, 16).substring(1));
             }
-            hash = sb.toString();
+            return sb.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            hash = target;
+            return target;
         }
-        return hash;
     }
 }

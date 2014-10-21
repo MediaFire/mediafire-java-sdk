@@ -16,13 +16,14 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Chris Najar on 10/21/2014.
  */
 public class DefaultSessionTokenManager implements SessionTokenManagerInterface {
-
+    private static final String TAG = DefaultSessionTokenManager.class.getCanonicalName();
     private final CredentialsInterface mDeveloperCredentials;
     private ApiClientSessionTokenManager mApiClient;
 
     private static final int MIN_SESSION_TOKEN = 1;
     private static final int MAX_SESSION_TOKEN = 3;
     private static final BlockingQueue<SessionToken> mSessionTokens = new LinkedBlockingQueue<SessionToken>(MAX_SESSION_TOKEN);
+    private final Object lock = new Object();
 
     public DefaultSessionTokenManager(HttpWorkerInterface httpWorker, CredentialsInterface userCredentials, CredentialsInterface developerCredentials){
         mDeveloperCredentials = developerCredentials;
@@ -31,42 +32,59 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
 
     @Override
     public void receiveSessionToken(SessionToken token) {
-        addNewSessionToken(token);
-    }
-
-    @Override
-    public SessionToken borrowSessionToken() {
-        return getNewSessionToken();
-    }
-
-    @Override
-    public void getNewSessionTokenFailed(Response response) {
-
-    }
-
-    private synchronized void addNewSessionToken(SessionToken token) {
-        if(mSessionTokens.size() < MAX_SESSION_TOKEN) {
+        DefaultLogger.log().v(TAG, "receiveSessionToken");
+        if (token != null) {
             mSessionTokens.offer(token);
         }
     }
 
-    private synchronized SessionToken getNewSessionToken() {
-        if(mSessionTokens.size() <= MIN_SESSION_TOKEN) {
-            for(int i = mSessionTokens.size(); i <= MIN_SESSION_TOKEN + 1; i++) {
-                requestNewSessionToken();
+    @Override
+    public SessionToken borrowSessionToken() {
+        DefaultLogger.log().v(TAG, "borrowSessionToken");
+        synchronized (lock) {
+            if (mSessionTokens.size() < MIN_SESSION_TOKEN) {
+                for (int i = 0; i < MIN_SESSION_TOKEN - mSessionTokens.size(); i++) {
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            requestNewSessionToken();
+                        }
+                    };
+                    Thread thread = new Thread(runnable);
+                    thread.start();
+                }
             }
-        }
 
-        try {
-            return mSessionTokens.take();
-        } catch (InterruptedException e) {
-            return null;
+            while(mSessionTokens.isEmpty()) {
+                DefaultLogger.log().v(TAG, "borrowSessionToken - waiting for token");
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            try {
+                SessionToken sessionToken = mSessionTokens.take();
+                return sessionToken;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 
+    @Override
+    public void getNewSessionTokenFailed(Response response) {
+        DefaultLogger.log().v(TAG, "getNewSessionTokenFailed");
+    }
+
     private void requestNewSessionToken() {
+        DefaultLogger.log().v(TAG, "requestNewSessionToken");
         Request request = new RequestGenerator().generateRequestObject("1.2", "user", "get_session_token.php");
         request.addQueryParameter("application_id", mDeveloperCredentials.getCredentials().get("application_id"));
+        request.addQueryParameter("response_format", "json");
+        request.addQueryParameter("token_version", 2);
         mApiClient.doRequest(request);
     }
 }

@@ -4,6 +4,7 @@ import com.mediafire.sdk.api_responses.ApiResponse;
 import com.mediafire.sdk.api_responses.user.GetSessionTokenResponse;
 import com.mediafire.sdk.config.CredentialsInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.token.SessionToken;
 
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Map;
  * Created by Chris Najar on 10/20/2014.
  */
 public class ApiClientHelperSessionTokenManager extends AbstractApiClientHelper {
+    private static final String TAG = ApiClientHelperSessionTokenManager.class.getCanonicalName();
 
     private CredentialsInterface mUserCredentials;
     private CredentialsInterface mDeveloperCredentials;
@@ -37,6 +39,7 @@ public class ApiClientHelperSessionTokenManager extends AbstractApiClientHelper 
 
     @Override
     public void addSignatureToRequestParameters() {
+        DefaultLogger.log().v(TAG, "addSignatureToRequestParameters");
         addRequiredParametersForNewSessionToken();
         String signature = makeSignatureForNewSessionToken();
 
@@ -46,6 +49,7 @@ public class ApiClientHelperSessionTokenManager extends AbstractApiClientHelper 
     }
 
     private void addRequiredParametersForNewSessionToken() {
+        DefaultLogger.log().v(TAG, "addRequiredParametersForNewSessionToken");
         Map<String, String> credentialsMap = mUserCredentials.getCredentials();
         for (String key : credentialsMap.keySet()) {
             mRequest.addQueryParameter(key, credentialsMap.get(key));
@@ -55,6 +59,7 @@ public class ApiClientHelperSessionTokenManager extends AbstractApiClientHelper 
     }
 
     private String makeSignatureForNewSessionToken() {
+        DefaultLogger.log().v(TAG, "makeSignatureForNewSessionToken");
         // email + password + app id + api key
         // fb access token + app id + api key
         // tw oauth token + tw oauth token secret + app id + api key
@@ -73,6 +78,7 @@ public class ApiClientHelperSessionTokenManager extends AbstractApiClientHelper 
 
     @Override
     public void returnToken() {
+        DefaultLogger.log().v(TAG, "returnToken");
         ResponseHelper responseHelper = new ResponseHelper(mResponse);
 
         if (mResponse == null || responseHelper.getResponseObject(ApiResponse.class) == null) {
@@ -82,6 +88,12 @@ public class ApiClientHelperSessionTokenManager extends AbstractApiClientHelper 
 
         GetSessionTokenResponse newSessionTokenResponse = responseHelper.getResponseObject(GetSessionTokenResponse.class);
         SessionToken newSessionToken = createNewSessionToken(newSessionTokenResponse);
+        DefaultLogger.log().v(TAG, "token null: " + (newSessionToken == null));
+        DefaultLogger.log().v(TAG, "token secret key: " + newSessionToken.getSecretKey());
+        DefaultLogger.log().v(TAG, "token time: " + newSessionToken.getTime());
+        DefaultLogger.log().v(TAG, "token ekey: " + newSessionToken.getEkey());
+        DefaultLogger.log().v(TAG, "token pkey: " + newSessionToken.getPkey());
+        DefaultLogger.log().v(TAG, "token permtoken: " + newSessionToken.getPermanentToken());
         if (newSessionToken != null) {
             mSessionTokenManager.receiveSessionToken(newSessionToken);
         }

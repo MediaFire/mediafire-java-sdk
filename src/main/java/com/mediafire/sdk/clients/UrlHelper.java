@@ -1,5 +1,6 @@
 package com.mediafire.sdk.clients;
 
+import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.ApiObject;
 import com.mediafire.sdk.http.HostObject;
 import com.mediafire.sdk.http.Request;
@@ -13,6 +14,7 @@ import java.util.Map;
  * Created by Chris Najar on 10/18/2014.
  */
 public class UrlHelper {
+    private static final String TAG = UrlHelper.class.getCanonicalName();
 
     private final Request mRequest;
 
@@ -21,6 +23,7 @@ public class UrlHelper {
     }
 
     public String makeUrlForPostRequest() {
+        DefaultLogger.log().v(TAG, "makeUrlForPostRequest");
         String baseUrl;
         if (mRequest.getInstructionsObject().postQuery()) {
             baseUrl = getBaseUrlString();
@@ -33,6 +36,7 @@ public class UrlHelper {
     }
 
     public String makeUrlForGetRequest() {
+        DefaultLogger.log().v(TAG, "makeUrlForGetRequest");
         String baseUrl = getBaseUrlString();
 
         String baseUri = getBaseUriString();
@@ -43,6 +47,7 @@ public class UrlHelper {
     }
 
     public String getBaseUrlString() {
+        DefaultLogger.log().v(TAG, "getBaseUrlString");
         HostObject hostObject = mRequest.getHostObject();
         String transferProtocol = hostObject.getTransferProtocol();
 
@@ -54,6 +59,7 @@ public class UrlHelper {
     }
 
     public String getBaseUriString() {
+        DefaultLogger.log().v(TAG, "getBaseUriString");
         ApiObject apiObject = mRequest.getApiObject();
         VersionObject versionObject = mRequest.getVersionObject();
 
@@ -78,6 +84,7 @@ public class UrlHelper {
     }
 
     public String getQueryString(boolean encoded, boolean rawKeyValue) {
+        DefaultLogger.log().v(TAG, "getQueryString");
         Map<String, Object> queryParameters = mRequest.getQueryParameters();
         if (queryParameters == null) {
             return "";
@@ -106,6 +113,7 @@ public class UrlHelper {
     }
 
     public byte[] getPayload() {
+        DefaultLogger.log().v(TAG, "getPayload");
         byte[] payload;
 
         if (mRequest.getInstructionsObject().postQuery()) {

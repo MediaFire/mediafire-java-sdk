@@ -17,12 +17,13 @@ import java.util.Map;
  * Created by Chris Najar on 10/19/2014.
  */
 public class DefaultHttpWorker implements HttpWorkerInterface {
+    private static final String TAG = DefaultHttpWorker.class.getCanonicalName();
     private final int CONNECTION_TIMEOUT_MILLISECONDS = 5000;
     private final int READ_TIMEOUT_MILLISECONDS = 45000;
 
     @Override
     public Response doGet(String url, Map<String, String> headers) {
-        System.out.println("doGet - url: " + url);
+        DefaultLogger.log().v(TAG, "doGet - " + url);
         try {
             HttpURLConnection connection = getURLConnection(url);
             setTimeouts(connection);
@@ -40,7 +41,7 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
 
     @Override
     public Response doPost(String url, Map<String, String> headers, byte[] payload, boolean payloadIsQuery) {
-        System.out.println("doPost - url: " + url + ", payload size: " + payload.length + ", payload is query: " + payloadIsQuery);
+        DefaultLogger.log().v(TAG, "doPost - " + url);
         try{
             HttpURLConnection connection = getURLConnection(url);
             setTimeouts(connection);
@@ -51,7 +52,6 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
             byte[] response = readStream(inputStream);
             int responseCode = connection.getResponseCode();
             return new Response(responseCode, response);
-
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseApiClientError("IOException while trying to do POST on url '" + url + "'", e);
@@ -62,10 +62,12 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
         String urlScheme = url.substring(0, 5);
 
         if (urlScheme.equals("http:")) {
+            DefaultLogger.log().v(TAG, "getURLConnection - HttpUrlConnection");
             return (HttpURLConnection) new URL(url).openConnection();
         }
 
         if (urlScheme.equals("https")) {
+            DefaultLogger.log().v(TAG, "getURLConnection - HttpsUrlConnection");
             return (HttpsURLConnection) new URL(url).openConnection();
         }
 
@@ -73,6 +75,7 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     }
 
     private void addGenericHeaders(URLConnection connection, Map<String, String> headers) {
+        DefaultLogger.log().v(TAG, "addGenericHeaders - " + headers.size());
         for (String key : headers.keySet()) {
             if (headers.get(key) != null) {
                 connection.addRequestProperty(key, headers.get(key));
@@ -81,11 +84,13 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     }
 
     private void setTimeouts(URLConnection connection) {
+        DefaultLogger.log().v(TAG, "setTimeouts - conn/read = " + CONNECTION_TIMEOUT_MILLISECONDS + "/" + READ_TIMEOUT_MILLISECONDS);
         connection.setConnectTimeout(CONNECTION_TIMEOUT_MILLISECONDS);
         connection.setReadTimeout(READ_TIMEOUT_MILLISECONDS);
     }
 
     private void postData(URLConnection connection, byte[] payload, boolean payloadIsQuery) throws IOException {
+        DefaultLogger.log().v(TAG, "postData - " + payload.length + " bytes ( payload is query: " + payloadIsQuery + ")");
         if (payloadIsQuery) {
             connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         } else if (payload != null) {
@@ -99,6 +104,7 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     }
 
     private byte[] readStream(InputStream inputStream) throws IOException {
+        DefaultLogger.log().v(TAG, "readStream");
         if (inputStream == null) {
             return null;
         }

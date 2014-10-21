@@ -1,5 +1,7 @@
 package com.mediafire.sdk.clients;
 
+import com.mediafire.sdk.api_responses.user.GetSessionTokenResponse;
+import com.mediafire.sdk.api_responses.user.SetAvatarResponse;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.http.*;
 import org.junit.After;
@@ -8,7 +10,9 @@ import org.junit.Test;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
 /**
@@ -62,5 +66,107 @@ public class ApiClientTest {
         Result result = apiClient.doRequest(request);
 
         assertNotNull(result);
+    }
+
+    @Test
+    public void testUserGetSessionToken() throws Exception {
+        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        Request request = new RequestGenerator().generateRequestObject("1.2", "user", "get_session_token.php");
+        request.addQueryParameter("response_format", "json");
+        request.addQueryParameter("token_version", "2");
+        Result result = apiClient.doRequest(request);
+
+        ResponseHelper responseHelper = new ResponseHelper(result.getResponse());
+        GetSessionTokenResponse responseObject = responseHelper.getResponseObject(GetSessionTokenResponse.class);
+
+        String actual = responseObject.getResult();
+        String expected = "Success";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testUserSetAvatar() throws Exception {
+        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        Request request = new RequestGenerator().generateRequestObject("1.2", "user", "set_avatar.php");
+        request.addQueryParameter("response_format", "json");
+        request.addQueryParameter("url", "http://i.imgur.com/6qTUpMH.png");
+        Result result = apiClient.doRequest(request);
+
+        ResponseHelper responseHelper = new ResponseHelper(result.getResponse());
+        SetAvatarResponse responseObject = responseHelper.getResponseObject(SetAvatarResponse.class);
+
+        String actual = responseObject.getResult();
+        String expected = "Success";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testUserGetAvatar() throws Exception {
+        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        Request request = new RequestGenerator().generateRequestObject("1.2", "user", "get_avatar.php");
+        request.addQueryParameter("response_format", "json");
+        Result result = apiClient.doRequest(request);
+
+        ResponseHelper responseHelper = new ResponseHelper(result.getResponse());
+        SetAvatarResponse responseObject = responseHelper.getResponseObject(SetAvatarResponse.class);
+
+        String actual = responseObject.getResult();
+        String expected = "Success";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testUserGetSettings() throws Exception {
+        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        Request request = new RequestGenerator().generateRequestObject("1.2", "user", "get_settings.php");
+        request.addQueryParameter("response_format", "json");
+        Result result = apiClient.doRequest(request);
+
+        ResponseHelper responseHelper = new ResponseHelper(result.getResponse());
+        SetAvatarResponse responseObject = responseHelper.getResponseObject(SetAvatarResponse.class);
+
+        String actual = responseObject.getResult();
+        String expected = "Success";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testUserSetSettings() throws Exception {
+        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        Request request = new RequestGenerator().generateRequestObject("1.2", "user", "set_settings.php");
+        request.addQueryParameter("response_format", "json");
+        request.addQueryParameter("default_share_link_status", "disabled");
+        Result result = apiClient.doRequest(request);
+
+        ResponseHelper responseHelper = new ResponseHelper(result.getResponse());
+        SetAvatarResponse responseObject = responseHelper.getResponseObject(SetAvatarResponse.class);
+
+        String actual = responseObject.getResult();
+        String expected = "Success";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testUserRegister() throws Exception {
+        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        Request request = new RequestGenerator().generateRequestObject("1.2", "user", "register.php");
+        request.addQueryParameter("response_format", "json");
+        request.addQueryParameter("email", "testacct" + new Random().nextInt(10000) + "@example.com");
+        request.addQueryParameter("password", "74107410");
+
+        Result result = apiClient.doRequest(request);
+
+        ResponseHelper responseHelper = new ResponseHelper(result.getResponse());
+        SetAvatarResponse responseObject = responseHelper.getResponseObject(SetAvatarResponse.class);
+
+        String actual = responseObject.getResult();
+        String expected = "Success";
+
+        assertEquals(expected, actual);
     }
 }

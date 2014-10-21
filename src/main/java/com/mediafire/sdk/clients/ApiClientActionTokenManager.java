@@ -3,6 +3,7 @@ package com.mediafire.sdk.clients;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
@@ -11,7 +12,7 @@ import com.mediafire.sdk.http.Result;
  * Created by Chris Najar on 10/20/2014.
  */
 public class ApiClientActionTokenManager extends AbstractApiClient {
-
+    private static final String TAG = ApiClientActionTokenManager.class.getCanonicalName();
     private SessionTokenManagerInterface mSessionTokenManager;
     private ActionTokenManagerInterface mActionTokenManager;
 
@@ -23,6 +24,7 @@ public class ApiClientActionTokenManager extends AbstractApiClient {
 
     @Override
     public Result doRequest(Request request) {
+        DefaultLogger.log().v(TAG, "doRequest");
         ApiClientHelperActionTokenManager apiClientHelper = new ApiClientHelperActionTokenManager(mSessionTokenManager, mActionTokenManager);
 
         // setup should handle the following:

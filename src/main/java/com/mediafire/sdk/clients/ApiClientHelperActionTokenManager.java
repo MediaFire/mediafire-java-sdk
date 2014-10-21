@@ -4,6 +4,7 @@ import com.mediafire.sdk.api_responses.ApiResponse;
 import com.mediafire.sdk.api_responses.user.GetActionTokenResponse;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.token.ActionToken;
 import com.mediafire.sdk.token.ImageActionToken;
 import com.mediafire.sdk.token.SessionToken;
@@ -13,6 +14,7 @@ import com.mediafire.sdk.token.UploadActionToken;
  * Created by Chris Najar on 10/20/2014.
  */
 public class ApiClientHelperActionTokenManager extends AbstractApiClientHelper {
+    private static final String TAG = ApiClientHelperActionTokenManager.class.getCanonicalName();
 
     private SessionTokenManagerInterface mSessionTokenManager;
     private ActionTokenManagerInterface mActionTokenManager;
@@ -24,6 +26,7 @@ public class ApiClientHelperActionTokenManager extends AbstractApiClientHelper {
 
     @Override
     public void borrowToken() {
+        DefaultLogger.log().v(TAG, "borrowToken");
         // borrow session token from session manager
         SessionToken sessionToken = mSessionTokenManager.borrowSessionToken();
         mRequest.addToken(sessionToken);
@@ -31,6 +34,7 @@ public class ApiClientHelperActionTokenManager extends AbstractApiClientHelper {
 
     @Override
     public void addTokenToRequestParameters() {
+        DefaultLogger.log().v(TAG, "addTokenToRequestParameters");
         // add token to request parameter
         if (mRequest.getToken() != null) {
             String tokenString = mRequest.getToken().getTokenString();
@@ -40,6 +44,7 @@ public class ApiClientHelperActionTokenManager extends AbstractApiClientHelper {
 
     @Override
     public void addSignatureToRequestParameters() {
+        DefaultLogger.log().v(TAG, "addSignatureToRequestParameters");
         // add signature to request parameter
         String signature = makeSignatureForApiRequest();
 
@@ -50,6 +55,7 @@ public class ApiClientHelperActionTokenManager extends AbstractApiClientHelper {
 
     @Override
     public void returnToken() {
+        DefaultLogger.log().v(TAG, "returnToken");
         ResponseHelper responseHelper = new ResponseHelper(mResponse);
 
         if (mResponse == null || responseHelper.getResponseObject(ApiResponse.class) == null) {
@@ -97,6 +103,7 @@ public class ApiClientHelperActionTokenManager extends AbstractApiClientHelper {
     }
 
     private ActionToken createActionToken(Class<? extends ActionToken> clazz, GetActionTokenResponse getActionTokenResponse) {
+        DefaultLogger.log().v(TAG, "createActionToken");
         if (getActionTokenResponse == null) {
             return null;
         }

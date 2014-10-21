@@ -1,6 +1,7 @@
 package com.mediafire.sdk.clients;
 
 import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
@@ -9,6 +10,7 @@ import com.mediafire.sdk.http.Result;
  * Created by Chris Najar on 10/20/2014.
  */
 public abstract class AbstractApiClient {
+    private static final String TAG = AbstractApiClient.class.getCanonicalName();
     protected final HttpWorkerInterface mHttpWorker;
 
     public AbstractApiClient(HttpWorkerInterface httpWorker) {
@@ -28,6 +30,7 @@ public abstract class AbstractApiClient {
     }
 
     protected final Response doGet(Request request) {
+        DefaultLogger.log().v(TAG, "doGet");
         String url = new UrlHelper(request).makeUrlForGetRequest();
         // add headers to request
         HeadersHelper headersHelper = new HeadersHelper(request);
@@ -36,6 +39,7 @@ public abstract class AbstractApiClient {
     }
 
     protected final Response doPost(Request request) {
+        DefaultLogger.log().v(TAG, "doPost");
         UrlHelper urlHelper = new UrlHelper(request);
         String url = urlHelper.makeUrlForPostRequest();
         byte[] payload = urlHelper.getPayload();

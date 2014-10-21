@@ -1,5 +1,6 @@
 package com.mediafire.sdk.clients;
 
+import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.*;
 
 import java.util.HashMap;
@@ -10,11 +11,14 @@ import java.util.Map;
  */
 public class RequestGenerator {
 
+    private static final String TAG = RequestGenerator.class.getCanonicalName();
+
     public RequestGenerator() {}
 
     private static final Map<String, Holder> holderMap = new HashMap<String, Holder>();
 
     public Request generateRequestObject(String apiVersion, String path, String file) {
+        DefaultLogger.log().v(TAG, "generateRequestObject - " + apiVersion + "/" + path + "/" + file);
         Holder holder = holderMap.get(path + "/" + file);
         if (holder == null) {
             return null;
@@ -116,12 +120,6 @@ public class RequestGenerator {
         holderMap.put("user/get_session_token.php", new Holder(
                 new ApiObject("user", "get_session_token.php"),
                 new InstructionsObject(BorrowTokenType.NONE, SignatureType.NEW_SESSION_TOKEN_SIGNATURE, ReturnTokenType.NEW_V2, true)));
-        holderMap.put("user/get_action_token.php", new Holder(
-                new ApiObject("user", "get_action_token.php"),
-                new InstructionsObject(BorrowTokenType.V2, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NEW_UPLOAD, true)));
-        holderMap.put("user/get_action_token.php", new Holder(
-                new ApiObject("user", "get_action_token.php"),
-                new InstructionsObject(BorrowTokenType.V2, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NEW_IMAGE, true)));
         holderMap.put("user/get_settings.php", new Holder(
                 new ApiObject("user", "get_settings.php"),
                 new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, true)));

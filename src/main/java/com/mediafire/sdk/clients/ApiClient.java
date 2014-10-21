@@ -1,11 +1,13 @@
 package com.mediafire.sdk.clients;
 
 import com.mediafire.sdk.config.*;
+import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 
 public class ApiClient extends AbstractApiClient {
+    private static final String TAG = ApiClient.class.getCanonicalName();
     private SessionTokenManagerInterface mSessionTokenManager;
     private ActionTokenManagerInterface mActionTokenManager;
     private CredentialsInterface mUserCredentials;
@@ -21,6 +23,7 @@ public class ApiClient extends AbstractApiClient {
 
     @Override
     public Result doRequest(Request request) {
+        DefaultLogger.log().v(TAG, "doRequest");
         ApiClientHelper apiClientHelper = new ApiClientHelper(mSessionTokenManager, mActionTokenManager, mUserCredentials, mDeveloperCredentials);
 
         // setup should handle the following:

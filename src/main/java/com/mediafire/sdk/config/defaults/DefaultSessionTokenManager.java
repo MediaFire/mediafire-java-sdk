@@ -1,9 +1,8 @@
 package com.mediafire.sdk.config.defaults;
 
-import com.mediafire.sdk.clients.ApiClientSessionTokenManager;
+import com.mediafire.sdk.clients.ApiClient;
 import com.mediafire.sdk.clients.RequestGenerator;
-import com.mediafire.sdk.config.CredentialsInterface;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
@@ -17,17 +16,25 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class DefaultSessionTokenManager implements SessionTokenManagerInterface {
     private static final String TAG = DefaultSessionTokenManager.class.getCanonicalName();
-    private final CredentialsInterface mDeveloperCredentials;
-    private ApiClientSessionTokenManager mApiClient;
-
+    private Configuration mConfiguration;
+    private ApiClient mApiClient;
     private static final int MIN_SESSION_TOKEN = 1;
     private static final int MAX_SESSION_TOKEN = 3;
     private static final BlockingQueue<SessionToken> mSessionTokens = new LinkedBlockingQueue<SessionToken>(MAX_SESSION_TOKEN);
     private final Object lock = new Object();
 
-    public DefaultSessionTokenManager(HttpWorkerInterface httpWorker, CredentialsInterface userCredentials, CredentialsInterface developerCredentials){
-        mDeveloperCredentials = developerCredentials;
-        mApiClient = new ApiClientSessionTokenManager(httpWorker, this, userCredentials, developerCredentials);
+    public DefaultSessionTokenManager(){ }
+
+    @Override
+    public void initialize(Configuration configuration) {
+        DefaultLogger.log().v(TAG, "initialize");
+        mConfiguration = configuration;
+        mApiClient = new ApiClient(configuration);
+    }
+
+    @Override
+    public void shutdown() {
+        DefaultLogger.log().v(TAG, "shutdown");
     }
 
     @Override
@@ -82,7 +89,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
     private void requestNewSessionToken() {
         DefaultLogger.log().v(TAG, "requestNewSessionToken");
         Request request = new RequestGenerator().generateRequestObject("1.2", "user", "get_session_token.php");
-        request.addQueryParameter("application_id", mDeveloperCredentials.getCredentials().get("application_id"));
+        request.addQueryParameter("application_id", mConfiguration.getDeveloperCredentials().getCredentials().get("application_id"));
         request.addQueryParameter("response_format", "json");
         request.addQueryParameter("token_version", 2);
         mApiClient.doRequest(request);

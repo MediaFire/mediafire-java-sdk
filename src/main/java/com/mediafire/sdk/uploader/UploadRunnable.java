@@ -35,13 +35,11 @@ public class UploadRunnable implements Runnable {
     private final UploadListenerInterface mUploadListener;
     private final int mMaxUploadAttempts;
     private final LoggerInterface mLogger;
-    private final HttpWorkerInterface mHttpWorker;
-    private final SessionTokenManagerInterface mSessionTokenManager;
-    private final CredentialsInterface mDeveloperCredentials;
     private String mUtf8EncodedFileName;
     private final NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor;
     private final CredentialsInterface mUserCredentials;
     private final ActionTokenManagerInterface mActionTokenManagerInterface;
+    private Configuration mConfiguration;
 
     private UploadRunnable(Builder builder) {
         mMaxPolls = builder.maxPolls;
@@ -50,13 +48,12 @@ public class UploadRunnable implements Runnable {
         mUploadListener = builder.mfUploadListener;
         mMaxUploadAttempts = builder.maxUploadAttempts;
 
+        mConfiguration = builder.configuration;
+
         mNetworkConnectivityMonitor = builder.configuration.getNetworkConnectivityMonitor();
         mUserCredentials = builder.configuration.getUserCredentials();
-        mSessionTokenManager = builder.configuration.getSessionTokenManager();
         mActionTokenManagerInterface = builder.configuration.getActionTokenManager();
         mLogger = builder.configuration.getLogger();
-        mHttpWorker = builder.configuration.getHttpWorker();
-        mDeveloperCredentials = builder.configuration.getDeveloperCredentials();
     }
 
     @Override
@@ -248,7 +245,7 @@ public class UploadRunnable implements Runnable {
             request.addQueryParameter(key, keyValue.get(key));
         }
 
-        Result result = new ApiClient(mHttpWorker, mSessionTokenManager, mActionTokenManagerInterface, mUserCredentials, mDeveloperCredentials).doRequest(request);
+        Result result = new ApiClient(mConfiguration).doRequest(request);
         Response mfResponse = result.getResponse();
 
         if (mfResponse == null) {
@@ -329,7 +326,7 @@ public class UploadRunnable implements Runnable {
             request.addQueryParameter(key, keyValue.get(key));
         }
 
-        Result result = new ApiClient(mHttpWorker, mSessionTokenManager, mActionTokenManagerInterface, mUserCredentials, mDeveloperCredentials).doRequest(request);
+        Result result = new ApiClient(mConfiguration).doRequest(request);
         Response mfResponse = result.getResponse();
 
         if (mfResponse == null) {
@@ -441,7 +438,7 @@ public class UploadRunnable implements Runnable {
 
                 request.addPayload(uploadChunk);
 
-                Result result = new ApiClient(mHttpWorker, mSessionTokenManager, mActionTokenManagerInterface, mUserCredentials, mDeveloperCredentials).doRequest(request);
+                Result result = new ApiClient(mConfiguration).doRequest(request);
                 Response mfResponse = result.getResponse();
 
                 if (mfResponse == null) {
@@ -527,7 +524,7 @@ public class UploadRunnable implements Runnable {
                 request.addQueryParameter(key, keyValue.get(key));
             }
 
-            Result result = new ApiClient(mHttpWorker, mSessionTokenManager, mActionTokenManagerInterface, mUserCredentials, mDeveloperCredentials).doRequest(request);
+            Result result = new ApiClient(mConfiguration).doRequest(request);
             Response mfResponse = result.getResponse();
 
             if (mfResponse == null) {
@@ -900,7 +897,7 @@ public class UploadRunnable implements Runnable {
         mLogger.d(TAG, "getFileData() path: " + mUploadItem.getFileData().getFilePath());
         mLogger.d(TAG, "getFileData() path: " + mUploadItem.getFileData().getFilePath());
         mLogger.d(TAG, "getFileData() null: " + (mUploadItem.getFileData() == null));
-        mLogger.d(TAG, "getFileData().getFilePath() null: " + (mUploadItem.getFileData().getFilePath() == null ));
+        mLogger.d(TAG, "getFileData().getFilePath() null: " + (mUploadItem.getFileData().getFilePath() == null));
         mLogger.d(TAG, "getFileData().getFilePath().isEmpty(): " + (mUploadItem.getFileData().getFilePath().isEmpty()));
         mLogger.d(TAG, "getFileData().getFileHash().isEmpty(): " + (mUploadItem.getFileData().getFileHash().isEmpty()));
         mLogger.d(TAG, "getFileData().getFileSize() == 0: " + (mUploadItem.getFileData().getFileSize() == 0));

@@ -24,6 +24,7 @@ public class ApiClientTest {
     @Before
     public void setUp() throws Exception {
         mConfiguration = new Configuration.Builder().build();
+        mConfiguration.init();
 
         Map<String, String> devCredentials = new LinkedHashMap<String, String>();
         devCredentials.put("application_id", "18");
@@ -42,7 +43,7 @@ public class ApiClientTest {
 
     @Test
     public void testSystemGetStatusGet() throws Exception {
-        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        ApiClient apiClient = new ApiClient(mConfiguration);
         HostObject hostObject = new HostObject("http", "www", "mediafire.com", "get");
         ApiObject apiObject = new ApiObject("system", "get_status.php");
         InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, false);
@@ -56,7 +57,7 @@ public class ApiClientTest {
 
     @Test
     public void testSystemGetStatusPost() throws Exception {
-        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        ApiClient apiClient = new ApiClient(mConfiguration);
         HostObject hostObject = new HostObject("http", "www", "mediafire.com", "post");
         ApiObject apiObject = new ApiObject("system", "get_status.php");
         InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, true);
@@ -70,7 +71,7 @@ public class ApiClientTest {
 
     @Test
     public void testUserGetSessionToken() throws Exception {
-        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        ApiClient apiClient = new ApiClient(mConfiguration);
         Request request = new RequestGenerator().generateRequestObject("1.2", "user", "get_session_token.php");
         request.addQueryParameter("response_format", "json");
         request.addQueryParameter("token_version", "2");
@@ -87,7 +88,7 @@ public class ApiClientTest {
 
     @Test
     public void testUserSetAvatar() throws Exception {
-        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        ApiClient apiClient = new ApiClient(mConfiguration);
         Request request = new RequestGenerator().generateRequestObject("1.2", "user", "set_avatar.php");
         request.addQueryParameter("response_format", "json");
         request.addQueryParameter("url", "http://i.imgur.com/6qTUpMH.png");
@@ -104,7 +105,7 @@ public class ApiClientTest {
 
     @Test
     public void testUserGetAvatar() throws Exception {
-        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        ApiClient apiClient = new ApiClient(mConfiguration);
         Request request = new RequestGenerator().generateRequestObject("1.2", "user", "get_avatar.php");
         request.addQueryParameter("response_format", "json");
         Result result = apiClient.doRequest(request);
@@ -120,7 +121,7 @@ public class ApiClientTest {
 
     @Test
     public void testUserGetSettings() throws Exception {
-        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        ApiClient apiClient = new ApiClient(mConfiguration);
         Request request = new RequestGenerator().generateRequestObject("1.2", "user", "get_settings.php");
         request.addQueryParameter("response_format", "json");
         Result result = apiClient.doRequest(request);
@@ -136,7 +137,7 @@ public class ApiClientTest {
 
     @Test
     public void testUserSetSettings() throws Exception {
-        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        ApiClient apiClient = new ApiClient(mConfiguration);
         Request request = new RequestGenerator().generateRequestObject("1.2", "user", "set_settings.php");
         request.addQueryParameter("response_format", "json");
         request.addQueryParameter("default_share_link_status", "disabled");
@@ -153,7 +154,7 @@ public class ApiClientTest {
 
     @Test
     public void testUserRegister() throws Exception {
-        ApiClient apiClient = new ApiClient(mConfiguration.getHttpWorker(), mConfiguration.getSessionTokenManager(), mConfiguration.getActionTokenManager(), mConfiguration.getUserCredentials(), mConfiguration.getDeveloperCredentials());
+        ApiClient apiClient = new ApiClient(mConfiguration);
         Request request = new RequestGenerator().generateRequestObject("1.2", "user", "register.php");
         request.addQueryParameter("response_format", "json");
         request.addQueryParameter("email", "testacct" + new Random().nextInt(10000) + "@example.com");

@@ -6,7 +6,7 @@ import com.mediafire.sdk.token.UploadActionToken;
 /**
  * Created by Chris Najar on 9/16/2014.
  */
-public interface ActionTokenManagerInterface {
+public interface ActionTokenManagerInterface extends Initializable {
     public void receiveImageActionToken(ImageActionToken token);
 
     public void receiveUploadActionToken(UploadActionToken token);

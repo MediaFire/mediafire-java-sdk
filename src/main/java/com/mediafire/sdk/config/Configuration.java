@@ -3,106 +3,86 @@ package com.mediafire.sdk.config;
 import com.mediafire.sdk.config.defaults.*;
 
 public class Configuration {
-    private final String mAppId;
-    private final String mApiKey;
-    private final LoggerInterface mLoggerInterface;
-    private final CredentialsInterface mCredentialsInterface;
-    private final NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor;
-    private final ActionTokenManagerInterface mActionTokenManagerInterface;
-    private final SessionTokenManagerInterface mSessionTokenManagerInterface;
-    private final HttpWorkerInterface mHttpWorkerInterface;
+    private HttpWorkerInterface mHttpWorker;
+    private CredentialsInterface mUserCredentials;
+    private CredentialsInterface mDeveloperCredentials;
+    private SessionTokenManagerInterface mSessionTokenManager;
+    private ActionTokenManagerInterface mActionTokenManager;
+    private LoggerInterface mLogger;
+    private NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor;
 
     private Configuration(Builder builder) {
-        mAppId = builder.mAppId;
-        mApiKey = builder.mApiKey;
-        mLoggerInterface = builder.mLoggerInterface;
-        mCredentialsInterface = builder.mCredentialsInterface;
-        mNetworkConnectivityMonitor = builder.mNetworkConnectivityMonitorInterface;
-        mActionTokenManagerInterface = builder.mActionTokenManagerInterface;
-        mSessionTokenManagerInterface = builder.mSessionTokenManagerInterface;
-        mHttpWorkerInterface = builder.mHttpWorkerInterface;
+        mHttpWorker = builder.mHttpWorker;
+        mUserCredentials = builder.mUserCredentials;
+        mDeveloperCredentials = builder.mDeveloperCredentials;
+        mSessionTokenManager = builder.mSessionTokenManager;
+        mActionTokenManager = builder.mActionTokenManager;
+        mLogger = builder.mLogger;
+        mNetworkConnectivityMonitor = builder.mNetworkConnectivityMonitor;
     }
 
-    public String getAppId() {
-        return mAppId;
+    public HttpWorkerInterface getHttpWorker() {
+        return mHttpWorker;
     }
 
-    public String getApiKey() {
-        return mApiKey;
+    public CredentialsInterface getUserCredentials() {
+        return mUserCredentials;
+    }
+
+    public CredentialsInterface getDeveloperCredentials() {
+        return mDeveloperCredentials;
+    }
+
+    public SessionTokenManagerInterface getSessionTokenManager() {
+        return mSessionTokenManager;
+    }
+
+    public ActionTokenManagerInterface getActionTokenManager() {
+        return mActionTokenManager;
     }
 
     public LoggerInterface getLogger() {
-        return mLoggerInterface;
+        return mLogger;
     }
 
-    public CredentialsInterface getUserCredentialsInterface() {
-        return mCredentialsInterface;
-    }
-
-    public NetworkConnectivityMonitorInterface getNetworkConnectivityMonitorInterface() {
+    public NetworkConnectivityMonitorInterface getNetworkConnectivityMonitor() {
         return mNetworkConnectivityMonitor;
     }
 
-    public ActionTokenManagerInterface getActionTokenManagerInterface() {
-        return mActionTokenManagerInterface;
-    }
-
-    public SessionTokenManagerInterface getSessionTokenManagerInterface() {
-        return mSessionTokenManagerInterface;
-    }
-
-    public HttpWorkerInterface getHttpWorkerInterface() {
-        return mHttpWorkerInterface;
-    }
-
     public static class Builder {
-        private static final LoggerInterface DEFAULT_LOGGER = new DefaultLogger();
-        private static final CredentialsInterface DEFAULT_CREDENTIALS = new DefaultCredentials();
-        private static final NetworkConnectivityMonitorInterface DEFAULT_NET_MONITOR = new DefaultNetworkConnectivityMonitor();
         private static final HttpWorkerInterface DEFAULT_HTTP_WORKER = new DefaultHttpWorker();
+        private static final CredentialsInterface DEFAULT_USER_CREDENTIALS = new DefaultCredentials();
+        private static final CredentialsInterface DEFAULT_DEVELOPER_CREDENTIALS = new DefaultCredentials();
+        private static final SessionTokenManagerInterface DEFAULT_SESSION_TOKEN_MANAGER = new DefaultSessionTokenManager(DEFAULT_HTTP_WORKER, DEFAULT_USER_CREDENTIALS, DEFAULT_DEVELOPER_CREDENTIALS);
+        private static final ActionTokenManagerInterface DEFAULT_ACTION_TOKEN_MANAGER = new DefaultActionTokenManager(DEFAULT_HTTP_WORKER, DEFAULT_SESSION_TOKEN_MANAGER);
+        private static final LoggerInterface DEFAULT_LOGGER = new DefaultLogger();
+        private static final NetworkConnectivityMonitorInterface DEFAULT_NET_MONITOR = new DefaultNetworkConnectivityMonitor();
 
-        private LoggerInterface mLoggerInterface = DEFAULT_LOGGER;
-        private CredentialsInterface mCredentialsInterface = DEFAULT_CREDENTIALS;
-        private NetworkConnectivityMonitorInterface mNetworkConnectivityMonitorInterface = DEFAULT_NET_MONITOR;
-        private HttpWorkerInterface mHttpWorkerInterface = DEFAULT_HTTP_WORKER;
-        private ActionTokenManagerInterface mActionTokenManagerInterface;
-        private SessionTokenManagerInterface mSessionTokenManagerInterface;
+        private HttpWorkerInterface mHttpWorker = DEFAULT_HTTP_WORKER;
+        private CredentialsInterface mUserCredentials = DEFAULT_USER_CREDENTIALS;
+        private CredentialsInterface mDeveloperCredentials = DEFAULT_DEVELOPER_CREDENTIALS;
+        private SessionTokenManagerInterface mSessionTokenManager = DEFAULT_SESSION_TOKEN_MANAGER;
+        private ActionTokenManagerInterface mActionTokenManager = DEFAULT_ACTION_TOKEN_MANAGER;
+        private LoggerInterface mLogger = DEFAULT_LOGGER;
+        private NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor = DEFAULT_NET_MONITOR;
 
-        private String mApiKey;
-        private final String mAppId;
-
-        public Builder(String appId, ActionTokenManagerInterface actionTokenManagerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
-            if (appId == null) {
-                throw new IllegalArgumentException("app id cannot be null");
-            }
-
-            if (actionTokenManagerInterface == null) {
-                throw new IllegalArgumentException("ActionTokenManagerInterface cannot be null");
-            }
-
-            if (sessionTokenManagerInterface == null) {
-                throw new IllegalArgumentException("SessionTokenManagerInterface cannot be null");
-            }
-
-            mAppId = appId;
-            mActionTokenManagerInterface = actionTokenManagerInterface;
-            mSessionTokenManagerInterface = sessionTokenManagerInterface;
+        public Builder() {
         }
 
-        public Builder apiKey(String apiKey) {
-            if (apiKey == null) {
+        public Builder httpWorker(HttpWorkerInterface httpWorker) {
+            if (httpWorker == null) {
                 return this;
             }
-            mApiKey = apiKey;
+
+            mHttpWorker = httpWorker;
             return this;
         }
 
-        public Builder logger(LoggerInterface logger) {
-            if (logger == null) {
+        public Builder developerCredentials(CredentialsInterface developerCredentials) {
+            if (developerCredentials == null) {
                 return this;
             }
-
-            mLoggerInterface = logger;
+            mDeveloperCredentials = developerCredentials;
             return this;
         }
 
@@ -111,7 +91,26 @@ public class Configuration {
                 return this;
             }
 
-            mCredentialsInterface = userCredentials;
+            mUserCredentials = userCredentials;
+            return this;
+        }
+
+        public Builder tokenManagers(SessionTokenManagerInterface sessionTokenManager, ActionTokenManagerInterface actionTokenManager) {
+            if (sessionTokenManager == null || actionTokenManager == null) {
+                return this;
+            }
+
+            mSessionTokenManager = sessionTokenManager;
+            mActionTokenManager = actionTokenManager;
+            return this;
+        }
+
+        public Builder logger(LoggerInterface logger) {
+            if (logger == null) {
+                return this;
+            }
+
+            mLogger = logger;
             return this;
         }
 
@@ -120,18 +119,10 @@ public class Configuration {
                 return this;
             }
 
-            mNetworkConnectivityMonitorInterface = networkConnectivityMonitor;
+            mNetworkConnectivityMonitor = networkConnectivityMonitor;
             return this;
         }
 
-        public Builder httpWorker(HttpWorkerInterface httpWorker) {
-            if (httpWorker == null) {
-                return this;
-            }
-
-            mHttpWorkerInterface = httpWorker;
-            return this;
-        }
 
         public Configuration build() {
             return new Configuration(this);

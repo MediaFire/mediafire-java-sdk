@@ -1,27 +1,29 @@
 package com.mediafire.sdk.clients;
 
-import com.mediafire.sdk.config.*;
+import com.mediafire.sdk.config.ActionTokenManagerInterface;
+import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 
-public class ApiClient extends AbstractApiClient {
+/**
+ * Created by Chris Najar on 10/20/2014.
+ */
+public class ApiClientActionTokenManager extends AbstractApiClient {
+
     private SessionTokenManagerInterface mSessionTokenManager;
     private ActionTokenManagerInterface mActionTokenManager;
-    private CredentialsInterface mUserCredentials;
-    private CredentialsInterface mDeveloperCredentials;
 
-    public ApiClient(HttpWorkerInterface httpWorker, SessionTokenManagerInterface sessionTokenManager, ActionTokenManagerInterface actionTokenManager, CredentialsInterface credentialsInterface, CredentialsInterface developerCredentials) {
+    public ApiClientActionTokenManager(HttpWorkerInterface httpWorker, SessionTokenManagerInterface sessionTokenManager, ActionTokenManagerInterface actionTokenManager) {
         super(httpWorker);
         mSessionTokenManager = sessionTokenManager;
         mActionTokenManager = actionTokenManager;
-        mUserCredentials = credentialsInterface;
-        mDeveloperCredentials = developerCredentials;
     }
 
     @Override
     public Result doRequest(Request request) {
-        ApiClientHelper apiClientHelper = new ApiClientHelper(mSessionTokenManager, mActionTokenManager, mUserCredentials, mDeveloperCredentials);
+        ApiClientHelperActionTokenManager apiClientHelper = new ApiClientHelperActionTokenManager(mSessionTokenManager, mActionTokenManager);
 
         // setup should handle the following:
         // 1. getting an ActionToken or SessionToken (if required) as per InstructionsObject

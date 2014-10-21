@@ -1,27 +1,31 @@
 package com.mediafire.sdk.clients;
 
-import com.mediafire.sdk.config.*;
+import com.mediafire.sdk.config.CredentialsInterface;
+import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 
-public class ApiClient extends AbstractApiClient {
-    private SessionTokenManagerInterface mSessionTokenManager;
-    private ActionTokenManagerInterface mActionTokenManager;
+/**
+ * Created by Chris Najar on 10/20/2014.
+ */
+public class ApiClientSessionTokenManager extends AbstractApiClient {
+
     private CredentialsInterface mUserCredentials;
     private CredentialsInterface mDeveloperCredentials;
+    private SessionTokenManagerInterface mSessionTokenManager;
 
-    public ApiClient(HttpWorkerInterface httpWorker, SessionTokenManagerInterface sessionTokenManager, ActionTokenManagerInterface actionTokenManager, CredentialsInterface credentialsInterface, CredentialsInterface developerCredentials) {
+    public ApiClientSessionTokenManager(HttpWorkerInterface httpWorker, SessionTokenManagerInterface sessionTokenManager, CredentialsInterface userCredentials, CredentialsInterface developerCredentials) {
         super(httpWorker);
+        this.mUserCredentials = userCredentials;
+        this.mDeveloperCredentials = developerCredentials;
         mSessionTokenManager = sessionTokenManager;
-        mActionTokenManager = actionTokenManager;
-        mUserCredentials = credentialsInterface;
-        mDeveloperCredentials = developerCredentials;
     }
 
     @Override
     public Result doRequest(Request request) {
-        ApiClientHelper apiClientHelper = new ApiClientHelper(mSessionTokenManager, mActionTokenManager, mUserCredentials, mDeveloperCredentials);
+        ApiClientHelperSessionTokenManager apiClientHelper = new ApiClientHelperSessionTokenManager(mUserCredentials, mDeveloperCredentials, mSessionTokenManager);
 
         // setup should handle the following:
         // 1. getting an ActionToken or SessionToken (if required) as per InstructionsObject

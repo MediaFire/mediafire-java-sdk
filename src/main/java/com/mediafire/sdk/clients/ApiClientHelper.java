@@ -6,48 +6,31 @@ import com.mediafire.sdk.api_responses.user.GetSessionTokenResponse;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.config.CredentialsInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
-import com.mediafire.sdk.http.Request;
-import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.ActionToken;
 import com.mediafire.sdk.token.ImageActionToken;
 import com.mediafire.sdk.token.SessionToken;
 import com.mediafire.sdk.token.UploadActionToken;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 /**
  * Created by Chris Najar on 10/20/2014.
  */
-public class ApiClientHelper {
+public class ApiClientHelper extends AbstractApiClientHelper {
     private SessionTokenManagerInterface mSessionTokenManager;
     private ActionTokenManagerInterface mActionTokenManager;
-    private CredentialsInterface mCredentials;
-    private String mAppId;
-    private String mApiKey;
-    private Request mRequest;
-    private Response mResponse;
+    private CredentialsInterface mUserCredentials;
+    private final CredentialsInterface mDeveloperCredentials;
 
-    public ApiClientHelper(SessionTokenManagerInterface sessionTokenManager, ActionTokenManagerInterface actionTokenManager, CredentialsInterface credentials, String appId, String apiKey) {
+    public ApiClientHelper(SessionTokenManagerInterface sessionTokenManager, ActionTokenManagerInterface actionTokenManager, CredentialsInterface userCredentials, CredentialsInterface developerCredentials) {
         mSessionTokenManager = sessionTokenManager;
         mActionTokenManager = actionTokenManager;
-        mCredentials = credentials;
-        mAppId = appId;
-        mApiKey = apiKey;
+        mUserCredentials = userCredentials;
+        mDeveloperCredentials = developerCredentials;
     }
 
-    public void setup(Request request) {
-        mRequest = request;
-        // borrow token, if necessary
-        borrowToken();
-        // add token, if necessary, to request parameters
-        addTokenToRequestParameters();
-        // add signature, if necessary, to request parameters
-        addSignatureToRequestParameters();
-    }
-
-    private void borrowToken() {
+    @Override
+    public void borrowToken() {
         switch (mRequest.getInstructionsObject().getBorrowTokenType()) {
             case V2:
                 SessionToken sessionToken = mSessionTokenManager.borrowSessionToken();
@@ -68,14 +51,16 @@ public class ApiClientHelper {
         }
     }
 
-    private void addTokenToRequestParameters() {
+    @Override
+    public void addTokenToRequestParameters() {
         if (mRequest.getToken() != null) {
             String tokenString = mRequest.getToken().getTokenString();
             mRequest.addQueryParameter("session_token", tokenString);
         }
     }
 
-    private void addSignatureToRequestParameters() {
+    @Override
+    public void addSignatureToRequestParameters() {
         String signature = null;
         switch (mRequest.getInstructionsObject().getSignatureType()) {
             case NEW_SESSION_TOKEN_SIGNATURE:
@@ -101,40 +86,28 @@ public class ApiClientHelper {
         // fb access token + app id + api key
         // tw oauth token + tw oauth token secret + app id + api key
 
-        String userInfoPortionOfHashTarget = mCredentials.getConcatenatedCredentials();
-
-        String appId = mAppId;
-        String apiKey = mApiKey;
+        String userInfoPortionOfHashTarget = mUserCredentials.getConcatenatedCredentials();
 
         // apiKey is not required, but may be passed into the MFConfiguration object
         // Note: If the app does not have the "Require Secret Key" option checked,
         // then the API key may be omitted from the signature.
         // However, this should only be done when sufficient domain and/or network restrictions are in place.
-        String hashTarget;
-        if (apiKey == null) {
-            hashTarget = userInfoPortionOfHashTarget + appId;
-        } else {
-            hashTarget = userInfoPortionOfHashTarget + appId + apiKey;
-        }
+        String hashTarget = userInfoPortionOfHashTarget + mDeveloperCredentials.getConcatenatedCredentials();
 
         return hashString(hashTarget, "SHA-1");
     }
 
     private void addRequiredParametersForNewSessionToken() {
-        Map<String, String> credentialsMap = mCredentials.getCredentials();
+        Map<String, String> credentialsMap = mUserCredentials.getCredentials();
         for (String key : credentialsMap.keySet()) {
             mRequest.addQueryParameter(key, credentialsMap.get(key));
         }
 
-        mRequest.addQueryParameter("application_id", mAppId);
+        mRequest.addQueryParameter("application_id", mDeveloperCredentials.getCredentials().get("application_id"));
     }
 
-    public void cleanup(Response response) {
-        mResponse = response;
-        returnToken();
-    }
-
-    private void returnToken() {
+    @Override
+    public void returnToken() {
         ResponseHelper responseHelper = new ResponseHelper(mResponse);
 
         if (mResponse == null || responseHelper.getResponseObject(ApiResponse.class) == null) {
@@ -230,7 +203,7 @@ public class ApiClientHelper {
         }
     }
 
-    private SessionToken createNewSessionToken(GetSessionTokenResponse getSessionTokenResponse) {
+    public SessionToken createNewSessionToken(GetSessionTokenResponse getSessionTokenResponse) {
         if (getSessionTokenResponse == null) {
             return null;
         }
@@ -246,27 +219,5 @@ public class ApiClientHelper {
         String ekey = getSessionTokenResponse.getEkey();
         SessionToken mfSessionToken = new SessionToken(tokenString, secretKey, time, pkey, ekey);
         return mfSessionToken;
-    }
-
-    private String hashString(String target, String hashAlgorithm) {
-        String hash;
-        try {
-            MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
-
-            md.update(target.getBytes());
-
-            byte byteData[] = md.digest();
-
-            //convert the byte to hex format method 1
-            StringBuilder sb = new StringBuilder();
-            for (byte aByteData : byteData) {
-                sb.append(Integer.toString((aByteData & 0xff) + 0x100, 16).substring(1));
-            }
-            hash = sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            hash = target;
-        }
-        return hash;
     }
 }

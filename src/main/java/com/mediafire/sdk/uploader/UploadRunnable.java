@@ -29,38 +29,41 @@ import java.util.Map;
  */
 public class UploadRunnable implements Runnable {
     private static final String TAG = UploadRunnable.class.getCanonicalName();
-    private final int maxPolls;
-    private final long millisecondsBetweenPolls;
-    private final Configuration configuration;
-    private final UploadItem uploadItem;
-    private final UploadListenerInterface mfUploadListener;
-    private final int maxUploadAttempts;
-    private String utf8EncodedFileName;
-    private final NetworkConnectivityMonitorInterface mfNetworkConnectivityMonitor;
-    private final CredentialsInterface mfCredentials;
-    private final ActionTokenManagerInterface actionTokenManagerInterface;
-    private final SessionTokenManagerInterface sessionTokenManagerInterface;
+    private final int mMaxPolls;
+    private final long mMillisecondsBetweenPolls;
+    private final UploadItem mUploadItem;
+    private final UploadListenerInterface mUploadListener;
+    private final int mMaxUploadAttempts;
+    private final LoggerInterface mLogger;
+    private final HttpWorkerInterface mHttpWorker;
+    private final SessionTokenManagerInterface mSessionTokenManager;
+    private final CredentialsInterface mDeveloperCredentials;
+    private String mUtf8EncodedFileName;
+    private final NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor;
+    private final CredentialsInterface mUserCredentials;
+    private final ActionTokenManagerInterface mActionTokenManagerInterface;
 
     private UploadRunnable(Builder builder) {
-        this.maxPolls = builder.maxPolls;
-        this.millisecondsBetweenPolls = builder.millisecondsBetweenPolls;
-        this.uploadItem = builder.uploadItem;
-        this.mfUploadListener = builder.mfUploadListener;
-        this.maxUploadAttempts = builder.maxUploadAttempts;
+        mMaxPolls = builder.maxPolls;
+        mMillisecondsBetweenPolls = builder.millisecondsBetweenPolls;
+        mUploadItem = builder.uploadItem;
+        mUploadListener = builder.mfUploadListener;
+        mMaxUploadAttempts = builder.maxUploadAttempts;
 
-        this.configuration = builder.configuration;
-
-        this.mfNetworkConnectivityMonitor = configuration.getNetworkConnectivityMonitorInterface();
-        this.mfCredentials = configuration.getUserCredentialsInterface();
-        this.actionTokenManagerInterface = configuration.getActionTokenManagerInterface();
-        this.sessionTokenManagerInterface = configuration.getSessionTokenManagerInterface();
+        mNetworkConnectivityMonitor = builder.configuration.getNetworkConnectivityMonitor();
+        mUserCredentials = builder.configuration.getUserCredentials();
+        mSessionTokenManager = builder.configuration.getSessionTokenManager();
+        mActionTokenManagerInterface = builder.configuration.getActionTokenManager();
+        mLogger = builder.configuration.getLogger();
+        mHttpWorker = builder.configuration.getHttpWorker();
+        mDeveloperCredentials = builder.configuration.getDeveloperCredentials();
     }
 
     @Override
     public void run() {
-        configuration.getLogger().d(TAG, "run()");
+        mLogger.d(TAG, "run()");
         notifyUploadListenerStarted();
-        if (!mfNetworkConnectivityMonitor.haveNetworkConnection()) {
+        if (!mNetworkConnectivityMonitor.haveNetworkConnection()) {
             notifyUploadListenerCancelled();
             return;
         }
@@ -69,24 +72,24 @@ public class UploadRunnable implements Runnable {
             encodeFileNameUTF8();
             startOrRestartUpload();
         } catch (UnsupportedEncodingException e) {
-            configuration.getLogger().e(TAG, "UnsupportedEncodingException during UploadRunnable", e);
+            mLogger.e(TAG, "UnsupportedEncodingException during UploadRunnable", e);
             notifyUploadListenerCancelled();
         } catch (NoSuchAlgorithmException e) {
-            configuration.getLogger().e(TAG, "NoSuchAlgorithmException during UploadRunnable", e);
+            mLogger.e(TAG, "NoSuchAlgorithmException during UploadRunnable", e);
             notifyUploadListenerCancelled();
         } catch (IOException e) {
-            configuration.getLogger().e(TAG, "IOException during UploadRunnable", e);
+            mLogger.e(TAG, "IOException during UploadRunnable", e);
             notifyUploadListenerCancelled();
         }
     }
 
     private void encodeFileNameUTF8() throws UnsupportedEncodingException {
-        configuration.getLogger().d(TAG, "encodeFileNameUTF8");
-        utf8EncodedFileName = new String(uploadItem.getFileName().getBytes("UTF-8"), "UTF-8");
+        mLogger.d(TAG, "encodeFileNameUTF8");
+        mUtf8EncodedFileName = new String(mUploadItem.getFileName().getBytes("UTF-8"), "UTF-8");
     }
 
     private void checkUploadFinished(UploadItem uploadItem, CheckResponse checkResponse) throws NoSuchAlgorithmException, IOException {
-        configuration.getLogger().d(TAG, "checkUploadFinished()");
+        mLogger.d(TAG, "checkUploadFinished()");
         if (checkResponse == null) {
             notifyUploadListenerCancelled();
             return;
@@ -95,10 +98,10 @@ public class UploadRunnable implements Runnable {
         //as a preventable infinite loop measure, an upload item cannot continue after upload/check.php if it has gone through the process 20x
         //20x is high, but it should never happen and will allow for more information gathering.
         if (checkResponse.getStorageLimitExceeded()) {
-            configuration.getLogger().d(TAG, "storage limit is exceeded");
+            mLogger.d(TAG, "storage limit is exceeded");
             notifyUploadListenerCancelled();
         } else if (checkResponse.getResumableUpload().areAllUnitsReady() && !uploadItem.getPollUploadKey().isEmpty()) {
-            configuration.getLogger().d(TAG, "all units are ready and poll upload key is not empty");
+            mLogger.d(TAG, "all units are ready and poll upload key is not empty");
             // all units are ready and we have the poll upload key. start polling.
             doPollUpload();
         } else {
@@ -111,7 +114,7 @@ public class UploadRunnable implements Runnable {
     }
 
     private void hashExistsInCloud(CheckResponse checkResponse) {
-        configuration.getLogger().d(TAG, "hash exists");
+        mLogger.d(TAG, "hash exists");
         if (!checkResponse.isInAccount()) { // hash which exists is not in the account
             hashExistsButDoesNotExistInAccount();
         } else { // hash exists and is in the account
@@ -120,70 +123,70 @@ public class UploadRunnable implements Runnable {
     }
 
     private void hashExistsInAccount(CheckResponse checkResponse) {
-        configuration.getLogger().d(TAG, "hash is in account");
+        mLogger.d(TAG, "hash is in account");
         boolean inFolder = checkResponse.isInFolder();
-        configuration.getLogger().d(TAG, "ActionOnInAccount: " + uploadItem.getUploadOptions().getActionOnInAccount().toString());
-        switch (uploadItem.getUploadOptions().getActionOnInAccount()) {
+        mLogger.d(TAG, "ActionOnInAccount: " + mUploadItem.getUploadOptions().getActionOnInAccount().toString());
+        switch (mUploadItem.getUploadOptions().getActionOnInAccount()) {
             case UPLOAD_ALWAYS:
-                configuration.getLogger().d(TAG, "uploading...");
+                mLogger.d(TAG, "uploading...");
                 doInstantUpload();
                 break;
             case UPLOAD_IF_NOT_IN_FOLDER:
-                configuration.getLogger().d(TAG, "uploading if not in folder.");
+                mLogger.d(TAG, "uploading if not in folder.");
                 if (!inFolder) {
-                    configuration.getLogger().d(TAG, "uploading...");
+                    mLogger.d(TAG, "uploading...");
                     doInstantUpload();
                 } else {
-                    configuration.getLogger().d(TAG, "already in folder, not uploading...");
+                    mLogger.d(TAG, "already in folder, not uploading...");
                     notifyUploadListenerCompleted();
                 }
                 break;
             case DO_NOT_UPLOAD:
             default:
-                configuration.getLogger().d(TAG, "not uploading...");
+                mLogger.d(TAG, "not uploading...");
                 notifyUploadListenerCompleted();
                 break;
         }
     }
 
     private void hashExistsButDoesNotExistInAccount() {
-        configuration.getLogger().d(TAG, "hash is not in account");
+        mLogger.d(TAG, "hash is not in account");
         doInstantUpload();
     }
 
     private void hashDoesNotExistInCloud(CheckResponse checkResponse) throws IOException, NoSuchAlgorithmException {
         // hash does not exist. call resumable.
-        configuration.getLogger().d(TAG, "hash does not exist");
+        mLogger.d(TAG, "hash does not exist");
         if (checkResponse.getResumableUpload().getUnitSize() == 0) {
-            configuration.getLogger().d(TAG, "unit size received from unit_size was 0. cancelling");
+            mLogger.d(TAG, "unit size received from unit_size was 0. cancelling");
             notifyUploadListenerCancelled();
             return;
         }
 
         if (checkResponse.getResumableUpload().getNumberOfUnits() == 0) {
-            configuration.getLogger().d(TAG, "number of units received from number_of_units was 0. cancelling");
+            mLogger.d(TAG, "number of units received from number_of_units was 0. cancelling");
             notifyUploadListenerCancelled();
             return;
         }
 
-        if (checkResponse.getResumableUpload().areAllUnitsReady() && !uploadItem.getPollUploadKey().isEmpty()) {
-            configuration.getLogger().d(TAG, "all units ready and have a poll upload key");
+        if (checkResponse.getResumableUpload().areAllUnitsReady() && !mUploadItem.getPollUploadKey().isEmpty()) {
+            mLogger.d(TAG, "all units ready and have a poll upload key");
             // all units are ready and we have the poll upload key. start polling.
             doPollUpload();
         } else {
-            configuration.getLogger().d(TAG, "all units not ready or do not have poll upload key");
+            mLogger.d(TAG, "all units not ready or do not have poll upload key");
             // either we don't have the poll upload key or all units are not ready
             doResumableUpload();
         }
     }
 
     private void instantUploadFinished() {
-        configuration.getLogger().d(TAG, "instantUploadFinished()");
+        mLogger.d(TAG, "instantUploadFinished()");
         notifyUploadListenerCompleted();
     }
 
     private void resumableUploadFinished(ResumableResponse response) throws IOException, NoSuchAlgorithmException {
-        configuration.getLogger().d(TAG, "resumableUploadFinished()");
+        mLogger.d(TAG, "resumableUploadFinished()");
         if (response != null && response.getResumableUpload().areAllUnitsReady() && !response.getDoUpload().getPollUploadKey().isEmpty()) {
             doPollUpload();
         } else {
@@ -192,7 +195,7 @@ public class UploadRunnable implements Runnable {
     }
 
     private void pollUploadFinished(PollResponse pollResponse) throws IOException, NoSuchAlgorithmException {
-        configuration.getLogger().d(TAG, "pollUploadFinished()");
+        mLogger.d(TAG, "pollUploadFinished()");
         // if this method is called then file error and result codes are fine, but we may not have received status 99 so
         // check status code and then possibly send item to the backlog queue.
         PollResponse.DoUpload doUpload = pollResponse.getDoUpload();
@@ -200,38 +203,38 @@ public class UploadRunnable implements Runnable {
         PollResponse.Result pollResultCode = doUpload.getResultCode();
         PollResponse.FileError pollFileErrorCode = doUpload.getFileErrorCode();
 
-        configuration.getLogger().d(TAG, "status code: " + pollStatusCode.toString());
-        configuration.getLogger().d(TAG, "result code: " + pollResultCode.toString());
-        configuration.getLogger().d(TAG, "file error code: " + pollFileErrorCode.toString());
+        mLogger.d(TAG, "status code: " + pollStatusCode.toString());
+        mLogger.d(TAG, "result code: " + pollResultCode.toString());
+        mLogger.d(TAG, "file error code: " + pollFileErrorCode.toString());
 
         if (pollStatusCode == PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY && pollResultCode == PollResponse.Result.SUCCESS && pollFileErrorCode == PollResponse.FileError.NO_ERROR) {
-            configuration.getLogger().d(TAG, "done polling");
+            mLogger.d(TAG, "done polling");
             notifyUploadListenerCompleted();
         } else if (pollStatusCode != PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY && pollResultCode == PollResponse.Result.SUCCESS && pollFileErrorCode == PollResponse.FileError.NO_ERROR) {
-            configuration.getLogger().d(TAG, "still waiting for status code " + PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY + ", but was " + pollStatusCode.toString() + " so restarting upload");
+            mLogger.d(TAG, "still waiting for status code " + PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY + ", but was " + pollStatusCode.toString() + " so restarting upload");
             startOrRestartUpload();
         } else {
-            configuration.getLogger().d(TAG, "cancelling upload");
+            mLogger.d(TAG, "cancelling upload");
             notifyUploadListenerCancelled();
         }
     }
 
     private void doCheckUpload() throws IOException, NoSuchAlgorithmException {
-        configuration.getLogger().d(TAG, "doCheckUpload()");
+        mLogger.d(TAG, "doCheckUpload()");
         if (!haveStoredCredentials()) {
-            configuration.getLogger().d(TAG, "no credentials stored, cancelling upload for: " + uploadItem.getFileName());
-            uploadItem.cancelUpload();
+            mLogger.d(TAG, "no credentials stored, cancelling upload for: " + mUploadItem.getFileName());
+            mUploadItem.cancelUpload();
             return;
         }
 
-        if (!mfNetworkConnectivityMonitor.haveNetworkConnection()) {
-            configuration.getLogger().d(TAG, "no network connection, cancelling upload for " + uploadItem.getFileName());
+        if (!mNetworkConnectivityMonitor.haveNetworkConnection()) {
+            mLogger.d(TAG, "no network connection, cancelling upload for " + mUploadItem.getFileName());
             notifyUploadListenerCancelled();
             return;
         }
         
-        if (uploadItem.isCancelled()) {
-            configuration.getLogger().d(TAG, "upload was cancelled for " + uploadItem.getFileName());
+        if (mUploadItem.isCancelled()) {
+            mLogger.d(TAG, "upload was cancelled for " + mUploadItem.getFileName());
             notifyUploadListenerCancelled();
             return;
         }
@@ -245,7 +248,7 @@ public class UploadRunnable implements Runnable {
             request.addQueryParameter(key, keyValue.get(key));
         }
 
-        Result result = new ApiClient(configuration).doRequest(request);
+        Result result = new ApiClient(mHttpWorker, mSessionTokenManager, mActionTokenManagerInterface, mUserCredentials, mDeveloperCredentials).doRequest(request);
         Response mfResponse = result.getResponse();
 
         if (mfResponse == null) {
@@ -286,34 +289,34 @@ public class UploadRunnable implements Runnable {
             return;
         }
 
-        uploadItem.getChunkData().setNumberOfUnits(response.getResumableUpload().getNumberOfUnits());
-        uploadItem.getChunkData().setUnitSize(response.getResumableUpload().getUnitSize());
+        mUploadItem.getChunkData().setNumberOfUnits(response.getResumableUpload().getNumberOfUnits());
+        mUploadItem.getChunkData().setUnitSize(response.getResumableUpload().getUnitSize());
         int count = response.getResumableUpload().getBitmap().getCount();
         List<Integer> words = response.getResumableUpload().getBitmap().getWords();
         ResumableBitmap bitmap = new ResumableBitmap(count, words);
-        uploadItem.setBitmap(bitmap);
-        configuration.getLogger().d(TAG, uploadItem.getFileData().getFilePath() + " upload item bitmap: " + uploadItem.getBitmap().getCount() + " count, " + uploadItem.getBitmap().getWords().toString() + " words.");
+        mUploadItem.setBitmap(bitmap);
+        mLogger.d(TAG, mUploadItem.getFileData().getFilePath() + " upload item bitmap: " + mUploadItem.getBitmap().getCount() + " count, " + mUploadItem.getBitmap().getWords().toString() + " words.");
 
         // notify listeners that check has completed
-        checkUploadFinished(uploadItem, response);
+        checkUploadFinished(mUploadItem, response);
     }
 
     private void doInstantUpload() {
-        configuration.getLogger().d(TAG, "doInstantUpload()");
+        mLogger.d(TAG, "doInstantUpload()");
 
         if (!haveStoredCredentials()) {
-            configuration.getLogger().d(TAG, "no credentials stored, task cancelling()");
-            uploadItem.cancelUpload();
+            mLogger.d(TAG, "no credentials stored, task cancelling()");
+            mUploadItem.cancelUpload();
             return;
         }
 
-        if (uploadItem.isCancelled()) {
-            configuration.getLogger().d(TAG, "upload was cancelled for " + uploadItem.getFileName());
+        if (mUploadItem.isCancelled()) {
+            mLogger.d(TAG, "upload was cancelled for " + mUploadItem.getFileName());
             notifyUploadListenerCancelled();
             return;
         }
 
-        if (!mfNetworkConnectivityMonitor.haveNetworkConnection()) {
+        if (!mNetworkConnectivityMonitor.haveNetworkConnection()) {
             notifyUploadListenerCancelled();
             return;
         }
@@ -326,7 +329,7 @@ public class UploadRunnable implements Runnable {
             request.addQueryParameter(key, keyValue.get(key));
         }
 
-        Result result = new ApiClient(configuration).doRequest(request);
+        Result result = new ApiClient(mHttpWorker, mSessionTokenManager, mActionTokenManagerInterface, mUserCredentials, mDeveloperCredentials).doRequest(request);
         Response mfResponse = result.getResponse();
 
         if (mfResponse == null) {
@@ -370,14 +373,14 @@ public class UploadRunnable implements Runnable {
     }
 
     private void doResumableUpload() throws IOException, NoSuchAlgorithmException {
-        configuration.getLogger().d(TAG, "doResumableUpload()");
+        mLogger.d(TAG, "doResumableUpload()");
 
         //get file size. this will be used for chunks.
-        FileData fileData = uploadItem.getFileData();
+        FileData fileData = mUploadItem.getFileData();
         long fileSize = fileData.getFileSize();
 
         // get chunk. these will be used for chunks.
-        ChunkData ChunkData = uploadItem.getChunkData();
+        ChunkData ChunkData = mUploadItem.getChunkData();
         int numChunks = ChunkData.getNumberOfUnits();
         int unitSize = ChunkData.getUnitSize();
 
@@ -386,24 +389,24 @@ public class UploadRunnable implements Runnable {
         ResumableResponse response = null;
         for (int chunkNumber = 0; chunkNumber < numChunks; chunkNumber++) {
             if (!haveStoredCredentials()) {
-                configuration.getLogger().d(TAG, "no credentials stored, task cancelling()");
-                uploadItem.cancelUpload();
+                mLogger.d(TAG, "no credentials stored, task cancelling()");
+                mUploadItem.cancelUpload();
                 return;
             }
 
-            if (uploadItem.isCancelled()) {
-                configuration.getLogger().d(TAG, "upload was cancelled for " + uploadItem.getFileName());
+            if (mUploadItem.isCancelled()) {
+                mLogger.d(TAG, "upload was cancelled for " + mUploadItem.getFileName());
                 notifyUploadListenerCancelled();
                 return;
             }
 
-            if (!mfNetworkConnectivityMonitor.haveNetworkConnection()) {
+            if (!mNetworkConnectivityMonitor.haveNetworkConnection()) {
                 notifyUploadListenerCancelled();
                 return;
             }
 
             // if the bitmap says this chunk number is uploaded then we can just skip it, if not, we upload it.
-            if (!uploadItem.getBitmap().isUploaded(chunkNumber)) {
+            if (!mUploadItem.getBitmap().isUploaded(chunkNumber)) {
                 // get the chunk size for this chunk
                 int chunkSize = getChunkSize(chunkNumber, numChunks, fileSize, unitSize);
 
@@ -419,7 +422,7 @@ public class UploadRunnable implements Runnable {
                 printDebugCurrentChunk(chunkNumber, numChunks, chunkSize, unitSize, fileSize, chunkHash, uploadChunk);
 
                 // generate the post headers
-                Map<String, String> headers = generatePostHeaders(utf8EncodedFileName, fileSize, chunkNumber, chunkHash, chunkSize);
+                Map<String, String> headers = generatePostHeaders(mUtf8EncodedFileName, fileSize, chunkNumber, chunkHash, chunkSize);
                 // generate the get parameters
                 Map<String, String> parameters = generateResumableRequestParameters();
 
@@ -438,7 +441,7 @@ public class UploadRunnable implements Runnable {
 
                 request.addPayload(uploadChunk);
 
-                Result result = new ApiClient(configuration).doRequest(request);
+                Result result = new ApiClient(mHttpWorker, mSessionTokenManager, mActionTokenManagerInterface, mUserCredentials, mDeveloperCredentials).doRequest(request);
                 Response mfResponse = result.getResponse();
 
                 if (mfResponse == null) {
@@ -465,7 +468,7 @@ public class UploadRunnable implements Runnable {
 
                 // set poll upload key if possible
                 if (shouldSetPollUploadKey(response)) {
-                    uploadItem.setPollUploadKey(response.getDoUpload().getPollUploadKey());
+                    mUploadItem.setPollUploadKey(response.getDoUpload().getPollUploadKey());
                 }
 
                 if (shouldCancelUpload(response)) {
@@ -477,8 +480,8 @@ public class UploadRunnable implements Runnable {
                 int count = response.getResumableUpload().getBitmap().getCount();
                 List<Integer> words = response.getResumableUpload().getBitmap().getWords();
                 ResumableBitmap bitmap = new ResumableBitmap(count, words);
-                uploadItem.setBitmap(bitmap);
-                configuration.getLogger().d(TAG, "(" + uploadItem.getFileData().getFilePath() + ") upload item bitmap: " + uploadItem.getBitmap().getCount() + " count, (" + uploadItem.getBitmap().getWords().toString() + ") words.");
+                mUploadItem.setBitmap(bitmap);
+                mLogger.d(TAG, "(" + mUploadItem.getFileData().getFilePath() + ") upload item bitmap: " + mUploadItem.getBitmap().getCount() + " count, (" + mUploadItem.getBitmap().getWords().toString() + ") words.");
 
                 clearReferences(chunkSize, chunkHash, uploadChunk, headers, parameters);
             }
@@ -492,25 +495,25 @@ public class UploadRunnable implements Runnable {
     }
 
     private void doPollUpload() throws IOException, NoSuchAlgorithmException {
-        configuration.getLogger().d(TAG, "doPollUpload()");
+        mLogger.d(TAG, "doPollUpload()");
         //generate our request string
         Map<String, String> keyValue = generatePollRequestParameters();
 
         int pollCount = 0;
         do {
             if (!haveStoredCredentials()) {
-                configuration.getLogger().d(TAG, "no credentials stored, task cancelling()");
-                uploadItem.cancelUpload();
+                mLogger.d(TAG, "no credentials stored, task cancelling()");
+                mUploadItem.cancelUpload();
                 return;
             }
 
-            if (uploadItem.isCancelled()) {
-                configuration.getLogger().d(TAG, "upload was cancelled for " + uploadItem.getFileName());
+            if (mUploadItem.isCancelled()) {
+                mLogger.d(TAG, "upload was cancelled for " + mUploadItem.getFileName());
                 notifyUploadListenerCancelled();
                 return;
             }
 
-            if (!mfNetworkConnectivityMonitor.haveNetworkConnection()) {
+            if (!mNetworkConnectivityMonitor.haveNetworkConnection()) {
                 notifyUploadListenerCancelled();
                 return;
             }
@@ -524,7 +527,7 @@ public class UploadRunnable implements Runnable {
                 request.addQueryParameter(key, keyValue.get(key));
             }
 
-            Result result = new ApiClient(configuration).doRequest(request);
+            Result result = new ApiClient(mHttpWorker, mSessionTokenManager, mActionTokenManagerInterface, mUserCredentials, mDeveloperCredentials).doRequest(request);
             Response mfResponse = result.getResponse();
 
             if (mfResponse == null) {
@@ -550,7 +553,7 @@ public class UploadRunnable implements Runnable {
 
             PollResponse response = getResponseObject(new String(mfResponse.getBytes()), PollResponse.class);
 
-            configuration.getLogger().d(TAG, "received error code: " + response.getErrorCode());
+            mLogger.d(TAG, "received error code: " + response.getErrorCode());
             //check to see if we need to call pollUploadCompleted or loop again
             switch (response.getErrorCode()) {
                 case NO_ERROR:
@@ -561,19 +564,19 @@ public class UploadRunnable implements Runnable {
                     //      second  -   fileerror code no error? yes, carry on old chap!. no, cancel upload because error.
                     //      third   -   status code 99 (no more requests)? yes, done. no, continue.
                     if (response.getDoUpload().getResultCode() != PollResponse.Result.SUCCESS) {
-                        configuration.getLogger().d(TAG, "result code: " + response.getDoUpload().getResultCode().toString() + " need to cancel");
+                        mLogger.d(TAG, "result code: " + response.getDoUpload().getResultCode().toString() + " need to cancel");
                         notifyUploadListenerCancelled();
                         return;
                     }
 
                     if (response.getDoUpload().getFileErrorCode() != PollResponse.FileError.NO_ERROR) {
-                        configuration.getLogger().d(TAG, "result code: " + response.getDoUpload().getFileErrorCode().toString() + " need to cancel");
+                        mLogger.d(TAG, "result code: " + response.getDoUpload().getFileErrorCode().toString() + " need to cancel");
                         notifyUploadListenerCancelled();
                         return;
                     }
 
                     if (response.getDoUpload().getStatusCode() == PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY) {
-                        configuration.getLogger().d(TAG, "status code: " + response.getDoUpload().getStatusCode().toString());
+                        mLogger.d(TAG, "status code: " + response.getDoUpload().getStatusCode().toString());
                         pollUploadFinished(response);
                         return;
                     }
@@ -588,25 +591,25 @@ public class UploadRunnable implements Runnable {
 
             //wait before next api call
             try {
-                Thread.sleep(millisecondsBetweenPolls);
+                Thread.sleep(mMillisecondsBetweenPolls);
             } catch (InterruptedException e) {
-                configuration.getLogger().e(TAG, "Exception: " + e);
+                mLogger.e(TAG, "Exception: " + e);
                 notifyUploadListenerCancelled();
                 return;
             }
 
-            if (uploadItem.isCancelled()) {
-                pollCount = maxPolls;
+            if (mUploadItem.isCancelled()) {
+                pollCount = mMaxPolls;
             }
-        } while (pollCount < maxPolls);
+        } while (pollCount < mMaxPolls);
 
         startOrRestartUpload();
     }
 
     private Map<String, String> generatePollRequestParameters() {
-        configuration.getLogger().d(TAG, "generatePollRequestParameters()");
+        mLogger.d(TAG, "generatePollRequestParameters()");
         LinkedHashMap<String, String> keyValue = new LinkedHashMap<String, String>();
-        keyValue.put("key", uploadItem.getPollUploadKey());
+        keyValue.put("key", mUploadItem.getPollUploadKey());
         keyValue.put("response_format", "json");
         return keyValue;
     }
@@ -621,26 +624,26 @@ public class UploadRunnable implements Runnable {
     }
 
     private void printDebugRequestData(Map<String, String> headers, Map<String, String> parameters) {
-        configuration.getLogger().d(TAG, "printDebugRequestData()");
-        configuration.getLogger().d(TAG, "headers: " + headers.toString());
-        configuration.getLogger().d(TAG, "parameters: " + parameters.toString());
+        mLogger.d(TAG, "printDebugRequestData()");
+        mLogger.d(TAG, "headers: " + headers.toString());
+        mLogger.d(TAG, "parameters: " + parameters.toString());
     }
 
     @SuppressWarnings("UnusedParameters")
     private void printDebugCurrentChunk(int chunkNumber, int numChunks, int chunkSize, int unitSize, long fileSize, String chunkHash, byte[] uploadChunk) {
-        configuration.getLogger().d(TAG, "printDebugCurrentChunk()");
-        configuration.getLogger().d(TAG, "current thread: " + Thread.currentThread().getName());
-        configuration.getLogger().d(TAG, "current chunk: " + chunkNumber);
-        configuration.getLogger().d(TAG, "total chunks: " + numChunks);
-        configuration.getLogger().d(TAG, "current chunk size: " + chunkSize);
-        configuration.getLogger().d(TAG, "normal chunk size: " + unitSize);
-        configuration.getLogger().d(TAG, "total file size: " + fileSize);
-        configuration.getLogger().d(TAG, "current chunk hash: " + chunkHash);
-        configuration.getLogger().d(TAG, "upload chunk ");
+        mLogger.d(TAG, "printDebugCurrentChunk()");
+        mLogger.d(TAG, "current thread: " + Thread.currentThread().getName());
+        mLogger.d(TAG, "current chunk: " + chunkNumber);
+        mLogger.d(TAG, "total chunks: " + numChunks);
+        mLogger.d(TAG, "current chunk size: " + chunkSize);
+        mLogger.d(TAG, "normal chunk size: " + unitSize);
+        mLogger.d(TAG, "total file size: " + fileSize);
+        mLogger.d(TAG, "current chunk hash: " + chunkHash);
+        mLogger.d(TAG, "upload chunk ");
     }
 
     private boolean shouldCancelUpload(ResumableResponse response) {
-        configuration.getLogger().d(TAG, "shouldCancelUpload()");
+        mLogger.d(TAG, "shouldCancelUpload()");
         // if API response code OR Upload Response Result code have an error then we need to terminate the process
         if (response.hasError()) {
             return true;
@@ -656,14 +659,14 @@ public class UploadRunnable implements Runnable {
     }
 
     private ResumableChunkInfo createResumableChunkInfo(int unitSize, int chunkNumber) throws IOException, NoSuchAlgorithmException {
-        configuration.getLogger().d(TAG, "createResumableChunkInfo");
+        mLogger.d(TAG, "createResumableChunkInfo");
         ResumableChunkInfo resumableChunkInfo;
         // generate the chunk
         FileInputStream fis;
         BufferedInputStream bis;
         String chunkHash;
         byte[] uploadChunk;
-        fis = new FileInputStream(uploadItem.getFileData().getFilePath());
+        fis = new FileInputStream(mUploadItem.getFileData().getFilePath());
         bis = new BufferedInputStream(fis);
         uploadChunk = createUploadChunk(unitSize, chunkNumber, bis);
         if (uploadChunk == null) {
@@ -678,15 +681,15 @@ public class UploadRunnable implements Runnable {
     }
 
     private Map<String, String> generateResumableRequestParameters() {
-        configuration.getLogger().d(TAG, "generateResumableRequestParameters()");
+        mLogger.d(TAG, "generateResumableRequestParameters()");
         // get upload options. these will be passed as request parameters
-        UploadItemOptions uploadItemOptions = uploadItem.getUploadOptions();
+        UploadItemOptions uploadItemOptions = mUploadItem.getUploadOptions();
         String actionOnDuplicate = uploadItemOptions.getActionOnDuplicate();
         String versionControl = uploadItemOptions.getVersionControl();
         String uploadFolderKey = uploadItemOptions.getUploadFolderKey();
         String uploadPath = uploadItemOptions.getUploadPath();
 
-        String actionToken = actionTokenManagerInterface.borrowUploadActionToken().getTokenString();
+        String actionToken = mActionTokenManagerInterface.borrowUploadActionToken().getTokenString();
         LinkedHashMap<String, String> parameters = new LinkedHashMap<String, String>();
         parameters.put("session_token", actionToken);
         parameters.put("action_on_duplicate", actionOnDuplicate);
@@ -702,12 +705,12 @@ public class UploadRunnable implements Runnable {
     }
 
     private Map<String, String> generatePostHeaders(String encodedShortFileName, long fileSize, int chunkNumber, String chunkHash, int chunkSize) {
-        configuration.getLogger().d(TAG, "generatePostHeaders()");
+        mLogger.d(TAG, "generatePostHeaders()");
         LinkedHashMap<String, String> headers = new LinkedHashMap<String, String>();
         // these headers are related to the entire file
         headers.put("x-filename", encodedShortFileName);
         headers.put("x-filesize", String.valueOf(fileSize));
-        headers.put("x-filehash", uploadItem.getFileData().getFileHash());
+        headers.put("x-filehash", mUploadItem.getFileData().getFileHash());
         // these headers are related to the individual chunk
         headers.put("x-unit-id", Integer.toString(chunkNumber));
         headers.put("x-unit-hash", chunkHash);
@@ -716,7 +719,7 @@ public class UploadRunnable implements Runnable {
     }
 
     private boolean shouldSetPollUploadKey(ResumableResponse response) {
-        configuration.getLogger().d(TAG, "shouldSetPollUploadKey()");
+        mLogger.d(TAG, "shouldSetPollUploadKey()");
         switch (response.getDoUpload().getResultCode()) {
             case NO_ERROR:
             case SUCCESS_FILE_MOVED_TO_ROOT:
@@ -727,7 +730,7 @@ public class UploadRunnable implements Runnable {
     }
 
     private int getChunkSize(int chunkNumber, int numChunks, long fileSize, int unitSize) {
-        configuration.getLogger().d(TAG, "getChunkSize()");
+        mLogger.d(TAG, "getChunkSize()");
         int chunkSize;
         if (chunkNumber >= numChunks) {
             chunkSize = 0; // represents bad size
@@ -746,9 +749,9 @@ public class UploadRunnable implements Runnable {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private byte[] createUploadChunk(long unitSize, int chunkNumber, BufferedInputStream fileStream) throws IOException {
-        configuration.getLogger().d(TAG, "createUploadChunk()");
+        mLogger.d(TAG, "createUploadChunk()");
 
-        configuration.getLogger().i(TAG, "starting read using fileStream.read()");
+        mLogger.i(TAG, "starting read using fileStream.read()");
 //        byte[] readBytes = new byte[(int) unitSize];
         int offset = (int) (unitSize * chunkNumber);
         fileStream.skip(offset);
@@ -756,7 +759,7 @@ public class UploadRunnable implements Runnable {
         ByteArrayOutputStream output = new ByteArrayOutputStream( (int) unitSize);
         int bufferSize = 65536;
 
-        configuration.getLogger().i(TAG, "starting read using ByteArrayOutputStream with buffer size: " + bufferSize);
+        mLogger.i(TAG, "starting read using ByteArrayOutputStream with buffer size: " + bufferSize);
 
         byte[] buffer = new byte[bufferSize];
         int readSize;
@@ -764,18 +767,18 @@ public class UploadRunnable implements Runnable {
 
         while ((readSize = fileStream.read(buffer)) > 0 && t <= unitSize) {
             if (!haveStoredCredentials()) {
-                configuration.getLogger().d(TAG, "no credentials stored, task cancelling()");
-                uploadItem.cancelUpload();
+                mLogger.d(TAG, "no credentials stored, task cancelling()");
+                mUploadItem.cancelUpload();
                 return null;
             }
 
-            if (uploadItem.isCancelled()) {
-                configuration.getLogger().d(TAG, "upload was cancelled for " + uploadItem.getFileName());
+            if (mUploadItem.isCancelled()) {
+                mLogger.d(TAG, "upload was cancelled for " + mUploadItem.getFileName());
                 notifyUploadListenerCancelled();
                 return null;
             }
 
-            if (!mfNetworkConnectivityMonitor.haveNetworkConnection()) {
+            if (!mNetworkConnectivityMonitor.haveNetworkConnection()) {
                 notifyUploadListenerCancelled();
                 return null;
             }
@@ -794,17 +797,17 @@ public class UploadRunnable implements Runnable {
 
         byte[] data = output.toByteArray();
 
-        configuration.getLogger().i(TAG, "total bytes read: " + t);
-        configuration.getLogger().i(TAG, "data size: " + data.length);
-        configuration.getLogger().i(TAG, "expected size: " + unitSize);
+        mLogger.i(TAG, "total bytes read: " + t);
+        mLogger.i(TAG, "data size: " + data.length);
+        mLogger.i(TAG, "expected size: " + unitSize);
 
-//        configuration.getLogger().i(TAG, "data size matches readBytes size: " + (data.length == readBytes.length));
+//        mLogger.i(TAG, "data size matches readBytes size: " + (data.length == readBytes.length));
 
         return data;
     }
 
     private String getSHA256(byte[] chunkData) throws NoSuchAlgorithmException, IOException {
-        configuration.getLogger().d(TAG, "getSHA256()");
+        mLogger.d(TAG, "getSHA256()");
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         //test code
         InputStream in = new ByteArrayInputStream(chunkData, 0, chunkData.length);
@@ -821,7 +824,7 @@ public class UploadRunnable implements Runnable {
     }
 
     private String convertHashBytesToString(byte[] hashBytes) {
-        configuration.getLogger().d(TAG, "convertHashBytesToString()");
+        mLogger.d(TAG, "convertHashBytesToString()");
         StringBuilder sb = new StringBuilder();
         for (byte hashByte : hashBytes) {
             String tempString = Integer.toHexString((hashByte & 0xFF) | 0x100).substring(1, 3);
@@ -832,130 +835,130 @@ public class UploadRunnable implements Runnable {
     }
 
     private Map<String, String> generateInstantUploadRequestParameters() {
-        configuration.getLogger().d(TAG, "generateInstantUploadRequestParameters()");
+        mLogger.d(TAG, "generateInstantUploadRequestParameters()");
         // generate map with request parameters
         Map<String, String> keyValue = new LinkedHashMap<String, String>();
-        keyValue.put("filename", utf8EncodedFileName);
-        keyValue.put("hash", uploadItem.getFileData().getFileHash());
-        keyValue.put("size", Long.toString(uploadItem.getFileData().getFileSize()));
+        keyValue.put("filename", mUtf8EncodedFileName);
+        keyValue.put("hash", mUploadItem.getFileData().getFileHash());
+        keyValue.put("size", Long.toString(mUploadItem.getFileData().getFileSize()));
         keyValue.put("response_format", "json");
-        if (uploadItem.getUploadOptions().getUploadPath() != null && !uploadItem.getUploadOptions().getUploadPath().isEmpty()) {
-            keyValue.put("path", uploadItem.getUploadOptions().getUploadPath());
+        if (mUploadItem.getUploadOptions().getUploadPath() != null && !mUploadItem.getUploadOptions().getUploadPath().isEmpty()) {
+            keyValue.put("path", mUploadItem.getUploadOptions().getUploadPath());
         } else {
-            keyValue.put("folder_key", uploadItem.getUploadOptions().getUploadFolderKey());
+            keyValue.put("folder_key", mUploadItem.getUploadOptions().getUploadFolderKey());
         }
 
-        keyValue.put("action_on_duplicate", uploadItem.getUploadOptions().getActionOnDuplicate());
+        keyValue.put("action_on_duplicate", mUploadItem.getUploadOptions().getActionOnDuplicate());
         return keyValue;
     }
 
     private Map<String, String> generateCheckUploadRequestParameters() {
-        configuration.getLogger().d(TAG, "generateCheckUploadRequestParameters()");
+        mLogger.d(TAG, "generateCheckUploadRequestParameters()");
         // generate map with request parameters
         Map<String, String> keyValue = new LinkedHashMap<String, String>();
-        keyValue.put("filename", utf8EncodedFileName);
-        keyValue.put("hash", uploadItem.getFileData().getFileHash());
-        keyValue.put("size", Long.toString(uploadItem.getFileData().getFileSize()));
-        keyValue.put("resumable", uploadItem.getUploadOptions().getResumable());
+        keyValue.put("filename", mUtf8EncodedFileName);
+        keyValue.put("hash", mUploadItem.getFileData().getFileHash());
+        keyValue.put("size", Long.toString(mUploadItem.getFileData().getFileSize()));
+        keyValue.put("resumable", mUploadItem.getUploadOptions().getResumable());
         keyValue.put("response_format", "json");
-        if (uploadItem.getUploadOptions().getUploadPath() != null && !uploadItem.getUploadOptions().getUploadPath().isEmpty()) {
-            keyValue.put("path", uploadItem.getUploadOptions().getUploadPath());
+        if (mUploadItem.getUploadOptions().getUploadPath() != null && !mUploadItem.getUploadOptions().getUploadPath().isEmpty()) {
+            keyValue.put("path", mUploadItem.getUploadOptions().getUploadPath());
         } else {
-            keyValue.put("folder_key", uploadItem.getUploadOptions().getUploadFolderKey());
+            keyValue.put("folder_key", mUploadItem.getUploadOptions().getUploadFolderKey());
         }
         return keyValue;
     }
 
     private boolean haveStoredCredentials() {
-        configuration.getLogger().d(TAG, "haveStoredCredentials()");
-        return !mfCredentials.getCredentials().isEmpty();
+        mLogger.d(TAG, "haveStoredCredentials()");
+        return !mUserCredentials.getCredentials().isEmpty();
     }
 
     private void startOrRestartUpload() throws IOException, NoSuchAlgorithmException {
-        configuration.getLogger().d(TAG, "startOrRestartUpload()");
-        int uploadAttemptCount = uploadItem.getUploadAttemptCount();
-        // don't start upload if cancelled or attempts > maxUploadAttempts
-        if (uploadAttemptCount > maxUploadAttempts || uploadItem.isCancelled()) {
-            if (uploadAttemptCount > maxUploadAttempts) {
-                configuration.getLogger().d(TAG, "upload attempt count > maxUploadAttempts");
+        mLogger.d(TAG, "startOrRestartUpload()");
+        int uploadAttemptCount = mUploadItem.getUploadAttemptCount();
+        // don't start upload if cancelled or attempts > mMaxUploadAttempts
+        if (uploadAttemptCount > mMaxUploadAttempts || mUploadItem.isCancelled()) {
+            if (uploadAttemptCount > mMaxUploadAttempts) {
+                mLogger.d(TAG, "upload attempt count > mMaxUploadAttempts");
             }
 
-            if (uploadItem.isCancelled()) {
-                configuration.getLogger().d(TAG, "upload item was cancelled");
+            if (mUploadItem.isCancelled()) {
+                mLogger.d(TAG, "upload item was cancelled");
             }
 
             notifyUploadListenerCancelled();
             return;
         }
         //don't add the item to the backlog queue if it is null or the path is null
-        if (uploadItem == null) {
-            configuration.getLogger().d(TAG, "upload item is null");
+        if (mUploadItem == null) {
+            mLogger.d(TAG, "upload item is null");
             notifyUploadListenerCancelled();
             return;
         }
 
-        configuration.getLogger().d(TAG, "getFileData() path: " + uploadItem.getFileData().getFilePath());
-        configuration.getLogger().d(TAG, "getFileData() path: " + uploadItem.getFileData().getFilePath());
-        configuration.getLogger().d(TAG, "getFileData() null: " + (uploadItem.getFileData() == null));
-        configuration.getLogger().d(TAG, "getFileData().getFilePath() null: " + (uploadItem.getFileData().getFilePath() == null ));
-        configuration.getLogger().d(TAG, "getFileData().getFilePath().isEmpty(): " + (uploadItem.getFileData().getFilePath().isEmpty()));
-        configuration.getLogger().d(TAG, "getFileData().getFileHash().isEmpty(): " + (uploadItem.getFileData().getFileHash().isEmpty()));
-        configuration.getLogger().d(TAG, "getFileData().getFileSize() == 0: " + (uploadItem.getFileData().getFileSize() == 0));
-        if (uploadItem.getFileData() == null || uploadItem.getFileData().getFilePath() == null || uploadItem.getFileData().getFilePath().isEmpty() || uploadItem.getFileData().getFileHash().isEmpty() || uploadItem.getFileData().getFileSize() == 0) {
-            configuration.getLogger().d(TAG, "one or more required parameters are invalid, not adding item to queue");
+        mLogger.d(TAG, "getFileData() path: " + mUploadItem.getFileData().getFilePath());
+        mLogger.d(TAG, "getFileData() path: " + mUploadItem.getFileData().getFilePath());
+        mLogger.d(TAG, "getFileData() null: " + (mUploadItem.getFileData() == null));
+        mLogger.d(TAG, "getFileData().getFilePath() null: " + (mUploadItem.getFileData().getFilePath() == null ));
+        mLogger.d(TAG, "getFileData().getFilePath().isEmpty(): " + (mUploadItem.getFileData().getFilePath().isEmpty()));
+        mLogger.d(TAG, "getFileData().getFileHash().isEmpty(): " + (mUploadItem.getFileData().getFileHash().isEmpty()));
+        mLogger.d(TAG, "getFileData().getFileSize() == 0: " + (mUploadItem.getFileData().getFileSize() == 0));
+        if (mUploadItem.getFileData() == null || mUploadItem.getFileData().getFilePath() == null || mUploadItem.getFileData().getFilePath().isEmpty() || mUploadItem.getFileData().getFileHash().isEmpty() || mUploadItem.getFileData().getFileSize() == 0) {
+            mLogger.d(TAG, "one or more required parameters are invalid, not adding item to queue");
             notifyUploadListenerCancelled();
             return;
         }
 
-        if (uploadAttemptCount <= maxUploadAttempts) {
+        if (uploadAttemptCount <= mMaxUploadAttempts) {
             doCheckUpload();
         } else {
-            configuration.getLogger().d(TAG, "upload attempt count > maxUploadAttempts");
+            mLogger.d(TAG, "upload attempt count > mMaxUploadAttempts");
             notifyUploadListenerCancelled();
         }
     }
 
     private void notifyUploadListenerStarted() {
-        configuration.getLogger().d(TAG, "notifyUploadListenerStarted()");
-        if (mfUploadListener != null) {
-            mfUploadListener.onStarted(uploadItem);
+        mLogger.d(TAG, "notifyUploadListenerStarted()");
+        if (mUploadListener != null) {
+            mUploadListener.onStarted(mUploadItem);
         }
     }
 
     private void notifyUploadListenerCompleted() {
-        configuration.getLogger().d(TAG, "notifyUploadListenerCompleted()");
-        if (mfUploadListener != null) {
-            mfUploadListener.onCompleted(uploadItem);
+        mLogger.d(TAG, "notifyUploadListenerCompleted()");
+        if (mUploadListener != null) {
+            mUploadListener.onCompleted(mUploadItem);
         }
     }
 
     private void notifyUploadListenerOnProgressUpdate(int totalChunks) {
-        configuration.getLogger().d(TAG, "notifyUploadListenerOnProgressUpdate()");
-        if (mfUploadListener != null) {
+        mLogger.d(TAG, "notifyUploadListenerOnProgressUpdate()");
+        if (mUploadListener != null) {
             // give number of chunks/numChunks for onProgressUpdate
             int numUploaded = 0;
             for (int chunkNumber = 0; chunkNumber < totalChunks; chunkNumber++) {
-                if (uploadItem.getBitmap().isUploaded(chunkNumber)) {
+                if (mUploadItem.getBitmap().isUploaded(chunkNumber)) {
                     numUploaded++;
                 }
             }
-            configuration.getLogger().d(TAG, numUploaded + "/" + totalChunks + " chunks uploaded");
-            mfUploadListener.onProgressUpdate(uploadItem, numUploaded, totalChunks);
+            mLogger.d(TAG, numUploaded + "/" + totalChunks + " chunks uploaded");
+            mUploadListener.onProgressUpdate(mUploadItem, numUploaded, totalChunks);
         }
     }
 
     private void notifyUploadListenerOnPolling(String message) {
-        configuration.getLogger().d(TAG, "notifyUploadListenerOnPolling()");
-        if (mfUploadListener != null) {
-            mfUploadListener.onPolling(uploadItem, message);
+        mLogger.d(TAG, "notifyUploadListenerOnPolling()");
+        if (mUploadListener != null) {
+            mUploadListener.onPolling(mUploadItem, message);
         }
     }
 
     private void notifyUploadListenerCancelled() {
-        configuration.getLogger().d(TAG, "notifyUploadListenerCancelled()");
-        uploadItem.cancelUpload();
-        if (mfUploadListener != null) {
-            mfUploadListener.onCancelled(uploadItem);
+        mLogger.d(TAG, "notifyUploadListenerCancelled()");
+        mUploadItem.cancelUpload();
+        if (mUploadListener != null) {
+            mUploadListener.onCancelled(mUploadItem);
         }
     }
 

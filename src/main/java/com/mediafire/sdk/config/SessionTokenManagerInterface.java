@@ -1,5 +1,6 @@
 package com.mediafire.sdk.config;
 
+import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.SessionToken;
 
 /**
@@ -10,4 +11,6 @@ public interface SessionTokenManagerInterface {
     public void receiveSessionToken(SessionToken token);
 
     public SessionToken borrowSessionToken();
+
+    public void getNewSessionTokenFailed(Response response);
 }

@@ -48,9 +48,14 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
             connection.setDoOutput(true);
             addGenericHeaders(connection, headers);
             postData(connection, payload, payloadIsQuery);
-            InputStream inputStream = connection.getInputStream();
-            byte[] response = readStream(inputStream);
             int responseCode = connection.getResponseCode();
+            InputStream inputStream;
+            if (responseCode / 100 != 2 ) {
+                inputStream = connection.getErrorStream();
+            } else {
+                inputStream = connection.getInputStream();
+            }
+            byte[] response = readStream(inputStream);
             return new Response(responseCode, response);
         } catch (IOException e) {
             e.printStackTrace();

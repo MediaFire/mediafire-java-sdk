@@ -7,6 +7,7 @@ import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
+import com.mediafire.sdk.http.ResponseApiClientError;
 import com.mediafire.sdk.token.ActionToken;
 import com.mediafire.sdk.token.ImageActionToken;
 import com.mediafire.sdk.token.SessionToken;
@@ -25,11 +26,11 @@ public class ApiClientHelper {
     private Request mRequest;
     private Response mResponse;
 
-    public ApiClientHelper(Configuration configuration) {
+    ApiClientHelper(Configuration configuration) {
         mConfiguration = configuration;
     }
 
-    public final void setup(Request request) {
+    final void setup(Request request) {
         DefaultLogger.log().v(TAG, "setup");
         mRequest = request;
         borrowToken();
@@ -37,7 +38,7 @@ public class ApiClientHelper {
         addSignatureToRequestParameters();
     }
 
-    public final void cleanup(Response response) {
+    final void cleanup(Response response) {
         DefaultLogger.log().v(TAG, "cleanup");
         mResponse = response;
         returnToken();
@@ -126,6 +127,10 @@ public class ApiClientHelper {
     }
 
     public void returnToken() {
+        if (mResponse instanceof ResponseApiClientError) {
+            return;
+        }
+
         ResponseHelper responseHelper = new ResponseHelper(mResponse);
 
         if (mResponse == null || responseHelper.getResponseObject(ApiResponse.class) == null) {

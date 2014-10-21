@@ -173,25 +173,6 @@ public class ApiClientHelper extends AbstractApiClientHelper {
         }
     }
 
-    public String makeSignatureForApiRequest() {
-        DefaultLogger.log().v(TAG, "makeSignatureForApiRequest");
-        // session token secret key + time + uri (concatenated)
-        SessionToken sessionToken = (SessionToken) mRequest.getToken();
-        int secretKeyMod256 = Integer.valueOf(sessionToken.getSecretKey()) % 256;
-        String time = sessionToken.getTime();
-
-        UrlHelper urlHelper = new UrlHelper(mRequest);
-
-        String nonUrlEncodedQueryString = urlHelper.getQueryString(false);
-
-        String baseUri = urlHelper.getBaseUriString();
-        String fullUri = baseUri + nonUrlEncodedQueryString;
-
-        String nonUrlEncodedString = secretKeyMod256 + time + fullUri;
-
-        return hashString(nonUrlEncodedString, "MD5");
-    }
-
     private ActionToken createActionToken(Class<? extends ActionToken> clazz, GetActionTokenResponse getActionTokenResponse) {
         DefaultLogger.log().v(TAG, "createActionToken");
         if (getActionTokenResponse == null) {

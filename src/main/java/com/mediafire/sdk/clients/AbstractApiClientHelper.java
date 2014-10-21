@@ -58,7 +58,7 @@ public abstract class AbstractApiClientHelper {
         return mfSessionToken;
     }
 
-    protected String makeSignatureForApiRequest() {
+    protected final String makeSignatureForApiRequest() {
         DefaultLogger.log().v(TAG, "makeSignatureForApiRequest");
         // session token secret key + time + uri (concatenated)
         SessionToken sessionToken = (SessionToken) mRequest.getToken();
@@ -77,7 +77,7 @@ public abstract class AbstractApiClientHelper {
         return hashString(nonUrlEncodedString, "MD5");
     }
 
-    protected String hashString(String target, String hashAlgorithm) {
+    protected final String hashString(String target, String hashAlgorithm) {
         DefaultLogger.log().v(TAG, "hashString");
         try {
             MessageDigest md = MessageDigest.getInstance(hashAlgorithm);

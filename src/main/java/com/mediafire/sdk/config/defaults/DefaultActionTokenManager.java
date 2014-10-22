@@ -37,17 +37,17 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
 
     @Override
     public void receiveImageActionToken(ImageActionToken token) {
-        DefaultLogger.log().v(TAG, "receiveUploadActionToken");
-        if (token != null) {
+        DefaultLogger.log().v(TAG, "receiveImageActionToken");
+        synchronized (mImageActionTokenLock) {
             mImageActionToken = token;
+            mImageActionTokenLock.notifyAll();
         }
-        mImageActionTokenLock.notifyAll();
     }
 
     @Override
     public void receiveUploadActionToken(UploadActionToken token) {
         DefaultLogger.log().v(TAG, "receiveUploadActionToken");
-        if (token != null) {
+        synchronized (mUploadActionTokenLock) {
             mUploadActionToken = token;
             mUploadActionTokenLock.notifyAll();
         }
@@ -56,29 +56,43 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     @Override
     public ImageActionToken borrowImageActionToken() {
         DefaultLogger.log().v(TAG, "borrowImageActionToken");
-        synchronized (mImageActionToken) {
+        synchronized (mImageActionTokenLock) {
             if (mImageActionToken == null) {
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        requestNewActionToken("image");
-                    }
-                };
-
-                Thread thread = new Thread(runnable);
-                thread.start();
+                new NewImageActionTokenThread().start();
             }
 
-            while (mImageActionToken == null) {
-                DefaultLogger.log().v(TAG, "borrowUploadActionToken - waiting for token");
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            if (mImageActionToken != null) {
+                return mImageActionToken;
             }
 
+            try {
+                mImageActionTokenLock.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return mImageActionToken;
+        }
+    }
+
+    private class NewImageActionTokenThread extends Thread {
+        @Override
+        public void run(){
+            DefaultLogger.log().v(TAG, "NewImageActionTokenThread - run");
+            HostObject hostObject = new HostObject("http", "www", "mediafire.com", "post");
+            ApiObject apiObject = new ApiObject("user", "get_action_token.php");
+            InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_IMAGE, true);
+            VersionObject versionObject = new VersionObject(null);
+            Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
+            request.addQueryParameter("type", "image");
+            request.addQueryParameter("response_format", "json");
+
+            Result result = mApiClient.doRequest(request);
+            Response response = result.getResponse();
+            if(response.getClass() == ResponseApiClientError.class) {
+                ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();
+                DefaultLogger.log().e(TAG, responseApiClientError.getErrorMessage());
+                receiveUploadActionToken(null);
+            }
         }
     }
 
@@ -87,27 +101,41 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
         DefaultLogger.log().v(TAG, "borrowUploadActionToken");
         synchronized (mUploadActionTokenLock) {
             if (mUploadActionToken == null) {
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        requestNewActionToken("upload");
-                    }
-                };
-
-                Thread thread = new Thread(runnable);
-                thread.start();
+                new NewUploadActionTokenThread().start();
             }
 
-            while (mUploadActionToken == null) {
-                DefaultLogger.log().v(TAG, "borrowUploadActionToken - waiting for token");
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            if (mUploadActionToken != null) {
+                return mUploadActionToken;
             }
 
+            try {
+                mUploadActionTokenLock.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return mUploadActionToken;
+        }
+    }
+
+    private class NewUploadActionTokenThread extends Thread {
+        @Override
+        public void run(){
+            DefaultLogger.log().v(TAG, "NewUploadActionTokenThread - run");
+            HostObject hostObject = new HostObject("http", "www", "mediafire.com", "post");
+            ApiObject apiObject = new ApiObject("user", "get_action_token.php");
+            InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_UPLOAD, true);
+            VersionObject versionObject = new VersionObject(null);
+            Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
+            request.addQueryParameter("type", "upload");
+            request.addQueryParameter("response_format", "json");
+
+            Result result = mApiClient.doRequest(request);
+            Response response = result.getResponse();
+            if(response.getClass() == ResponseApiClientError.class) {
+                ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();
+                DefaultLogger.log().e(TAG, responseApiClientError.getErrorMessage());
+                receiveUploadActionToken(null);
+            }
         }
     }
 
@@ -121,28 +149,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
             mImageActionToken = null;
         }
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                requestNewActionToken("upload");
-                requestNewActionToken("image");
-            }
-        };
-
-        Thread thread = new Thread(runnable);
-        thread.start();
-    }
-
-    private void requestNewActionToken(String type) {
-        DefaultLogger.log().v(TAG, "requestNewActionToken");
-        ReturnTokenType returnTokenType = type.equals("image") ? ReturnTokenType.NEW_IMAGE : ReturnTokenType.NEW_UPLOAD;
-        InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, returnTokenType, true);
-        HostObject hostObject = new HostObject("http", "www", "mediafire.com", "post");
-        ApiObject apiObject = new ApiObject("user", "get_action_token.php");
-        VersionObject versionObject = new VersionObject(null);
-        Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
-        request.addQueryParameter("type", type);
-        request.addQueryParameter("response_format", "json");
-        mApiClient.doRequest(request);
+        borrowImageActionToken();
+        borrowUploadActionToken();
     }
 }

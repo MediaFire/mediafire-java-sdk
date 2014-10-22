@@ -64,6 +64,6 @@ public class ApiClient {
         HeadersHelper headersHelper = new HeadersHelper(request);
         headersHelper.addPostHeaders(payload);
 
-        return mConfiguration.getHttpWorker().doPost(url, request.getHeaders(), payload, request.getInstructionsObject().postQuery());
+        return mConfiguration.getHttpWorker().doPost(url, request.getHeaders(), payload);
     }
 }

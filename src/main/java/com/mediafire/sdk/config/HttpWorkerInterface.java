@@ -10,6 +10,6 @@ import java.util.Map;
 public interface HttpWorkerInterface {
     public Response doGet(String url, Map<String, String> headers);
 
-    public Response doPost(String url, Map<String, String> headers, byte[] payload, boolean payloadIsQuery);
+    public Response doPost(String url, Map<String, String> headers, byte[] payload);
 
 }

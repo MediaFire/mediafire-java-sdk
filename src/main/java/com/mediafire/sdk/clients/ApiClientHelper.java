@@ -45,7 +45,7 @@ public class ApiClientHelper {
     }
 
     public void borrowToken() {
-        DefaultLogger.log().v(TAG, "borrowToken - " + mRequest.getInstructionsObject().getBorrowTokenType());
+        DefaultLogger.log().v(TAG, "borrowToken - added " + mRequest.getInstructionsObject().getBorrowTokenType() + " token");
         switch (mRequest.getInstructionsObject().getBorrowTokenType()) {
             case V2:
                 SessionToken sessionToken = mConfiguration.getSessionTokenManager().borrowSessionToken();
@@ -72,6 +72,8 @@ public class ApiClientHelper {
 
             DefaultLogger.log().v(TAG, "addTokenToRequestParameters - " + tokenString);
             mRequest.addQueryParameter("session_token", tokenString);
+        } else {
+            DefaultLogger.log().v(TAG, "addTokenToRequestParameters - no token to add for this request");
         }
     }
 
@@ -94,6 +96,8 @@ public class ApiClientHelper {
         if (signature != null) {
             DefaultLogger.log().v(TAG, "addSignatureToRequestParameters - " + signature);
             mRequest.addQueryParameter("signature", signature);
+        } else {
+            DefaultLogger.log().v(TAG, "addSignatureToRequestParameters - no signature to add for this request");
         }
     }
 
@@ -101,7 +105,6 @@ public class ApiClientHelper {
         // email + password + app id + api key
         // fb access token + app id + api key
         // tw oauth token + tw oauth token secret + app id + api key
-
         String userInfoPortionOfHashTarget = mConfiguration.getUserCredentials().getConcatenatedCredentials();
 
         // apiKey is not required, but may be passed into the MFConfiguration object
@@ -110,24 +113,27 @@ public class ApiClientHelper {
         // However, this should only be done when sufficient domain and/or network restrictions are in place.
         String hashTarget = userInfoPortionOfHashTarget + mConfiguration.getDeveloperCredentials().getConcatenatedCredentials();
 
+        DefaultLogger.log().v(TAG, "makeSignatureForNewSessionToken - pre-hash: " + hashTarget);
         String signature = hashString(hashTarget, "SHA-1");
-        DefaultLogger.log().v(TAG, "makeSignatureForNewSessionToken - " + signature);
+        DefaultLogger.log().v(TAG, "makeSignatureForNewSessionToken - hashed: " + signature);
         return signature;
     }
 
     private void addRequiredParametersForNewSessionToken() {
+        DefaultLogger.log().v(TAG, "addRequiredParametersForNewSessionToken");
         Map<String, String> credentialsMap = mConfiguration.getUserCredentials().getCredentials();
         for (String key : credentialsMap.keySet()) {
             mRequest.addQueryParameter(key, credentialsMap.get(key));
         }
 
-        DefaultLogger.log().v(TAG, "addRequiredParametersForNewSessionToken");
-
         mRequest.addQueryParameter("application_id", mConfiguration.getDeveloperCredentials().getCredentials().get("application_id"));
+
+        DefaultLogger.log().v(TAG, "Request parameters: " + mRequest.getQueryParameters());
     }
 
     public void returnToken() {
         if (mResponse instanceof ResponseApiClientError) {
+            DefaultLogger.log().v(TAG, "returnToken - not returning a token. Response is ResponseApiClientError");
             return;
         }
 
@@ -146,6 +152,7 @@ public class ApiClientHelper {
                 if (newSessionToken != null) {
                     mConfiguration.getSessionTokenManager().receiveSessionToken(newSessionToken);
                 }
+                DefaultLogger.log().v(TAG, "returnToken - returned new v2 to token manager");
                 break;
             case V2:
                 ApiResponse apiResponse = responseHelper.getResponseObject(ApiResponse.class);
@@ -157,6 +164,7 @@ public class ApiClientHelper {
                     }
                     mConfiguration.getSessionTokenManager().receiveSessionToken(((SessionToken) mRequest.getToken()));
                 }
+                DefaultLogger.log().v(TAG, "returnToken - returned old v2 to token manager");
                 break;
             case NEW_UPLOAD:
                 GetActionTokenResponse uploadActionTokenResponse = responseHelper.getResponseObject(GetActionTokenResponse.class);
@@ -166,6 +174,7 @@ public class ApiClientHelper {
                     UploadActionToken uploadActionToken = (UploadActionToken) createActionToken(UploadActionToken.class, uploadActionTokenResponse);
                     mConfiguration.getActionTokenManager().receiveUploadActionToken(uploadActionToken);
                 }
+                DefaultLogger.log().v(TAG, "returnToken - returned new upload action token to token manager");
                 break;
             case NEW_IMAGE:
                 GetActionTokenResponse imageActionTokenResponse = responseHelper.getResponseObject(GetActionTokenResponse.class);
@@ -175,23 +184,28 @@ public class ApiClientHelper {
                     ImageActionToken mfImageActionToken = (ImageActionToken) createActionToken(ImageActionToken.class, imageActionTokenResponse);
                     mConfiguration.getActionTokenManager().receiveImageActionToken(mfImageActionToken);
                 }
+                DefaultLogger.log().v(TAG, "returnToken - returned new image actiontoken to token manager");
                 break;
             case NONE:
                 // if a token is invalid then there needs to be a call made to TokenFarm to notify
                 if (responseHelper.getResponseObject(ApiResponse.class).hasError()) {
                     mConfiguration.getActionTokenManager().tokensFailed();
+                    DefaultLogger.log().v(TAG, "returnToken - notified token manager about failed action token");
+                } else {
+                    DefaultLogger.log().v(TAG, "returnToken - no tokens returned");
                 }
                 break;
         }
     }
 
     private ActionToken createActionToken(Class<? extends ActionToken> clazz, GetActionTokenResponse getActionTokenResponse) {
-        DefaultLogger.log().v(TAG, "createActionToken");
         if (getActionTokenResponse == null) {
+            DefaultLogger.log().v(TAG, "createActionToken - no action token response, return null action token");
             return null;
         }
 
         if (getActionTokenResponse.hasError()) {
+            DefaultLogger.log().v(TAG, "createActionToken - action token response has error, return null action token");
             return null;
         }
 
@@ -203,22 +217,29 @@ public class ApiClientHelper {
             tokenExpiry = 0;
         }
 
+        DefaultLogger.log().v(TAG, "createActionToken - creating token with expiry of " + tokenExpiry);
+
         if (clazz == ImageActionToken.class) {
+            DefaultLogger.log().v(TAG, "createActionToken - returning new image action token");
             return new ImageActionToken(tokenString, tokenExpiry);
         } else if (clazz == UploadActionToken.class) {
+            DefaultLogger.log().v(TAG, "createActionToken - returning new upload action token");
             return new UploadActionToken(tokenString, tokenExpiry);
         } else {
+            DefaultLogger.log().v(TAG, "createActionToken - unknown token class passed, returning null");
             return null;
         }
     }
 
     protected SessionToken createNewSessionToken(GetSessionTokenResponse getSessionTokenResponse) {
-        DefaultLogger.log().v(TAG, "createNewSessionToken");
+
         if (getSessionTokenResponse == null) {
+            DefaultLogger.log().v(TAG, "createNewSessionToken - response null, returning null");
             return null;
         }
 
         if (getSessionTokenResponse.hasError()) {
+            DefaultLogger.log().v(TAG, "createNewSessionToken - response has error, returning null");
             return null;
         }
 
@@ -232,9 +253,15 @@ public class ApiClientHelper {
     }
 
     protected final String makeSignatureForApiRequest() {
-        DefaultLogger.log().v(TAG, "makeSignatureForApiRequest");
+
         // session token secret key + time + uri (concatenated)
         SessionToken sessionToken = (SessionToken) mRequest.getToken();
+
+        if (sessionToken == null) {
+            DefaultLogger.log().v(TAG, "makeSignatureForApiRequest - request had no token, returning null for signature");
+            return null;
+        }
+
         int secretKeyMod256 = Integer.valueOf(sessionToken.getSecretKey()) % 256;
         String time = sessionToken.getTime();
 
@@ -247,11 +274,15 @@ public class ApiClientHelper {
 
         String nonUrlEncodedString = secretKeyMod256 + time + fullUri;
 
-        return hashString(nonUrlEncodedString, "MD5");
+        DefaultLogger.log().v(TAG, "makeSignatureForApiRequest - hash target: " + nonUrlEncodedQueryString);
+        String signature = hashString(nonUrlEncodedString, "MD5");
+        DefaultLogger.log().v(TAG, "makeSignatureForApiRequest - hashed: " + signature);
+        return signature;
     }
 
     protected final String hashString(String target, String hashAlgorithm) {
-        DefaultLogger.log().v(TAG, "hashString");
+        DefaultLogger.log().v(TAG, "hashString - target: " + target);
+        String result;
         try {
             MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
 
@@ -264,10 +295,12 @@ public class ApiClientHelper {
             for (byte aByteData : byteData) {
                 sb.append(Integer.toString((aByteData & 0xff) + 0x100, 16).substring(1));
             }
-            return sb.toString();
+            result = sb.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return target;
+            result = target;
         }
+        DefaultLogger.log().v(TAG, "hashString - hashed: " + result);
+        return result;
     }
 }

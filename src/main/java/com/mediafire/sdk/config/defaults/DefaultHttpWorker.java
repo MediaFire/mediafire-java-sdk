@@ -27,7 +27,7 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
         try {
             HttpURLConnection connection = getURLConnection(url);
             setTimeouts(connection);
-            addGenericHeaders(connection, headers);
+            addRequestHeaders(connection, headers);
             int responseCode = connection.getResponseCode();
             InputStream inputStream;
             if (responseCode / 100 != 2 ) {
@@ -45,14 +45,14 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     }
 
     @Override
-    public Response doPost(String url, Map<String, String> headers, byte[] payload, boolean payloadIsQuery) {
+    public Response doPost(String url, Map<String, String> headers, byte[] payload) {
         DefaultLogger.log().v(TAG, "doPost - " + url);
         try{
             HttpURLConnection connection = getURLConnection(url);
             setTimeouts(connection);
             connection.setDoOutput(true);
-            addGenericHeaders(connection, headers);
-            postData(connection, payload, payloadIsQuery);
+            addRequestHeaders(connection, headers);
+            postData(connection, payload);
             int responseCode = connection.getResponseCode();
             InputStream inputStream;
             if (responseCode / 100 != 2 ) {
@@ -84,13 +84,14 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
         return null;
     }
 
-    private void addGenericHeaders(URLConnection connection, Map<String, String> headers) {
-        DefaultLogger.log().v(TAG, "addGenericHeaders - " + headers.size());
+    private void addRequestHeaders(URLConnection connection, Map<String, String> headers) {
+        DefaultLogger.log().v(TAG, "addRequestHeaders - " + headers.size());
         for (String key : headers.keySet()) {
             if (headers.get(key) != null) {
                 connection.addRequestProperty(key, headers.get(key));
             }
         }
+        DefaultLogger.log().v(TAG, "addRequestHeaders - added request properties:" + connection.getRequestProperties());
     }
 
     private void setTimeouts(URLConnection connection) {
@@ -99,19 +100,13 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
         connection.setReadTimeout(READ_TIMEOUT_MILLISECONDS);
     }
 
-    private void postData(URLConnection connection, byte[] payload, boolean payloadIsQuery) throws IOException {
-        DefaultLogger.log().v(TAG, "postData - ( payload is query: " + payloadIsQuery + ")");
-
+    private void postData(URLConnection connection, byte[] payload) throws IOException {
+        DefaultLogger.log().v(TAG, "postData");
         if (payload == null) {
-            return;
-        }
-
-        if (payloadIsQuery) {
-            connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            DefaultLogger.log().w(TAG, "byte array empty, not posting anything");
         } else {
-            connection.addRequestProperty("Content-Type", "application/octet-stream");
+            DefaultLogger.log().w(TAG, "posting " + payload.length + " bytes");
         }
-
         connection.addRequestProperty("Content-Length", String.valueOf(payload.length));
         connection.getOutputStream().write(payload);
     }

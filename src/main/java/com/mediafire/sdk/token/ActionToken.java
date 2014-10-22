@@ -10,7 +10,7 @@ public abstract class ActionToken extends Token {
 
     public ActionToken(ActionToken token) {
         super(token.getTokenString());
-        mExpiration = token.mExpiration;
+        mExpiration = System.currentTimeMillis() + token.mExpiration;
     }
 
     public long getExpiration() {

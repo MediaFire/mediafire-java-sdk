@@ -27,7 +27,7 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
         try {
             HttpURLConnection connection = getURLConnection(url);
             setTimeouts(connection);
-            addRequestHeaders(connection, headers);
+            addRequestHeadersToConnection(connection, headers);
             int responseCode = connection.getResponseCode();
             InputStream inputStream;
             if (responseCode / 100 != 2 ) {
@@ -51,7 +51,7 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
             HttpURLConnection connection = getURLConnection(url);
             setTimeouts(connection);
             connection.setDoOutput(true);
-            addRequestHeaders(connection, headers);
+            addRequestHeadersToConnection(connection, headers);
             postData(connection, payload);
             int responseCode = connection.getResponseCode();
             InputStream inputStream;
@@ -84,14 +84,14 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
         return null;
     }
 
-    private void addRequestHeaders(URLConnection connection, Map<String, String> headers) {
-        DefaultLogger.log().v(TAG, "addRequestHeaders - " + headers.size());
+    private void addRequestHeadersToConnection(URLConnection connection, Map<String, String> headers) {
+        DefaultLogger.log().v(TAG, "addRequestHeadersToConnection - " + headers.size());
         for (String key : headers.keySet()) {
             if (headers.get(key) != null) {
                 connection.addRequestProperty(key, headers.get(key));
             }
         }
-        DefaultLogger.log().v(TAG, "addRequestHeaders - added request properties:" + connection.getRequestProperties());
+        DefaultLogger.log().v(TAG, "addRequestHeadersToConnection - added request properties:" + connection.getRequestProperties());
     }
 
     private void setTimeouts(URLConnection connection) {
@@ -101,13 +101,14 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     }
 
     private void postData(URLConnection connection, byte[] payload) throws IOException {
-        DefaultLogger.log().v(TAG, "postData");
         if (payload == null) {
-            DefaultLogger.log().w(TAG, "byte array empty, not posting anything");
+            DefaultLogger.log().w(TAG, "postData - byte array empty, not posting anything");
+            return;
         } else {
-            DefaultLogger.log().w(TAG, "posting " + payload.length + " bytes");
+            DefaultLogger.log().w(TAG, "postData - posting " + payload.length + " bytes");
         }
-        connection.addRequestProperty("Content-Length", String.valueOf(payload.length));
+        DefaultLogger.log().v(TAG, "postData - request properties: " + connection.getRequestProperties());
+        DefaultLogger.log().v(TAG, "postData - writing payload");
         connection.getOutputStream().write(payload);
     }
 

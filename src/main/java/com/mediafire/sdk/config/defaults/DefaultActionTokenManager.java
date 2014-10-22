@@ -8,7 +8,7 @@ import com.mediafire.sdk.token.ImageActionToken;
 import com.mediafire.sdk.token.UploadActionToken;
 
 /**
- * Created by Chris Najar on 10/21/2014.
+ * Created by Jonathan Harrison on 10/21/2014.
  */
 public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private static final String TAG = DefaultActionTokenManager.class.getCanonicalName();

@@ -14,7 +14,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * Created by Chris Najar on 10/21/2014.
+ * Created by Jonathan Harrison on 10/21/2014.
  */
 public class DefaultSessionTokenManager implements SessionTokenManagerInterface {
     private static final String TAG = DefaultSessionTokenManager.class.getCanonicalName();

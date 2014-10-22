@@ -100,17 +100,20 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     }
 
     private void postData(URLConnection connection, byte[] payload, boolean payloadIsQuery) throws IOException {
-        DefaultLogger.log().v(TAG, "postData - " + (payload == null ? payload : payload.length) + " bytes ( payload is query: " + payloadIsQuery + ")");
+        DefaultLogger.log().v(TAG, "postData - ( payload is query: " + payloadIsQuery + ")");
+
+        if (payload == null) {
+            return;
+        }
+
         if (payloadIsQuery) {
             connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        } else if (payload != null) {
+        } else {
             connection.addRequestProperty("Content-Type", "application/octet-stream");
         }
 
-        if (payload != null) {
-            connection.addRequestProperty("Content-Length", String.valueOf(payload.length));
-            connection.getOutputStream().write(payload);
-        }
+        connection.addRequestProperty("Content-Length", String.valueOf(payload.length));
+        connection.getOutputStream().write(payload);
     }
 
     private byte[] readStream(InputStream inputStream) throws IOException {

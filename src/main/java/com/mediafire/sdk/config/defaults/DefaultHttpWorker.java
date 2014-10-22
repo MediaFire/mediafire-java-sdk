@@ -28,9 +28,14 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
             HttpURLConnection connection = getURLConnection(url);
             setTimeouts(connection);
             addGenericHeaders(connection, headers);
-            InputStream inputStream = connection.getInputStream();
-            byte[] response = readStream(inputStream);
             int responseCode = connection.getResponseCode();
+            InputStream inputStream;
+            if (responseCode / 100 != 2 ) {
+                inputStream = connection.getErrorStream();
+            } else {
+                inputStream = connection.getInputStream();
+            }
+            byte[] response = readStream(inputStream);
             return new Response(responseCode, response);
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,7 +100,7 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     }
 
     private void postData(URLConnection connection, byte[] payload, boolean payloadIsQuery) throws IOException {
-        DefaultLogger.log().v(TAG, "postData - " + payload.length + " bytes ( payload is query: " + payloadIsQuery + ")");
+        DefaultLogger.log().v(TAG, "postData - " + (payload == null ? payload : payload.length) + " bytes ( payload is query: " + payloadIsQuery + ")");
         if (payloadIsQuery) {
             connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         } else if (payload != null) {

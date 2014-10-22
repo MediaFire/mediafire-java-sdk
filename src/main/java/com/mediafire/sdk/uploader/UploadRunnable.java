@@ -229,7 +229,7 @@ public class UploadRunnable implements Runnable {
             notifyUploadListenerCancelled();
             return;
         }
-        
+
         if (mUploadItem.isCancelled()) {
             mLogger.d(TAG, "upload was cancelled for " + mUploadItem.getFileName());
             notifyUploadListenerCancelled();
@@ -679,7 +679,7 @@ public class UploadRunnable implements Runnable {
 
     private Map<String, String> generateResumableRequestParameters() {
         mLogger.d(TAG, "generateResumableRequestParameters()");
-        // get upload options. these will be passed as request parameters
+        // get upload mOptions. these will be passed as request parameters
         UploadItemOptions uploadItemOptions = mUploadItem.getUploadOptions();
         String actionOnDuplicate = uploadItemOptions.getActionOnDuplicate();
         String versionControl = uploadItemOptions.getVersionControl();

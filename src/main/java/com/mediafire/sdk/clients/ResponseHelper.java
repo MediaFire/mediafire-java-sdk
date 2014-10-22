@@ -41,7 +41,6 @@ public class ResponseHelper {
         }
 
         String responseString = new String(mResponse.getBytes());
-        DefaultLogger.log().v(TAG, "getResponseAsString - " + responseString);
         return responseString;
     }
 

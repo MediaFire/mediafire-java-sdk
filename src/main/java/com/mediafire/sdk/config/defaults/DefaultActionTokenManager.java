@@ -12,7 +12,6 @@ import com.mediafire.sdk.token.UploadActionToken;
  */
 public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private static final String TAG = DefaultActionTokenManager.class.getCanonicalName();
-    private ApiClient mApiClient;
 
     private ImageActionToken mImageActionToken;
     private UploadActionToken mUploadActionToken;
@@ -25,19 +24,18 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
 
     @Override
     public void initialize(Configuration configuration) {
-        DefaultLogger.log().v(TAG, "initialize");
+        mConfiguration.getLogger().v(TAG, "initialize");
         mConfiguration = configuration;
-        mApiClient = new ApiClient(configuration);
     }
 
     @Override
     public void shutdown() {
-        DefaultLogger.log().v(TAG, "shutdown");
+        mConfiguration.getLogger().v(TAG, "shutdown");
     }
 
     @Override
     public void receiveImageActionToken(ImageActionToken token) {
-        DefaultLogger.log().v(TAG, "receiveImageActionToken");
+        mConfiguration.getLogger().v(TAG, "receiveImageActionToken");
         synchronized (mImageActionTokenLock) {
             mImageActionToken = token;
             mImageActionTokenLock.notifyAll();
@@ -46,7 +44,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
 
     @Override
     public void receiveUploadActionToken(UploadActionToken token) {
-        DefaultLogger.log().v(TAG, "receiveUploadActionToken");
+        mConfiguration.getLogger().v(TAG, "receiveUploadActionToken");
         synchronized (mUploadActionTokenLock) {
             mUploadActionToken = token;
             mUploadActionTokenLock.notifyAll();
@@ -55,7 +53,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
 
     @Override
     public ImageActionToken borrowImageActionToken() {
-        DefaultLogger.log().v(TAG, "borrowImageActionToken");
+        mConfiguration.getLogger().v(TAG, "borrowImageActionToken");
         synchronized (mImageActionTokenLock) {
             if (mImageActionToken == null) {
                 new NewImageActionTokenThread().start();
@@ -77,20 +75,20 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private class NewImageActionTokenThread extends Thread {
         @Override
         public void run(){
-            DefaultLogger.log().v(TAG, "NewImageActionTokenThread - run");
+            mConfiguration.getLogger().v(TAG, "NewImageActionTokenThread - run");
             HostObject hostObject = new HostObject("http", "www", "mediafire.com", "post");
             ApiObject apiObject = new ApiObject("user", "get_action_token.php");
             InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_IMAGE, true);
-            VersionObject versionObject = new VersionObject(null);
+            VersionObject versionObject = new VersionObject("1.2");
             Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
             request.addQueryParameter("type", "image");
             request.addQueryParameter("response_format", "json");
 
-            Result result = mApiClient.doRequest(request);
+            Result result = new ApiClient(mConfiguration).doRequest(request);
             Response response = result.getResponse();
             if(response.getClass() == ResponseApiClientError.class) {
                 ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();
-                DefaultLogger.log().e(TAG, responseApiClientError.getErrorMessage());
+                mConfiguration.getLogger().e(TAG, responseApiClientError.getErrorMessage());
                 receiveUploadActionToken(null);
             }
         }
@@ -98,7 +96,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
 
     @Override
     public UploadActionToken borrowUploadActionToken() {
-        DefaultLogger.log().v(TAG, "borrowUploadActionToken");
+        mConfiguration.getLogger().v(TAG, "borrowUploadActionToken");
         synchronized (mUploadActionTokenLock) {
             if (mUploadActionToken == null) {
                 new NewUploadActionTokenThread().start();
@@ -120,20 +118,20 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private class NewUploadActionTokenThread extends Thread {
         @Override
         public void run(){
-            DefaultLogger.log().v(TAG, "NewUploadActionTokenThread - run");
+            mConfiguration.getLogger().v(TAG, "NewUploadActionTokenThread - run");
             HostObject hostObject = new HostObject("http", "www", "mediafire.com", "post");
             ApiObject apiObject = new ApiObject("user", "get_action_token.php");
             InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_UPLOAD, true);
-            VersionObject versionObject = new VersionObject(null);
+            VersionObject versionObject = new VersionObject("1.2");
             Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
             request.addQueryParameter("type", "upload");
             request.addQueryParameter("response_format", "json");
 
-            Result result = mApiClient.doRequest(request);
+            Result result = new ApiClient(mConfiguration).doRequest(request);
             Response response = result.getResponse();
             if(response.getClass() == ResponseApiClientError.class) {
                 ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();
-                DefaultLogger.log().e(TAG, responseApiClientError.getErrorMessage());
+                mConfiguration.getLogger().e(TAG, responseApiClientError.getErrorMessage());
                 receiveUploadActionToken(null);
             }
         }
@@ -141,7 +139,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
 
     @Override
     public void tokensFailed() {
-        DefaultLogger.log().v(TAG, "tokensFailed");
+        mConfiguration.getLogger().v(TAG, "tokensFailed");
         synchronized (mUploadActionTokenLock) {
             mUploadActionToken = null;
         }

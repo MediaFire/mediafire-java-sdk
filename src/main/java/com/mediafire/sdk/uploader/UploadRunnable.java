@@ -239,7 +239,7 @@ public class UploadRunnable implements Runnable {
         // generate map with request parameters
         Map<String, String> keyValue = generateCheckUploadRequestParameters();
 
-        Request request = new RequestGenerator().generateRequestObject("1.2", "upload", "check.php");
+        Request request = new RequestGenerator().generateRequestObject("1.0", "upload", "check.php");
 
         for (String key : keyValue.keySet()) {
             request.addQueryParameter(key, keyValue.get(key));
@@ -320,7 +320,7 @@ public class UploadRunnable implements Runnable {
 
         // generate map with request parameters
         Map<String, String> keyValue = generateInstantUploadRequestParameters();
-        Request request = new RequestGenerator().generateRequestObject("1.2", "upload", "instant.php");
+        Request request = new RequestGenerator().generateRequestObject("1.0", "upload", "instant.php");
 
         for (String key : keyValue.keySet()) {
             request.addQueryParameter(key, keyValue.get(key));
@@ -426,7 +426,7 @@ public class UploadRunnable implements Runnable {
                 printDebugRequestData(headers, parameters);
 
 
-                Request request = new RequestGenerator().generateRequestObject("1.2", "upload", "instant.php");
+                Request request = new RequestGenerator().generateRequestObject("upload", "resumable.php");
 
                 for (String key : parameters.keySet()) {
                     request.addQueryParameter(key, parameters.get(key));
@@ -518,7 +518,7 @@ public class UploadRunnable implements Runnable {
             pollCount++;
             // get api response.
 
-            Request request = new RequestGenerator().generateRequestObject("1.2", "upload", "poll.php");
+            Request request = new RequestGenerator().generateRequestObject("1.0", "upload", "poll_upload.php");
 
             for (String key : keyValue.keySet()) {
                 request.addQueryParameter(key, keyValue.get(key));

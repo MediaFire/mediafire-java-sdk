@@ -32,19 +32,19 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
 
     @Override
     public void initialize(Configuration configuration) {
-        DefaultLogger.log().v(TAG, "initialize");
+        mConfiguration.getLogger().v(TAG, "initialize");
         mConfiguration = configuration;
         mApiClient = new ApiClient(configuration);
     }
 
     @Override
     public void shutdown() {
-        DefaultLogger.log().v(TAG, "shutdown");
+        mConfiguration.getLogger().v(TAG, "shutdown");
     }
 
     @Override
     public void receiveSessionToken(SessionToken token) {
-        DefaultLogger.log().v(TAG, "receiveSessionToken");
+        mConfiguration.getLogger().v(TAG, "receiveSessionToken");
         subtractOutstandingRequest();
         if (token != null) {
             if(mSessionTokens.size() < MAX_SESSION_TOKEN) {
@@ -55,7 +55,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
 
     @Override
     public SessionToken borrowSessionToken() {
-        DefaultLogger.log().v(TAG, "borrowSessionToken");
+        mConfiguration.getLogger().v(TAG, "borrowSessionToken");
         synchronized (lock) {
             if(mSessionTokens.size() < MIN_SESSION_TOKEN) {
                 for(int i = mSessionTokens.size(); i < MIN_SESSION_TOKEN; i++) {
@@ -77,7 +77,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
 
     @Override
     public void getNewSessionTokenFailed(Response response) {
-        DefaultLogger.log().v(TAG, "getNewSessionTokenFailed");
+        mConfiguration.getLogger().v(TAG, "getNewSessionTokenFailed");
         subtractOutstandingRequest();
         synchronized (outstandingRequestsLock) {
             if (outstandingRequests == 0 && mSessionTokens.isEmpty()) {
@@ -90,7 +90,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
     private class NewSessionTokenThread extends Thread {
         @Override
         public void run() {
-            DefaultLogger.log().v(TAG, "requestNewSessionToken");
+            mConfiguration.getLogger().v(TAG, "requestNewSessionToken");
             Request request = new RequestGenerator().generateRequestObject("1.2", "user", "get_session_token.php");
             request.addQueryParameter("application_id", mConfiguration.getDeveloperCredentials().getCredentials().get("application_id"));
             request.addQueryParameter("response_format", "json");
@@ -100,7 +100,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
             Response response = result.getResponse();
             if(response.getClass() == ResponseApiClientError.class) {
                 ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();
-                DefaultLogger.log().e(TAG, responseApiClientError.getErrorMessage());
+                mConfiguration.getLogger().e(TAG, responseApiClientError.getErrorMessage());
                 SessionToken badToken = new SessionToken(null, null, null);
                 mSessionTokens.offer(badToken);
             }

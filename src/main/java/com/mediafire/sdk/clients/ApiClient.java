@@ -15,7 +15,7 @@ public class ApiClient {
     }
 
     public Result doRequest(Request request) {
-        DefaultLogger.log().v(TAG, "doRequest");
+        mConfiguration.getLogger().v(TAG, "doRequest");
         ApiClientHelper apiClientHelper = new ApiClientHelper(mConfiguration);
 
         // setup should handle the following:
@@ -30,6 +30,10 @@ public class ApiClient {
         String httpMethod = request.getHostObject().getHttpMethod();
 
         Response response = doRequest(request, httpMethod);
+
+        if (response != null) {
+            mConfiguration.getLogger().v(TAG, "api response - " + new String(response.getBytes()));
+        }
 
         apiClientHelper.cleanup(response);
 
@@ -47,7 +51,7 @@ public class ApiClient {
     }
 
     private final Response doGet(Request request) {
-        DefaultLogger.log().v(TAG, "doGet");
+        mConfiguration.getLogger().v(TAG, "doGet");
         String url = new UrlHelper(request).makeUrlForGetRequest();
         // add headers to request
         HeadersHelper headersHelper = new HeadersHelper(request);
@@ -56,7 +60,7 @@ public class ApiClient {
     }
 
     private final Response doPost(Request request) {
-        DefaultLogger.log().v(TAG, "doPost");
+        mConfiguration.getLogger().v(TAG, "doPost");
         UrlHelper urlHelper = new UrlHelper(request);
         String url = urlHelper.makeUrlForPostRequest();
         byte[] payload = urlHelper.getPayload();

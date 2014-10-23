@@ -43,6 +43,7 @@ public class GetLinksResponse extends ApiResponse {
         private String edit;
         private String edit_error_message;
 
+        private String streaming;
         private String streaming_error_message;
         private String streaming_error;
 
@@ -86,6 +87,13 @@ public class GetLinksResponse extends ApiResponse {
                 listen = "";
             }
             return listen;
+        }
+
+        public String getStreaming() {
+            if (this.streaming == null) {
+                this.streaming = "";
+            }
+            return this.streaming;
         }
 
         public int getStreamingError() {

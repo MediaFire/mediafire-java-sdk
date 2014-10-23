@@ -60,7 +60,6 @@ public class GetInfoResponse extends ApiResponse {
         }
     }
 
-
     public class FileInfo {
         protected String password_protected;
         protected String owner_name;
@@ -115,11 +114,11 @@ public class GetInfoResponse extends ApiResponse {
             return this.description;
         }
 
-        public int getSize() {
+        public long getSize() {
             if (this.size == null) {
                 this.size = "0";
             }
-            return Integer.valueOf(this.size);
+            return Long.valueOf(this.size);
         }
 
         public boolean isPrivate() {

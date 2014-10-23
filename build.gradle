@@ -1,0 +1,47 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+//apply plugin: 'build-version'
+
+//version = buildVersion.version
+version = "3.0.0"
+
+buildscript {
+    repositories {
+        maven { url 'https://geonet.artifactoryonline.com/geonet/public-releases' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'nz.org.geonet:gradle-build-version-plugin:1.+'
+    }
+}
+repositories {
+    maven {
+        url "http://git.site.com:8081/nexus/content/groups/public"
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'commons-codec:commons-codec:1.9'
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'jars'
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "c:/mfsdk/java-sdk/jars/"
+//            url "/Users/jondh/Documents/MF_SDK/java-sdk/jars/"
+        }
+    }
+}

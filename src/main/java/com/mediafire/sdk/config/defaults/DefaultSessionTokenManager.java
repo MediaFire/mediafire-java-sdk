@@ -32,8 +32,8 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
 
     @Override
     public void initialize(Configuration configuration) {
-        mConfiguration.getLogger().v(TAG, "initialize");
         mConfiguration = configuration;
+        mConfiguration.getLogger().v(TAG, "initialize");
         mApiClient = new ApiClient(configuration);
     }
 

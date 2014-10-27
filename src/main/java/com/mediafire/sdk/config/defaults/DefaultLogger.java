@@ -1,5 +1,6 @@
 package com.mediafire.sdk.config.defaults;
 
+import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.LoggerInterface;
 import com.mediafire.sdk.http.Result;
 
@@ -49,5 +50,15 @@ public class DefaultLogger implements LoggerInterface {
     @Override
     public void logApiError(String source, Result result) {
         System.out.println("[" + Thread.currentThread().getName() + "] [" + source + "] [" + result + "]");
+    }
+
+    @Override
+    public void initialize(Configuration configuration) {
+
+    }
+
+    @Override
+    public void shutdown() {
+
     }
 }

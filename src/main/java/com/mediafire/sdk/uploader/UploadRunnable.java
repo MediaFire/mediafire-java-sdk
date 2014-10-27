@@ -135,13 +135,13 @@ public class UploadRunnable implements Runnable {
                     doInstantUpload();
                 } else {
                     mLogger.d(TAG, "already in folder, not uploading...");
-                    notifyUploadListenerCompleted();
+                    notifyUploadListenerCompleted(checkResponse.getDuplicateQuickkey());
                 }
                 break;
             case DO_NOT_UPLOAD:
             default:
                 mLogger.d(TAG, "not uploading...");
-                notifyUploadListenerCompleted();
+                notifyUploadListenerCompleted(checkResponse.getDuplicateQuickkey());
                 break;
         }
     }
@@ -177,9 +177,9 @@ public class UploadRunnable implements Runnable {
         }
     }
 
-    private void instantUploadFinished() {
+    private void instantUploadFinished(String quickKey) {
         mLogger.d(TAG, "instantUploadFinished()");
-        notifyUploadListenerCompleted();
+        notifyUploadListenerCompleted(quickKey);
     }
 
     private void resumableUploadFinished(ResumableResponse response) throws IOException, NoSuchAlgorithmException {
@@ -206,7 +206,7 @@ public class UploadRunnable implements Runnable {
 
         if (pollStatusCode == PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY && pollResultCode == PollResponse.Result.SUCCESS && pollFileErrorCode == PollResponse.FileError.NO_ERROR) {
             mLogger.d(TAG, "done polling");
-            notifyUploadListenerCompleted();
+            notifyUploadListenerCompleted(pollResponse.getDoUpload().getQuickKey());
         } else if (pollStatusCode != PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY && pollResultCode == PollResponse.Result.SUCCESS && pollFileErrorCode == PollResponse.FileError.NO_ERROR) {
             mLogger.d(TAG, "still waiting for status code " + PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY + ", but was " + pollStatusCode.toString() + " so restarting upload");
             startOrRestartUpload();
@@ -363,7 +363,7 @@ public class UploadRunnable implements Runnable {
 
         if (!response.getQuickkey().isEmpty()) {
             // notify listeners that check has completed
-            instantUploadFinished();
+            instantUploadFinished(response.getQuickkey());
         } else {
             notifyUploadListenerCancelled();
         }
@@ -922,10 +922,10 @@ public class UploadRunnable implements Runnable {
         }
     }
 
-    private void notifyUploadListenerCompleted() {
+    private void notifyUploadListenerCompleted(String quickKey) {
         mLogger.d(TAG, "notifyUploadListenerCompleted()");
         if (mUploadListener != null) {
-            mUploadListener.onCompleted(mUploadItem);
+            mUploadListener.onCompleted(mUploadItem, quickKey);
         }
     }
 

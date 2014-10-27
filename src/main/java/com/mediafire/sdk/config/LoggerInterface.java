@@ -2,7 +2,7 @@ package com.mediafire.sdk.config;
 
 import com.mediafire.sdk.http.Result;
 
-public interface LoggerInterface {
+public interface LoggerInterface extends Initializable {
 
     public void v(String source, String message);
 

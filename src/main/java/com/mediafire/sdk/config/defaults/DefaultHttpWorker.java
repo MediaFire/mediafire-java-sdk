@@ -1,5 +1,6 @@
 package com.mediafire.sdk.config.defaults;
 
+import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.ResponseApiClientError;
@@ -20,10 +21,11 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     private static final String TAG = DefaultHttpWorker.class.getCanonicalName();
     private final int CONNECTION_TIMEOUT_MILLISECONDS = 5000;
     private final int READ_TIMEOUT_MILLISECONDS = 45000;
+    private Configuration mConfiguration;
 
     @Override
     public Response doGet(String url, Map<String, String> headers) {
-        DefaultLogger.log().v(TAG, "doGet - " + url);
+        mConfiguration.getLogger().v(TAG, "doGet - " + url);
         try {
             HttpURLConnection connection = getURLConnection(url);
             setTimeouts(connection);
@@ -46,7 +48,7 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
 
     @Override
     public Response doPost(String url, Map<String, String> headers, byte[] payload) {
-        DefaultLogger.log().v(TAG, "doPost - " + url);
+        mConfiguration.getLogger().v(TAG, "doPost - " + url);
         try{
             HttpURLConnection connection = getURLConnection(url);
             setTimeouts(connection);
@@ -72,12 +74,12 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
         String urlScheme = url.substring(0, 5);
 
         if (urlScheme.equals("http:")) {
-            DefaultLogger.log().v(TAG, "getURLConnection - HttpUrlConnection");
+            mConfiguration.getLogger().v(TAG, "getURLConnection - HttpUrlConnection");
             return (HttpURLConnection) new URL(url).openConnection();
         }
 
         if (urlScheme.equals("https")) {
-            DefaultLogger.log().v(TAG, "getURLConnection - HttpsUrlConnection");
+            mConfiguration.getLogger().v(TAG, "getURLConnection - HttpsUrlConnection");
             return (HttpsURLConnection) new URL(url).openConnection();
         }
 
@@ -85,43 +87,43 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     }
 
     private void addRequestHeadersToConnection(URLConnection connection, Map<String, String> headers) {
-        DefaultLogger.log().v(TAG, "addRequestHeadersToConnection - " + headers.size());
+        mConfiguration.getLogger().v(TAG, "addRequestHeadersToConnection - " + headers.size());
         for (String key : headers.keySet()) {
             if (headers.get(key) != null) {
                 connection.addRequestProperty(key, headers.get(key));
             }
         }
-        DefaultLogger.log().v(TAG, "addRequestHeadersToConnection - added request properties:" + connection.getRequestProperties());
+        mConfiguration.getLogger().v(TAG, "addRequestHeadersToConnection - added request properties:" + connection.getRequestProperties());
     }
 
     private void setTimeouts(URLConnection connection) {
-        DefaultLogger.log().v(TAG, "setTimeouts - conn/read = " + CONNECTION_TIMEOUT_MILLISECONDS + "/" + READ_TIMEOUT_MILLISECONDS);
+        mConfiguration.getLogger().v(TAG, "setTimeouts - conn/read = " + CONNECTION_TIMEOUT_MILLISECONDS + "/" + READ_TIMEOUT_MILLISECONDS);
         connection.setConnectTimeout(CONNECTION_TIMEOUT_MILLISECONDS);
         connection.setReadTimeout(READ_TIMEOUT_MILLISECONDS);
     }
 
     private void postData(URLConnection connection, byte[] payload) throws IOException {
         if (payload == null) {
-            DefaultLogger.log().w(TAG, "postData - byte array empty, not posting anything");
+            mConfiguration.getLogger().w(TAG, "postData - byte array empty, not posting anything");
             return;
         } else {
-            DefaultLogger.log().w(TAG, "postData - posting " + payload.length + " bytes");
+            mConfiguration.getLogger().w(TAG, "postData - posting " + payload.length + " bytes");
         }
-        DefaultLogger.log().v(TAG, "postData - request properties: " + connection.getRequestProperties());
+        mConfiguration.getLogger().v(TAG, "postData - request properties: " + connection.getRequestProperties());
 
         String postDataAsString = new String(payload, "UTF-8");
         if (postDataAsString != null) {
-            DefaultLogger.log().v(TAG, "postData - payload: " + postDataAsString);
+            mConfiguration.getLogger().v(TAG, "postData - payload: " + postDataAsString);
         } else {
-            DefaultLogger.log().v(TAG, "postData - payload could not be parsed to string, byte length: " + payload.length);
+            mConfiguration.getLogger().v(TAG, "postData - payload could not be parsed to string, byte length: " + payload.length);
         }
-        DefaultLogger.log().v(TAG, "postData - writing payload");
+        mConfiguration.getLogger().v(TAG, "postData - writing payload");
         connection.getOutputStream().write(payload);
-        DefaultLogger.log().v(TAG, "postData - finished writing payload");
+        mConfiguration.getLogger().v(TAG, "postData - finished writing payload");
     }
 
     private byte[] readStream(InputStream inputStream) throws IOException {
-        DefaultLogger.log().v(TAG, "readStream");
+        mConfiguration.getLogger().v(TAG, "readStream");
         if (inputStream == null) {
             return null;
         }
@@ -136,5 +138,15 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
         byte[] bytes = outputStream.toByteArray();
         outputStream.close();
         return bytes;
+    }
+
+    @Override
+    public void initialize(Configuration configuration) {
+        mConfiguration = configuration;
+    }
+
+    @Override
+    public void shutdown() {
+
     }
 }

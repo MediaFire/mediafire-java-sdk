@@ -12,5 +12,5 @@ public interface UploadListenerInterface {
 
     public void onStarted(UploadItem uploadItem);
 
-    public void onCompleted(UploadItem uploadItem);
+    public void onCompleted(UploadItem uploadItem, String quickKey);
 }

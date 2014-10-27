@@ -24,6 +24,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
 
     @Override
     public void initialize(Configuration configuration) {
+        mConfiguration = configuration;
         mConfiguration.getLogger().v(TAG, "initialize");
         mConfiguration = configuration;
     }

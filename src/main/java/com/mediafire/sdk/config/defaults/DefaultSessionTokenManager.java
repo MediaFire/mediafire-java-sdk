@@ -19,7 +19,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class DefaultSessionTokenManager implements SessionTokenManagerInterface {
     private static final String TAG = DefaultSessionTokenManager.class.getCanonicalName();
     private Configuration mConfiguration;
-    private ApiClient mApiClient;
     private static final int MIN_SESSION_TOKEN = 1;
     private static final int MAX_SESSION_TOKEN = 3;
     private static final BlockingQueue<SessionToken> mSessionTokens = new LinkedBlockingQueue<SessionToken>(MAX_SESSION_TOKEN);
@@ -33,8 +32,6 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
     @Override
     public void initialize(Configuration configuration) {
         mConfiguration = configuration;
-        mConfiguration.getLogger().v(TAG, "initialize");
-        mApiClient = new ApiClient(configuration);
     }
 
     @Override
@@ -96,7 +93,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
             request.addQueryParameter("response_format", "json");
             request.addQueryParameter("token_version", 2);
             addOutstandingRequest();
-            Result result = mApiClient.doRequest(request);
+            Result result = new ApiClient(mConfiguration).doRequest(request);
             Response response = result.getResponse();
             if(response.getClass() == ResponseApiClientError.class) {
                 ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();

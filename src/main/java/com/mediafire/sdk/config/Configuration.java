@@ -79,8 +79,8 @@ public class Configuration {
 
     public static class Builder {
         private static final HttpWorkerInterface DEFAULT_HTTP_WORKER = new DefaultHttpWorker();
-        private static final CredentialsInterface DEFAULT_USER_CREDENTIALS = new DefaultCredentials("user");
-        private static final CredentialsInterface DEFAULT_DEVELOPER_CREDENTIALS = new DefaultCredentials("dev");
+        private static final CredentialsInterface DEFAULT_USER_CREDENTIALS = new DefaultCredentials();
+        private static final CredentialsInterface DEFAULT_DEVELOPER_CREDENTIALS = new DefaultCredentials();
         private static final SessionTokenManagerInterface DEFAULT_SESSION_TOKEN_MANAGER = new DefaultSessionTokenManager();
         private static final ActionTokenManagerInterface DEFAULT_ACTION_TOKEN_MANAGER = new DefaultActionTokenManager();
         private static final LoggerInterface DEFAULT_LOGGER = new DefaultLogger();

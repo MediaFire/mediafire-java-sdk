@@ -3,7 +3,7 @@ apply plugin: 'maven-publish'
 //apply plugin: 'build-version'
 
 //version = buildVersion.version
-version = "1.1.1"
+version = "3.1.1"
 
 buildscript {
     repositories {

@@ -26,6 +26,10 @@ public class Configuration {
         initialized = true;
         mSessionTokenManager.initialize(this);
         mActionTokenManager.initialize(this);
+        mUserCredentials.initialize(this);
+        mDeveloperCredentials.initialize(this);
+        mHttpWorker.initialize(this);
+        mLogger.initialize(this);
     }
 
     public HttpWorkerInterface getHttpWorker() {

@@ -29,12 +29,12 @@ import java.util.Map;
  */
 public class UploadRunnable implements Runnable {
     private static final String TAG = UploadRunnable.class.getCanonicalName();
-    private static final String MSG_NO_NETWORK_CONNECTION = "no network connection";
-    private static final String MSG_REQUIRED_PARAMETERS_NULL = "required parameters were null";
-    private static final String MSG_REQUIRED_PARAMETERS_INVALID = "required parameters were invalid";
-    private static final String MSG_STORAGE_LIMIT_EXCEEDED = "storage limit exceeded";
-    private static final String MSG_CANCELLED_UPLOAD = "upload was cancelled";
-    private static final String MSG_RESPONSE_ERROR = "response from server had error";
+    public static final String MSG_NO_NETWORK_CONNECTION = "no network connection";
+    public static final String MSG_REQUIRED_PARAMETERS_NULL = "required parameters were null";
+    public static final String MSG_REQUIRED_PARAMETERS_INVALID = "required parameters were invalid";
+    public static final String MSG_STORAGE_LIMIT_EXCEEDED = "storage limit exceeded";
+    public static final String MSG_CANCELLED_UPLOAD = "upload was cancelled";
+    public static final String MSG_RESPONSE_ERROR = "response from server had error";
     private final int mMaxPolls;
     private final long mMillisecondsBetweenPolls;
     private final UploadItem mUploadItem;

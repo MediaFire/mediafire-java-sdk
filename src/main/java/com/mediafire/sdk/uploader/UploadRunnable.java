@@ -29,6 +29,12 @@ import java.util.Map;
  */
 public class UploadRunnable implements Runnable {
     private static final String TAG = UploadRunnable.class.getCanonicalName();
+    private static final String MSG_NO_NETWORK_CONNECTION = "no network connection";
+    private static final String MSG_REQUIRED_PARAMETERS_NULL = "required parameters were null";
+    private static final String MSG_REQUIRED_PARAMETERS_INVALID = "required parameters were invalid";
+    private static final String MSG_STORAGE_LIMIT_EXCEEDED = "storage limit exceeded";
+    private static final String MSG_CANCELLED_UPLOAD = "upload was cancelled";
+    private static final String MSG_RESPONSE_ERROR = "response from server had error";
     private final int mMaxPolls;
     private final long mMillisecondsBetweenPolls;
     private final UploadItem mUploadItem;
@@ -61,7 +67,7 @@ public class UploadRunnable implements Runnable {
         mLogger.d(TAG, "run()");
         notifyUploadListenerStarted();
         if (!mNetworkConnectivityMonitor.haveNetworkConnection()) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_NO_NETWORK_CONNECTION);
             return;
         }
 
@@ -70,13 +76,13 @@ public class UploadRunnable implements Runnable {
             startOrRestartUpload();
         } catch (UnsupportedEncodingException e) {
             mLogger.e(TAG, "UnsupportedEncodingException during UploadRunnable", e);
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(e.getMessage());
         } catch (NoSuchAlgorithmException e) {
             mLogger.e(TAG, "NoSuchAlgorithmException during UploadRunnable", e);
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(e.getMessage());
         } catch (IOException e) {
             mLogger.e(TAG, "IOException during UploadRunnable", e);
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(e.getMessage());
         }
     }
 
@@ -88,7 +94,7 @@ public class UploadRunnable implements Runnable {
     private void checkUploadFinished(UploadItem uploadItem, CheckResponse checkResponse) throws NoSuchAlgorithmException, IOException {
         mLogger.d(TAG, "checkUploadFinished()");
         if (checkResponse == null) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
             return;
         }
 
@@ -96,7 +102,7 @@ public class UploadRunnable implements Runnable {
         //20x is high, but it should never happen and will allow for more information gathering.
         if (checkResponse.getStorageLimitExceeded()) {
             mLogger.d(TAG, "storage limit is exceeded");
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_STORAGE_LIMIT_EXCEEDED);
         } else if (checkResponse.getResumableUpload().areAllUnitsReady() && !uploadItem.getPollUploadKey().isEmpty()) {
             mLogger.d(TAG, "all units are ready and poll upload key is not empty");
             // all units are ready and we have the poll upload key. start polling.
@@ -156,13 +162,13 @@ public class UploadRunnable implements Runnable {
         mLogger.d(TAG, "hash does not exist");
         if (checkResponse.getResumableUpload().getUnitSize() == 0) {
             mLogger.d(TAG, "unit size received from unit_size was 0. cancelling");
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_INVALID);
             return;
         }
 
         if (checkResponse.getResumableUpload().getNumberOfUnits() == 0) {
             mLogger.d(TAG, "number of units received from number_of_units was 0. cancelling");
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_INVALID);
             return;
         }
 
@@ -212,7 +218,7 @@ public class UploadRunnable implements Runnable {
             startOrRestartUpload();
         } else {
             mLogger.d(TAG, "cancelling upload");
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_INVALID);
         }
     }
 
@@ -226,13 +232,13 @@ public class UploadRunnable implements Runnable {
 
         if (!mNetworkConnectivityMonitor.haveNetworkConnection()) {
             mLogger.d(TAG, "no network connection, cancelling upload for " + mUploadItem.getFileName());
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_NO_NETWORK_CONNECTION);
             return;
         }
 
         if (mUploadItem.isCancelled()) {
             mLogger.d(TAG, "upload was cancelled for " + mUploadItem.getFileName());
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_CANCELLED_UPLOAD);
             return;
         }
 
@@ -249,40 +255,40 @@ public class UploadRunnable implements Runnable {
         Response mfResponse = result.getResponse();
 
         if (mfResponse == null) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
             return;
         }
 
         if (mfResponse.getBytes() == null) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
             return;
         }
 
         if (mfResponse.getBytes().length == 0) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
             return;
         }
 
         if (getResponseObject(new String(mfResponse.getBytes()), ApiResponse.class) == null) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
             return;
         }
 
         CheckResponse response = getResponseObject(new String(mfResponse.getBytes()), CheckResponse.class);
 
         if (response == null) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_RESPONSE_ERROR);
             return;
         }
 
         // if there is an error code, cancel the upload
         if (response.getErrorCode() != ApiResponse.ResponseCode.NO_ERROR) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_RESPONSE_ERROR);
             return;
         }
 
         if (response.hasError()) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_CANCELLED_UPLOAD);
             return;
         }
 
@@ -309,12 +315,12 @@ public class UploadRunnable implements Runnable {
 
         if (mUploadItem.isCancelled()) {
             mLogger.d(TAG, "upload was cancelled for " + mUploadItem.getFileName());
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_CANCELLED_UPLOAD);
             return;
         }
 
         if (!mNetworkConnectivityMonitor.haveNetworkConnection()) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_NO_NETWORK_CONNECTION);
             return;
         }
 
@@ -330,34 +336,34 @@ public class UploadRunnable implements Runnable {
         Response mfResponse = result.getResponse();
 
         if (mfResponse == null) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
             return;
         }
 
         if (mfResponse.getBytes() == null) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
             return;
         }
 
         if (mfResponse.getBytes().length == 0) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
             return;
         }
 
         if (getResponseObject(new String(mfResponse.getBytes()), ApiResponse.class) == null) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
             return;
         }
 
         InstantResponse response = getResponseObject(new String(mfResponse.getBytes()), InstantResponse.class);
 
         if (response == null) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_RESPONSE_ERROR);
             return;
         }
 
         if (response.getErrorCode() != ApiResponse.ResponseCode.NO_ERROR) {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_RESPONSE_ERROR);
             return;
         }
 
@@ -365,7 +371,7 @@ public class UploadRunnable implements Runnable {
             // notify listeners that check has completed
             instantUploadFinished(response.getQuickkey());
         } else {
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
         }
     }
 
@@ -393,12 +399,12 @@ public class UploadRunnable implements Runnable {
 
             if (mUploadItem.isCancelled()) {
                 mLogger.d(TAG, "upload was cancelled for " + mUploadItem.getFileName());
-                notifyUploadListenerCancelled();
+                notifyUploadListenerCancelled(MSG_CANCELLED_UPLOAD);
                 return;
             }
 
             if (!mNetworkConnectivityMonitor.haveNetworkConnection()) {
-                notifyUploadListenerCancelled();
+                notifyUploadListenerCancelled(MSG_NO_NETWORK_CONNECTION);
                 return;
             }
 
@@ -409,7 +415,7 @@ public class UploadRunnable implements Runnable {
 
                 ResumableChunkInfo resumableChunkInfo = createResumableChunkInfo(unitSize, chunkNumber);
                 if (resumableChunkInfo == null) {
-                    notifyUploadListenerCancelled();
+                    notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
                     return;
                 }
 
@@ -442,22 +448,22 @@ public class UploadRunnable implements Runnable {
                 Response mfResponse = result.getResponse();
 
                 if (mfResponse == null) {
-                    notifyUploadListenerCancelled();
+                    notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
                     return;
                 }
 
                 if (mfResponse.getBytes() == null) {
-                    notifyUploadListenerCancelled();
+                    notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
                     return;
                 }
 
                 if (mfResponse.getBytes().length == 0) {
-                    notifyUploadListenerCancelled();
+                    notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
                     return;
                 }
 
                 if (getResponseObject(new String(mfResponse.getBytes()), ApiResponse.class) == null) {
-                    notifyUploadListenerCancelled();
+                    notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
                     return;
                 }
 
@@ -469,7 +475,7 @@ public class UploadRunnable implements Runnable {
                 }
 
                 if (shouldCancelUpload(response)) {
-                    notifyUploadListenerCancelled();
+                    notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_INVALID);
                     return;
                 }
 
@@ -506,12 +512,12 @@ public class UploadRunnable implements Runnable {
 
             if (mUploadItem.isCancelled()) {
                 mLogger.d(TAG, "upload was cancelled for " + mUploadItem.getFileName());
-                notifyUploadListenerCancelled();
+                notifyUploadListenerCancelled(MSG_CANCELLED_UPLOAD);
                 return;
             }
 
             if (!mNetworkConnectivityMonitor.haveNetworkConnection()) {
-                notifyUploadListenerCancelled();
+                notifyUploadListenerCancelled(MSG_NO_NETWORK_CONNECTION);
                 return;
             }
             // increment counter
@@ -528,23 +534,23 @@ public class UploadRunnable implements Runnable {
             Response mfResponse = result.getResponse();
 
             if (mfResponse == null) {
-                notifyUploadListenerCancelled();
+                notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
                 return;
             }
 
             if (mfResponse.getBytes() == null) {
-                notifyUploadListenerCancelled();
+                notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
                 return;
             }
 
             if (mfResponse.getBytes().length == 0) {
-                notifyUploadListenerCancelled();
+                notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
                 return;
             }
 
 
             if (getResponseObject(new String(mfResponse.getBytes()), ApiResponse.class) == null) {
-                notifyUploadListenerCancelled();
+                notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
                 return;
             }
 
@@ -562,13 +568,13 @@ public class UploadRunnable implements Runnable {
                     //      third   -   status code 99 (no more requests)? yes, done. no, continue.
                     if (response.getDoUpload().getResultCode() != PollResponse.Result.SUCCESS) {
                         mLogger.d(TAG, "result code: " + response.getDoUpload().getResultCode().toString() + " need to cancel");
-                        notifyUploadListenerCancelled();
+                        notifyUploadListenerCancelled(MSG_RESPONSE_ERROR);
                         return;
                     }
 
                     if (response.getDoUpload().getFileErrorCode() != PollResponse.FileError.NO_ERROR) {
                         mLogger.d(TAG, "result code: " + response.getDoUpload().getFileErrorCode().toString() + " need to cancel");
-                        notifyUploadListenerCancelled();
+                        notifyUploadListenerCancelled(MSG_RESPONSE_ERROR);
                         return;
                     }
 
@@ -580,7 +586,7 @@ public class UploadRunnable implements Runnable {
                     break;
                 default:
                     // stop polling and inform listeners we cancel because API result wasn't "Success"
-                    notifyUploadListenerCancelled();
+                    notifyUploadListenerCancelled(MSG_RESPONSE_ERROR);
                     return;
             }
 
@@ -591,7 +597,7 @@ public class UploadRunnable implements Runnable {
                 Thread.sleep(mMillisecondsBetweenPolls);
             } catch (InterruptedException e) {
                 mLogger.e(TAG, "Exception: " + e);
-                notifyUploadListenerCancelled();
+                notifyUploadListenerCancelled(MSG_CANCELLED_UPLOAD);
                 return;
             }
 
@@ -771,12 +777,12 @@ public class UploadRunnable implements Runnable {
 
             if (mUploadItem.isCancelled()) {
                 mLogger.d(TAG, "upload was cancelled for " + mUploadItem.getFileName());
-                notifyUploadListenerCancelled();
+                notifyUploadListenerCancelled(MSG_CANCELLED_UPLOAD);
                 return null;
             }
 
             if (!mNetworkConnectivityMonitor.haveNetworkConnection()) {
-                notifyUploadListenerCancelled();
+                notifyUploadListenerCancelled(MSG_NO_NETWORK_CONNECTION);
                 return null;
             }
 
@@ -884,13 +890,13 @@ public class UploadRunnable implements Runnable {
                 mLogger.d(TAG, "upload item was cancelled");
             }
 
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_CANCELLED_UPLOAD);
             return;
         }
         //don't add the item to the backlog queue if it is null or the path is null
         if (mUploadItem == null) {
             mLogger.d(TAG, "upload item is null");
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
             return;
         }
 
@@ -903,7 +909,7 @@ public class UploadRunnable implements Runnable {
         mLogger.d(TAG, "getFileData().getFileSize() == 0: " + (mUploadItem.getFileData().getFileSize() == 0));
         if (mUploadItem.getFileData() == null || mUploadItem.getFileData().getFilePath() == null || mUploadItem.getFileData().getFilePath().isEmpty() || mUploadItem.getFileData().getFileHash().isEmpty() || mUploadItem.getFileData().getFileSize() == 0) {
             mLogger.d(TAG, "one or more required parameters are invalid, not adding item to queue");
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
             return;
         }
 
@@ -911,7 +917,7 @@ public class UploadRunnable implements Runnable {
             doCheckUpload();
         } else {
             mLogger.d(TAG, "upload attempt count > mMaxUploadAttempts");
-            notifyUploadListenerCancelled();
+            notifyUploadListenerCancelled(MSG_CANCELLED_UPLOAD);
         }
     }
 
@@ -951,11 +957,11 @@ public class UploadRunnable implements Runnable {
         }
     }
 
-    private void notifyUploadListenerCancelled() {
+    private void notifyUploadListenerCancelled(String reasonForCancel) {
         mLogger.d(TAG, "notifyUploadListenerCancelled()");
         mUploadItem.cancelUpload();
         if (mUploadListener != null) {
-            mUploadListener.onCancelled(mUploadItem);
+            mUploadListener.onCancelled(mUploadItem, reasonForCancel);
         }
     }
 

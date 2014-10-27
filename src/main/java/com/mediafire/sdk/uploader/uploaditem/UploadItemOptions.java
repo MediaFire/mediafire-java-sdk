@@ -11,7 +11,7 @@ public class UploadItemOptions {
     private final String modificationTime;
     private final ActionOnInAccount actionOnInAccount;
 
-    private UploadItemOptions(Builder builder) {
+    protected UploadItemOptions(Builder builder) {
         this.resumable = builder.resumable;
         this.uploadFolderKey = builder.uploadFolderKey;
         this.actionOnDuplicate = builder.actionOnDuplicate;

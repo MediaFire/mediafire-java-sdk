@@ -1,9 +1,12 @@
 apply plugin: 'java'
-apply plugin: 'idea'
 apply plugin: 'maven-publish'
-project.version = '3.1.0-SNAPSHOT'
 
 repositories {
+    // mediafire nexus maven repository
+    maven {
+        url "http://git.site.com:8081/nexus/content/groups/public"
+    }
+    // maven central
     mavenCentral()
 }
 
@@ -12,12 +15,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'commons-codec:commons-codec:1.9'
 }
-// mediafire nexus maven repository
-repositories {
-    maven {
-        url "http://git.site.com:8081/nexus/content/groups/public"
-    }
-}
+
 
 task sourceJar(type: Jar) {
     from sourceSets.main.allJava
@@ -28,6 +26,7 @@ publishing {
         maven(MavenPublication) {
             artifactId = 'mediafire-sdk'
             groupId = 'com.mediafire'
+            version '3.0.0-SNAPSHOT'
             from components.java
 
             artifact sourceJar {
@@ -38,13 +37,13 @@ publishing {
 
     repositories {
         maven {
-            // cnexus maven credentials
+            // nexus maven credentials
             credentials {
                 username "admin"
                 password "qwpo1998"
             }
 
-            if(project.version.endsWith('-SNAPSHOT')) {
+            if(version.endsWith('-SNAPSHOT')) {
                 url "http://git.site.com:8081/nexus/content/repositories/snapshots"
             } else {
                 url "http://git.site.com:8081/nexus/content/repositories/releases"

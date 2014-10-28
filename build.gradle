@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
-version = '3.1.0'
+project.version = '3.1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -26,14 +26,29 @@ task sourceJar(type: Jar) {
 publishing {
     publications {
         maven(MavenPublication) {
+            artifactId = 'mediafire-sdk'
             groupId = 'com.mediafire'
             from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
         }
     }
 
     repositories {
         maven {
-            url "http://git.site.com:8081/nexus/content/groups/public"
+            // cnexus maven credentials
+            credentials {
+                username "admin"
+                password "qwpo1998"
+            }
+
+            if(project.version.endsWith('-SNAPSHOT')) {
+                url "http://git.site.com:8081/nexus/content/repositories/snapshots"
+            } else {
+                url "http://git.site.com:8081/nexus/content/repositories/releases"
+            }
         }
     }
 }

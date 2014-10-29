@@ -5,6 +5,9 @@ import com.mediafire.sdk.token.Token;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Request is an object used to perform an Api Request
+ */
 public class Request {
     private final HostObject mHostObject;
     private final ApiObject mApiObject;
@@ -16,6 +19,13 @@ public class Request {
     private byte[] mPayload;
     private Token mToken;
 
+    /**
+     * Request Constructor
+     * @param hostObject HostObject is the host for the request
+     * @param apiObject ApiObject is the api for the request
+     * @param instructionsObject InstructionsObject are the instruction for the request
+     * @param versionObject VersionObject is the api version for the request
+     */
     public Request(HostObject hostObject, ApiObject apiObject, InstructionsObject instructionsObject, VersionObject versionObject) {
         mHostObject = hostObject;
         mApiObject = apiObject;
@@ -23,26 +33,51 @@ public class Request {
         mVersionObject = versionObject;
     }
 
+    /**
+     * Gets the host object
+     * @return HostObject
+     */
     public HostObject getHostObject() {
         return mHostObject;
     }
 
+    /**
+     * Gets the api object
+     * @return ApiObject
+     */
     public ApiObject getApiObject() {
         return mApiObject;
     }
 
+    /**
+     * Gets the instructions object
+     * @return InstructionsObject
+     */
     public InstructionsObject getInstructionsObject() {
         return mInstructionsObject;
     }
 
+    /**
+     * Gets the version object
+     * @return VersionObject
+     */
     public VersionObject getVersionObject() {
         return mVersionObject;
     }
 
+    /**
+     * Gets the query parameters
+     * @return Map<String, Object> query parameters  (null possible)
+     */
     public Map<String, Object> getQueryParameters() {
         return mQueryParameters;
     }
 
+    /**
+     * Adds a query parameter to the query parameters map
+     * @param key String key for the parameter to be added
+     * @param value Object value for the parameter to be added
+     */
     public void addQueryParameter(String key, Object value) {
         if (key == null || value == null) {
             return;
@@ -55,10 +90,19 @@ public class Request {
         mQueryParameters.put(key, value);
     }
 
+    /**
+     * Gets the headers
+     * @return Map<String, String> headers (null possible)
+     */
     public Map<String, String> getHeaders() {
         return mHeaders;
     }
 
+    /**
+     * Adds a header to the headers map
+     * @param key String key for the header to be added
+     * @param value String value for the header to be added
+     */
     public void addHeader(String key, String value) {
         if (key == null || value == null) {
             return;
@@ -71,18 +115,34 @@ public class Request {
         mHeaders.put(key, value);
     }
 
+    /**
+     * Gets the payload
+     * @return byte[] for the payload (null possible)
+     */
     public byte[] getPayload() {
         return mPayload;
     }
 
+    /**
+     * Adds a payload to the request
+     * @param payload byte[] payload to add to the request
+     */
     public void addPayload(byte[] payload) {
         mPayload = payload;
     }
 
+    /**
+     * Gets the token
+     * @return Token (null possible)
+     */
     public Token getToken() {
         return mToken;
     }
 
+    /**
+     * Adds a token to the request
+     * @param token Token to add to the request
+     */
     public void addToken(Token token) {
         mToken = token;
     }

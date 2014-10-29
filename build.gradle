@@ -1,8 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'maven-publish'
+apply plugin: 'build-version'
 
-version = '3.1.0'
-
+// build script
 buildscript {
     repositories {
         maven { url "http://git.site.com:8081/nexus/content/groups/public" }
@@ -15,27 +15,30 @@ buildscript {
     }
 }
 
+// repositories
 repositories {
-    maven {
-        url "http://git.site.com:8081/nexus/content/groups/public"
-    }
+    maven { url "http://git.site.com:8081/nexus/content/groups/public" }
 }
 
+// dependencies of the SDK
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'commons-codec:commons-codec:1.9'
 }
 
+// task to make jar from java files?
 task sourceJar(type: Jar) {
-    from sourceSets.main.java
+    from sourceSets.main.allJava
 }
 
 publishing {
     publications {
+        // create maven publication parameters
         maven(MavenPublication) {
             artifactId = 'mediafire-sdk'
             groupId = 'com.mediafire'
+            version '3.1.0'
             from components.java
 
             artifact sourceJar {
@@ -46,11 +49,13 @@ publishing {
 
     repositories {
         maven {
+            // nexus maven credentials
             credentials {
                 username "admin"
                 password "qwpo1998"
             }
 
+            // post to repository based on version
             if(version.endsWith('-SNAPSHOT')) {
                 url "http://git.site.com:8081/nexus/content/repositories/snapshots"
             } else {

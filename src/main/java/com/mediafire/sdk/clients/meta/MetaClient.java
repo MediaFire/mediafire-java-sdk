@@ -1,6 +1,7 @@
 package com.mediafire.sdk.clients.meta;
 
 import com.mediafire.sdk.clients.ApiClient;
+import com.mediafire.sdk.clients.PathSpecificApiClient;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.http.ApiObject;
 import com.mediafire.sdk.http.BorrowTokenType;
@@ -17,14 +18,13 @@ import java.util.Map;
 /**
  * Created by Chris Najar on 10/29/2014.
  */
-public class MetaClient extends ApiClient {
+public class MetaClient extends PathSpecificApiClient {
     private static final String TAG = MetaClient.class.getCanonicalName();
 
     private static final String PARAM_LIST_KEY = "list_key";
     private static final String PARAM_QUICK_KEYS = "quickkeys";
     private static final String PARAM_QUICK_KEY = "quickkey";
     private static final String PARAM_QUICK_KEY_GET_LINKS = "quick_key";
-    private static final String PARAM_RESPONSE_FORMAT = "response_format";
     private static final String PARAM_LINK_TYPE = "link_type";
     private static final String PARAM_META_PREFIX = "meta_";
     private static final String PARAM_RETURN_DATA = "return_data";
@@ -32,23 +32,13 @@ public class MetaClient extends ApiClient {
     private static final String PARAM_ORDER_DIRECTION = "order_direction";
     private static final String PARAM_CHUNK = "chunk";
 
-
     private HostObject mHostObject;
-    private VersionObject mVersionObject;
-    InstructionsObject mInstructionsObject;
+    private InstructionsObject mInstructionsObject;
 
     public MetaClient(Configuration configuration, String apiVersion) {
-        super(configuration);
-        // init version object
-        if (apiVersion == null || apiVersion.isEmpty()) {
-            mVersionObject = new VersionObject(null);
-        } else {
-            mVersionObject = new VersionObject(apiVersion);
-        }
-
+        super(configuration, apiVersion);
         // init host object
         mHostObject = new HostObject("https", "www", "mediafire.com", "post");
-
         // init instructions object
         mInstructionsObject = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, false);
     }
@@ -138,15 +128,4 @@ public class MetaClient extends ApiClient {
         
         return doRequestJson(request);
     }
-
-    /**
-     * calls do request from super after adding query parameter response_format=json
-     * @param request - the Request to use in the api call
-     * @return a Result
-     */
-    private Result doRequestJson(Request request) {
-        request.addQueryParameter(PARAM_RESPONSE_FORMAT, "json");
-        return doRequest(request);
-    }
-
 }

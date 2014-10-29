@@ -1,7 +1,6 @@
 package com.mediafire.sdk.clients.meta;
 
 import com.mediafire.sdk.clients.ApiClient;
-import com.mediafire.sdk.clients.ApiUtil;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.http.ApiObject;
 import com.mediafire.sdk.http.BorrowTokenType;
@@ -13,8 +12,6 @@ import com.mediafire.sdk.http.ReturnTokenType;
 import com.mediafire.sdk.http.SignatureType;
 import com.mediafire.sdk.http.VersionObject;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +23,7 @@ public class MetaClient extends ApiClient {
     private static final String PARAM_LIST_KEY = "list_key";
     private static final String PARAM_QUICK_KEYS = "quickkeys";
     private static final String PARAM_QUICK_KEY = "quickkey";
+    private static final String PARAM_QUICK_KEY_GET_LINKS = "quick_key";
     private static final String PARAM_RESPONSE_FORMAT = "response_format";
     private static final String PARAM_LINK_TYPE = "link_type";
     private static final String PARAM_META_PREFIX = "meta_";
@@ -52,93 +50,58 @@ public class MetaClient extends ApiClient {
         mHostObject = new HostObject("https", "www", "mediafire.com", "post");
 
         // init instructions object
-        mInstructionsObject = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, true);
+        mInstructionsObject = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, false);
     }
 
     public MetaClient(Configuration configuration) {
         this(configuration, null);
     }
 
-    public Result addToList(String listKey, List<String> quickKeys) {
+    public Result addToList(String listKey, String quickKey) {
         ApiObject apiObject = new ApiObject("meta", "add_to_list.php");
         Request request = new Request(mHostObject, apiObject, mInstructionsObject, mVersionObject);
         // add comma separated key list query param
-        String keys = ApiUtil.getCommaSeparatedStringFromList(quickKeys);
-        request.addQueryParameter(PARAM_QUICK_KEYS, keys);
-        // add list key query param
-        request.addQueryParameter(PARAM_LIST_KEY, listKey);
-        return doRequestJson(request);
-    }
-
-    public Result addToList(String listKey, String quickKey) {
-        List<String> keys = new ArrayList<String>();
-        keys.add(quickKey);
-        return addToList(listKey, keys);
-    }
-
-    public Result removeFromList(String listKey, List<String> quickKeys) {
-        ApiObject apiObject = new ApiObject("meta", "remove_from_list.php");
-        Request request = new Request(mHostObject, apiObject, mInstructionsObject, mVersionObject);
-        // add comma separated key list query param
-        String keys = ApiUtil.getCommaSeparatedStringFromList(quickKeys);
-        request.addQueryParameter(PARAM_QUICK_KEYS, keys);
+        request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
         // add list key query param
         request.addQueryParameter(PARAM_LIST_KEY, listKey);
         return doRequestJson(request);
     }
 
     public Result removeFromList(String listKey, String quickKey) {
-        List<String> keys = new ArrayList<String>();
-        keys.add(quickKey);
-        return removeFromList(listKey, keys);
-    }
-
-    public Result delete(List<String> quickKeys) {
-        ApiObject apiObject = new ApiObject("meta", "delete.php");
+        ApiObject apiObject = new ApiObject("meta", "remove_from_list.php");
         Request request = new Request(mHostObject, apiObject, mInstructionsObject, mVersionObject);
         // add comma separated key list query param
-        String keys = ApiUtil.getCommaSeparatedStringFromList(quickKeys);
-        request.addQueryParameter(PARAM_QUICK_KEYS, keys);
+        request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
+        // add list key query param
+        request.addQueryParameter(PARAM_LIST_KEY, listKey);
         return doRequestJson(request);
     }
 
     public Result delete(String quickKey) {
-        List<String> keys = new ArrayList<String>();
-        keys.add(quickKey);
-        return delete(keys);
-    }
-
-    public Result get(List<String> quickKeys) {
-        ApiObject apiObject = new ApiObject("meta", "get.php");
+        ApiObject apiObject = new ApiObject("meta", "delete.php");
         Request request = new Request(mHostObject, apiObject, mInstructionsObject, mVersionObject);
         // add comma separated key list query param
-        String keys = ApiUtil.getCommaSeparatedStringFromList(quickKeys);
-        request.addQueryParameter(PARAM_QUICK_KEYS, keys);
+        request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
         return doRequestJson(request);
     }
 
     public Result get(String quickKey) {
-        List<String> keys = new ArrayList<String>();
-        keys.add(quickKey);
-        return get(keys);
+        ApiObject apiObject = new ApiObject("meta", "get.php");
+        Request request = new Request(mHostObject, apiObject, mInstructionsObject, mVersionObject);
+        // add comma separated key list query param
+        request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
+        return doRequestJson(request);
     }
 
-    public Result getLinks(List<String> quickKeys, String linkType) {
+    public Result getLinks(String quickKey, String linkType) {
         ApiObject apiObject = new ApiObject("meta", "get_links.php");
         Request request = new Request(mHostObject, apiObject, mInstructionsObject, mVersionObject);
         // add link type query param
         request.addQueryParameter(PARAM_LINK_TYPE, linkType);
+        // add quick key param
+        request.addQueryParameter(PARAM_QUICK_KEY_GET_LINKS, quickKey);
+
         return doRequestJson(request);
-    }
-
-    public Result getLinks(List<String> quickKeys) {
-        return getLinks(quickKeys, null);
-    }
-
-    public Result getLinks(String quickKey, String linkType) {
-        List<String> keys = new ArrayList<String>();
-        keys.add(quickKey);
-        return getLinks(keys, linkType);
     }
 
     public Result getLinks(String quickKey) {

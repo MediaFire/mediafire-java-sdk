@@ -15,12 +15,20 @@ import java.util.Map;
 
 /**
  * Created by Chris Najar on 10/19/2014.
+ * DefaultHttpWorker is a default implementation of the HttpWorkerInterface
+ * A custom implementation is recommended
  */
 public class DefaultHttpWorker implements HttpWorkerInterface {
     private static final String TAG = DefaultHttpWorker.class.getCanonicalName();
     private final int CONNECTION_TIMEOUT_MILLISECONDS = 5000;
     private final int READ_TIMEOUT_MILLISECONDS = 45000;
 
+    /**
+     * Performs a http get request
+     * @param url the url to open the connection to
+     * @param headers the headers to add to the connection
+     * @return a Response containing the response from the connection
+     */
     @Override
     public Response doGet(String url, Map<String, String> headers) {
         DefaultLogger.log().v(TAG, "doGet - " + url);
@@ -44,6 +52,13 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
         }
     }
 
+    /**
+     * Performs a http post request
+     * @param url the url to open the connection to
+     * @param headers the headers to add to the connection
+     * @param payload a payload to send to the connection
+     * @return a Response containing the response from the connection
+     */
     @Override
     public Response doPost(String url, Map<String, String> headers, byte[] payload) {
         DefaultLogger.log().v(TAG, "doPost - " + url);

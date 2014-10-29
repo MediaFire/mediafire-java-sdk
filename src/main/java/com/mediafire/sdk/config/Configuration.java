@@ -2,6 +2,9 @@ package com.mediafire.sdk.config;
 
 import com.mediafire.sdk.config.defaults.*;
 
+/**
+ * Configuration contains a set of interface objects used to handle api requests
+ */
 public class Configuration {
     private HttpWorkerInterface mHttpWorker;
     private CredentialsInterface mUserCredentials;
@@ -28,6 +31,10 @@ public class Configuration {
         mActionTokenManager.initialize(this);
     }
 
+    /**
+     * Gets the HttpWorker associated with this class
+     * @return HttpWorkerInterface
+     */
     public HttpWorkerInterface getHttpWorker() {
         if (!initialized) {
             throw new IllegalStateException("Configuration.init() must be called to finish configuration");
@@ -35,6 +42,10 @@ public class Configuration {
         return mHttpWorker;
     }
 
+    /**
+     * Gets the user credentials associated with this class
+     * @return CredentialsInterface
+     */
     public CredentialsInterface getUserCredentials() {
         if (!initialized) {
             throw new IllegalStateException("Configuration.init() must be called to finish configuration");
@@ -42,6 +53,10 @@ public class Configuration {
         return mUserCredentials;
     }
 
+    /**
+     * Gets the developer credentials associated with this class
+     * @return CredentialsInterface
+     */
     public CredentialsInterface getDeveloperCredentials() {
         if (!initialized) {
             throw new IllegalStateException("Configuration.init() must be called to finish configuration");
@@ -49,6 +64,10 @@ public class Configuration {
         return mDeveloperCredentials;
     }
 
+    /**
+     * Gets the session token manager associated with this class
+     * @return SessionTokenManagerInterface
+     */
     public SessionTokenManagerInterface getSessionTokenManager() {
         if (!initialized) {
             throw new IllegalStateException("Configuration.init() must be called to finish configuration");
@@ -56,6 +75,10 @@ public class Configuration {
         return mSessionTokenManager;
     }
 
+    /**
+     * Gets the action token manager associated with this class
+     * @return ActionTokenManagerInterface
+     */
     public ActionTokenManagerInterface getActionTokenManager() {
         if (!initialized) {
             throw new IllegalStateException("Configuration.init() must be called to finish configuration");
@@ -63,6 +86,10 @@ public class Configuration {
         return mActionTokenManager;
     }
 
+    /**
+     * Gets the logger associated with this class
+     * @return LoggerInterface
+     */
     public LoggerInterface getLogger() {
         if (!initialized) {
             throw new IllegalStateException("Configuration.init() must be called to finish configuration");
@@ -70,6 +97,10 @@ public class Configuration {
         return mLogger;
     }
 
+    /**
+     * Gets the network connectivity monitor associated with this class
+     * @return NetworkConnectivityMonitorInterface
+     */
     public NetworkConnectivityMonitorInterface getNetworkConnectivityMonitor() {
         if (!initialized) {
             throw new IllegalStateException("Configuration.init() must be called to finish configuration");
@@ -77,6 +108,9 @@ public class Configuration {
         return mNetworkConnectivityMonitor;
     }
 
+    /**
+     * Builder is a class used to build a Configuration object (see the builder pattern)
+     */
     public static class Builder {
         private static final HttpWorkerInterface DEFAULT_HTTP_WORKER = new DefaultHttpWorker();
         private static final CredentialsInterface DEFAULT_USER_CREDENTIALS = new DefaultCredentials();
@@ -94,9 +128,17 @@ public class Configuration {
         private LoggerInterface mLogger = DEFAULT_LOGGER;
         private NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor = DEFAULT_NET_MONITOR;
 
+        /**
+         * Builder Constructor
+         */
         public Builder() {
         }
 
+        /**
+         * Adds a HttpWorkerInterface to the class
+         * @param httpWorker HttpWorkerInterface to be added
+         * @return the updated Builder object
+         */
         public Builder httpWorker(HttpWorkerInterface httpWorker) {
             if (httpWorker == null) {
                 return this;
@@ -106,6 +148,11 @@ public class Configuration {
             return this;
         }
 
+        /**
+         * Adds a developer CredentialsInterface to the class
+         * @param developerCredentials CredentialsInterface to be added
+         * @return the updated Builder object
+         */
         public Builder developerCredentials(CredentialsInterface developerCredentials) {
             if (developerCredentials == null) {
                 return this;
@@ -114,6 +161,11 @@ public class Configuration {
             return this;
         }
 
+        /**
+         * Adds a user CredentialsInterface to the class
+         * @param userCredentials CredentialsInterface to be added
+         * @return the updated Builder object
+         */
         public Builder userCredentials(CredentialsInterface userCredentials) {
             if (userCredentials == null) {
                 return this;
@@ -123,6 +175,12 @@ public class Configuration {
             return this;
         }
 
+        /**
+         * Adds a session token manager and an action token manager to the class
+         * @param sessionTokenManager SessionTokenManagerInterface to be added
+         * @param actionTokenManager ActionTokenManagerInterface to be added
+         * @return the updated Builder object
+         */
         public Builder tokenManagers(SessionTokenManagerInterface sessionTokenManager, ActionTokenManagerInterface actionTokenManager) {
             if (sessionTokenManager == null || actionTokenManager == null) {
                 return this;
@@ -133,6 +191,11 @@ public class Configuration {
             return this;
         }
 
+        /**
+         * Adds a LoggerInterface to the class
+         * @param logger LoggerInterface to be added
+         * @return the updated Builder object
+         */
         public Builder logger(LoggerInterface logger) {
             if (logger == null) {
                 return this;
@@ -142,6 +205,11 @@ public class Configuration {
             return this;
         }
 
+        /**
+         * Adds a NetworkConnectivityMonitorInterface to the class
+         * @param networkConnectivityMonitor NetworkConnectivityMonitorInterface to be added
+         * @return the updated Builder object
+         */
         public Builder networkConnectivityMonitor(NetworkConnectivityMonitorInterface networkConnectivityMonitor) {
             if (networkConnectivityMonitor == null) {
                 return this;
@@ -151,7 +219,10 @@ public class Configuration {
             return this;
         }
 
-
+        /**
+         * Creates a new Configuration object based on the parameters in this class
+         * @return a new Configuration object
+         */
         public Configuration build() {
             return new Configuration(this);
         }

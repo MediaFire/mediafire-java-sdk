@@ -8,7 +8,7 @@ import com.mediafire.sdk.http.Result;
 
 public class ApiClient {
     private static final String TAG = ApiClient.class.getCanonicalName();
-    private final Configuration mConfiguration;
+    protected final Configuration mConfiguration;
 
     public ApiClient(Configuration configuration) {
         mConfiguration = configuration;

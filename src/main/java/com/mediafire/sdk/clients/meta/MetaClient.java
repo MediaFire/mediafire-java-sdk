@@ -1,6 +1,5 @@
 package com.mediafire.sdk.clients.meta;
 
-import com.mediafire.sdk.clients.ApiClient;
 import com.mediafire.sdk.clients.PathSpecificApiClient;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.http.ApiObject;
@@ -11,7 +10,6 @@ import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 import com.mediafire.sdk.http.ReturnTokenType;
 import com.mediafire.sdk.http.SignatureType;
-import com.mediafire.sdk.http.VersionObject;
 
 import java.util.Map;
 
@@ -32,15 +30,15 @@ public class MetaClient extends PathSpecificApiClient {
     private static final String PARAM_ORDER_DIRECTION = "order_direction";
     private static final String PARAM_CHUNK = "chunk";
 
-    private HostObject mHostObject;
-    private InstructionsObject mInstructionsObject;
+    private HostObject mHost;
+    private InstructionsObject mInstructions;
 
     public MetaClient(Configuration configuration, String apiVersion) {
         super(configuration, apiVersion);
         // init host object
-        mHostObject = new HostObject("https", "www", "mediafire.com", "post");
+        mHost = new HostObject("https", "www", "mediafire.com", "post");
         // init instructions object
-        mInstructionsObject = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, false);
+        mInstructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, false);
     }
 
     public MetaClient(Configuration configuration) {
@@ -49,7 +47,7 @@ public class MetaClient extends PathSpecificApiClient {
 
     public Result addToList(String listKey, String quickKey) {
         ApiObject apiObject = new ApiObject("meta", "add_to_list.php");
-        Request request = new Request(mHostObject, apiObject, mInstructionsObject, mVersionObject);
+        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
         // add list key query param
@@ -59,7 +57,7 @@ public class MetaClient extends PathSpecificApiClient {
 
     public Result removeFromList(String listKey, String quickKey) {
         ApiObject apiObject = new ApiObject("meta", "remove_from_list.php");
-        Request request = new Request(mHostObject, apiObject, mInstructionsObject, mVersionObject);
+        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
         // add list key query param
@@ -69,7 +67,7 @@ public class MetaClient extends PathSpecificApiClient {
 
     public Result delete(String quickKey) {
         ApiObject apiObject = new ApiObject("meta", "delete.php");
-        Request request = new Request(mHostObject, apiObject, mInstructionsObject, mVersionObject);
+        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
         return doRequestJson(request);
@@ -77,7 +75,7 @@ public class MetaClient extends PathSpecificApiClient {
 
     public Result get(String quickKey) {
         ApiObject apiObject = new ApiObject("meta", "get.php");
-        Request request = new Request(mHostObject, apiObject, mInstructionsObject, mVersionObject);
+        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
         return doRequestJson(request);
@@ -85,7 +83,7 @@ public class MetaClient extends PathSpecificApiClient {
 
     public Result getLinks(String quickKey, String linkType) {
         ApiObject apiObject = new ApiObject("meta", "get_links.php");
-        Request request = new Request(mHostObject, apiObject, mInstructionsObject, mVersionObject);
+        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
         // add link type query param
         request.addQueryParameter(PARAM_LINK_TYPE, linkType);
         // add quick key param
@@ -100,7 +98,7 @@ public class MetaClient extends PathSpecificApiClient {
 
     public Result query(QueryBuilder queryBuilder) {
         ApiObject apiObject = new ApiObject("meta", "query.php");
-        Request request = new Request(mHostObject, apiObject, mInstructionsObject, mVersionObject);
+        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
 
         request.addQueryParameter(PARAM_CHUNK, queryBuilder.mChunk);
         request.addQueryParameter(PARAM_ORDER_DIRECTION, queryBuilder.mOrderDirection);
@@ -116,7 +114,7 @@ public class MetaClient extends PathSpecificApiClient {
 
     public Result set(String quickKey, Map<String, String> metaKeyValuePairs) {
         ApiObject apiObject = new ApiObject("meta", "set.php");
-        Request request = new Request(mHostObject, apiObject, mInstructionsObject, mVersionObject);
+        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
         
         // add meta K,V pairs
         for (String key : metaKeyValuePairs.keySet()) {

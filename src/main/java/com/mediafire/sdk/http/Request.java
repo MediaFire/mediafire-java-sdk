@@ -52,6 +52,10 @@ public class Request {
             return;
         }
 
+        if (value.toString().isEmpty()) {
+            return;
+        }
+
         if (mQueryParameters == null) {
             mQueryParameters = new LinkedHashMap<String, Object>();
         }

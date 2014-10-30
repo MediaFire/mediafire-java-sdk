@@ -3,11 +3,19 @@ package com.mediafire.sdk.uploader.uploaditem;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * ResumableBitmap
+ */
 public class ResumableBitmap {
     private final int count;
     private final List<Integer> words;
     private final List<Boolean> uploadUnits;
 
+    /**
+     * ResumableBitmap Constructor
+     * @param count int the count
+     * @param words List<Integer> words
+     */
     public ResumableBitmap(int count, List<Integer> words) {
         this.count = count;
         this.words = words;
@@ -36,6 +44,11 @@ public class ResumableBitmap {
         return uploadUnits;
     }
 
+    /**
+     * Checks if the specified chunk id is uploaded
+     * @param chunkId int for the chunk id to check
+     * @return boolean if the chunk is uploaded
+     */
     public boolean isUploaded(int chunkId) {
         if (uploadUnits.isEmpty()) {
             return false;
@@ -43,14 +56,26 @@ public class ResumableBitmap {
         return uploadUnits.get(chunkId);
     }
 
+    /**
+     * Gets the uploaded unit
+     * @return List<Boolean> upload units
+     */
     public List<Boolean> getUploadUnits() {
         return uploadUnits;
     }
 
+    /**
+     * Gets the count
+     * @return int count
+     */
     public int getCount() {
         return count;
     }
 
+    /**
+     * Gets the words
+     * @return List<Integer> words
+     */
     public List<Integer> getWords() {
         return words;
     }

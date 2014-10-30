@@ -1,5 +1,8 @@
 package com.mediafire.sdk.uploader.uploaditem;
 
+/**
+ * UploadItemOptions contains options used for an UploadItem
+ */
 public class UploadItemOptions {
     private final boolean resumable;
     private final String uploadFolderKey;
@@ -23,10 +26,18 @@ public class UploadItemOptions {
         this.actionOnInAccount = builder.actionOnInAccount;
     }
 
+    /**
+     * Gets the custom file name
+     * @return String customFileName
+     */
     public String getCustomFileName() {
         return customFileName;
     }
 
+    /**
+     * Gets the action on in account
+     * @return ActionOnInAccount actionOnInAccount
+     */
     public ActionOnInAccount getActionOnInAccount() {
         if (actionOnInAccount == null) {
             return null;
@@ -34,10 +45,18 @@ public class UploadItemOptions {
         return actionOnInAccount;
     }
 
+    /**
+     * Gets the upload folder key
+     * @return String uploadFolderKey
+     */
     public String getUploadFolderKey() {
         return uploadFolderKey;
     }
 
+    /**
+     * Gets the action on duplicate value
+     * @return String actionOnDuplicates' value
+     */
     public String getActionOnDuplicate() {
         if (actionOnDuplicate == null) {
             return null;
@@ -45,6 +64,10 @@ public class UploadItemOptions {
         return actionOnDuplicate.getValue();
     }
 
+    /**
+     * Gets the version control value
+     * @return String versionControls' value
+     */
     public String getVersionControl() {
         if (versionControl == null) {
             return null;
@@ -52,6 +75,10 @@ public class UploadItemOptions {
         return versionControl.getValue();
     }
 
+    /**
+     * Gets if the upload is resumable
+     * @return String is resumable
+     */
     public String getResumable() {
         if (resumable) {
             return "yes";
@@ -60,18 +87,33 @@ public class UploadItemOptions {
         }
     }
 
+    /**
+     * Gets the upload path
+     * @return String uploadPath
+     */
     public String getUploadPath() {
         return uploadPath;
     }
 
+    /**
+     * Gets the modification time
+     * @return String modificationTime
+     */
     public String getModificationTime() {
         return modificationTime;
     }
 
+    /**
+     * Gets the quick key
+     * @return String quickKey
+     */
     public String getQuickKey() {
         return quickKey;
     }
 
+    /**
+     * Builder is a class to build on UploadItemOptions Object (see builder pattern)
+     */
     public static class Builder {
         private final boolean DEFAULT_RESUMABLE = true;
         private final ActionOnDuplicate DEFAULT_ACTION_ON_DUPLICATE = ActionOnDuplicate.KEEP;
@@ -88,8 +130,15 @@ public class UploadItemOptions {
         private String quickKey;
         private String modificationTime;
 
+        /**
+         * Builder Constructor
+         */
         public Builder() {}
 
+        /**
+         * Builder Constructor
+         * @param oldOptions UploadItemOptions to copy for a new Builder
+         */
         public Builder(UploadItemOptions oldOptions) {
             this.resumable = oldOptions.resumable;
             this.actionOnDuplicate = oldOptions.actionOnDuplicate;
@@ -102,11 +151,21 @@ public class UploadItemOptions {
             this.modificationTime = oldOptions.modificationTime;
         }
 
+        /**
+         * Sets if the upload is resumable
+         * @param resumable boolean resumable
+         * @return Builder
+         */
         public Builder resumable(boolean resumable) {
             this.resumable = resumable;
             return this;
         }
 
+        /**
+         * Sets the upload folder key
+         * @param uploadFolderKey String upload folder key
+         * @return Builder
+         */
         public Builder uploadFolderKey(String uploadFolderKey) {
             if (uploadFolderKey == null) {
                 throw new IllegalArgumentException("uploadFolderKey cannot be passed as a null value");
@@ -115,6 +174,11 @@ public class UploadItemOptions {
             return this;
         }
 
+        /**
+         * Sets the action on duplicate
+         * @param actionOnDuplicate ActionOnDuplicate
+         * @return Builder
+         */
         public Builder actionOnDuplicate(ActionOnDuplicate actionOnDuplicate) {
             if (actionOnDuplicate == null) {
                 throw new IllegalArgumentException("ActionOnDuplicate cannot be passed as a null value");
@@ -123,6 +187,11 @@ public class UploadItemOptions {
             return this;
         }
 
+        /**
+         * Sets the action on in account
+         * @param actionOnInAccount ActionOnInAccount
+         * @return Builder
+         */
         public Builder actionOnInAccount(ActionOnInAccount actionOnInAccount) {
             if (actionOnInAccount == null) {
                 throw new IllegalArgumentException("ActionOnInAccount cannot be passed as a null value");
@@ -131,6 +200,11 @@ public class UploadItemOptions {
             return this;
         }
 
+        /**
+         * Sets the version control
+         * @param versionControl VersionControl
+         * @return Builder
+         */
         public Builder versionControl(VersionControl versionControl) {
             if (versionControl == null) {
                 throw new IllegalArgumentException("VersionControl cannot be passed as a null value");
@@ -139,6 +213,11 @@ public class UploadItemOptions {
             return this;
         }
 
+        /**
+         * Sets the upload path
+         * @param uploadPath String upload path
+         * @return Builder
+         */
         public Builder uploadPath(String uploadPath) {
             if (uploadPath == null) {
                 throw new IllegalArgumentException("uploadPath cannot be passed as a null value");
@@ -147,6 +226,11 @@ public class UploadItemOptions {
             return this;
         }
 
+        /**
+         * Sets the custom file name
+         * @param customFileName String custom file name
+         * @return Builder
+         */
         public Builder customFileName(String customFileName) {
             if (customFileName == null) {
                 throw new IllegalArgumentException("customFileName cannot be passed as a null value");
@@ -155,6 +239,11 @@ public class UploadItemOptions {
             return this;
         }
 
+        /**
+         * Sets the quick key
+         * @param quickKey String quick key
+         * @return Builder
+         */
         public Builder quickKey(String quickKey) {
             if (quickKey == null) {
                 throw new IllegalArgumentException("quickKey cannot be passed as a null value");
@@ -163,6 +252,11 @@ public class UploadItemOptions {
             return this;
         }
 
+        /**
+         * Sets the modification time
+         * @param modificationTime String modification time
+         * @return Builder
+         */
         public Builder modificationTime(String modificationTime) {
             if (modificationTime == null) {
                 throw new IllegalArgumentException("modificationTime cannot be passed as a null value");
@@ -172,11 +266,18 @@ public class UploadItemOptions {
             return this;
         }
 
+        /**
+         * Builds an UploadItemOptions from this class
+         * @return UploadItemOptions
+         */
         public UploadItemOptions build() {
             return new UploadItemOptions(this);
         }
     }
 
+    /**
+     * ActionOnDuplicate is an Enum for what to do with a duplicate file
+     */
     public enum ActionOnDuplicate {
         KEEP("keep"),
         SKIP("skip"),
@@ -188,17 +289,27 @@ public class UploadItemOptions {
             this.value = value;
         }
 
+        /**
+         * gets the value of the enum
+         * @return String value
+         */
         public String getValue() {
             return value;
         }
     }
 
+    /**
+     * ActionOnInAccount is an Enum for what to do when a file is already in the account
+     */
     public enum ActionOnInAccount {
         UPLOAD_ALWAYS,
         UPLOAD_IF_NOT_IN_FOLDER,
         DO_NOT_UPLOAD,
     }
 
+    /**
+     * VersionControl is an Enum for version control of uploads
+     */
     public enum VersionControl {
         CREATE_PATCHES("create_patches"),
         KEEP_REVISION("keep_revision"),
@@ -210,6 +321,10 @@ public class UploadItemOptions {
             this.value = value;
         }
 
+        /**
+         * gets the value of the enum
+         * @return String value
+         */
         public String getValue() {
             return value;
         }

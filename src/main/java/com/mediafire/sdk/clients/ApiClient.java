@@ -6,14 +6,26 @@ import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 
+/**
+ *  ApiClient is a wrapper for the methods required to make an request the the MediaFire API
+ */
 public class ApiClient {
     private static final String TAG = ApiClient.class.getCanonicalName();
     protected final Configuration mConfiguration;
 
+    /**
+     * ApiClient Constructor
+     * @param configuration a Configuration object used to perform the request and log
+     */
     public ApiClient(Configuration configuration) {
         mConfiguration = configuration;
     }
 
+    /**
+     * Performs a http request based on a Request, setting up before and cleaning up afterwards
+     * @param request the request parameter to base the http request off of
+     * @return returns a Result object after the http response is cleaned up
+     */
     public Result doRequest(Request request) {
         mConfiguration.getLogger().v(TAG, "doRequest");
         ApiClientHelper apiClientHelper = new ApiClientHelper(mConfiguration);

@@ -19,6 +19,7 @@ import java.util.Map;
 
 /**
  * Created by Chris Najar on 10/20/2014.
+ * ApiClientHelper is a class used to setup and cleanup a request
  */
 public class ApiClientHelper {
     private static final String TAG = ApiClientHelper.class.getCanonicalName();
@@ -26,10 +27,18 @@ public class ApiClientHelper {
     private Request mRequest;
     private Response mResponse;
 
+    /**
+     * ApiClientHelper Constructor
+     * @param configuration a Configuration object
+     */
     ApiClientHelper(Configuration configuration) {
         mConfiguration = configuration;
     }
 
+    /**
+     * Sets up a request for the API based off of the requests InstructionsObject
+     * @param request the request to be setup with the InstructionsObject
+     */
     final void setup(Request request) {
         mConfiguration.getLogger().v(TAG, "setup");
         mRequest = request;
@@ -38,12 +47,21 @@ public class ApiClientHelper {
         addSignatureToRequestParameters();
     }
 
+    /**
+     * Cleans up a response by returning appropriate tokens according to the requests InstructionsObject
+     * Note: setup must be called first as the request parameters' InstructionsObject is used
+     * @param response the response the get the new token from
+     */
     final void cleanup(Response response) {
         mConfiguration.getLogger().v(TAG, "cleanup");
         mResponse = response;
         returnToken();
     }
 
+    /**
+     * Borrows a token (type according to the requests InstructionsObject)
+     * Note: setup must first be called as its request param is used
+     */
     public void borrowToken() {
         mConfiguration.getLogger().v(TAG, "borrowToken - added " + mRequest.getInstructionsObject().getBorrowTokenType() + " token");
         switch (mRequest.getInstructionsObject().getBorrowTokenType()) {
@@ -66,6 +84,10 @@ public class ApiClientHelper {
         }
     }
 
+    /**
+     * Adds a session_token to a Requests' parameters by getting the token attached to the same Request
+     * Note: setup must first be called as its request param is used
+     */
     public void addTokenToRequestParameters() {
         if (mRequest.getToken() != null) {
             String tokenString = mRequest.getToken().getTokenString();
@@ -77,6 +99,10 @@ public class ApiClientHelper {
         }
     }
 
+    /**
+     * Adds a signature to a Requests' parameters according to the same Requests' InstructionsObject
+     * Note: setup must first be called as its request param is used
+     */
     public void addSignatureToRequestParameters() {
         String signature = null;
         switch (mRequest.getInstructionsObject().getSignatureType()) {
@@ -131,6 +157,11 @@ public class ApiClientHelper {
         mConfiguration.getLogger().v(TAG, "Request parameters: " + mRequest.getQueryParameters());
     }
 
+    /**
+     * Returns a token according to a Requests' InstructionsObject by calling the Configurations' token manager interface
+     * Note: setup must first be called as its request param is used
+     * Note: cleanup must first be called as its response param is used
+     */
     public void returnToken() {
         if (mResponse instanceof ResponseApiClientError) {
             mConfiguration.getLogger().v(TAG, "returnToken - not returning a token. Response is ResponseApiClientError");
@@ -231,6 +262,11 @@ public class ApiClientHelper {
         }
     }
 
+    /**
+     * Creates a SessionToken Object from a GetSessionTokenResponse
+     * @param getSessionTokenResponse the response to create a SessionToken from
+     * @return a new SessionToken Object
+     */
     protected SessionToken createNewSessionToken(GetSessionTokenResponse getSessionTokenResponse) {
 
         if (getSessionTokenResponse == null) {
@@ -252,6 +288,11 @@ public class ApiClientHelper {
         return mfSessionToken;
     }
 
+    /**
+     * Makes a signature based on an api Request Object
+     * Note: setup must first be called as its request param is used
+     * @return a String that is the new signature created
+     */
     protected final String makeSignatureForApiRequest() {
 
         // session token secret key + time + uri (concatenated)
@@ -280,6 +321,12 @@ public class ApiClientHelper {
         return signature;
     }
 
+    /**
+     * Hashes a string according to an algorithm
+     * @param target the String to hash
+     * @param hashAlgorithm the hashing algorithm to perform
+     * @return the hashed version of the passed String
+     */
     protected final String hashString(String target, String hashAlgorithm) {
         mConfiguration.getLogger().v(TAG, "hashString - target: " + target);
         String result;

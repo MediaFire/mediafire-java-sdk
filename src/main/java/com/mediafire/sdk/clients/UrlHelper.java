@@ -12,16 +12,25 @@ import java.util.Map;
 
 /**
  * Created by Chris Najar on 10/18/2014.
+ * UrlHelper creates different parts of a url from a Request object
  */
 public class UrlHelper {
     private static final String TAG = UrlHelper.class.getCanonicalName();
 
     private final Request mRequest;
 
+    /**
+     * UrlHelper Constructor
+     * @param request the Request to for the url (parts) from
+     */
     public UrlHelper(Request request) {
         mRequest = request;
     }
 
+    /**
+     * Makes a url for post if the Requests' InstructionsObject says is postable, otherwise makes a url for get request
+     * @return a String containing the full url
+     */
     public String makeUrlForPostRequest() {
         DefaultLogger.log().v(TAG, "makeUrlForPostRequest");
         String baseUrl;
@@ -35,6 +44,10 @@ public class UrlHelper {
         return baseUrl;
     }
 
+    /**
+     * Makes a full url for a get request (including query params)
+     * @return a String containing the full url
+     */
     public String makeUrlForGetRequest() {
         DefaultLogger.log().v(TAG, "makeUrlForGetRequest");
         String baseUrl = getBaseUrlString();
@@ -46,6 +59,10 @@ public class UrlHelper {
         return baseUrl + baseUri + query;
     }
 
+    /**
+     * Makes a base url from the request
+     * @return a String containing the base url
+     */
     public String getBaseUrlString() {
         DefaultLogger.log().v(TAG, "getBaseUrlString");
         HostObject hostObject = mRequest.getHostObject();
@@ -58,6 +75,10 @@ public class UrlHelper {
         return transferProtocol + "://" + subdomain + "." + domain;
     }
 
+    /**
+     * Makes a base uri from the request
+     * @return a String containing the base uri
+     */
     public String getBaseUriString() {
         DefaultLogger.log().v(TAG, "getBaseUriString");
         ApiObject apiObject = mRequest.getApiObject();
@@ -83,6 +104,12 @@ public class UrlHelper {
         return baseUri;
     }
 
+    /**
+     * Makes a query string from the request
+     * @param encoded boolean of whether to uft8 encode the query parameters or not
+     * @param rawKeyValue boolean of whether to have a query string, or a query string with a ? at the front
+     * @return a String containing the query parameters
+     */
     public String getQueryString(boolean encoded, boolean rawKeyValue) {
         DefaultLogger.log().v(TAG, "getQueryString");
         Map<String, Object> queryParameters = mRequest.getQueryParameters();
@@ -108,10 +135,19 @@ public class UrlHelper {
         }
     }
 
+    /**
+     * Convenience method for getQueryString with rawKeyValue = false
+     * @param encoded boolean of whether to uft8 encode the query parameters or not
+     * @return a String containing the query parameters
+     */
     public String getQueryString(boolean encoded) {
         return getQueryString(encoded, false);
     }
 
+    /**
+     * Returns the payload of the request, if is post query, set the query string as payload
+     * @return a byte array of the payload
+     */
     public byte[] getPayload() {
         DefaultLogger.log().v(TAG, "getPayload");
         byte[] payload;

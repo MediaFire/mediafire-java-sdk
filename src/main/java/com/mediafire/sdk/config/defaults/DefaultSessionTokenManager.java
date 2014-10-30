@@ -15,6 +15,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by Jonathan Harrison on 10/21/2014.
+ * DefaultSessionTokenManager is a default implementation of the SessionTokenManagerInterface
+ * A custom implementation is recommended
  */
 public class DefaultSessionTokenManager implements SessionTokenManagerInterface {
     private static final String TAG = DefaultSessionTokenManager.class.getCanonicalName();
@@ -27,18 +29,33 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
     private static int outstandingRequests = 0;
     private static final Object outstandingRequestsLock = new Object();
 
+    /**
+     * DefaultSessionTokenManager Constructor
+     */
     public DefaultSessionTokenManager(){ }
 
+    /**
+     * Initialized this class, should be called before class methods are called
+     * @param configuration Configuration Object to be used in class methods
+     */
     @Override
     public void initialize(Configuration configuration) {
         mConfiguration = configuration;
     }
 
+    /**
+     * A shutdown method for this class
+     */
     @Override
     public void shutdown() {
         mConfiguration.getLogger().v(TAG, "shutdown");
     }
 
+    /**
+     * Called whenever a new SessionToken Object is received
+     * Adds the token to the BlockingQueue
+     * @param token the SessionToken that was received
+     */
     @Override
     public void receiveSessionToken(SessionToken token) {
         mConfiguration.getLogger().v(TAG, "receiveSessionToken");
@@ -50,6 +67,10 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
         }
     }
 
+    /**
+     * Called to borrow an SessionToken, asks server for a new one if not available (blocking)
+     * @return a SessionToken once one is available
+     */
     @Override
     public SessionToken borrowSessionToken() {
         mConfiguration.getLogger().v(TAG, "borrowSessionToken");
@@ -72,6 +93,11 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
         }
     }
 
+    /**
+     * Called whenever the process of getting a new session token fails
+     * Returns a (checked for) bad token into the blocking queue to notify failure
+     * @param response the Response associated with the failure
+     */
     @Override
     public void getNewSessionTokenFailed(Response response) {
         mConfiguration.getLogger().v(TAG, "getNewSessionTokenFailed");

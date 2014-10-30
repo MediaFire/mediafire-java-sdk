@@ -10,7 +10,28 @@ public class SetSettingsParameters {
     public int mPreviousFileVersions = DEFAULT_PREVIOUS_FILE_VERSIONS;
     public String mDefaultShareLinkStatus = DEFAULT_SHARE_LINK_STATUS;
 
-    public SetSettingsParameters() { }
+    public SetSettingsParameters(int numOfOldVersionsToKeep) {
+        if (numOfOldVersionsToKeep > 0 && numOfOldVersionsToKeep < 10) {
+            mPreviousFileVersions = numOfOldVersionsToKeep;
+        }
+    }
+
+    public SetSettingsParameters(DefaultShareLinkStatus defaultShareLinkStatus) {
+        if (defaultShareLinkStatus == null) {
+            defaultShareLinkStatus = DefaultShareLinkStatus.INHERIT;
+        }
+
+        switch (defaultShareLinkStatus) {
+            case ENABLED:
+                mDefaultShareLinkStatus = "enabled";
+                break;
+            case DISABLED:
+                mDefaultShareLinkStatus = "disabled";
+                break;
+            case INHERIT:
+                break;
+        }
+    }
 
     public SetSettingsParameters previousFileVersionsToKeep(int numOfOldVersionsToKeep) {
         if (numOfOldVersionsToKeep > 10 || numOfOldVersionsToKeep < 0) {
@@ -21,12 +42,12 @@ public class SetSettingsParameters {
         return this;
     }
 
-    public SetSettingsParameters defaultShareLinkStatus(DefaultShareLinkStatus status) {
-        if (status == null) {
+    public SetSettingsParameters defaultShareLinkStatus(DefaultShareLinkStatus defaultShareLinkStatus) {
+        if (defaultShareLinkStatus == null) {
             return this;
         }
 
-        switch (status) {
+        switch (defaultShareLinkStatus) {
             case ENABLED:
                 mDefaultShareLinkStatus = "enabled";
                 break;

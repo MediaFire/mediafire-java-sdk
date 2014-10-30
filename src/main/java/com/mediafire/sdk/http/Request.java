@@ -44,7 +44,15 @@ public class Request {
     }
 
     public void addQueryParameter(String key, Object value) {
-        if (key == null || value == null) {
+        if (key == null || key.isEmpty()) {
+            return;
+        }
+
+        if (value == null) {
+            return;
+        }
+
+        if (value.toString().isEmpty()) {
             return;
         }
 

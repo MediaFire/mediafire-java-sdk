@@ -8,15 +8,27 @@ import java.util.Map;
 
 /**
  * Created by Chris Najar on 10/18/2014.
+ * RequestGenerator generates a request for several API requests
  */
 public class RequestGenerator {
 
     private static final String TAG = RequestGenerator.class.getCanonicalName();
 
+    /**
+     * RequestGenerator Constructor
+     */
     public RequestGenerator() {}
 
     private static final Map<String, Holder> holderMap = new HashMap<String, Holder>();
 
+    /**
+     * Generates a request object from the passed parameters
+     * Note: the path and file parameters should be in the holderMap Object in this class
+     * @param apiVersion a String for the api version for the request
+     * @param path a String for the path of the api request (eg 'user', 'file', 'folder')
+     * @param file a String for the file of the api request (eg 'get_info.php', 'add.php')
+     * @return a new Request object for the passed in parameters
+     */
     public Request generateRequestObject(String apiVersion, String path, String file) {
         DefaultLogger.log().v(TAG, "generateRequestObject - " + apiVersion + "/" + path + "/" + file);
         Holder holder = holderMap.get(path + "/" + file);
@@ -32,6 +44,13 @@ public class RequestGenerator {
         return request;
     }
 
+    /**
+     * Generates a request object from the passed parameters
+     * Note: the path and file parameters should be in the holderMap Object in this class
+     * @param path a String for the path of the api request (eg 'user', 'file', 'folder')
+     * @param file a String for the file of the api request (eg 'get_info.php', 'add.php')
+     * @return a new Request object for the passed in parameters
+     */
     public Request generateRequestObject(String path, String file) {
         return generateRequestObject(null, path, file);
     }

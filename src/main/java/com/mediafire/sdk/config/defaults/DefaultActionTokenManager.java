@@ -9,6 +9,8 @@ import com.mediafire.sdk.token.UploadActionToken;
 
 /**
  * Created by Jonathan Harrison on 10/21/2014.
+ * DefaultActionTokenManager provides a default implementation of the ActionTokenManagerInterface
+ * A custom implementation is recommended
  */
 public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private static final String TAG = DefaultActionTokenManager.class.getCanonicalName();
@@ -20,18 +22,33 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private static final Object mUploadActionTokenLock = new Object();
     private Configuration mConfiguration;
 
+    /**
+     * DefaultActionTokenManager Constructor
+     */
     public DefaultActionTokenManager() { }
 
+    /**
+     * Initialized this class, should be called before class methods are called
+     * @param configuration Configuration Object to be used in class methods
+     */
     @Override
     public void initialize(Configuration configuration) {
         mConfiguration = configuration;
     }
 
+    /**
+     * A shutdown method for this class
+     */
     @Override
     public void shutdown() {
         mConfiguration.getLogger().v(TAG, "shutdown");
     }
 
+    /**
+     * Called whenever a new ImageActionToken Object is received
+     * Notifies the corresponding lock that a ImageActionToken has been received
+     * @param token the ImageActionToken that was received
+     */
     @Override
     public void receiveImageActionToken(ImageActionToken token) {
         mConfiguration.getLogger().v(TAG, "receiveImageActionToken");
@@ -41,6 +58,11 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
         }
     }
 
+    /**
+     * Called whenever a new UploadActionToken Object is received
+     * Notifies the corresponding lock that a UploadActionToken has been received
+     * @param token the UploadActionToken that was received
+     */
     @Override
     public void receiveUploadActionToken(UploadActionToken token) {
         mConfiguration.getLogger().v(TAG, "receiveUploadActionToken");
@@ -50,6 +72,10 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
         }
     }
 
+    /**
+     * Called to borrow an ImageActionToken, asks server for a new one if not available (blocking)
+     * @return an ImageActionToken once one is available
+     */
     @Override
     public ImageActionToken borrowImageActionToken() {
         mConfiguration.getLogger().v(TAG, "borrowImageActionToken");
@@ -93,6 +119,10 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
         }
     }
 
+    /**
+     * Called to borrow an UploadActionToken, asks server for a new one if not available (blocking)
+     * @return an UploadActionToken once one is available
+     */
     @Override
     public UploadActionToken borrowUploadActionToken() {
         mConfiguration.getLogger().v(TAG, "borrowUploadActionToken");
@@ -136,6 +166,10 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
         }
     }
 
+    /**
+     * called whenever either a ImageActionToken or a UploadActionToken fails
+     * the current tokens are cleared and new ones are asked for
+     */
     @Override
     public void tokensFailed() {
         mConfiguration.getLogger().v(TAG, "tokensFailed");

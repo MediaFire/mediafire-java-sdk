@@ -10,19 +10,34 @@ import com.mediafire.sdk.http.Response;
 
 /**
  * Created by Chris Najar on 10/18/2014.
+ * ResponseHelper parses the json of a response and returns the response
  */
 public class ResponseHelper {
     private static final String TAG = ResponseHelper.class.getCanonicalName();
     private Response mResponse;
 
+    /**
+     * ResponseHelper Constructor
+     * @param response The response that contains the response bytes
+     */
     public ResponseHelper(Response response) {
         mResponse = response;
     }
 
+    /**
+     * Gets an ApiResponse object from the response
+     * @return a new ApiResponse
+     */
     public ApiResponse getApiResponse() {
         return getResponseObject(ApiResponse.class);
     }
 
+    /**
+     * Gets an Object of type ApiResponse from the response
+     * @param responseClass the class object extended from ApiResponse to be returned
+     * @param <ResponseClass> the class object extended from ApiResponse to be returned
+     * @return the new ApiResponse object of class ResponseClass
+     */
     public <ResponseClass extends ApiResponse> ResponseClass getResponseObject(Class<ResponseClass> responseClass) {
         String responseString = getResponseAsString();
         if (responseString == null) {
@@ -31,6 +46,10 @@ public class ResponseHelper {
         return new Gson().fromJson(getResponseStringForGson(responseString), responseClass);
     }
 
+    /**
+     * Returns the response from the Response object as a String
+     * @return a new String of the response
+     */
     public String getResponseAsString() {
         if (mResponse == null) {
             return null;

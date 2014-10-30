@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * file information for an upload item.
+ * FileData contains file information for an upload item.
  */
 public class FileData {
     private static final String TAG = FileData.class.getCanonicalName();
@@ -13,6 +13,10 @@ public class FileData {
     private long fileSize;
     private String fileHash;
 
+    /**
+     * FileData Constructor
+     * @param filePath String for the file path
+     */
     public FileData(String filePath) {
         if (filePath == null) {
             throw new IllegalArgumentException("invalid filePath (cannot be null)");
@@ -20,10 +24,18 @@ public class FileData {
         this.filePath = filePath;
     }
 
+    /**
+     * Gets the file path
+     * @return String filePath
+     */
     public String getFilePath() {
         return filePath;
     }
 
+    /**
+     * Gets the file size for the filePath
+     * @return long fileSize
+     */
     public long getFileSize() {
         if (fileSize == 0) {
             setFileSize();
@@ -31,6 +43,10 @@ public class FileData {
         return fileSize;
     }
 
+    /**
+     * Gets the file hast for the filePath
+     * @return String fileHash
+     */
     public String getFileHash() {
         if (fileHash == null) {
             setFileHash();
@@ -38,11 +54,17 @@ public class FileData {
         return fileHash;
     }
 
+    /**
+     * Sets the file size for the filePath
+     */
     public void setFileSize() {
         File file = new File(getFilePath());
         fileSize = file.length();
     }
 
+    /**
+     * Sets the file hash for the filePath
+     */
     public void setFileHash() {
         File file = new File(filePath);
         FileInputStream fileInputStream;

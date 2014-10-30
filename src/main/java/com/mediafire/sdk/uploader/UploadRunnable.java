@@ -26,6 +26,7 @@ import java.util.Map;
 
 /**
  * Created by Chris Najar on 7/21/2014.
+ * UploadRunnable uploads an UploadItem
  */
 public class UploadRunnable implements Runnable {
     private static final String TAG = UploadRunnable.class.getCanonicalName();
@@ -62,6 +63,9 @@ public class UploadRunnable implements Runnable {
         mLogger = builder.configuration.getLogger();
     }
 
+    /**
+     * Starts the upload
+     */
     @Override
     public void run() {
         mLogger.d(TAG, "run()");
@@ -965,6 +969,9 @@ public class UploadRunnable implements Runnable {
         }
     }
 
+    /**
+     * Builder is a class used to build a UploadRunnable (see builder pattern)
+     */
     public static class Builder {
         private static final int DEFAULT_MAX_POLLS = 60;
         private static final int DEFAULT_MILLISECONDS_BETWEEN_POLLS = 2000;
@@ -1053,6 +1060,13 @@ public class UploadRunnable implements Runnable {
         }
     }
 
+    /**
+     * Gets a response object from a response string and response class
+     * @param responseString String response to create response form
+     * @param responseClass ResponseClass to return
+     * @param <ResponseClass> ResponseClass to return and create response from
+     * @return ResponseClass
+     */
     public <ResponseClass extends ApiResponse> ResponseClass getResponseObject(String responseString, Class<ResponseClass> responseClass) {
         if (responseString == null) {
             return null;

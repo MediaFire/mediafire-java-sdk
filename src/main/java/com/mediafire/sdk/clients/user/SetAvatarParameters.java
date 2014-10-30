@@ -11,13 +11,13 @@ public class SetAvatarParameters {
     String mQuickKey;
     String mUrl;
 
-    public SetAvatarParameters(String resourceValue) {
+    public SetAvatarParameters(String resource) {
         try {
-            new URL(resourceValue);
-            mUrl = resourceValue;
+            new URL(resource);
+            mUrl = resource;
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            mQuickKey = resourceValue;
+            mQuickKey = resource;
         }
     }
 

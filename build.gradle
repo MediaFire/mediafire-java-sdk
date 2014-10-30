@@ -38,7 +38,7 @@ publishing {
         maven(MavenPublication) {
             artifactId = 'mediafire-sdk'
             groupId = 'com.mediafire'
-            version '3.1.0'
+            version '3.1.1'
             from components.java
 
             artifact sourceJar {

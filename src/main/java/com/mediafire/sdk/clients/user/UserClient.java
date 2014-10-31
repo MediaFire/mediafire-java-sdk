@@ -29,6 +29,7 @@ public class UserClient extends PathSpecificApiClient {
     private static final String PARAM_FIRST_NAME = "first_name";
     private static final String PARAM_LAST_NAME = "last_name";
     private static final String PARAM_DISPLAY_NAME = "display_name";
+    private static final String PARAM_TOKEN_VERSION = "token_version";
 
     private HostObject mHost;
     private InstructionsObject mInstructions;
@@ -51,6 +52,7 @@ public class UserClient extends PathSpecificApiClient {
         InstructionsObject instructions = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NEW_SESSION_TOKEN_SIGNATURE, ReturnTokenType.NEW_V2, true);
         Request request = new Request(mHost, apiObject, instructions, mVersionObject);
         // add application_id and relative parameters are added by ApiClientHelper
+        request.addQueryParameter(PARAM_TOKEN_VERSION, 2);
         return doRequestJson(request);
     }
 

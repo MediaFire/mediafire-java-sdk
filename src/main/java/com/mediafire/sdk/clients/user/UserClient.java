@@ -40,7 +40,7 @@ public class UserClient extends PathSpecificApiClient {
         // init host object
         mHost = new HostObject("https", "www", "mediafire.com", "post");
         // init instructions object
-        mInstructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, false);
+        mInstructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, true);
     }
 
     public UserClient(Configuration configuration) {

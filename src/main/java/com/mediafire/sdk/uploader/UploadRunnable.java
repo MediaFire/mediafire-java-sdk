@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mediafire.sdk.api_responses.ApiResponse;
+import com.mediafire.sdk.api_responses.ResponseCode;
 import com.mediafire.sdk.api_responses.upload.CheckResponse;
 import com.mediafire.sdk.api_responses.upload.InstantResponse;
 import com.mediafire.sdk.api_responses.upload.PollResponse;
@@ -286,7 +287,7 @@ public class UploadRunnable implements Runnable {
         }
 
         // if there is an error code, cancel the upload
-        if (response.getErrorCode() != ApiResponse.ResponseCode.NO_ERROR) {
+        if (response.getErrorCode() != ResponseCode.NO_ERROR) {
             notifyUploadListenerCancelled(MSG_RESPONSE_ERROR);
             return;
         }
@@ -366,7 +367,7 @@ public class UploadRunnable implements Runnable {
             return;
         }
 
-        if (response.getErrorCode() != ApiResponse.ResponseCode.NO_ERROR) {
+        if (response.getErrorCode() != ResponseCode.NO_ERROR) {
             notifyUploadListenerCancelled(MSG_RESPONSE_ERROR);
             return;
         }

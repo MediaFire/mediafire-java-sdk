@@ -82,13 +82,13 @@ public class UserClient extends PathSpecificApiClient {
     }
 
     public Result getAvatar() {
-        ApiObject apiObject = new ApiObject("meta", "get_avatar.php");
+        ApiObject apiObject = new ApiObject("user", "get_avatar.php");
         Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
         return doRequestJson(request);
     }
 
     public Result setAvatar(SetAvatarParameters requestParams) {
-        ApiObject apiObject = new ApiObject("meta", "set_avatar.php");
+        ApiObject apiObject = new ApiObject("user", "set_avatar.php");
         Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
 
         request.addQueryParameter(PARAM_SET_AVATAR_ACTION, requestParams.mAction);
@@ -99,20 +99,20 @@ public class UserClient extends PathSpecificApiClient {
     }
 
     public Result getInfo() {
-        ApiObject apiObject = new ApiObject("meta", "get_info.php");
+        ApiObject apiObject = new ApiObject("user", "get_info.php");
         Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
         return doRequestJson(request);
     }
 
     public Result getSettings() {
-        ApiObject apiObject = new ApiObject("meta", "get_settings.php");
+        ApiObject apiObject = new ApiObject("user", "get_settings.php");
         Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
 
         return doRequestJson(request);
     }
 
     public Result setSettings(SetSettingsParameters requestParams) {
-        ApiObject apiObject = new ApiObject("meta", "set_settings.php");
+        ApiObject apiObject = new ApiObject("user", "set_settings.php");
         Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
 
         request.addQueryParameter(PARAM_PREVIOUS_FILE_VERSIONS, requestParams.mPreviousFileVersions);
@@ -122,7 +122,7 @@ public class UserClient extends PathSpecificApiClient {
     }
 
     public Result register(RegisterParameters requestParams) {
-        ApiObject apiObject = new ApiObject("meta", "register.php");
+        ApiObject apiObject = new ApiObject("user", "register.php");
         InstructionsObject instructions = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, true);
         Request request = new Request(mHost, apiObject, instructions, mVersionObject);
 

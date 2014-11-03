@@ -1,19 +1,5 @@
 apply plugin: 'java'
 apply plugin: 'maven-publish'
-apply plugin: 'build-version'
-
-// build script
-buildscript {
-    repositories {
-        maven { url "http://git.site.com:8081/nexus/content/groups/public" }
-        maven { url 'https://geonet.artifactoryonline.com/geonet/public-releases' }
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'nz.org.geonet:gradle-build-version-plugin:1.+'
-    }
-}
 
 // repositories
 repositories {
@@ -29,7 +15,7 @@ dependencies {
 
 // task to make jar from java files?
 task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
+    from sourceSets.main.java
 }
 
 publishing {
@@ -38,7 +24,7 @@ publishing {
         maven(MavenPublication) {
             artifactId = 'mediafire-sdk'
             groupId = 'com.mediafire'
-            version '3.1.5'
+            version '3.1.65'
             from components.java
 
             artifact sourceJar {
@@ -55,12 +41,7 @@ publishing {
                 password "qwpo1998"
             }
 
-            // post to repository based on version
-            if(version.endsWith('-SNAPSHOT')) {
-                url "http://git.site.com:8081/nexus/content/repositories/snapshots"
-            } else {
-                url "http://git.site.com:8081/nexus/content/repositories/releases"
-            }
+            url "http://git.site.com:8081/nexus/content/repositories/releases"
         }
     }
 }

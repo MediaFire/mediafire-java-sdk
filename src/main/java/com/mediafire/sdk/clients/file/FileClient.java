@@ -31,7 +31,7 @@ public class FileClient extends PathSpecificApiClient {
         // init host object
         mHost = new HostObject("https", "www", "mediafire.com", "post");
         // init instructions object
-        mInstructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, false);
+        mInstructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, true);
     }
 
     public Result getInfo(String quickKey) {
@@ -52,12 +52,12 @@ public class FileClient extends PathSpecificApiClient {
         return doRequestJson(request);
     }
 
-    public Result copy(String quickKey, String destinationKey) {
+    public Result copy(String quickKey, String folderKey) {
         ApiObject apiObject = new ApiObject("file", "copy.php");
         Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
-        request.addQueryParameter(PARAM_FOLDER_KEY, destinationKey);
+        request.addQueryParameter(PARAM_FOLDER_KEY, folderKey);
 
         return doRequestJson(request);
     }
@@ -71,11 +71,12 @@ public class FileClient extends PathSpecificApiClient {
         return doRequestJson(request);
     }
 
-    public Result move(String quickKey) {
+    public Result move(String quickKey, String folderKey) {
         ApiObject apiObject = new ApiObject("file", "move.php");
         Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
+        request.addQueryParameter(PARAM_FOLDER_KEY, folderKey);
 
         return doRequestJson(request);
     }
@@ -112,7 +113,7 @@ public class FileClient extends PathSpecificApiClient {
     }
 
     public Result getLinks(String quickKey, LinkType linkType) {
-        ApiObject apiObject = new ApiObject("file", "update.php");
+        ApiObject apiObject = new ApiObject("file", "get_links.php");
         Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);

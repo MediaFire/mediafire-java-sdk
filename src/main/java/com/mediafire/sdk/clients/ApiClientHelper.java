@@ -243,7 +243,7 @@ public class ApiClientHelper {
         String tokenString = getActionTokenResponse.getActionToken();
         long tokenExpiry;
         if (mRequest.getQueryParameters().containsKey("lifespan")) {
-            tokenExpiry = Long.valueOf( (String) mRequest.getQueryParameters().get("lifespan") );
+            tokenExpiry = Long.valueOf((Integer) mRequest.getQueryParameters().get("lifespan"));
         } else {
             tokenExpiry = 0;
         }

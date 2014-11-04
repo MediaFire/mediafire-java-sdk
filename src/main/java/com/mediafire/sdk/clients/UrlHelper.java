@@ -27,6 +27,17 @@ public class UrlHelper {
         mRequest = request;
     }
 
+    public String makeConcatenatedUrlForGet() {
+        HostObject hostObject = mRequest.getHostObject();
+        String transferProtocol = (hostObject.getTransferProtocol() == null) ? "" : hostObject.getTransferProtocol();
+        String domain = (hostObject.getDomain() == null) ? "" : hostObject.getDomain();
+        String subdomain = (hostObject.getSubdomain() == null) ? "" : hostObject.getSubdomain();
+
+        String query = getQueryString(true);
+
+        return transferProtocol + domain + subdomain + query;
+    }
+
     /**
      * Makes a url for post if the Requests' InstructionsObject says is postable, otherwise makes a url for get request
      * @return a String containing the full url

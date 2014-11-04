@@ -112,7 +112,7 @@ public class FileClient extends PathSpecificApiClient {
     }
 
     public Result getLinks(String quickKey, LinkType linkType) {
-        ApiObject apiObject = new ApiObject("file", "update.php");
+        ApiObject apiObject = new ApiObject("file", "get_links.php");
         Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);

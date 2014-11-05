@@ -41,9 +41,17 @@ public class StatusResponse {
     private Response mResponse;
 
     public StatusResponse(Response response) {
+        this(response, ParseType.NONE);
+    }
+
+    public StatusResponse(Response response, ParseType parseType) {
         mResponse = response;
 
-        parseXml();
+        switch (parseType) {
+            case XML:
+                parseXml();
+                break;
+        }
     }
 
     public void parseXml() {

@@ -25,9 +25,17 @@ public class CheckResponse {
     private Response mResponse;
 
     public CheckResponse(Response response) {
+        this(response, ParseType.NONE);
+    }
+
+    public CheckResponse(Response response, ParseType parseType) {
         mResponse = response;
 
-        parseXml();
+        switch (parseType) {
+            case XML:
+                parseXml();
+                break;
+        }
     }
 
     public void parseXml() {

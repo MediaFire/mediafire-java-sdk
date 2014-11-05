@@ -25,9 +25,17 @@ public class CreateResponse {
     private Response mResponse;
 
     public CreateResponse(Response response) {
+        this(response, ParseType.NONE);
+    }
+
+    public CreateResponse(Response response, ParseType parseType) {
         mResponse = response;
 
-        parseXml();
+        switch (parseType) {
+            case XML:
+                parseXml();
+                break;
+        }
     }
 
     public void parseXml() {

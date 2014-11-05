@@ -83,7 +83,7 @@ public class UploadClient extends PathSpecificApiClient {
         return doRequestJson(request);
     }
 
-    public Result resumable(ResumableParameters resumableParameters) {
+    public Result resumable(ResumableParameters resumableParameters, String encodedShortFileName, long fileSize, String fileHash, int chunkNumber, String chunkHash, int chunkSize, byte[] payload) {
         ApiObject apiObject = new ApiObject("upload", "resumable.php");
         InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.UPLOAD, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, false);
 
@@ -100,6 +100,15 @@ public class UploadClient extends PathSpecificApiClient {
         request.addQueryParameter(PARAM_MTIME, resumableParameters.mMTime);
         request.addQueryParameter(PARAM_VERSION_CONTROL, resumableParameters.mVersionControl);
         request.addQueryParameter(PARAM_PREVIOUS_HASH, resumableParameters.mPreviousHash);
+
+        request.addPayload(payload);
+
+        request.addHeader("x-filename", encodedShortFileName);
+        request.addHeader("x-filesize", String.valueOf(fileSize));
+        request.addHeader("x-filehash", fileHash);
+        request.addHeader("x-unit-id", Integer.toString(chunkNumber));
+        request.addHeader("x-unit-hash", chunkHash);
+        request.addHeader("x-unit-size", Integer.toString(chunkSize));
 
         return doRequestJson(request);
     }

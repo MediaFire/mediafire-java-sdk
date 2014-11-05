@@ -18,13 +18,15 @@ task sourceJar(type: Jar) {
     from sourceSets.main.java
 }
 
+def pVersion = '3.1.81'
+
 publishing {
     publications {
         // create maven publication parameters
         maven(MavenPublication) {
             artifactId = 'mediafire-sdk'
             groupId = 'com.mediafire'
-            version '3.1.80'
+            version pVersion
             from components.java
 
             artifact sourceJar {
@@ -40,10 +42,15 @@ publishing {
                 username "admin"
                 password "qwpo1998"
             }
-
-            url "http://git.site.com:8081/nexus/content/repositories/releases"
+            println(pVersion)
+            if(pVersion.endsWith('-SNAPSHOT')) {
+                url "http://git.site.com:8081/nexus/content/repositories/snapshots"
+            } else {
+                url "http://git.site.com:8081/nexus/content/repositories/releases"
+            }
         }
     }
 }
+
 
 

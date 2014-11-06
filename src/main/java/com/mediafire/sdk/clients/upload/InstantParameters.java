@@ -6,8 +6,8 @@ import com.mediafire.sdk.uploader.uploaditem.UploadItemOptions;
  * Created by jondh on 11/5/14.
  */
 public class InstantParameters {
-    public String mHash;
-    public String mSize;
+    public final String mHash;
+    public final String mSize;
     public String mFilename;
     public String mQuickKey;
     public String mFolderKey;

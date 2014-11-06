@@ -22,7 +22,7 @@ public class CreateResponse {
     public boolean state = false;
     public String duration = "0";
 
-    private Response mResponse;
+    private final Response mResponse;
 
     public CreateResponse(Response response) {
         this(response, ParseType.NONE);

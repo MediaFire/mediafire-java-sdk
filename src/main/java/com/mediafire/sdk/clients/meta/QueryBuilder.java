@@ -21,7 +21,7 @@ public class QueryBuilder {
     String mOrderDirection = DEFAULT_ORDER_DIRECTION;
     String mOrderBy = DEFAULT_ORDER_BY;
     String mReturnData = DEFAULT_RETURN_DATA;
-    Map<String, String> mMetaDataFilters = DEFAULT_META_FILTER;
+    final Map<String, String> mMetaDataFilters = DEFAULT_META_FILTER;
 
     public QueryBuilder() {}
 

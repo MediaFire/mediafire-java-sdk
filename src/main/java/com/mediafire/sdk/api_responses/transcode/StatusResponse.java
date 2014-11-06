@@ -38,7 +38,7 @@ public class StatusResponse {
     public String status = "";
     public int schema_version = 0;
 
-    private Response mResponse;
+    private final Response mResponse;
 
     public StatusResponse(Response response) {
         this(response, ParseType.NONE);

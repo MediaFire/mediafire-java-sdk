@@ -17,14 +17,12 @@ public class SystemClient extends PathSpecificApiClient {
         // init host object
         mHost = new HostObject("https", "www", "mediafire.com", "post");
         // init instructions object
-        mInstructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, true);
+        mInstructions = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, true);
     }
 
     public Result getInfo() {
         ApiObject apiObject = new ApiObject("system", "get_info.php");
-        InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, true);
-
-        Request request = new Request(mHost, apiObject, instructionsObject, mVersionObject);
+        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
 
         return doRequestJson(request);
     }

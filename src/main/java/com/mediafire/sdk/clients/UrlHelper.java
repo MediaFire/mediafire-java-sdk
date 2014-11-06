@@ -101,7 +101,7 @@ public class UrlHelper {
 
         String file = apiObject.getFile();
 
-        String baseUri = new String("/");
+        String baseUri = "/";
         if (apiVersion != null) {
             baseUri += "api/" + apiVersion + "/";
         } else {
@@ -128,7 +128,7 @@ public class UrlHelper {
             return "";
         }
 
-        String queryString = new String();
+        String queryString = "";
         for (String key : queryParameters.keySet()) {
             String rawStringValue = String.valueOf(queryParameters.get(key));
             if (encoded) {
@@ -165,7 +165,7 @@ public class UrlHelper {
 
         if (mRequest.getInstructionsObject().postQuery()) {
             String queryString = getQueryString(true, true);
-            payload = new String(queryString).getBytes();
+            payload = queryString.getBytes();
         } else {
             payload = mRequest.getPayload();
         }

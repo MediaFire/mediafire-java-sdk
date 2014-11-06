@@ -51,7 +51,7 @@ public class DefaultCredentials implements CredentialsInterface {
      */
     @Override
     public String getConcatenatedCredentials() {
-        String str = new String();
+        String str = "";
         for (String key : mCredentials.keySet()) {
             str += mCredentials.get(key);
         }

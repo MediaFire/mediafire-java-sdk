@@ -57,7 +57,7 @@ public class ApiClient {
         return new Result(response, request);
     }
 
-    private final Response doRequest(Request request, String method) {
+    private Response doRequest(Request request, String method) {
         if (method.equalsIgnoreCase("get")) {
             return doGet(request);
         } else if (method.equalsIgnoreCase("post")) {
@@ -67,7 +67,7 @@ public class ApiClient {
         }
     }
 
-    private final Response doGet(Request request) {
+    private Response doGet(Request request) {
         mConfiguration.getLogger().v(TAG, "doGet");
         String url = new UrlHelper(request).makeUrlForGetRequest();
         // add headers to request
@@ -76,7 +76,7 @@ public class ApiClient {
         return mConfiguration.getHttpWorker().doGet(url, request.getHeaders());
     }
 
-    private final Response doPost(Request request) {
+    private Response doPost(Request request) {
         mConfiguration.getLogger().v(TAG, "doPost");
         UrlHelper urlHelper = new UrlHelper(request);
         String url = urlHelper.makeUrlForPostRequest();

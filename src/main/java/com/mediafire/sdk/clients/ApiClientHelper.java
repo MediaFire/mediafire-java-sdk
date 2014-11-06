@@ -281,8 +281,8 @@ public class ApiClientHelper {
         String time = getSessionTokenResponse.getTime();
         String pkey = getSessionTokenResponse.getPkey();
         String ekey = getSessionTokenResponse.getEkey();
-        SessionToken mfSessionToken = new SessionToken(tokenString, secretKey, time, pkey, ekey);
-        return mfSessionToken;
+
+        return new SessionToken(tokenString, secretKey, time, pkey, ekey);
     }
 
     /**

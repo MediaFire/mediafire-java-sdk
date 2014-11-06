@@ -58,8 +58,7 @@ public class ResponseHelper {
             return null;
         }
 
-        String responseString = new String(mResponse.getBytes());
-        return responseString;
+        return new String(mResponse.getBytes());
     }
 
     private String getResponseStringForGson(String response) {

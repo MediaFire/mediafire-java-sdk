@@ -43,8 +43,13 @@ public class ApiClient {
 
         Response response = doRequest(request, httpMethod);
 
-        if (response != null) {
-            mConfiguration.getLogger().v(TAG, "api response - " + new String(response.getBytes()));
+        if (response != null && response.getBytes() != null) {
+            if(response.getBytes().length < 1000) {
+                mConfiguration.getLogger().v(TAG, "api response - " + new String(response.getBytes()));
+            }
+            else {
+                mConfiguration.getLogger().v(TAG, "api response - too long");
+            }
         }
 
         apiClientHelper.cleanup(response);

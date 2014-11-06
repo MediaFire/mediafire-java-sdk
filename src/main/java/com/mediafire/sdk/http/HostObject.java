@@ -6,9 +6,9 @@ package com.mediafire.sdk.http;
  */
 public class HostObject {
     private final String mTransferProtocol;
-    private String mHttpMethod;
-    private String mSubdomain;
-    private String mDomain;
+    private final String mHttpMethod;
+    private final String mSubdomain;
+    private final String mDomain;
 
     /**
      * HostObject Constructor

@@ -1,7 +1,6 @@
 package com.mediafire.sdk.clients;
 
 import com.mediafire.sdk.config.*;
-import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
@@ -57,17 +56,17 @@ public class ApiClient {
         return new Result(response, request);
     }
 
-    private final Response doRequest(Request request, String method) {
-        if (method.equalsIgnoreCase("get")) {
+    private Response doRequest(Request request, String method) {
+        if ("get".equalsIgnoreCase(method)) {
             return doGet(request);
-        } else if (method.equalsIgnoreCase("post")) {
+        } else if ("post".equalsIgnoreCase(method)) {
             return doPost(request);
         } else {
             throw new IllegalArgumentException("request method '" + method + "' not supported");
         }
     }
 
-    private final Response doGet(Request request) {
+    private Response doGet(Request request) {
         mConfiguration.getLogger().v(TAG, "doGet");
         String url = new UrlHelper(request).makeUrlForGetRequest();
         // add headers to request
@@ -76,7 +75,7 @@ public class ApiClient {
         return mConfiguration.getHttpWorker().doGet(url, request.getHeaders());
     }
 
-    private final Response doPost(Request request) {
+    private Response doPost(Request request) {
         mConfiguration.getLogger().v(TAG, "doPost");
         UrlHelper urlHelper = new UrlHelper(request);
         String url = urlHelper.makeUrlForPostRequest();

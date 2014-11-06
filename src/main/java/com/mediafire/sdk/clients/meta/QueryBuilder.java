@@ -21,7 +21,7 @@ public class QueryBuilder {
     String mOrderDirection = DEFAULT_ORDER_DIRECTION;
     String mOrderBy = DEFAULT_ORDER_BY;
     String mReturnData = DEFAULT_RETURN_DATA;
-    Map<String, String> mMetaDataFilters = DEFAULT_META_FILTER;
+    final Map<String, String> mMetaDataFilters = DEFAULT_META_FILTER;
 
     public QueryBuilder() {}
 
@@ -56,7 +56,6 @@ public class QueryBuilder {
      * &meta_album_name=!Paris Vacation
      * @param metaName the name of the meta tag (do not add "meta_" prefix)
      * @param metaValue the value of the meta tag
-     * @return same object to chain calls
      */
     public void addMetaFilter(String metaName, String metaValue) {
         if (metaName == null || metaName.isEmpty()) {
@@ -78,13 +77,12 @@ public class QueryBuilder {
         mReturnData = ApiUtil.getCommaSeparatedStringFromList(elementsToReturn);
     }
 
-    public QueryBuilder setOrderBy(List<String> metaDataList) {
+    public void setOrderBy(List<String> metaDataList) {
         if (metaDataList == null || metaDataList.isEmpty()) {
-            return this;
+            return;
         }
 
         mOrderBy = ApiUtil.getCommaSeparatedStringFromList(metaDataList);
-        return this;
     }
 
     public void setOrderBy(String metaData) {
@@ -110,6 +108,5 @@ public class QueryBuilder {
         }
 
         mChunk = chunk;
-        return;
     }
 }

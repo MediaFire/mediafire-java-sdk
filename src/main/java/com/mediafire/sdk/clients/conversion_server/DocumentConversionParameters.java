@@ -4,11 +4,11 @@ package com.mediafire.sdk.clients.conversion_server;
  * Created by jondh on 11/5/14.
  */
 public class DocumentConversionParameters {
-    public String mQuickKey;
-    public String mPage;
-    public String mDocType;
+    public final String mQuickKey;
+    public final String mPage;
+    public final String mDocType;
     public String mSizeId;
-    public String mHash;
+    public final String mHash;
     public String mToken;
     public String mOutput;
     public String mMetadata;

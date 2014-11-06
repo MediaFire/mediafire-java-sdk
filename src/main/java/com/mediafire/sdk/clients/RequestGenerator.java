@@ -39,9 +39,7 @@ public class RequestGenerator {
         VersionObject versionObject = new VersionObject(apiVersion);
         HostObject hostObject = new HostObject("https", "www", "mediafire.com", "post");
 
-        Request request = new Request(hostObject, holder.mApiObject, holder.mInstructionsObject, versionObject);
-
-        return request;
+        return new Request(hostObject, holder.mApiObject, holder.mInstructionsObject, versionObject);
     }
 
     /**

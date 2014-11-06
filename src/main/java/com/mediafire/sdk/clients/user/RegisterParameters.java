@@ -4,7 +4,7 @@ package com.mediafire.sdk.clients.user;
  * Created by Chris Najar on 10/29/2014.
  */
 public class RegisterParameters {
-    String mApplicationId;
+    final String mApplicationId;
     String mEmail;
     String mPassword;
     String mFacebookAccessToken;
@@ -28,6 +28,7 @@ public class RegisterParameters {
 
         mEmail = email;
         mPassword = password;
+        //noinspection AssignmentToNull
         mFacebookAccessToken = null;
 
         return this;
@@ -39,7 +40,9 @@ public class RegisterParameters {
         }
 
         mFacebookAccessToken = facebookAccessToken;
+        //noinspection AssignmentToNull
         mEmail = null;
+        //noinspection AssignmentToNull
         mPassword = null;
 
         return this;

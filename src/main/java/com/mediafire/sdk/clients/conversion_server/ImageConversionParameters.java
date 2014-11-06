@@ -4,10 +4,10 @@ package com.mediafire.sdk.clients.conversion_server;
  * Created by jondh on 11/5/14.
  */
 public class ImageConversionParameters {
-    public String mQuickKey;
-    public String mDocType = "i";
-    public String mSizeId;
-    public String mHash;
+    public final String mQuickKey;
+    public final String mDocType = "i";
+    public final String mSizeId;
+    public final String mHash;
     public String mToken;
     public String mOutput;
     public String mRequestConversionOnly;

@@ -174,9 +174,11 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     public void tokensFailed() {
         mConfiguration.getLogger().v(TAG, "tokensFailed");
         synchronized (mUploadActionTokenLock) {
+            //noinspection AssignmentToNull
             mUploadActionToken = null;
         }
         synchronized (mImageActionTokenLock) {
+            //noinspection AssignmentToNull
             mImageActionToken = null;
         }
 

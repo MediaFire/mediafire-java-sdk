@@ -20,8 +20,8 @@ import java.util.Map;
  */
 public class DefaultHttpWorker implements HttpWorkerInterface {
     private static final String TAG = DefaultHttpWorker.class.getCanonicalName();
-    private final int CONNECTION_TIMEOUT_MILLISECONDS = 5000;
-    private final int READ_TIMEOUT_MILLISECONDS = 45000;
+    private static final int CONNECTION_TIMEOUT_MILLISECONDS = 5000;
+    private static final int READ_TIMEOUT_MILLISECONDS = 45000;
 
     /**
      * Performs a http get request
@@ -32,23 +32,31 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     @Override
     public Response doGet(String url, Map<String, String> headers) {
         DefaultLogger.log().v(TAG, "doGet - " + url);
+        HttpURLConnection connection;
+        InputStream inputStream;
         try {
-            HttpURLConnection connection = getURLConnection(url);
+            connection = getURLConnection(url);
             setTimeouts(connection);
             addRequestHeadersToConnection(connection, headers);
             int responseCode = connection.getResponseCode();
-            InputStream inputStream;
+
             if (responseCode / 100 != 2 ) {
                 inputStream = connection.getErrorStream();
             } else {
                 inputStream = connection.getInputStream();
             }
             byte[] response = readStream(inputStream);
+            inputStream.close();
+            connection.disconnect();
             return new Response(responseCode, response);
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseApiClientError("IOException while trying to do GET on url '" + url + "'", e);
         } finally {
+            //noinspection UnusedAssignment,AssignmentToNull
+            connection = null;
+            //noinspection UnusedAssignment
+            inputStream = null;
         }
     }
 
@@ -86,12 +94,12 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     private HttpURLConnection getURLConnection(String url) throws IOException {
         String urlScheme = url.substring(0, 5);
 
-        if (urlScheme.equals("http:")) {
+        if ("http:".equals(urlScheme)) {
             DefaultLogger.log().v(TAG, "getURLConnection - HttpUrlConnection");
             return (HttpURLConnection) new URL(url).openConnection();
         }
 
-        if (urlScheme.equals("https")) {
+        if ("https".equals(urlScheme)) {
             DefaultLogger.log().v(TAG, "getURLConnection - HttpsUrlConnection");
             return (HttpsURLConnection) new URL(url).openConnection();
         }
@@ -125,11 +133,7 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
         DefaultLogger.log().v(TAG, "postData - request properties: " + connection.getRequestProperties());
 
         String postDataAsString = new String(payload, "UTF-8");
-        if (postDataAsString != null) {
-            DefaultLogger.log().v(TAG, "postData - payload: " + postDataAsString);
-        } else {
-            DefaultLogger.log().v(TAG, "postData - payload could not be parsed to string, byte length: " + payload.length);
-        }
+        DefaultLogger.log().v(TAG, "postData - payload: " + postDataAsString);
         DefaultLogger.log().v(TAG, "postData - writing payload");
         connection.getOutputStream().write(payload);
         DefaultLogger.log().v(TAG, "postData - finished writing payload");

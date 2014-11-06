@@ -4,7 +4,7 @@ package com.mediafire.sdk.clients.upload;
  * Created by jondh on 11/5/14.
  */
 public class CheckParameters {
-    public String mFilename;
+    public final String mFilename;
     public String mHash;
     public String mSize;
     public String mFolderKey;

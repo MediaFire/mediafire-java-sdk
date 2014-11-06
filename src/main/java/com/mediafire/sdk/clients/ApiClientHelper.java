@@ -4,7 +4,6 @@ import com.mediafire.sdk.api_responses.ApiResponse;
 import com.mediafire.sdk.api_responses.user.GetActionTokenResponse;
 import com.mediafire.sdk.api_responses.user.GetSessionTokenResponse;
 import com.mediafire.sdk.config.Configuration;
-import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.ResponseApiClientError;
@@ -187,9 +186,7 @@ public class ApiClientHelper {
                 break;
             case V2:
                 ApiResponse apiResponse = responseHelper.getResponseObject(ApiResponse.class);
-                if (apiResponse.hasError() && apiResponse.getError() == 105 || apiResponse.getError() == 127) {
-                    // don't return the token
-                } else {
+                if (!apiResponse.hasError() || (apiResponse.getError() != 105 && apiResponse.getError() != 127)) {
                     if (apiResponse.needNewKey()) {
                         ((SessionToken) mRequest.getToken()).updateSessionToken();
                     }
@@ -284,8 +281,8 @@ public class ApiClientHelper {
         String time = getSessionTokenResponse.getTime();
         String pkey = getSessionTokenResponse.getPkey();
         String ekey = getSessionTokenResponse.getEkey();
-        SessionToken mfSessionToken = new SessionToken(tokenString, secretKey, time, pkey, ekey);
-        return mfSessionToken;
+
+        return new SessionToken(tokenString, secretKey, time, pkey, ekey);
     }
 
     /**

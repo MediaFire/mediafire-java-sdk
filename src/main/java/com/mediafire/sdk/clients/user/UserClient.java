@@ -30,9 +30,10 @@ public class UserClient extends PathSpecificApiClient {
     private static final String PARAM_LAST_NAME = "last_name";
     private static final String PARAM_DISPLAY_NAME = "display_name";
     private static final String PARAM_TOKEN_VERSION = "token_version";
+    private static final String PARAM_COLLECT_META_DATA = "collect_metadata";
 
-    private HostObject mHost;
-    private InstructionsObject mInstructions;
+    private final HostObject mHost;
+    private final InstructionsObject mInstructions;
 
     public UserClient(Configuration configuration, String apiVersion) {
         super(configuration, apiVersion);
@@ -67,7 +68,7 @@ public class UserClient extends PathSpecificApiClient {
     private Result getActionToken(String type, int lifespan) {
         ApiObject apiObject = new ApiObject("user", "get_action_token.php");
         InstructionsObject instructions;
-        if (type.equals("image")) {
+        if ("image".equals(type)) {
             instructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_IMAGE, true);
         } else {
             instructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_UPLOAD, true);
@@ -117,6 +118,7 @@ public class UserClient extends PathSpecificApiClient {
 
         request.addQueryParameter(PARAM_PREVIOUS_FILE_VERSIONS, requestParams.mPreviousFileVersions);
         request.addQueryParameter(PARAM_DEFAULT_SHARE_LINK_STATUS, requestParams.mDefaultShareLinkStatus);
+        request.addQueryParameter(PARAM_COLLECT_META_DATA, requestParams.mCollectMetaData);
 
         return doRequestJson(request);
     }

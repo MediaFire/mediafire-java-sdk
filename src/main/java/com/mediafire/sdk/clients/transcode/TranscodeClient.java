@@ -14,8 +14,8 @@ public class TranscodeClient extends PathSpecificApiClient{
     private static final String PARAM_MEDIA_SIZE = "media_size";
     private static final String PARAM_EXISTS = "exists";
 
-    private String mStreamingUrl;
-    private String mContainer;
+    private final String mStreamingUrl;
+    private final String mContainer;
 
     public TranscodeClient(Configuration configuration, String streamingUrl, String container) {
         super(configuration, null);

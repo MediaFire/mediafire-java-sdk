@@ -11,7 +11,7 @@ import java.util.Map;
 public class Request {
     private final HostObject mHostObject;
     private final ApiObject mApiObject;
-    private InstructionsObject mInstructionsObject;
+    private final InstructionsObject mInstructionsObject;
     private final VersionObject mVersionObject;
 
     private Map<String, Object> mQueryParameters;
@@ -67,8 +67,9 @@ public class Request {
 
     /**
      * Gets the query parameters
-     * @return Map<String, Object> query parameters  (null possible)
+     * @return Map of query parameters  (null possible)
      */
+
     public Map<String, Object> getQueryParameters() {
         return mQueryParameters;
     }
@@ -100,7 +101,7 @@ public class Request {
 
     /**
      * Gets the headers
-     * @return Map<String, String> headers (null possible)
+     * @return Map of headers (null possible)
      */
     public Map<String, String> getHeaders() {
         return mHeaders;

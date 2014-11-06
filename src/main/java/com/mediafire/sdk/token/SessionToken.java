@@ -96,7 +96,6 @@ public class SessionToken extends Token {
     public void updateSessionToken() {
         long newKey = Long.valueOf(secretKey) * 16807;
         newKey %= 2147483647;
-        String newSecretKey = String.valueOf(newKey);
-        secretKey = newSecretKey;
+        secretKey = String.valueOf(newKey);
     }
 }

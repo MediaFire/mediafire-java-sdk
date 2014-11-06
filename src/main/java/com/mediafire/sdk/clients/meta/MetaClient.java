@@ -30,15 +30,15 @@ public class MetaClient extends PathSpecificApiClient {
     private static final String PARAM_ORDER_DIRECTION = "order_direction";
     private static final String PARAM_CHUNK = "chunk";
 
-    private HostObject mHost;
-    private InstructionsObject mInstructions;
+    private final HostObject mHost;
+    private final InstructionsObject mInstructions;
 
     public MetaClient(Configuration configuration, String apiVersion) {
         super(configuration, apiVersion);
         // init host object
         mHost = new HostObject("https", "www", "mediafire.com", "post");
         // init instructions object
-        mInstructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, false);
+        mInstructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, true);
     }
 
     public MetaClient(Configuration configuration) {

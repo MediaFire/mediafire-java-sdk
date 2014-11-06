@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mediafire.sdk.api_responses.ApiResponse;
-import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.Response;
 
 /**
@@ -14,7 +13,7 @@ import com.mediafire.sdk.http.Response;
  */
 public class ResponseHelper {
     private static final String TAG = ResponseHelper.class.getCanonicalName();
-    private Response mResponse;
+    private final Response mResponse;
 
     /**
      * ResponseHelper Constructor
@@ -59,8 +58,7 @@ public class ResponseHelper {
             return null;
         }
 
-        String responseString = new String(mResponse.getBytes());
-        return responseString;
+        return new String(mResponse.getBytes());
     }
 
     private String getResponseStringForGson(String response) {

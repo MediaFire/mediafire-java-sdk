@@ -4,11 +4,13 @@ package com.mediafire.sdk.clients.user;
  * Created by Chris Najar on 10/29/2014.
  */
 public class SetSettingsParameters {
-    int DEFAULT_PREVIOUS_FILE_VERSIONS = 10;
-    String DEFAULT_SHARE_LINK_STATUS = "inherit";
+    private static final int DEFAULT_PREVIOUS_FILE_VERSIONS = 10;
+    private static final String DEFAULT_SHARE_LINK_STATUS = "inherit";
+    private static final String DEFAULT_COLLECT_META_DATA = "no";
 
     public int mPreviousFileVersions = DEFAULT_PREVIOUS_FILE_VERSIONS;
     public String mDefaultShareLinkStatus = DEFAULT_SHARE_LINK_STATUS;
+    public String mCollectMetaData = DEFAULT_COLLECT_META_DATA;
 
     public SetSettingsParameters(int numOfOldVersionsToKeep) {
         if (numOfOldVersionsToKeep > 0 && numOfOldVersionsToKeep < 10) {
@@ -58,6 +60,15 @@ public class SetSettingsParameters {
                 break;
         }
 
+        return this;
+    }
+
+    public SetSettingsParameters collectMetaData(boolean collectMetaData) {
+        if (collectMetaData) {
+            mCollectMetaData = "yes";
+        } else {
+            mCollectMetaData = "no";
+        }
         return this;
     }
 

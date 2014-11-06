@@ -32,8 +32,8 @@ public class UserClient extends PathSpecificApiClient {
     private static final String PARAM_TOKEN_VERSION = "token_version";
     private static final String PARAM_COLLECT_META_DATA = "collect_metadata";
 
-    private HostObject mHost;
-    private InstructionsObject mInstructions;
+    private final HostObject mHost;
+    private final InstructionsObject mInstructions;
 
     public UserClient(Configuration configuration, String apiVersion) {
         super(configuration, apiVersion);

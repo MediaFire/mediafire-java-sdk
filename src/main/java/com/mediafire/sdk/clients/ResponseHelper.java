@@ -13,7 +13,7 @@ import com.mediafire.sdk.http.Response;
  */
 public class ResponseHelper {
     private static final String TAG = ResponseHelper.class.getCanonicalName();
-    private Response mResponse;
+    private final Response mResponse;
 
     /**
      * ResponseHelper Constructor

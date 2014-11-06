@@ -30,8 +30,8 @@ public class MetaClient extends PathSpecificApiClient {
     private static final String PARAM_ORDER_DIRECTION = "order_direction";
     private static final String PARAM_CHUNK = "chunk";
 
-    private HostObject mHost;
-    private InstructionsObject mInstructions;
+    private final HostObject mHost;
+    private final InstructionsObject mInstructions;
 
     public MetaClient(Configuration configuration, String apiVersion) {
         super(configuration, apiVersion);

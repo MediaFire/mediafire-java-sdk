@@ -6,8 +6,8 @@ package com.mediafire.sdk.http;
  */
 public class ResponseApiClientError extends Response {
 
-    private String mMessage;
-    private Throwable mThrowable;
+    private final String mMessage;
+    private final Throwable mThrowable;
 
     /**
      * ResponseApiClientError Constructor

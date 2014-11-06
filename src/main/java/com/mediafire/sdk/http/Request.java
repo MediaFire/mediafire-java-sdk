@@ -11,7 +11,7 @@ import java.util.Map;
 public class Request {
     private final HostObject mHostObject;
     private final ApiObject mApiObject;
-    private InstructionsObject mInstructionsObject;
+    private final InstructionsObject mInstructionsObject;
     private final VersionObject mVersionObject;
 
     private Map<String, Object> mQueryParameters;

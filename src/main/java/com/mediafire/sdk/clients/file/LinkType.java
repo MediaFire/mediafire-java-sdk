@@ -14,7 +14,7 @@ public enum LinkType {
     STREAMING("streaming"),
     ALL(null);
 
-    private String mLinkType;
+    private final String mLinkType;
 
     private LinkType(String value) {
         mLinkType = value;

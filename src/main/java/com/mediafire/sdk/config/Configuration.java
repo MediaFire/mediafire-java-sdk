@@ -6,13 +6,13 @@ import com.mediafire.sdk.config.defaults.*;
  * Configuration contains a set of interface objects used to handle api requests
  */
 public class Configuration {
-    private HttpWorkerInterface mHttpWorker;
-    private CredentialsInterface mUserCredentials;
-    private CredentialsInterface mDeveloperCredentials;
-    private SessionTokenManagerInterface mSessionTokenManager;
-    private ActionTokenManagerInterface mActionTokenManager;
-    private LoggerInterface mLogger;
-    private NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor;
+    private final HttpWorkerInterface mHttpWorker;
+    private final CredentialsInterface mUserCredentials;
+    private final CredentialsInterface mDeveloperCredentials;
+    private final SessionTokenManagerInterface mSessionTokenManager;
+    private final ActionTokenManagerInterface mActionTokenManager;
+    private final LoggerInterface mLogger;
+    private final NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor;
     private boolean initialized = false;
 
     private Configuration(Builder builder) {

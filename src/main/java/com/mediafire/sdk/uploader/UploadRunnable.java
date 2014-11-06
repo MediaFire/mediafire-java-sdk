@@ -47,7 +47,7 @@ public class UploadRunnable implements Runnable {
     private final NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor;
     private final CredentialsInterface mUserCredentials;
     private final ActionTokenManagerInterface mActionTokenManagerInterface;
-    private Configuration mConfiguration;
+    private final Configuration mConfiguration;
 
     private UploadRunnable(Builder builder) {
         mMaxPolls = builder.maxPolls;

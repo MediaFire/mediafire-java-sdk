@@ -28,6 +28,7 @@ public class RegisterParameters {
 
         mEmail = email;
         mPassword = password;
+        //noinspection AssignmentToNull
         mFacebookAccessToken = null;
 
         return this;
@@ -39,7 +40,9 @@ public class RegisterParameters {
         }
 
         mFacebookAccessToken = facebookAccessToken;
+        //noinspection AssignmentToNull
         mEmail = null;
+        //noinspection AssignmentToNull
         mPassword = null;
 
         return this;

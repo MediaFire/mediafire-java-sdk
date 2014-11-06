@@ -53,7 +53,7 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
             e.printStackTrace();
             return new ResponseApiClientError("IOException while trying to do GET on url '" + url + "'", e);
         } finally {
-            //noinspection UnusedAssignment
+            //noinspection UnusedAssignment,AssignmentToNull
             connection = null;
             //noinspection UnusedAssignment
             inputStream = null;

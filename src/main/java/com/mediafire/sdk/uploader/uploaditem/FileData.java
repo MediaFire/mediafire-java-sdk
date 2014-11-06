@@ -109,11 +109,11 @@ public class FileData {
             e.printStackTrace();
             fileHash = "";
         } finally {
-            //noinspection UnusedAssignment
+            //noinspection UnusedAssignment,AssignmentToNull
             fileInputStream = null;
-            //noinspection UnusedAssignment
+            //noinspection UnusedAssignment,AssignmentToNull
             fileUri = null;
-            //noinspection UnusedAssignment
+            //noinspection UnusedAssignment,AssignmentToNull
             in = null;
         }
     }

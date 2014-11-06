@@ -133,7 +133,7 @@ public class UploadRunnable implements Runnable {
     private void hashExistsInAccount(CheckResponse checkResponse) {
         mLogger.d(TAG, "hash is in account");
         boolean inFolder = checkResponse.isInFolder();
-        mLogger.d(TAG, "ActionOnInAccount: " + mUploadItem.getUploadOptions().getActionOnInAccount().toString());
+        mLogger.d(TAG, "ActionOnInAccount: " + mUploadItem.getUploadOptions().getActionOnInAccount());
         switch (mUploadItem.getUploadOptions().getActionOnInAccount()) {
             case UPLOAD_ALWAYS:
                 mLogger.d(TAG, "uploading...");
@@ -211,15 +211,15 @@ public class UploadRunnable implements Runnable {
         PollResponse.Result pollResultCode = doUpload.getResultCode();
         PollResponse.FileError pollFileErrorCode = doUpload.getFileErrorCode();
 
-        mLogger.d(TAG, "status code: " + pollStatusCode.toString());
-        mLogger.d(TAG, "result code: " + pollResultCode.toString());
-        mLogger.d(TAG, "file error code: " + pollFileErrorCode.toString());
+        mLogger.d(TAG, "status code: " + pollStatusCode);
+        mLogger.d(TAG, "result code: " + pollResultCode);
+        mLogger.d(TAG, "file error code: " + pollFileErrorCode);
 
         if (pollStatusCode == PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY && pollResultCode == PollResponse.Result.SUCCESS && pollFileErrorCode == PollResponse.FileError.NO_ERROR) {
             mLogger.d(TAG, "done polling");
             notifyUploadListenerCompleted(doUpload.getQuickKey());
         } else if (pollStatusCode != PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY && pollResultCode == PollResponse.Result.SUCCESS && pollFileErrorCode == PollResponse.FileError.NO_ERROR) {
-            mLogger.d(TAG, "still waiting for status code " + PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY + ", but was " + pollStatusCode.toString() + " so restarting upload");
+            mLogger.d(TAG, "still waiting for status code " + PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY + ", but was " + pollStatusCode + " so restarting upload");
             startOrRestartUpload();
         } else {
             mLogger.d(TAG, "cancelling upload");
@@ -303,7 +303,7 @@ public class UploadRunnable implements Runnable {
         List<Integer> words = response.getResumableUpload().getBitmap().getWords();
         ResumableBitmap bitmap = new ResumableBitmap(count, words);
         mUploadItem.setBitmap(bitmap);
-        mLogger.d(TAG, mUploadItem.getFileData().getFilePath() + " upload item bitmap: " + mUploadItem.getBitmap().getCount() + " count, " + mUploadItem.getBitmap().getWords().toString() + " words.");
+        mLogger.d(TAG, mUploadItem.getFileData().getFilePath() + " upload item bitmap: " + mUploadItem.getBitmap().getCount() + " count, " + mUploadItem.getBitmap().getWords() + " words.");
 
         // notify listeners that check has completed
         checkUploadFinished(mUploadItem, response);
@@ -489,7 +489,7 @@ public class UploadRunnable implements Runnable {
                 List<Integer> words = response.getResumableUpload().getBitmap().getWords();
                 ResumableBitmap bitmap = new ResumableBitmap(count, words);
                 mUploadItem.setBitmap(bitmap);
-                mLogger.d(TAG, "(" + mUploadItem.getFileData().getFilePath() + ") upload item bitmap: " + mUploadItem.getBitmap().getCount() + " count, (" + mUploadItem.getBitmap().getWords().toString() + ") words.");
+                mLogger.d(TAG, "(" + mUploadItem.getFileData().getFilePath() + ") upload item bitmap: " + mUploadItem.getBitmap().getCount() + " count, (" + mUploadItem.getBitmap().getWords() + ") words.");
 
                 clearReferences(chunkSize, chunkHash, uploadChunk, headers, parameters);
             }
@@ -572,19 +572,19 @@ public class UploadRunnable implements Runnable {
                     //      second  -   fileerror code no error? yes, carry on old chap!. no, cancel upload because error.
                     //      third   -   status code 99 (no more requests)? yes, done. no, continue.
                     if (response.getDoUpload().getResultCode() != PollResponse.Result.SUCCESS) {
-                        mLogger.d(TAG, "result code: " + response.getDoUpload().getResultCode().toString() + " need to cancel");
+                        mLogger.d(TAG, "result code: " + response.getDoUpload().getResultCode() + " need to cancel");
                         notifyUploadListenerCancelled(MSG_RESPONSE_ERROR);
                         return;
                     }
 
                     if (response.getDoUpload().getFileErrorCode() != PollResponse.FileError.NO_ERROR) {
-                        mLogger.d(TAG, "result code: " + response.getDoUpload().getFileErrorCode().toString() + " need to cancel");
+                        mLogger.d(TAG, "result code: " + response.getDoUpload().getFileErrorCode() + " need to cancel");
                         notifyUploadListenerCancelled(MSG_RESPONSE_ERROR);
                         return;
                     }
 
                     if (response.getDoUpload().getStatusCode() == PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY) {
-                        mLogger.d(TAG, "status code: " + response.getDoUpload().getStatusCode().toString());
+                        mLogger.d(TAG, "status code: " + response.getDoUpload().getStatusCode());
                         pollUploadFinished(response);
                         return;
                     }
@@ -622,7 +622,7 @@ public class UploadRunnable implements Runnable {
         return keyValue;
     }
 
-    @SuppressWarnings({"ParameterCanBeLocal", "UnusedParameters", "UnusedAssignment"})
+    @SuppressWarnings({"ParameterCanBeLocal", "UnusedParameters", "UnusedAssignment", "AssignmentToNull"})
     private void clearReferences(int chunkSize, String chunkHash, byte[] uploadChunk, Map<String, String> headers, Map<String, String> parameters) {
         chunkSize = 0;
         chunkHash = null;
@@ -633,8 +633,8 @@ public class UploadRunnable implements Runnable {
 
     private void printDebugRequestData(Map<String, String> headers, Map<String, String> parameters) {
         mLogger.d(TAG, "printDebugRequestData()");
-        mLogger.d(TAG, "headers: " + headers.toString());
-        mLogger.d(TAG, "parameters: " + parameters.toString());
+        mLogger.d(TAG, "headers: " + headers);
+        mLogger.d(TAG, "parameters: " + parameters);
     }
 
     @SuppressWarnings("UnusedParameters")

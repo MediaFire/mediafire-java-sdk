@@ -78,13 +78,12 @@ public class QueryBuilder {
         mReturnData = ApiUtil.getCommaSeparatedStringFromList(elementsToReturn);
     }
 
-    public QueryBuilder setOrderBy(List<String> metaDataList) {
+    public void setOrderBy(List<String> metaDataList) {
         if (metaDataList == null || metaDataList.isEmpty()) {
-            return this;
+            return;
         }
 
         mOrderBy = ApiUtil.getCommaSeparatedStringFromList(metaDataList);
-        return this;
     }
 
     public void setOrderBy(String metaData) {
@@ -110,6 +109,5 @@ public class QueryBuilder {
         }
 
         mChunk = chunk;
-        return;
     }
 }

@@ -899,12 +899,6 @@ public class UploadRunnable implements Runnable {
             return;
         }
         //don't add the item to the backlog queue if it is null or the path is null
-        if (mUploadItem == null) {
-            mLogger.d(TAG, "upload item is null");
-            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
-            return;
-        }
-
         mLogger.d(TAG, "getFileData() path: " + mUploadItem.getFileData().getFilePath());
         mLogger.d(TAG, "getFileData() path: " + mUploadItem.getFileData().getFilePath());
         mLogger.d(TAG, "getFileData() null: " + (mUploadItem.getFileData() == null));

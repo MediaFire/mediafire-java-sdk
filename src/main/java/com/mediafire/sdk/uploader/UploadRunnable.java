@@ -906,7 +906,25 @@ public class UploadRunnable implements Runnable {
         mLogger.d(TAG, "getFileData().getFilePath().isEmpty(): " + (mUploadItem.getFileData().getFilePath().isEmpty()));
         mLogger.d(TAG, "getFileData().getFileHash().isEmpty(): " + (mUploadItem.getFileData().getFileHash().isEmpty()));
         mLogger.d(TAG, "getFileData().getFileSize() == 0: " + (mUploadItem.getFileData().getFileSize() == 0));
-        if (mUploadItem.getFileData() == null || mUploadItem.getFileData().getFilePath() == null || mUploadItem.getFileData().getFilePath().isEmpty() || mUploadItem.getFileData().getFileHash().isEmpty() || mUploadItem.getFileData().getFileSize() == 0) {
+        if (mUploadItem.getFileData() == null) {
+            mLogger.d(TAG, "one or more required parameters are invalid, not adding item to queue");
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
+            return;
+        }
+
+        if (mUploadItem.getFileData().getFilePath() == null || mUploadItem.getFileData().getFilePath().isEmpty()) {
+            mLogger.d(TAG, "one or more required parameters are invalid, not adding item to queue");
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
+            return;
+        }
+
+        if (mUploadItem.getFileData() == null || mUploadItem.getFileData().getFileHash().isEmpty()) {
+            mLogger.d(TAG, "one or more required parameters are invalid, not adding item to queue");
+            notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
+            return;
+        }
+
+        if (mUploadItem.getFileData().getFileSize() == 0) {
             mLogger.d(TAG, "one or more required parameters are invalid, not adding item to queue");
             notifyUploadListenerCancelled(MSG_REQUIRED_PARAMETERS_NULL);
             return;

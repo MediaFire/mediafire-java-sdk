@@ -125,11 +125,7 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
         DefaultLogger.log().v(TAG, "postData - request properties: " + connection.getRequestProperties());
 
         String postDataAsString = new String(payload, "UTF-8");
-        if (postDataAsString != null) {
-            DefaultLogger.log().v(TAG, "postData - payload: " + postDataAsString);
-        } else {
-            DefaultLogger.log().v(TAG, "postData - payload could not be parsed to string, byte length: " + payload.length);
-        }
+        DefaultLogger.log().v(TAG, "postData - payload: " + postDataAsString);
         DefaultLogger.log().v(TAG, "postData - writing payload");
         connection.getOutputStream().write(payload);
         DefaultLogger.log().v(TAG, "postData - finished writing payload");

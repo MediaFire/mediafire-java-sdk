@@ -20,8 +20,8 @@ import java.util.Map;
  */
 public class DefaultHttpWorker implements HttpWorkerInterface {
     private static final String TAG = DefaultHttpWorker.class.getCanonicalName();
-    private final int CONNECTION_TIMEOUT_MILLISECONDS = 5000;
-    private final int READ_TIMEOUT_MILLISECONDS = 45000;
+    private static final int CONNECTION_TIMEOUT_MILLISECONDS = 5000;
+    private static final int READ_TIMEOUT_MILLISECONDS = 45000;
 
     /**
      * Performs a http get request

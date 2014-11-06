@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mediafire.sdk.api_responses.ApiResponse;
-import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.Response;
 
 /**

@@ -4,7 +4,6 @@ import com.mediafire.sdk.api_responses.ApiResponse;
 import com.mediafire.sdk.api_responses.user.GetActionTokenResponse;
 import com.mediafire.sdk.api_responses.user.GetSessionTokenResponse;
 import com.mediafire.sdk.config.Configuration;
-import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.ResponseApiClientError;

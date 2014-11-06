@@ -32,23 +32,31 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     @Override
     public Response doGet(String url, Map<String, String> headers) {
         DefaultLogger.log().v(TAG, "doGet - " + url);
+        HttpURLConnection connection;
+        InputStream inputStream;
         try {
-            HttpURLConnection connection = getURLConnection(url);
+            connection = getURLConnection(url);
             setTimeouts(connection);
             addRequestHeadersToConnection(connection, headers);
             int responseCode = connection.getResponseCode();
-            InputStream inputStream;
+
             if (responseCode / 100 != 2 ) {
                 inputStream = connection.getErrorStream();
             } else {
                 inputStream = connection.getInputStream();
             }
             byte[] response = readStream(inputStream);
+            inputStream.close();
+            connection.disconnect();
             return new Response(responseCode, response);
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseApiClientError("IOException while trying to do GET on url '" + url + "'", e);
         } finally {
+            //noinspection UnusedAssignment
+            connection = null;
+            //noinspection UnusedAssignment
+            inputStream = null;
         }
     }
 

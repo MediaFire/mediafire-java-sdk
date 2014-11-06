@@ -186,9 +186,7 @@ public class ApiClientHelper {
                 break;
             case V2:
                 ApiResponse apiResponse = responseHelper.getResponseObject(ApiResponse.class);
-                if (apiResponse.hasError() && apiResponse.getError() == 105 || apiResponse.getError() == 127) {
-                    // don't return the token
-                } else {
+                if (!apiResponse.hasError() || (apiResponse.getError() != 105 && apiResponse.getError() != 127)) {
                     if (apiResponse.needNewKey()) {
                         ((SessionToken) mRequest.getToken()).updateSessionToken();
                     }

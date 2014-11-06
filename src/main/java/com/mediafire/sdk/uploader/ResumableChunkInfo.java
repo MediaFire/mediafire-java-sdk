@@ -10,8 +10,8 @@ class ResumableChunkInfo {
 
     /**
      * ResumableChunkInfo Constructor
-     * @param chunkHash
-     * @param uploadChunk
+     * @param chunkHash - hash of the chunk
+     * @param uploadChunk - the chunk as a byte array
      */
     public ResumableChunkInfo(String chunkHash, byte[] uploadChunk) {
         this.chunkHash = chunkHash;

@@ -56,7 +56,6 @@ public class QueryBuilder {
      * &meta_album_name=!Paris Vacation
      * @param metaName the name of the meta tag (do not add "meta_" prefix)
      * @param metaValue the value of the meta tag
-     * @return same object to chain calls
      */
     public void addMetaFilter(String metaName, String metaValue) {
         if (metaName == null || metaName.isEmpty()) {

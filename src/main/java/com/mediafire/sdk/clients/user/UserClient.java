@@ -68,7 +68,7 @@ public class UserClient extends PathSpecificApiClient {
     private Result getActionToken(String type, int lifespan) {
         ApiObject apiObject = new ApiObject("user", "get_action_token.php");
         InstructionsObject instructions;
-        if (type.equals("image")) {
+        if ("image".equals(type)) {
             instructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_IMAGE, true);
         } else {
             instructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_UPLOAD, true);

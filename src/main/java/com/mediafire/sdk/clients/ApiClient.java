@@ -57,9 +57,9 @@ public class ApiClient {
     }
 
     private Response doRequest(Request request, String method) {
-        if (method.equalsIgnoreCase("get")) {
+        if ("get".equalsIgnoreCase(method)) {
             return doGet(request);
-        } else if (method.equalsIgnoreCase("post")) {
+        } else if ("post".equalsIgnoreCase(method)) {
             return doPost(request);
         } else {
             throw new IllegalArgumentException("request method '" + method + "' not supported");

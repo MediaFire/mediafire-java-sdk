@@ -94,12 +94,12 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     private HttpURLConnection getURLConnection(String url) throws IOException {
         String urlScheme = url.substring(0, 5);
 
-        if (urlScheme.equals("http:")) {
+        if ("http:".equals(urlScheme)) {
             DefaultLogger.log().v(TAG, "getURLConnection - HttpUrlConnection");
             return (HttpURLConnection) new URL(url).openConnection();
         }
 
-        if (urlScheme.equals("https")) {
+        if ("https".equals(urlScheme)) {
             DefaultLogger.log().v(TAG, "getURLConnection - HttpsUrlConnection");
             return (HttpsURLConnection) new URL(url).openConnection();
         }

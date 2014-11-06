@@ -6,7 +6,7 @@ package com.mediafire.sdk.http;
  */
 public class VersionObject {
 
-    private String mApiVersion;
+    private final String mApiVersion;
 
     /**
      * VersionObject Constructor

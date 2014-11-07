@@ -33,36 +33,51 @@ public class Request {
         mVersionObject = versionObject;
     }
 
-    /**
-     * Gets the host object
-     * @return HostObject
-     */
-    public HostObject getHostObject() {
-        return mHostObject;
+    private Request(Builder builder) {
+        mHostObject = builder.mHostObject;
+        mApiObject = builder.mApiObject;
+        mInstructionsObject = builder.mInstructionsObject;
+        mVersionObject = builder.mVersionObject;
     }
 
-    /**
-     * Gets the api object
-     * @return ApiObject
-     */
-    public ApiObject getApiObject() {
-        return mApiObject;
+    public String getApiVersion() {
+        return mVersionObject.getApiVersion();
     }
 
-    /**
-     * Gets the instructions object
-     * @return InstructionsObject
-     */
-    public InstructionsObject getInstructionsObject() {
-        return mInstructionsObject;
+    public BorrowTokenType getBorrowTokenType() {
+        return mInstructionsObject.getBorrowTokenType();
     }
 
-    /**
-     * Gets the version object
-     * @return VersionObject
-     */
-    public VersionObject getVersionObject() {
-        return mVersionObject;
+    public ReturnTokenType getReturnTokenType() {
+        return mInstructionsObject.getReturnTokenType();
+    }
+
+    public SignatureType getSignatureType() {
+        return mInstructionsObject.getSignatureType();
+    }
+
+    public String getPath() {
+        return mApiObject.getPath();
+    }
+
+    public String getFile() {
+        return mApiObject.getFile();
+    }
+
+    public String getHttpMethod() {
+        return mHostObject.getHttpMethod();
+    }
+
+    public String getDomain() {
+        return mHostObject.getDomain();
+    }
+
+    public String getSubdomain() {
+        return mHostObject.getSubdomain();
+    }
+
+    public String getTransferProtocol() {
+        return mHostObject.getTransferProtocol();
     }
 
     /**
@@ -154,5 +169,38 @@ public class Request {
      */
     public void addToken(Token token) {
         mToken = token;
+    }
+
+    public static class Builder {
+        private HostObject mHostObject;
+        private ApiObject mApiObject;
+        private InstructionsObject mInstructionsObject;
+        private VersionObject mVersionObject;
+
+        public Builder() { }
+
+        public Builder hostObject(HostObject value) {
+            mHostObject = value;
+            return this;
+        }
+
+        public Builder apiObject(ApiObject value) {
+            mApiObject = value;
+            return this;
+        }
+
+        public Builder instructionsObject(InstructionsObject value) {
+            mInstructionsObject = value;
+            return this;
+        }
+
+        public Builder versionObject(VersionObject value) {
+            mVersionObject = value;
+            return this;
+        }
+
+        public Request build() {
+            return new Request(this);
+        }
     }
 }

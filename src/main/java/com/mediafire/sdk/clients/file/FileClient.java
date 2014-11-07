@@ -1,7 +1,9 @@
 package com.mediafire.sdk.clients.file;
 
+import com.mediafire.sdk.clients.ApiClientHelper;
 import com.mediafire.sdk.clients.PathSpecificApiClient;
 import com.mediafire.sdk.config.Configuration;
+import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.ApiObject;
 import com.mediafire.sdk.http.BorrowTokenType;
 import com.mediafire.sdk.http.HostObject;
@@ -26,8 +28,8 @@ public class FileClient extends PathSpecificApiClient {
     private final HostObject mHost;
     private final InstructionsObject mInstructions;
 
-    public FileClient(Configuration configuration, String apiVersion) {
-        super(configuration, apiVersion);
+    public FileClient(ApiClientHelper apiClientHelper, HttpWorkerInterface httpWorker, String apiVersion) {
+        super(apiClientHelper, httpWorker, apiVersion);
         // init host object
         mHost = new HostObject("https", "www", "mediafire.com", "post");
         // init instructions object

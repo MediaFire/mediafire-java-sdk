@@ -1,7 +1,9 @@
 package com.mediafire.sdk.clients.contact;
 
+import com.mediafire.sdk.clients.ApiClientHelper;
 import com.mediafire.sdk.clients.PathSpecificApiClient;
 import com.mediafire.sdk.config.Configuration;
+import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.*;
 
 /**
@@ -31,8 +33,8 @@ public class ContactClient extends PathSpecificApiClient {
     private final HostObject mHost;
     private final InstructionsObject mInstructions;
 
-    public ContactClient(Configuration configuration, String apiVersion) {
-        super(configuration, apiVersion);
+    public ContactClient(ApiClientHelper apiClientHelper, HttpWorkerInterface httpWorkerInterface, String apiVersion) {
+        super(apiClientHelper, httpWorkerInterface, apiVersion);
         // init host object
         mHost = new HostObject("https", "www", "mediafire.com", "post");
         // init instructions object

@@ -1,7 +1,9 @@
 package com.mediafire.sdk.clients.meta;
 
+import com.mediafire.sdk.clients.ApiClientHelper;
 import com.mediafire.sdk.clients.PathSpecificApiClient;
 import com.mediafire.sdk.config.Configuration;
+import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.ApiObject;
 import com.mediafire.sdk.http.BorrowTokenType;
 import com.mediafire.sdk.http.HostObject;
@@ -33,16 +35,12 @@ public class MetaClient extends PathSpecificApiClient {
     private final HostObject mHost;
     private final InstructionsObject mInstructions;
 
-    public MetaClient(Configuration configuration, String apiVersion) {
-        super(configuration, apiVersion);
+    public MetaClient(ApiClientHelper apiClientHelper, HttpWorkerInterface httpWorkerInterface, String apiVersion) {
+        super(apiClientHelper, httpWorkerInterface, apiVersion);
         // init host object
         mHost = new HostObject("https", "www", "mediafire.com", "post");
         // init instructions object
         mInstructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, true);
-    }
-
-    public MetaClient(Configuration configuration) {
-        this(configuration, null);
     }
 
     public Result addToList(String listKey, String quickKey) {

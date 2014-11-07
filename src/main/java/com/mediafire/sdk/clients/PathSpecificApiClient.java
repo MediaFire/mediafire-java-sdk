@@ -1,6 +1,7 @@
 package com.mediafire.sdk.clients;
 
 import com.mediafire.sdk.config.Configuration;
+import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 import com.mediafire.sdk.http.VersionObject;
@@ -13,8 +14,8 @@ public abstract class PathSpecificApiClient extends ApiClient {
 
     protected final VersionObject mVersionObject;
 
-    public PathSpecificApiClient(Configuration configuration, String apiVersion) {
-        super(configuration);
+    public PathSpecificApiClient(ApiClientHelper apiClientHelper, HttpWorkerInterface httpWorker, String apiVersion) {
+        super(apiClientHelper, httpWorker);
         // init version object
         if (apiVersion == null || apiVersion.isEmpty()) {
             mVersionObject = new VersionObject(null);

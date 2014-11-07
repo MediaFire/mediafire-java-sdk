@@ -4,32 +4,33 @@ import com.mediafire.sdk.clients.HeadersHelper;
 import com.mediafire.sdk.clients.PathSpecificApiClient;
 import com.mediafire.sdk.clients.UrlHelper;
 import com.mediafire.sdk.config.Configuration;
+import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.*;
 
 /**
  * Created by jondh on 11/4/14.
  */
-public class TranscodeClient extends PathSpecificApiClient{
+public class TranscodeClient {
     private static final String PARAM_CONTAINER = "container";
     private static final String PARAM_MEDIA_SIZE = "media_size";
     private static final String PARAM_EXISTS = "exists";
 
+    private HttpWorkerInterface mHttpWorker;
     private final String mStreamingUrl;
     private final String mContainer;
 
-    public TranscodeClient(Configuration configuration, String streamingUrl, String container) {
-        super(configuration, null);
+    public TranscodeClient(HttpWorkerInterface httpWorker, String streamingUrl, String container) {
+        mHttpWorker = httpWorker;
         mStreamingUrl = streamingUrl;
         mContainer = container;
     }
 
-    @Override
     public Result doRequest(Request request) {
         String url = new UrlHelper(request).makeConcatenatedUrlForGet();
         // add headers to request
         HeadersHelper headersHelper = new HeadersHelper(request);
         headersHelper.addGetHeaders();
-        Response response = mConfiguration.getHttpWorker().doGet(url, request.getHeaders());
+        Response response = mHttpWorker.doGet(url, request.getHeaders());
 
         return new Result(response, request);
     }

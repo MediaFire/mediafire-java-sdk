@@ -11,6 +11,7 @@ import com.mediafire.sdk.api_responses.upload.InstantResponse;
 import com.mediafire.sdk.api_responses.upload.PollResponse;
 import com.mediafire.sdk.api_responses.upload.ResumableResponse;
 import com.mediafire.sdk.clients.ApiClient;
+import com.mediafire.sdk.clients.ApiClientHelper;
 import com.mediafire.sdk.config.*;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.clients.RequestGenerator;
@@ -256,7 +257,8 @@ public class UploadRunnable implements Runnable {
             request.addQueryParameter(key, keyValue.get(key));
         }
 
-        Result result = new ApiClient(mConfiguration).doRequest(request);
+        ApiClientHelper apiClientHelper = new ApiClientHelper(mConfiguration);
+        Result result = new ApiClient(apiClientHelper, mConfiguration.getHttpWorker()).doRequest(request);
         Response mfResponse = result.getResponse();
 
         if (mfResponse == null) {
@@ -337,7 +339,8 @@ public class UploadRunnable implements Runnable {
             request.addQueryParameter(key, keyValue.get(key));
         }
 
-        Result result = new ApiClient(mConfiguration).doRequest(request);
+        ApiClientHelper apiClientHelper = new ApiClientHelper(mConfiguration);
+        Result result = new ApiClient(apiClientHelper, mConfiguration.getHttpWorker()).doRequest(request);
         Response mfResponse = result.getResponse();
 
         if (mfResponse == null) {
@@ -449,7 +452,8 @@ public class UploadRunnable implements Runnable {
 
                 request.addPayload(uploadChunk);
 
-                Result result = new ApiClient(mConfiguration).doRequest(request);
+                ApiClientHelper apiClientHelper = new ApiClientHelper(mConfiguration);
+                Result result = new ApiClient(apiClientHelper, mConfiguration.getHttpWorker()).doRequest(request);
                 Response mfResponse = result.getResponse();
 
                 if (mfResponse == null) {
@@ -535,7 +539,8 @@ public class UploadRunnable implements Runnable {
                 request.addQueryParameter(key, keyValue.get(key));
             }
 
-            Result result = new ApiClient(mConfiguration).doRequest(request);
+            ApiClientHelper apiClientHelper = new ApiClientHelper(mConfiguration);
+            Result result = new ApiClient(apiClientHelper, mConfiguration.getHttpWorker()).doRequest(request);
             Response mfResponse = result.getResponse();
 
             if (mfResponse == null) {

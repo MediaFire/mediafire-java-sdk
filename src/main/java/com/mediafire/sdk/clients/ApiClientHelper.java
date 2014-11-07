@@ -30,7 +30,7 @@ public class ApiClientHelper {
      * ApiClientHelper Constructor
      * @param configuration a Configuration object
      */
-    ApiClientHelper(Configuration configuration) {
+    public ApiClientHelper(Configuration configuration) {
         mConfiguration = configuration;
     }
 

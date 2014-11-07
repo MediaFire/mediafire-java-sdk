@@ -1,7 +1,9 @@
 package com.mediafire.sdk.clients.upload;
 
+import com.mediafire.sdk.clients.ApiClientHelper;
 import com.mediafire.sdk.clients.PathSpecificApiClient;
 import com.mediafire.sdk.config.Configuration;
+import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.*;
 
 /**
@@ -28,8 +30,8 @@ public class UploadClient extends PathSpecificApiClient {
     private final HostObject mHost;
     private final InstructionsObject mInstructions;
 
-    public UploadClient(Configuration configuration, String apiVersion) {
-        super(configuration, apiVersion);
+    public UploadClient(ApiClientHelper apiClientHelper, HttpWorkerInterface httpWorkerInterface, String apiVersion) {
+        super(apiClientHelper, httpWorkerInterface, apiVersion);
         // init host object
         mHost = new HostObject("https", "www", "mediafire.com", "post");
         // init instructions object

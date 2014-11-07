@@ -10,14 +10,13 @@ import com.mediafire.sdk.http.Result;
  */
 public class ApiClient {
     private static final String TAG = ApiClient.class.getCanonicalName();
-    protected final Configuration mConfiguration;
+    private ApiClientHelper mClientHelper;
+    private HttpWorkerInterface mHttpWorker;
 
-    /**
-     * ApiClient Constructor
-     * @param configuration a Configuration object used to perform the request and log
-     */
-    public ApiClient(Configuration configuration) {
-        mConfiguration = configuration;
+
+    public ApiClient(ApiClientHelper apiClientHelper, HttpWorkerInterface httpWorker) {
+        mClientHelper = apiClientHelper;
+        mHttpWorker = httpWorker;
     }
 
     /**
@@ -26,9 +25,6 @@ public class ApiClient {
      * @return returns a Result object after the http response is cleaned up
      */
     public Result doRequest(Request request) {
-        mConfiguration.getLogger().v(TAG, "doRequest");
-        ApiClientHelper apiClientHelper = new ApiClientHelper(mConfiguration);
-
         // setup should handle the following:
         // 1. getting an ActionToken or SessionToken (if required) as per InstructionsObject
         // 2. calling Request.addToken() to add the token to the request.
@@ -36,22 +32,13 @@ public class ApiClient {
         // 4. calculate a signature (if required) as per InstructionsObject
         // 5. add signature parameters to the query parameters via Request.addQueryParameter()
         // 6. return Token or notify Token manager interfaces if a Token is invalid.
-        apiClientHelper.setup(request);
+        mClientHelper.setup(request);
 
         String httpMethod = request.getHostObject().getHttpMethod();
 
         Response response = doRequest(request, httpMethod);
 
-        if (response != null && response.getBytes() != null) {
-            if(response.getBytes().length < 1000) {
-                mConfiguration.getLogger().v(TAG, "api response - " + new String(response.getBytes()));
-            }
-            else {
-                mConfiguration.getLogger().v(TAG, "api response - too long");
-            }
-        }
-
-        apiClientHelper.cleanup(response);
+        mClientHelper.cleanup(response);
 
         return new Result(response, request);
     }
@@ -67,16 +54,14 @@ public class ApiClient {
     }
 
     private Response doGet(Request request) {
-        mConfiguration.getLogger().v(TAG, "doGet");
         String url = new UrlHelper(request).makeUrlForGetRequest();
         // add headers to request
         HeadersHelper headersHelper = new HeadersHelper(request);
         headersHelper.addGetHeaders();
-        return mConfiguration.getHttpWorker().doGet(url, request.getHeaders());
+        return mHttpWorker.doGet(url, request.getHeaders());
     }
 
     private Response doPost(Request request) {
-        mConfiguration.getLogger().v(TAG, "doPost");
         UrlHelper urlHelper = new UrlHelper(request);
         String url = urlHelper.makeUrlForPostRequest();
         byte[] payload = urlHelper.getPayload();
@@ -84,6 +69,6 @@ public class ApiClient {
         HeadersHelper headersHelper = new HeadersHelper(request);
         headersHelper.addPostHeaders(payload);
 
-        return mConfiguration.getHttpWorker().doPost(url, request.getHeaders(), payload);
+        return mHttpWorker.doPost(url, request.getHeaders(), payload);
     }
 }

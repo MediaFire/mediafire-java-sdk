@@ -62,8 +62,8 @@ public class ApiClientHelper {
      * Note: setup must first be called as its request param is used
      */
     public void borrowToken() {
-        mConfiguration.getLogger().v(TAG, "borrowToken - added " + mRequest.getInstructionsObject().getBorrowTokenType() + " token");
-        switch (mRequest.getInstructionsObject().getBorrowTokenType()) {
+        mConfiguration.getLogger().v(TAG, "borrowToken - added " + mRequest.getBorrowTokenType() + " token");
+        switch (mRequest.getBorrowTokenType()) {
             case V2:
                 SessionToken sessionToken = mConfiguration.getSessionTokenManager().borrowSessionToken();
                 mRequest.addToken(sessionToken);
@@ -104,7 +104,7 @@ public class ApiClientHelper {
      */
     public void addSignatureToRequestParameters() {
         String signature = null;
-        switch (mRequest.getInstructionsObject().getSignatureType()) {
+        switch (mRequest.getSignatureType()) {
             case NEW_SESSION_TOKEN_SIGNATURE:
                 addRequiredParametersForNewSessionToken();
                 signature = makeSignatureForNewSessionToken();
@@ -174,8 +174,8 @@ public class ApiClientHelper {
             return;
         }
 
-        mConfiguration.getLogger().v(TAG, "returnToken - " + mRequest.getInstructionsObject().getReturnTokenType());
-        switch (mRequest.getInstructionsObject().getReturnTokenType()) {
+        mConfiguration.getLogger().v(TAG, "returnToken - " + mRequest.getReturnTokenType());
+        switch (mRequest.getReturnTokenType()) {
             case NEW_V2:
                 GetSessionTokenResponse newSessionTokenResponse = responseHelper.getResponseObject(GetSessionTokenResponse.class);
                 SessionToken newSessionToken = createNewSessionToken(newSessionTokenResponse);

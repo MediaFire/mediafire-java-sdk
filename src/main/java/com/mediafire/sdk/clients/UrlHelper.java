@@ -28,10 +28,9 @@ public class UrlHelper {
     }
 
     public String makeConcatenatedUrlForGet() {
-        HostObject hostObject = mRequest.getHostObject();
-        String transferProtocol = (hostObject.getTransferProtocol() == null) ? "" : hostObject.getTransferProtocol();
-        String domain = (hostObject.getDomain() == null) ? "" : hostObject.getDomain();
-        String subdomain = (hostObject.getSubdomain() == null) ? "" : hostObject.getSubdomain();
+        String transferProtocol = (mRequest.getTransferProtocol() == null) ? "" : mRequest.getTransferProtocol();
+        String domain = (mRequest.getDomain() == null) ? "" : mRequest.getDomain();
+        String subdomain = (mRequest.getSubdomain() == null) ? "" : mRequest.getSubdomain();
 
         String query = getQueryString(true);
 
@@ -45,7 +44,7 @@ public class UrlHelper {
     public String makeUrlForPostRequest() {
         DefaultLogger.log().v(TAG, "makeUrlForPostRequest");
         String baseUrl;
-        if (mRequest.getInstructionsObject().postQuery()) {
+        if (mRequest.postQuery()) {
             baseUrl = getBaseUrlString();
             baseUrl += getBaseUriString();
         } else {
@@ -76,12 +75,11 @@ public class UrlHelper {
      */
     public String getBaseUrlString() {
         DefaultLogger.log().v(TAG, "getBaseUrlString");
-        HostObject hostObject = mRequest.getHostObject();
-        String transferProtocol = hostObject.getTransferProtocol();
+        String transferProtocol = mRequest.getTransferProtocol();
 
-        String subdomain = hostObject.getSubdomain();
+        String subdomain = mRequest.getSubdomain();
 
-        String domain = hostObject.getDomain();
+        String domain = mRequest.getDomain();
 
         return transferProtocol + "://" + subdomain + "." + domain;
     }
@@ -92,14 +90,12 @@ public class UrlHelper {
      */
     public String getBaseUriString() {
         DefaultLogger.log().v(TAG, "getBaseUriString");
-        ApiObject apiObject = mRequest.getApiObject();
-        VersionObject versionObject = mRequest.getVersionObject();
 
-        String apiVersion = versionObject.getApiVersion();
+        String apiVersion = mRequest.getApiVersion();
 
-        String path = apiObject.getPath();
+        String path = mRequest.getPath();
 
-        String file = apiObject.getFile();
+        String file = mRequest.getFile();
 
         String baseUri = "/";
         if (apiVersion != null) {
@@ -163,7 +159,7 @@ public class UrlHelper {
         DefaultLogger.log().v(TAG, "getPayload");
         byte[] payload;
 
-        if (mRequest.getInstructionsObject().postQuery()) {
+        if (mRequest.postQuery()) {
             String queryString = getQueryString(true, true);
             payload = queryString.getBytes();
         } else {

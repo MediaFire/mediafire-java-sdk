@@ -40,7 +40,7 @@ public class HeadersHelper {
             return;
         }
 
-        if (mRequest.getInstructionsObject().postQuery()) {
+        if (mRequest.postQuery()) {
             mRequest.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=" + CHARSET);
         } else {
             mRequest.addHeader("Content-Type", "application/octet-stream");

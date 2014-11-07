@@ -34,7 +34,7 @@ public class ApiClient {
         // 6. return Token or notify Token manager interfaces if a Token is invalid.
         mClientHelper.setup(request);
 
-        String httpMethod = request.getHostObject().getHttpMethod();
+        String httpMethod = request.getHttpMethod();
 
         Response response = doRequest(request, httpMethod);
 

@@ -80,6 +80,10 @@ public class Request {
         return mHostObject.getTransferProtocol();
     }
 
+    public boolean postQuery() {
+        return mInstructionsObject.postQuery();
+    }
+
     /**
      * Gets the query parameters
      * @return Map of query parameters  (null possible)

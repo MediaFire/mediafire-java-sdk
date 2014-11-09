@@ -7,7 +7,6 @@ import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.ActionToken;
 import com.mediafire.sdk.token.ImageActionToken;
-import com.mediafire.sdk.token.SessionToken;
 import com.mediafire.sdk.token.UploadActionToken;
 
 /**
@@ -15,12 +14,12 @@ import com.mediafire.sdk.token.UploadActionToken;
  * BaseClientHelper used for fetching new action tokens, the only difference between NewActionTokenClientHelper
  * and ApiClientHelper is that returnToken() also needs to return an action token to the ActionTokenManagerInterface
  */
-public class NewActionTokenClientHelper extends ApiClientHelper {
+public class ClientHelperNewActionToken extends ClientHelperApi {
 
     private TokenType mTokenType;
     private ActionTokenManagerInterface mActionTokenManagerInterface;
 
-    public NewActionTokenClientHelper(TokenType tokenType, ActionTokenManagerInterface actionTokenManagerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
+    public ClientHelperNewActionToken(TokenType tokenType, ActionTokenManagerInterface actionTokenManagerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
         super(sessionTokenManagerInterface);
 
         mTokenType = tokenType;

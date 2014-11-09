@@ -12,11 +12,11 @@ import com.mediafire.sdk.token.UploadActionToken;
  * Created by Chris on 11/9/2014.
  * BaseClientHelper for API calls that use action tokens (no signature)
  */
-public class ActionTokenClientHelper extends BaseClientHelper {
+public class ClientHelperActionToken extends BaseClientHelper {
     private TokenType mTokenType;
     private ActionTokenManagerInterface mActionTokenManagerInterface;
 
-    public ActionTokenClientHelper(TokenType tokenType, ActionTokenManagerInterface actionTokenManagerInterface) {
+    public ClientHelperActionToken(TokenType tokenType, ActionTokenManagerInterface actionTokenManagerInterface) {
         this.mTokenType = tokenType;
         mActionTokenManagerInterface = actionTokenManagerInterface;
     }

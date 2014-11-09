@@ -12,11 +12,11 @@ import com.mediafire.sdk.token.SessionToken;
  * This BaseClientHelper implementation should not be used for calls to get new session tokens or calls that use
  * action tokens
  */
-public class ApiClientHelper extends BaseClientHelper {
+public class ClientHelperApi extends BaseClientHelper {
 
     private SessionTokenManagerInterface mSessionTokenManagerInterface;
 
-    public ApiClientHelper(SessionTokenManagerInterface sessionTokenManagerInterface) {
+    public ClientHelperApi(SessionTokenManagerInterface sessionTokenManagerInterface) {
         super();
         mSessionTokenManagerInterface = sessionTokenManagerInterface;
     }

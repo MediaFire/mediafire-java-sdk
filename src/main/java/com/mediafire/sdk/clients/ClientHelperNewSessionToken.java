@@ -13,12 +13,12 @@ import java.util.Map;
  * Created by Chris on 11/9/2014.
  * BaseClientHelper used with ApiClient to get new session tokens.
  */
-public class NewSessionTokenClientHelper extends BaseClientHelper {
+public class ClientHelperNewSessionToken extends BaseClientHelper {
     private CredentialsInterface mUserCredentials;
     private CredentialsInterface mDeveloperCredentials;
     private SessionTokenManagerInterface mSessionTokenManagerInterface;
 
-    public NewSessionTokenClientHelper(CredentialsInterface userCredentials, CredentialsInterface developerCredentials, SessionTokenManagerInterface sessionTokenManagerInterface) {
+    public ClientHelperNewSessionToken(CredentialsInterface userCredentials, CredentialsInterface developerCredentials, SessionTokenManagerInterface sessionTokenManagerInterface) {
         super();
         mUserCredentials = userCredentials;
         mDeveloperCredentials = developerCredentials;

@@ -1,8 +1,7 @@
 package com.mediafire.sdk.clients.device;
 
-import com.mediafire.sdk.clients.ApiClientHelper;
+import com.mediafire.sdk.clients.ClientHelper;
 import com.mediafire.sdk.clients.PathSpecificApiClient;
-import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.*;
 
@@ -17,8 +16,8 @@ public class DeviceClient extends PathSpecificApiClient{
     private final HostObject mHost;
     private final InstructionsObject mInstructions;
 
-    public DeviceClient(ApiClientHelper apiClientHelper, HttpWorkerInterface httpWorkerInterface, String apiVersion) {
-        super(apiClientHelper, httpWorkerInterface, apiVersion);
+    public DeviceClient(ClientHelper clientHelper, HttpWorkerInterface httpWorkerInterface, String apiVersion) {
+        super(clientHelper, httpWorkerInterface, apiVersion);
         // init host object
         mHost = new HostObject("https", "www", "mediafire.com", "post");
         // init instructions object

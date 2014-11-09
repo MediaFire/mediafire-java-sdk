@@ -1,7 +1,7 @@
 package com.mediafire.sdk.config.defaults;
 
 import com.mediafire.sdk.clients.ApiClient;
-import com.mediafire.sdk.clients.ApiClientHelper;
+import com.mediafire.sdk.clients.ClientHelper;
 import com.mediafire.sdk.clients.RequestGenerator;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
@@ -120,8 +120,8 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
             request.addQueryParameter("response_format", "json");
             request.addQueryParameter("token_version", 2);
             addOutstandingRequest();
-            ApiClientHelper apiClientHelper = new ApiClientHelper(mConfiguration);
-            Result result = new ApiClient(apiClientHelper, mConfiguration.getHttpWorker()).doRequest(request);
+            ClientHelper clientHelper = new ClientHelper(mConfiguration);
+            Result result = new ApiClient(clientHelper, mConfiguration.getHttpWorker()).doRequest(request);
             Response response = result.getResponse();
             if(response.getClass() == ResponseApiClientError.class) {
                 ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();

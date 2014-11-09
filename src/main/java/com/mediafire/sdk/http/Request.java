@@ -18,6 +18,7 @@ public class Request {
     private Map<String, String> mHeaders;
     private byte[] mPayload;
     private Token mToken;
+    private String mSignature;
 
     /**
      * Request Constructor
@@ -173,6 +174,23 @@ public class Request {
      */
     public void addToken(Token token) {
         mToken = token;
+    }
+
+    /**
+     * gets the signature for this Request.
+     * @return String (null possible)
+     */
+    public String getSignature() {
+        return mSignature;
+    }
+
+    /**
+     * Adds a signature to the request
+     * @param signature
+     */
+    public void addSignature(String signature) {
+        mSignature = signature;
+        addQueryParameter("signature", signature);
     }
 
     public static class Builder {

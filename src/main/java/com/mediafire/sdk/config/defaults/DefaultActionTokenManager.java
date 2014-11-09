@@ -1,7 +1,7 @@
 package com.mediafire.sdk.config.defaults;
 
 import com.mediafire.sdk.clients.ApiClient;
-import com.mediafire.sdk.clients.ApiClientHelper;
+import com.mediafire.sdk.clients.ClientHelper;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.http.*;
@@ -109,8 +109,8 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
             Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
             request.addQueryParameter("type", "image");
             request.addQueryParameter("response_format", "json");
-            ApiClientHelper apiClientHelper = new ApiClientHelper(mConfiguration);
-            Result result = new ApiClient(apiClientHelper, mConfiguration.getHttpWorker()).doRequest(request);
+            ClientHelper clientHelper = new ClientHelper(mConfiguration);
+            Result result = new ApiClient(clientHelper, mConfiguration.getHttpWorker()).doRequest(request);
             Response response = result.getResponse();
             if(response.getClass() == ResponseApiClientError.class) {
                 ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();
@@ -156,8 +156,8 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
             Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
             request.addQueryParameter("type", "upload");
             request.addQueryParameter("response_format", "json");
-            ApiClientHelper apiClientHelper = new ApiClientHelper(mConfiguration);
-            Result result = new ApiClient(apiClientHelper, mConfiguration.getHttpWorker()).doRequest(request);
+            ClientHelper clientHelper = new ClientHelper(mConfiguration);
+            Result result = new ApiClient(clientHelper, mConfiguration.getHttpWorker()).doRequest(request);
             Response response = result.getResponse();
             if(response.getClass() == ResponseApiClientError.class) {
                 ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();

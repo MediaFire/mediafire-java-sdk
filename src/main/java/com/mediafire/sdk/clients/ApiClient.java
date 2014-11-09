@@ -9,13 +9,12 @@ import com.mediafire.sdk.http.Result;
  *  ApiClient is a wrapper for the methods required to make an request the the MediaFire API
  */
 public class ApiClient {
-    private static final String TAG = ApiClient.class.getCanonicalName();
-    private ApiClientHelper mClientHelper;
+    private ClientHelper mClientHelper;
     private HttpWorkerInterface mHttpWorker;
 
 
-    public ApiClient(ApiClientHelper apiClientHelper, HttpWorkerInterface httpWorker) {
-        mClientHelper = apiClientHelper;
+    public ApiClient(ClientHelper clientHelper, HttpWorkerInterface httpWorker) {
+        mClientHelper = clientHelper;
         mHttpWorker = httpWorker;
     }
 
@@ -25,20 +24,13 @@ public class ApiClient {
      * @return returns a Result object after the http response is cleaned up
      */
     public Result doRequest(Request request) {
-        // setup should handle the following:
-        // 1. getting an ActionToken or SessionToken (if required) as per InstructionsObject
-        // 2. calling Request.addToken() to add the token to the request.
-        // 3. adding the session_token parameter to the query parameters via Request.addQueryParameter()
-        // 4. calculate a signature (if required) as per InstructionsObject
-        // 5. add signature parameters to the query parameters via Request.addQueryParameter()
-        // 6. return Token or notify Token manager interfaces if a Token is invalid.
         mClientHelper.setup(request);
 
         String httpMethod = request.getHttpMethod();
 
         Response response = doRequest(request, httpMethod);
 
-        mClientHelper.cleanup(response);
+        mClientHelper.cleanup(response, request);
 
         return new Result(response, request);
     }

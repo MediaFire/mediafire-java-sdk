@@ -4,17 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mediafire.sdk.ClientHelperNoToken;
 import com.mediafire.sdk.api_responses.ApiResponse;
 import com.mediafire.sdk.api_responses.ResponseCode;
 import com.mediafire.sdk.api_responses.upload.CheckResponse;
 import com.mediafire.sdk.api_responses.upload.InstantResponse;
 import com.mediafire.sdk.api_responses.upload.PollResponse;
 import com.mediafire.sdk.api_responses.upload.ResumableResponse;
-import com.mediafire.sdk.clients.ApiClient;
-import com.mediafire.sdk.clients.ClientHelper;
+import com.mediafire.sdk.clients.*;
 import com.mediafire.sdk.config.*;
 import com.mediafire.sdk.http.Request;
-import com.mediafire.sdk.clients.RequestGenerator;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 import com.mediafire.sdk.uploader.uploaditem.*;
@@ -48,7 +47,7 @@ public class UploadRunnable implements Runnable {
     private final NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor;
     private final CredentialsInterface mUserCredentials;
     private final ActionTokenManagerInterface mActionTokenManagerInterface;
-    private final Configuration mConfiguration;
+    private HttpWorkerInterface mHttpWorker;
 
     private UploadRunnable(Builder builder) {
         mMaxPolls = builder.maxPolls;
@@ -57,11 +56,10 @@ public class UploadRunnable implements Runnable {
         mUploadListener = builder.mfUploadListener;
         mMaxUploadAttempts = builder.maxUploadAttempts;
 
-        mConfiguration = builder.configuration;
-
         mNetworkConnectivityMonitor = builder.configuration.getNetworkConnectivityMonitor();
         mUserCredentials = builder.configuration.getUserCredentials();
         mActionTokenManagerInterface = builder.configuration.getActionTokenManager();
+        mHttpWorker = builder.configuration.getHttpWorker();
         mLogger = builder.configuration.getLogger();
     }
 
@@ -257,8 +255,9 @@ public class UploadRunnable implements Runnable {
             request.addQueryParameter(key, keyValue.get(key));
         }
 
-        ClientHelper clientHelper = new ClientHelper(mConfiguration);
-        Result result = new ApiClient(clientHelper, mConfiguration.getHttpWorker()).doRequest(request);
+        ClientHelperActionToken clientHelperActionToken = new ClientHelperActionToken(BaseClientHelper.TokenType.UPLOAD, mActionTokenManagerInterface);
+        ApiClient apiClient = new ApiClient(clientHelperActionToken, mHttpWorker);
+        Result result = apiClient.doRequest(request);
         Response mfResponse = result.getResponse();
 
         if (mfResponse == null) {
@@ -339,8 +338,10 @@ public class UploadRunnable implements Runnable {
             request.addQueryParameter(key, keyValue.get(key));
         }
 
-        ClientHelper clientHelper = new ClientHelper(mConfiguration);
-        Result result = new ApiClient(clientHelper, mConfiguration.getHttpWorker()).doRequest(request);
+        ClientHelperActionToken clientHelperActionToken = new ClientHelperActionToken(BaseClientHelper.TokenType.UPLOAD, mActionTokenManagerInterface);
+        ApiClient apiClient = new ApiClient(clientHelperActionToken, mHttpWorker);
+        Result result = apiClient.doRequest(request);
+
         Response mfResponse = result.getResponse();
 
         if (mfResponse == null) {
@@ -452,8 +453,10 @@ public class UploadRunnable implements Runnable {
 
                 request.addPayload(uploadChunk);
 
-                ClientHelper clientHelper = new ClientHelper(mConfiguration);
-                Result result = new ApiClient(clientHelper, mConfiguration.getHttpWorker()).doRequest(request);
+                ClientHelperActionToken clientHelperActionToken = new ClientHelperActionToken(BaseClientHelper.TokenType.UPLOAD, mActionTokenManagerInterface);
+                ApiClient apiClient = new ApiClient(clientHelperActionToken, mHttpWorker);
+                Result result = apiClient.doRequest(request);
+
                 Response mfResponse = result.getResponse();
 
                 if (mfResponse == null) {
@@ -539,8 +542,9 @@ public class UploadRunnable implements Runnable {
                 request.addQueryParameter(key, keyValue.get(key));
             }
 
-            ClientHelper clientHelper = new ClientHelper(mConfiguration);
-            Result result = new ApiClient(clientHelper, mConfiguration.getHttpWorker()).doRequest(request);
+            ClientHelperNoToken clientHelperActionToken = new ClientHelperNoToken();
+            ApiClient apiClient = new ApiClient(clientHelperActionToken, mHttpWorker);
+            Result result = apiClient.doRequest(request);
             Response mfResponse = result.getResponse();
 
             if (mfResponse == null) {

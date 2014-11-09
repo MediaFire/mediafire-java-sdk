@@ -115,8 +115,8 @@ public class Configuration {
         private static final HttpWorkerInterface DEFAULT_HTTP_WORKER = new DefaultHttpWorker();
         private static final CredentialsInterface DEFAULT_USER_CREDENTIALS = new DefaultCredentials();
         private static final CredentialsInterface DEFAULT_DEVELOPER_CREDENTIALS = new DefaultCredentials();
-        private static final SessionTokenManagerInterface DEFAULT_SESSION_TOKEN_MANAGER = new DefaultSessionTokenManager();
-        private static final ActionTokenManagerInterface DEFAULT_ACTION_TOKEN_MANAGER = new DefaultActionTokenManager();
+        private static final SessionTokenManagerInterface DEFAULT_SESSION_TOKEN_MANAGER = new DefaultSessionTokenManager(DEFAULT_HTTP_WORKER, DEFAULT_USER_CREDENTIALS, DEFAULT_DEVELOPER_CREDENTIALS);
+        private static final ActionTokenManagerInterface DEFAULT_ACTION_TOKEN_MANAGER = new DefaultActionTokenManager(DEFAULT_HTTP_WORKER, DEFAULT_SESSION_TOKEN_MANAGER);
         private static final LoggerInterface DEFAULT_LOGGER = new DefaultLogger();
         private static final NetworkConnectivityMonitorInterface DEFAULT_NET_MONITOR = new DefaultNetworkConnectivityMonitor();
 
@@ -131,8 +131,7 @@ public class Configuration {
         /**
          * Builder Constructor
          */
-        public Builder() {
-        }
+        public Builder() { }
 
         /**
          * Adds a HttpWorkerInterface to the class

@@ -1,9 +1,13 @@
 package com.mediafire.sdk.config.defaults;
 
 import com.mediafire.sdk.clients.ApiClient;
+import com.mediafire.sdk.clients.BaseClientHelper;
 import com.mediafire.sdk.clients.ClientHelper;
+import com.mediafire.sdk.clients.ClientHelperNewActionToken;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.config.Configuration;
+import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.*;
 import com.mediafire.sdk.token.ImageActionToken;
 import com.mediafire.sdk.token.UploadActionToken;
@@ -21,28 +25,31 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
 
     private static final Object mImageActionTokenLock = new Object();
     private static final Object mUploadActionTokenLock = new Object();
-    private Configuration mConfiguration;
+
+    private SessionTokenManagerInterface mSessionTokenManagerInterface;
+    private HttpWorkerInterface mHttpWorkerInterface;
 
     /**
      * DefaultActionTokenManager Constructor
      */
-    public DefaultActionTokenManager() { }
+    public DefaultActionTokenManager(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
+        mSessionTokenManagerInterface = sessionTokenManagerInterface;
+        mHttpWorkerInterface = httpWorkerInterface;
+    }
 
     /**
      * Initialized this class, should be called before class methods are called
      * @param configuration Configuration Object to be used in class methods
      */
     @Override
-    public void initialize(Configuration configuration) {
-        mConfiguration = configuration;
-    }
+    public void initialize(Configuration configuration) { }
 
     /**
      * A shutdown method for this class
      */
     @Override
     public void shutdown() {
-        mConfiguration.getLogger().v(TAG, "shutdown");
+        System.out.printf("%s - %s", TAG, "shutdown");
     }
 
     /**
@@ -52,7 +59,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
      */
     @Override
     public void receiveImageActionToken(ImageActionToken token) {
-        mConfiguration.getLogger().v(TAG, "receiveImageActionToken");
+        System.out.printf("%s - %s", TAG, "receiveImageActionToken");
         synchronized (mImageActionTokenLock) {
             mImageActionToken = token;
             mImageActionTokenLock.notifyAll();
@@ -66,7 +73,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
      */
     @Override
     public void receiveUploadActionToken(UploadActionToken token) {
-        mConfiguration.getLogger().v(TAG, "receiveUploadActionToken");
+        System.out.printf("%s - %s", TAG, "receiveUploadActionToken");
         synchronized (mUploadActionTokenLock) {
             mUploadActionToken = token;
             mUploadActionTokenLock.notifyAll();
@@ -79,7 +86,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
      */
     @Override
     public ImageActionToken borrowImageActionToken() {
-        mConfiguration.getLogger().v(TAG, "borrowImageActionToken");
+        System.out.printf("%s - %s", TAG, "borrowImageActionToken");
         synchronized (mImageActionTokenLock) {
             if (mImageActionToken == null) {
                 new NewImageActionTokenThread().start();
@@ -101,7 +108,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private class NewImageActionTokenThread extends Thread {
         @Override
         public void run(){
-            mConfiguration.getLogger().v(TAG, "NewImageActionTokenThread - run");
+            System.out.printf("%s - %s", TAG, "NewImageActionTokenThread - run");
             HostObject hostObject = new HostObject("http", "www", "mediafire.com", "post");
             ApiObject apiObject = new ApiObject("user", "get_action_token.php");
             InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_IMAGE, true);
@@ -109,12 +116,16 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
             Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
             request.addQueryParameter("type", "image");
             request.addQueryParameter("response_format", "json");
-            ClientHelper clientHelper = new ClientHelper(mConfiguration);
-            Result result = new ApiClient(clientHelper, mConfiguration.getHttpWorker()).doRequest(request);
+
+            ClientHelperNewActionToken clientHelperNewActionToken = new ClientHelperNewActionToken(BaseClientHelper.TokenType.IMAGE, DefaultActionTokenManager.this, mSessionTokenManagerInterface);
+            ApiClient apiClient = new ApiClient(clientHelperNewActionToken, mHttpWorkerInterface);
+            Result result = apiClient.doRequest(request);
+            
             Response response = result.getResponse();
+            
             if(response.getClass() == ResponseApiClientError.class) {
                 ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();
-                mConfiguration.getLogger().e(TAG, responseApiClientError.getErrorMessage());
+                System.out.printf("%s - %s", TAG, responseApiClientError.getErrorMessage());
                 receiveUploadActionToken(null);
             }
         }
@@ -126,7 +137,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
      */
     @Override
     public UploadActionToken borrowUploadActionToken() {
-        mConfiguration.getLogger().v(TAG, "borrowUploadActionToken");
+        System.out.printf("%s - %s", TAG, "borrowUploadActionToken");
         synchronized (mUploadActionTokenLock) {
             if (mUploadActionToken == null) {
                 new NewUploadActionTokenThread().start();
@@ -148,7 +159,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private class NewUploadActionTokenThread extends Thread {
         @Override
         public void run(){
-            mConfiguration.getLogger().v(TAG, "NewUploadActionTokenThread - run");
+            System.out.printf("%s - %s", TAG, "NewUploadActionTokenThread - run");
             HostObject hostObject = new HostObject("http", "www", "mediafire.com", "post");
             ApiObject apiObject = new ApiObject("user", "get_action_token.php");
             InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_UPLOAD, true);
@@ -156,12 +167,16 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
             Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
             request.addQueryParameter("type", "upload");
             request.addQueryParameter("response_format", "json");
-            ClientHelper clientHelper = new ClientHelper(mConfiguration);
-            Result result = new ApiClient(clientHelper, mConfiguration.getHttpWorker()).doRequest(request);
+            
+            ClientHelperNewActionToken clientHelperNewActionToken = new ClientHelperNewActionToken(BaseClientHelper.TokenType.UPLOAD, DefaultActionTokenManager.this, mSessionTokenManagerInterface);
+            ApiClient apiClient = new ApiClient(clientHelperNewActionToken, mHttpWorkerInterface);
+            Result result = apiClient.doRequest(request);
+
             Response response = result.getResponse();
+            
             if(response.getClass() == ResponseApiClientError.class) {
                 ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();
-                mConfiguration.getLogger().e(TAG, responseApiClientError.getErrorMessage());
+                System.out.printf("%s - %s", TAG, responseApiClientError.getErrorMessage());
                 receiveUploadActionToken(null);
             }
         }
@@ -173,7 +188,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
      */
     @Override
     public void tokensFailed() {
-        mConfiguration.getLogger().v(TAG, "tokensFailed");
+        System.out.printf("%s - %s", TAG, "tokensFailed");
         synchronized (mUploadActionTokenLock) {
             //noinspection AssignmentToNull
             mUploadActionToken = null;

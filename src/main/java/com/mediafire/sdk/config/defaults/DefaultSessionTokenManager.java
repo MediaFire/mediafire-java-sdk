@@ -1,9 +1,11 @@
 package com.mediafire.sdk.config.defaults;
 
 import com.mediafire.sdk.clients.ApiClient;
-import com.mediafire.sdk.clients.ClientHelper;
+import com.mediafire.sdk.clients.ClientHelperNewSessionToken;
 import com.mediafire.sdk.clients.RequestGenerator;
 import com.mediafire.sdk.config.Configuration;
+import com.mediafire.sdk.config.CredentialsInterface;
+import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
@@ -29,20 +31,25 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
 
     private static int outstandingRequests = 0;
     private static final Object outstandingRequestsLock = new Object();
+    private CredentialsInterface mUserCredentials;
+    private CredentialsInterface mDeveloperCredentials;
+    private HttpWorkerInterface mHttpWorkerInterface;
 
     /**
      * DefaultSessionTokenManager Constructor
      */
-    public DefaultSessionTokenManager(){ }
+    public DefaultSessionTokenManager(HttpWorkerInterface httpWorkerInterface, CredentialsInterface userCredentials, CredentialsInterface developerCredentials){
+        mHttpWorkerInterface = httpWorkerInterface;
+        mUserCredentials = userCredentials;
+        mDeveloperCredentials = developerCredentials;
+    }
 
     /**
      * Initialized this class, should be called before class methods are called
      * @param configuration Configuration Object to be used in class methods
      */
     @Override
-    public void initialize(Configuration configuration) {
-        mConfiguration = configuration;
-    }
+    public void initialize(Configuration configuration) { }
 
     /**
      * A shutdown method for this class
@@ -120,9 +127,12 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
             request.addQueryParameter("response_format", "json");
             request.addQueryParameter("token_version", 2);
             addOutstandingRequest();
-            ClientHelper clientHelper = new ClientHelper(mConfiguration);
-            Result result = new ApiClient(clientHelper, mConfiguration.getHttpWorker()).doRequest(request);
+
+            ClientHelperNewSessionToken clientHelperNewSessionToken = new ClientHelperNewSessionToken(mUserCredentials, mDeveloperCredentials, DefaultSessionTokenManager.this);
+            ApiClient apiClient = new ApiClient(clientHelperNewSessionToken, mHttpWorkerInterface);
+            Result result = apiClient.doRequest(request);
             Response response = result.getResponse();
+
             if(response.getClass() == ResponseApiClientError.class) {
                 ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();
                 mConfiguration.getLogger().e(TAG, responseApiClientError.getErrorMessage());

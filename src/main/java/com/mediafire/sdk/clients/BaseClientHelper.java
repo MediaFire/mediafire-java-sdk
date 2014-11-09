@@ -180,4 +180,8 @@ public abstract class BaseClientHelper {
         System.out.printf("%s - %s", TAG, "makeSignatureForApiRequest - hashed: " + signature);
         return signature;
     }
+
+    public enum TokenType {
+        IMAGE, UPLOAD,
+    }
 }

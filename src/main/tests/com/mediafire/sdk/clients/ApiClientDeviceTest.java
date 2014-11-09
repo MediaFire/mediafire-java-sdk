@@ -41,34 +41,11 @@ public class ApiClientDeviceTest {
 
     @Test
     public void testDeviceGetStatus() throws Exception {
-        ApiClient apiClient = new ApiClient(mConfiguration);
-        Request request = new RequestGenerator().generateRequestObject("1.2", "device", "get_status.php");
-        request.addQueryParameter("response_format", "json");
-        Result result = apiClient.doRequest(request);
 
-        ResponseHelper responseHelper = new ResponseHelper(result.getResponse());
-        GetSessionTokenResponse responseObject = responseHelper.getResponseObject(GetSessionTokenResponse.class);
-
-        String actual = responseObject.getResult();
-        String expected = "Success";
-
-        assertEquals(expected, actual);
     }
 
     @Test
     public void testDeviceGetChanges() throws Exception {
-        ApiClient apiClient = new ApiClient(mConfiguration);
-        Request request = new RequestGenerator().generateRequestObject("1.2", "device", "get_changes.php");
-        request.addQueryParameter("response_format", "json");
-        request.addQueryParameter("revision", 0);
-        Result result = apiClient.doRequest(request);
 
-        ResponseHelper responseHelper = new ResponseHelper(result.getResponse());
-        GetSessionTokenResponse responseObject = responseHelper.getResponseObject(GetSessionTokenResponse.class);
-
-        String actual = responseObject.getResult();
-        String expected = "Success";
-
-        assertEquals(expected, actual);
     }
 }

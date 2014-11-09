@@ -9,12 +9,12 @@ import com.mediafire.sdk.http.Result;
  *  ApiClient is a wrapper for the methods required to make an request the the MediaFire API
  */
 public class ApiClient {
-    private ClientHelper mClientHelper;
+    private BaseClientHelper mBaseClientHelper;
     private HttpWorkerInterface mHttpWorker;
 
 
-    public ApiClient(ClientHelper clientHelper, HttpWorkerInterface httpWorker) {
-        mClientHelper = clientHelper;
+    public ApiClient(BaseClientHelper baseClientHelper, HttpWorkerInterface httpWorker) {
+        mBaseClientHelper = baseClientHelper;
         mHttpWorker = httpWorker;
     }
 
@@ -24,13 +24,13 @@ public class ApiClient {
      * @return returns a Result object after the http response is cleaned up
      */
     public Result doRequest(Request request) {
-        mClientHelper.setup(request);
+        mBaseClientHelper.setup(request);
 
         String httpMethod = request.getHttpMethod();
 
         Response response = doRequest(request, httpMethod);
 
-        mClientHelper.cleanup(response, request);
+        mBaseClientHelper.cleanup(response, request);
 
         return new Result(response, request);
     }

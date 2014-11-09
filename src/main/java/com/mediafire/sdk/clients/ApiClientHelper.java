@@ -41,7 +41,7 @@ public class ApiClientHelper extends BaseClientHelper {
                 ((SessionToken) request.getToken()).updateSessionToken();
             }
             mSessionTokenManagerInterface.receiveSessionToken(((SessionToken) request.getToken()));
+            System.out.printf("%s - %s", TAG, "returnToken - returned old v2 to token manager");
         }
-        System.out.printf("%s - %s", TAG, "returnToken - returned old v2 to token manager");
     }
 }

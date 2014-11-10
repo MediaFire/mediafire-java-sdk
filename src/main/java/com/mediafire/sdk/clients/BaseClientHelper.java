@@ -169,7 +169,7 @@ public abstract class BaseClientHelper {
 
         String nonUrlEncodedQueryString = urlHelper.getQueryString(false);
 
-        String baseUri = urlHelper.getBaseUriString();
+        String baseUri = urlHelper.getPathString();
         String fullUri = baseUri + nonUrlEncodedQueryString;
 
         String nonUrlEncodedString = secretKeyMod256 + time + fullUri;

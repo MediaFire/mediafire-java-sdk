@@ -234,13 +234,14 @@ public class Request {
         
         public Builder postQuery(boolean postQuery) {
             mPostQuery = postQuery;
-            
+            mHttpMethod = "post";
             return this;
         }
 
         public Builder payload(byte[] payload) {
             mPayload = payload;
-
+            mHttpMethod = "post";
+            mPostQuery = false;
             return this;
         }
 

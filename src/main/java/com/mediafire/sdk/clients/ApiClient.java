@@ -49,7 +49,7 @@ public class ApiClient {
     }
 
     private Response doGet(Request request) {
-        String url = new UrlHelper(request).getUrlForGETRequest();
+        String url = new UrlHelper(request).getUrlForRequest();
         // add headers to request
         request.addHeader("Accept-Charset", CHARSET);
         return mHttpWorker.doGet(url, request.getHeaders());
@@ -57,7 +57,7 @@ public class ApiClient {
 
     private Response doPost(Request request) {
         UrlHelper urlHelper = new UrlHelper(request);
-        String url = urlHelper.getUrlForPOSTRequest();
+        String url = urlHelper.getUrlForRequest();
 
 
         byte[] payload = request.getPayload();

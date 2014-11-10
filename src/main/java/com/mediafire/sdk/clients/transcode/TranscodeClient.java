@@ -25,7 +25,7 @@ public class TranscodeClient {
     }
 
     public Result doRequest(Request request) {
-        String url = new UrlHelper(request).getUrlForGETRequest();
+        String url = new UrlHelper(request).getUrlForRequest();
         // add headers to request
         request.addHeader("Accept-Charset", CHARSET);
         Response response = mHttpWorker.doGet(url, request.getHeaders());

@@ -21,40 +21,23 @@ public class UrlHelper {
         mRequest = request;
     }
 
-    /**
-     * Makes a url for post if the Requests' InstructionsObject says is postable, otherwise makes a url for get request
-     * @return a String containing the full url
-     */
-    public String getUrlForPOSTRequest() {
-
-        if (mRequest.postQuery()) {
-            return getBaseUrlString() + getBaseUriString();
+    public String getUrlForRequest() {
+        if (mRequest.getHttpMethod().equalsIgnoreCase("get")) {
+            return getUrlForGETRequest();
         }
 
-        return getUrlForGETRequest();
-    }
-
-    /**
-     * Makes a full url for a get request (including query params)
-     * @return a String containing the full url
-     */
-    public String getUrlForGETRequest() {
-        return getBaseUrlString() + getBaseUriString() + getQueryString(true);
-    }
-
-    /**
-     * Makes a base url from the request
-     * @return a String containing the base url
-     */
-    public String getBaseUrlString() {
-        return mRequest.getScheme() + "://" + mRequest.getFullDomain();
+        return getUrlForPOSTRequest();
     }
 
     /**
      * Makes a base uri from the request
      * @return a String containing the base uri
      */
-    public String getBaseUriString() {
+    public String getPathString() {
+        if (mRequest.getPath() == null) {
+            return "/";
+        }
+
         return "/" + mRequest.getPath();
     }
 
@@ -95,6 +78,35 @@ public class UrlHelper {
      */
     public String getQueryString(boolean encoded) {
         return getQueryString(encoded, false);
+    }
+
+    /**
+     * Makes a url for post if the Requests' InstructionsObject says is postable, otherwise makes a url for get request
+     * @return a String containing the full url
+     */
+    private String getUrlForPOSTRequest() {
+
+        if (mRequest.postQuery()) {
+            return getBaseUrlString() + getPathString();
+        }
+
+        return getUrlForGETRequest();
+    }
+
+    /**
+     * Makes a full url for a get request (including query params)
+     * @return a String containing the full url
+     */
+    private String getUrlForGETRequest() {
+        return getBaseUrlString() + getPathString() + getQueryString(true);
+    }
+
+    /**
+     * Makes a base url from the request
+     * @return a String containing the base url
+     */
+    private String getBaseUrlString() {
+        return mRequest.getScheme() + "://" + mRequest.getFullDomain();
     }
 
     private String utf8Encode(String value) {

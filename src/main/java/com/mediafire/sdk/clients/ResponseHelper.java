@@ -12,7 +12,6 @@ import com.mediafire.sdk.http.Response;
  * ResponseHelper parses the json of a response and returns the response
  */
 public class ResponseHelper {
-    private static final String TAG = ResponseHelper.class.getCanonicalName();
     private final Response mResponse;
 
     /**

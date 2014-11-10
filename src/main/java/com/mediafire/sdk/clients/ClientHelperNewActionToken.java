@@ -16,10 +16,10 @@ import com.mediafire.sdk.token.UploadActionToken;
  */
 public class ClientHelperNewActionToken extends ClientHelperApi {
 
-    private TokenType mTokenType;
+    private String mTokenType;
     private ActionTokenManagerInterface mActionTokenManagerInterface;
 
-    public ClientHelperNewActionToken(TokenType tokenType, ActionTokenManagerInterface actionTokenManagerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
+    public ClientHelperNewActionToken(String tokenType, ActionTokenManagerInterface actionTokenManagerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
         super(sessionTokenManagerInterface);
 
         mTokenType = tokenType;
@@ -61,17 +61,16 @@ public class ClientHelperNewActionToken extends ClientHelperApi {
             return;
         }
 
-        switch(mTokenType) {
-            case UPLOAD:
-                UploadActionToken uploadActionToken = (UploadActionToken) createActionToken(UploadActionToken.class, getActionTokenResponse, request);
-                mActionTokenManagerInterface.receiveUploadActionToken(uploadActionToken);
-                System.out.printf("%s - %s", TAG, "returnToken - returned new upload actiontoken to token manager");
-                break;
-            case IMAGE:
-                ImageActionToken mfImageActionToken = (ImageActionToken) createActionToken(ImageActionToken.class, getActionTokenResponse, request);
-                mActionTokenManagerInterface.receiveImageActionToken(mfImageActionToken);
-                System.out.printf("%s - %s", TAG, "returnToken - returned new image actiontoken to token manager");
-                break;
+        if ("image".equals(mTokenType)) {
+            ImageActionToken mfImageActionToken = (ImageActionToken) createActionToken(ImageActionToken.class, getActionTokenResponse, request);
+            mActionTokenManagerInterface.receiveImageActionToken(mfImageActionToken);
+            System.out.printf("%s - %s", TAG, "returnToken - returned new image actiontoken to token manager");
+        }
+
+        if ("upload".equals(mTokenType)) {
+            UploadActionToken uploadActionToken = (UploadActionToken) createActionToken(UploadActionToken.class, getActionTokenResponse, request);
+            mActionTokenManagerInterface.receiveUploadActionToken(uploadActionToken);
+            System.out.printf("%s - %s", TAG, "returnToken - returned new upload actiontoken to token manager");
         }
     }
 

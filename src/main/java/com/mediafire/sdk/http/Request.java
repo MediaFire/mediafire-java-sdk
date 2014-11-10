@@ -9,10 +9,11 @@ import java.util.Map;
  * Request is an object used to perform an Api Request
  */
 public class Request {
-    private final HostObject mHostObject;
-    private final ApiObject mApiObject;
-    private final InstructionsObject mInstructionsObject;
-    private final VersionObject mVersionObject;
+    private final String mPath;
+    private final String mHttpMethod;
+    private final String mDomain;
+    private final String mScheme;
+    private final boolean mPostQuery;
 
     private Map<String, Object> mQueryParameters;
     private Map<String, String> mHeaders;
@@ -20,69 +21,41 @@ public class Request {
     private Token mToken;
     private String mSignature;
 
-    /**
-     * Request Constructor
-     * @param hostObject HostObject is the host for the request
-     * @param apiObject ApiObject is the api for the request
-     * @param instructionsObject InstructionsObject are the instruction for the request
-     * @param versionObject VersionObject is the api version for the request
-     */
-    public Request(HostObject hostObject, ApiObject apiObject, InstructionsObject instructionsObject, VersionObject versionObject) {
-        mHostObject = hostObject;
-        mApiObject = apiObject;
-        mInstructionsObject = instructionsObject;
-        mVersionObject = versionObject;
-    }
-
     private Request(Builder builder) {
-        mHostObject = builder.mHostObject;
-        mApiObject = builder.mApiObject;
-        mInstructionsObject = builder.mInstructionsObject;
-        mVersionObject = builder.mVersionObject;
+        mPath = builder.mPath;
+        mHttpMethod = builder.mHttpMethod;
+        mDomain = builder.mFullDomain;
+        mScheme = builder.mScheme;
+        mPostQuery = builder.mPostQuery;
     }
 
-    public String getApiVersion() {
-        return mVersionObject.getApiVersion();
-    }
-
-    public BorrowTokenType getBorrowTokenType() {
-        return mInstructionsObject.getBorrowTokenType();
-    }
-
-    public ReturnTokenType getReturnTokenType() {
-        return mInstructionsObject.getReturnTokenType();
-    }
-
-    public SignatureType getSignatureType() {
-        return mInstructionsObject.getSignatureType();
+    // TODO - finish writing constructor for url
+    public Request(String url) {
+        mPath = null;
+        mDomain = null;
+        mHttpMethod = "get";
+        mScheme = null;
+        mPostQuery = false;
     }
 
     public String getPath() {
-        return mApiObject.getPath();
-    }
-
-    public String getFile() {
-        return mApiObject.getFile();
+        return mPath;
     }
 
     public String getHttpMethod() {
-        return mHostObject.getHttpMethod();
+        return mHttpMethod;
     }
 
-    public String getDomain() {
-        return mHostObject.getDomain();
+    public String getFullDomain() {
+        return mDomain;
     }
 
-    public String getSubdomain() {
-        return mHostObject.getSubdomain();
-    }
-
-    public String getTransferProtocol() {
-        return mHostObject.getTransferProtocol();
+    public String getScheme() {
+        return mScheme;
     }
 
     public boolean postQuery() {
-        return mInstructionsObject.postQuery();
+        return mPostQuery;
     }
 
     /**
@@ -193,31 +166,62 @@ public class Request {
         addQueryParameter("signature", signature);
     }
 
+    /**
+     * Builder used to create a request
+     */
     public static class Builder {
-        private HostObject mHostObject;
-        private ApiObject mApiObject;
-        private InstructionsObject mInstructionsObject;
-        private VersionObject mVersionObject;
+        private static final String DEFAULT_SCHEME = "https";
+        private static final String DEFAULT_DOMAIN = "www.mediafire.com";
+        private static final boolean DEFAULT_POST_QUERY = false;
+        private static final String DEFAULT_HTTP_METHOD = "get";
 
+        private String mPath;
+        private String mHttpMethod = DEFAULT_HTTP_METHOD;
+        private String mFullDomain = DEFAULT_DOMAIN;
+        private String mScheme = DEFAULT_SCHEME;
+        private boolean mPostQuery = DEFAULT_POST_QUERY;
+            
         public Builder() { }
 
-        public Builder hostObject(HostObject value) {
-            mHostObject = value;
+        public Builder path(String value) {
+            if (value == null || value.isEmpty()) {
+                return this;
+            }
+
+            mPath = value;
             return this;
         }
 
-        public Builder apiObject(ApiObject value) {
-            mApiObject = value;
+        public Builder httpMethod(String value) {
+            if (value == null || value.isEmpty()) {
+                return this;
+            }
+
+            mHttpMethod = value;
             return this;
         }
+        
+        public Builder fullDomain(String value) {
+            if (value == null || value.isEmpty()) {
+                return this;
+            }
 
-        public Builder instructionsObject(InstructionsObject value) {
-            mInstructionsObject = value;
+            mFullDomain = value;
             return this;
         }
+                
+        public Builder scheme(String value) {
+            if (value == null || value.isEmpty()) {
+                return this;
+            }
 
-        public Builder versionObject(VersionObject value) {
-            mVersionObject = value;
+            mScheme = value;
+            return this;
+        }
+        
+        public Builder postQuery(boolean postQuery) {
+            mPostQuery = postQuery;
+            
             return this;
         }
 

@@ -1,10 +1,6 @@
 package com.mediafire.sdk.clients;
 
-import com.mediafire.sdk.config.defaults.DefaultLogger;
-import com.mediafire.sdk.http.ApiObject;
-import com.mediafire.sdk.http.HostObject;
 import com.mediafire.sdk.http.Request;
-import com.mediafire.sdk.http.VersionObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -28,13 +24,12 @@ public class UrlHelper {
     }
 
     public String makeConcatenatedUrlForGet() {
-        String transferProtocol = (mRequest.getTransferProtocol() == null) ? "" : mRequest.getTransferProtocol();
-        String domain = (mRequest.getDomain() == null) ? "" : mRequest.getDomain();
-        String subdomain = (mRequest.getSubdomain() == null) ? "" : mRequest.getSubdomain();
-
+        String scheme = (mRequest.getScheme() == null) ? "" : mRequest.getScheme();
+        String domain = (mRequest.getFullDomain() == null) ? "" : mRequest.getFullDomain();
+        String path = (mRequest.getPath() == null) ? "" : mRequest.getPath();
         String query = getQueryString(true);
 
-        return transferProtocol + domain + subdomain + query;
+        return scheme + "://" + domain + "/" + path + "/" + query;
     }
 
     /**
@@ -42,7 +37,7 @@ public class UrlHelper {
      * @return a String containing the full url
      */
     public String makeUrlForPostRequest() {
-        DefaultLogger.log().v(TAG, "makeUrlForPostRequest");
+        System.out.printf("%s - %s", TAG, "makeUrlForPostRequest");
         String baseUrl;
         if (mRequest.postQuery()) {
             baseUrl = getBaseUrlString();
@@ -59,7 +54,7 @@ public class UrlHelper {
      * @return a String containing the full url
      */
     public String makeUrlForGetRequest() {
-        DefaultLogger.log().v(TAG, "makeUrlForGetRequest");
+        System.out.printf("%s - %s", TAG, "makeUrlForGetRequest");
         String baseUrl = getBaseUrlString();
 
         String baseUri = getBaseUriString();
@@ -74,14 +69,12 @@ public class UrlHelper {
      * @return a String containing the base url
      */
     public String getBaseUrlString() {
-        DefaultLogger.log().v(TAG, "getBaseUrlString");
-        String transferProtocol = mRequest.getTransferProtocol();
+        System.out.printf("%s - %s", TAG, "getBaseUrlString");
+        String transferProtocol = mRequest.getScheme();
 
-        String subdomain = mRequest.getSubdomain();
+        String domain = mRequest.getFullDomain();
 
-        String domain = mRequest.getDomain();
-
-        return transferProtocol + "://" + subdomain + "." + domain;
+        return transferProtocol + "://" + domain;
     }
 
     /**
@@ -89,26 +82,11 @@ public class UrlHelper {
      * @return a String containing the base uri
      */
     public String getBaseUriString() {
-        DefaultLogger.log().v(TAG, "getBaseUriString");
-
-        String apiVersion = mRequest.getApiVersion();
+        System.out.printf("%s - %s", TAG, "getBaseUriString");
 
         String path = mRequest.getPath();
 
-        String file = mRequest.getFile();
-
-        String baseUri = "/";
-        if (apiVersion != null) {
-            baseUri += "api/" + apiVersion + "/";
-        } else {
-            baseUri += "api/";
-        }
-
-        baseUri += path + "/";
-
-        baseUri += file;
-
-        return baseUri;
+        return "/" + path;
     }
 
     /**
@@ -118,7 +96,7 @@ public class UrlHelper {
      * @return a String containing the query parameters
      */
     public String getQueryString(boolean encoded, boolean rawKeyValue) {
-        DefaultLogger.log().v(TAG, "getQueryString");
+        System.out.printf("%s - %s", TAG, "getQueryString");
         Map<String, Object> queryParameters = mRequest.getQueryParameters();
         if (queryParameters == null) {
             return "";
@@ -156,7 +134,7 @@ public class UrlHelper {
      * @return a byte array of the payload
      */
     public byte[] getPayload() {
-        DefaultLogger.log().v(TAG, "getPayload");
+        System.out.printf("%s - %s", TAG, "getPayload");
         byte[] payload;
 
         if (mRequest.postQuery()) {

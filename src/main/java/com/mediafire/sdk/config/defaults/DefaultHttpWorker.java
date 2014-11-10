@@ -31,7 +31,7 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
      */
     @Override
     public Response doGet(String url, Map<String, String> headers) {
-        DefaultLogger.log().v(TAG, "doGet - " + url);
+        System.out.printf("%s - %s", TAG, "doGet - " + url);
         HttpURLConnection connection;
         InputStream inputStream;
         try {
@@ -69,7 +69,7 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
      */
     @Override
     public Response doPost(String url, Map<String, String> headers, byte[] payload) {
-        DefaultLogger.log().v(TAG, "doPost - " + url);
+        System.out.printf("%s - %s", TAG, "doPost - " + url);
         try{
             HttpURLConnection connection = getURLConnection(url);
             setTimeouts(connection);
@@ -95,12 +95,12 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
         String urlScheme = url.substring(0, 5);
 
         if ("http:".equals(urlScheme)) {
-            DefaultLogger.log().v(TAG, "getURLConnection - HttpUrlConnection");
+            System.out.printf("%s - %s", TAG, "getURLConnection - HttpUrlConnection");
             return (HttpURLConnection) new URL(url).openConnection();
         }
 
         if ("https".equals(urlScheme)) {
-            DefaultLogger.log().v(TAG, "getURLConnection - HttpsUrlConnection");
+            System.out.printf("%s - %s", TAG, "getURLConnection - HttpsUrlConnection");
             return (HttpsURLConnection) new URL(url).openConnection();
         }
 
@@ -108,39 +108,39 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
     }
 
     private void addRequestHeadersToConnection(URLConnection connection, Map<String, String> headers) {
-        DefaultLogger.log().v(TAG, "addRequestHeadersToConnection - " + headers.size());
+        System.out.printf("%s - %s", TAG, "addRequestHeadersToConnection - " + headers.size());
         for (String key : headers.keySet()) {
             if (headers.get(key) != null) {
                 connection.addRequestProperty(key, headers.get(key));
             }
         }
-        DefaultLogger.log().v(TAG, "addRequestHeadersToConnection - added request properties:" + connection.getRequestProperties());
+        System.out.printf("%s - %s", TAG, "addRequestHeadersToConnection - added request properties:" + connection.getRequestProperties());
     }
 
     private void setTimeouts(URLConnection connection) {
-        DefaultLogger.log().v(TAG, "setTimeouts - conn/read = " + CONNECTION_TIMEOUT_MILLISECONDS + "/" + READ_TIMEOUT_MILLISECONDS);
+        System.out.printf("%s - %s", TAG, "setTimeouts - conn/read = " + CONNECTION_TIMEOUT_MILLISECONDS + "/" + READ_TIMEOUT_MILLISECONDS);
         connection.setConnectTimeout(CONNECTION_TIMEOUT_MILLISECONDS);
         connection.setReadTimeout(READ_TIMEOUT_MILLISECONDS);
     }
 
     private void postData(URLConnection connection, byte[] payload) throws IOException {
         if (payload == null) {
-            DefaultLogger.log().w(TAG, "postData - byte array empty, not posting anything");
+            System.out.printf("%s - %s", TAG, "postData - byte array empty, not posting anything");
             return;
         } else {
-            DefaultLogger.log().w(TAG, "postData - posting " + payload.length + " bytes");
+            System.out.printf("%s - %s", TAG, "postData - posting " + payload.length + " bytes");
         }
-        DefaultLogger.log().v(TAG, "postData - request properties: " + connection.getRequestProperties());
+        System.out.printf("%s - %s", TAG, "postData - request properties: " + connection.getRequestProperties());
 
         String postDataAsString = new String(payload, "UTF-8");
-        DefaultLogger.log().v(TAG, "postData - payload: " + postDataAsString);
-        DefaultLogger.log().v(TAG, "postData - writing payload");
+        System.out.printf("%s - %s", TAG, "postData - payload: " + postDataAsString);
+        System.out.printf("%s - %s", TAG, "postData - writing payload");
         connection.getOutputStream().write(payload);
-        DefaultLogger.log().v(TAG, "postData - finished writing payload");
+        System.out.printf("%s - %s", TAG, "postData - finished writing payload");
     }
 
     private byte[] readStream(InputStream inputStream) throws IOException {
-        DefaultLogger.log().v(TAG, "readStream");
+        System.out.printf("%s - %s", TAG, "readStream");
         if (inputStream == null) {
             return null;
         }

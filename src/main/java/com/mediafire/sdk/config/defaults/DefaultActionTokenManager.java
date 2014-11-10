@@ -1,9 +1,8 @@
 package com.mediafire.sdk.config.defaults;
 
 import com.mediafire.sdk.clients.ApiClient;
-import com.mediafire.sdk.clients.BaseClientHelper;
-import com.mediafire.sdk.clients.ClientHelper;
 import com.mediafire.sdk.clients.ClientHelperNewActionToken;
+import com.mediafire.sdk.clients.ApiRequestGenerator;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.HttpWorkerInterface;
@@ -108,16 +107,11 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private class NewImageActionTokenThread extends Thread {
         @Override
         public void run(){
-            System.out.printf("%s - %s", TAG, "NewImageActionTokenThread - run");
-            HostObject hostObject = new HostObject("http", "www", "mediafire.com", "post");
-            ApiObject apiObject = new ApiObject("user", "get_action_token.php");
-            InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_IMAGE, true);
-            VersionObject versionObject = new VersionObject("1.2");
-            Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
+            Request request = new ApiRequestGenerator("1.2").createRequestObjectFromPath("user/get_action_token.php");
             request.addQueryParameter("type", "image");
             request.addQueryParameter("response_format", "json");
 
-            ClientHelperNewActionToken clientHelperNewActionToken = new ClientHelperNewActionToken(BaseClientHelper.TokenType.IMAGE, DefaultActionTokenManager.this, mSessionTokenManagerInterface);
+            ClientHelperNewActionToken clientHelperNewActionToken = new ClientHelperNewActionToken("image", DefaultActionTokenManager.this, mSessionTokenManagerInterface);
             ApiClient apiClient = new ApiClient(clientHelperNewActionToken, mHttpWorkerInterface);
             Result result = apiClient.doRequest(request);
             
@@ -159,16 +153,11 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private class NewUploadActionTokenThread extends Thread {
         @Override
         public void run(){
-            System.out.printf("%s - %s", TAG, "NewUploadActionTokenThread - run");
-            HostObject hostObject = new HostObject("http", "www", "mediafire.com", "post");
-            ApiObject apiObject = new ApiObject("user", "get_action_token.php");
-            InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_UPLOAD, true);
-            VersionObject versionObject = new VersionObject("1.2");
-            Request request = new Request(hostObject, apiObject, instructionsObject, versionObject);
+            Request request = new ApiRequestGenerator("1.2").createRequestObjectFromPath("user/get_action_token.php");
             request.addQueryParameter("type", "upload");
             request.addQueryParameter("response_format", "json");
             
-            ClientHelperNewActionToken clientHelperNewActionToken = new ClientHelperNewActionToken(BaseClientHelper.TokenType.UPLOAD, DefaultActionTokenManager.this, mSessionTokenManagerInterface);
+            ClientHelperNewActionToken clientHelperNewActionToken = new ClientHelperNewActionToken("upload", DefaultActionTokenManager.this, mSessionTokenManagerInterface);
             ApiClient apiClient = new ApiClient(clientHelperNewActionToken, mHttpWorkerInterface);
             Result result = apiClient.doRequest(request);
 

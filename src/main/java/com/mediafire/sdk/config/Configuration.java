@@ -11,7 +11,6 @@ public class Configuration {
     private final CredentialsInterface mDeveloperCredentials;
     private final SessionTokenManagerInterface mSessionTokenManager;
     private final ActionTokenManagerInterface mActionTokenManager;
-    private final LoggerInterface mLogger;
     private final NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor;
     private boolean initialized = false;
 
@@ -21,7 +20,6 @@ public class Configuration {
         mDeveloperCredentials = builder.mDeveloperCredentials;
         mSessionTokenManager = builder.mSessionTokenManager;
         mActionTokenManager = builder.mActionTokenManager;
-        mLogger = builder.mLogger;
         mNetworkConnectivityMonitor = builder.mNetworkConnectivityMonitor;
     }
 
@@ -87,17 +85,6 @@ public class Configuration {
     }
 
     /**
-     * Gets the logger associated with this class
-     * @return LoggerInterface
-     */
-    public LoggerInterface getLogger() {
-        if (!initialized) {
-            throw new IllegalStateException("Configuration.init() must be called to finish configuration");
-        }
-        return mLogger;
-    }
-
-    /**
      * Gets the network connectivity monitor associated with this class
      * @return NetworkConnectivityMonitorInterface
      */
@@ -117,7 +104,6 @@ public class Configuration {
         private static final CredentialsInterface DEFAULT_DEVELOPER_CREDENTIALS = new DefaultCredentials();
         private static final SessionTokenManagerInterface DEFAULT_SESSION_TOKEN_MANAGER = new DefaultSessionTokenManager(DEFAULT_HTTP_WORKER, DEFAULT_USER_CREDENTIALS, DEFAULT_DEVELOPER_CREDENTIALS);
         private static final ActionTokenManagerInterface DEFAULT_ACTION_TOKEN_MANAGER = new DefaultActionTokenManager(DEFAULT_HTTP_WORKER, DEFAULT_SESSION_TOKEN_MANAGER);
-        private static final LoggerInterface DEFAULT_LOGGER = new DefaultLogger();
         private static final NetworkConnectivityMonitorInterface DEFAULT_NET_MONITOR = new DefaultNetworkConnectivityMonitor();
 
         private HttpWorkerInterface mHttpWorker = DEFAULT_HTTP_WORKER;
@@ -125,7 +111,6 @@ public class Configuration {
         private CredentialsInterface mDeveloperCredentials = DEFAULT_DEVELOPER_CREDENTIALS;
         private SessionTokenManagerInterface mSessionTokenManager = DEFAULT_SESSION_TOKEN_MANAGER;
         private ActionTokenManagerInterface mActionTokenManager = DEFAULT_ACTION_TOKEN_MANAGER;
-        private LoggerInterface mLogger = DEFAULT_LOGGER;
         private NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor = DEFAULT_NET_MONITOR;
 
         /**
@@ -187,20 +172,6 @@ public class Configuration {
 
             mSessionTokenManager = sessionTokenManager;
             mActionTokenManager = actionTokenManager;
-            return this;
-        }
-
-        /**
-         * Adds a LoggerInterface to the class
-         * @param logger LoggerInterface to be added
-         * @return the updated Builder object
-         */
-        public Builder logger(LoggerInterface logger) {
-            if (logger == null) {
-                return this;
-            }
-
-            mLogger = logger;
             return this;
         }
 

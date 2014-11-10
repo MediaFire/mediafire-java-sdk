@@ -1,6 +1,5 @@
 package com.mediafire.sdk.clients;
 
-import com.mediafire.sdk.config.defaults.DefaultLogger;
 import com.mediafire.sdk.http.Request;
 
 /**
@@ -24,7 +23,7 @@ public class HeadersHelper {
      * Adds headers for a get http request
      */
     public void addGetHeaders() {
-        DefaultLogger.log().v(TAG, "addGetHeaders");
+        System.out.printf("%s - %s", TAG, "addGetHeaders");
         mRequest.addHeader("Accept-Charset", CHARSET);
     }
 
@@ -33,7 +32,7 @@ public class HeadersHelper {
      * @param payload the payload to be sent with the request
      */
     public void addPostHeaders(byte[] payload) {
-        DefaultLogger.log().v(TAG, "addPostHeaders");
+        System.out.printf("%s - %s", TAG, "addPostHeaders");
         mRequest.addHeader("Accept-Charset", CHARSET);
 
         if (payload == null) {

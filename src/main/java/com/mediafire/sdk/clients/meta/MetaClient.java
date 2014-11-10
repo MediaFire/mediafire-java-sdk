@@ -1,23 +1,20 @@
 package com.mediafire.sdk.clients.meta;
 
-import com.mediafire.sdk.clients.ClientHelper;
-import com.mediafire.sdk.clients.PathSpecificApiClient;
+import com.mediafire.sdk.clients.ApiClient;
+import com.mediafire.sdk.clients.ClientHelperApi;
+import com.mediafire.sdk.clients.ApiRequestGenerator;
 import com.mediafire.sdk.config.HttpWorkerInterface;
-import com.mediafire.sdk.http.ApiObject;
-import com.mediafire.sdk.http.BorrowTokenType;
-import com.mediafire.sdk.http.HostObject;
-import com.mediafire.sdk.http.InstructionsObject;
+import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.http.ApiVersion;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
-import com.mediafire.sdk.http.ReturnTokenType;
-import com.mediafire.sdk.http.SignatureType;
 
 import java.util.Map;
 
 /**
  * Created by Chris Najar on 10/29/2014.
  */
-public class MetaClient extends PathSpecificApiClient {
+public class MetaClient {
     private static final String TAG = MetaClient.class.getCanonicalName();
 
     private static final String PARAM_LIST_KEY = "list_key";
@@ -31,62 +28,83 @@ public class MetaClient extends PathSpecificApiClient {
     private static final String PARAM_ORDER_DIRECTION = "order_direction";
     private static final String PARAM_CHUNK = "chunk";
 
-    private final HostObject mHost;
-    private final InstructionsObject mInstructions;
+    private final SessionTokenManagerInterface mSessionTokenManager;
+    private final HttpWorkerInterface mHttpWorker;
+    private final ApiRequestGenerator mApiRequestGenerator;
 
-    public MetaClient(ClientHelper clientHelper, HttpWorkerInterface httpWorkerInterface, String apiVersion) {
-        super(clientHelper, httpWorkerInterface, apiVersion);
+    public MetaClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManager, String apiVersion) {
         // init host object
-        mHost = new HostObject("https", "www", "mediafire.com", "post");
-        // init instructions object
-        mInstructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, true);
+        mHttpWorker = httpWorkerInterface;
+        mSessionTokenManager = sessionTokenManager;
+        mApiRequestGenerator = new ApiRequestGenerator(apiVersion);
+    }
+
+    public MetaClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManager) {
+        this(httpWorkerInterface, sessionTokenManager, ApiVersion.VERSION_CURRENT);
     }
 
     public Result addToList(String listKey, String quickKey) {
-        ApiObject apiObject = new ApiObject("meta", "add_to_list.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/add_to_list.php");
+
+        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
         // add list key query param
         request.addQueryParameter(PARAM_LIST_KEY, listKey);
-        return doRequestJson(request);
+
+        return apiClient.doRequest(request);
     }
 
     public Result removeFromList(String listKey, String quickKey) {
-        ApiObject apiObject = new ApiObject("meta", "remove_from_list.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/remove_from_list.php");
+
+        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
         // add list key query param
         request.addQueryParameter(PARAM_LIST_KEY, listKey);
-        return doRequestJson(request);
+
+        return apiClient.doRequest(request);
     }
 
     public Result delete(String quickKey) {
-        ApiObject apiObject = new ApiObject("meta", "delete.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/delete.php");
+
+        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
-        return doRequestJson(request);
+
+        return apiClient.doRequest(request);
     }
 
     public Result get(String quickKey) {
-        ApiObject apiObject = new ApiObject("meta", "get.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/get.php");
+
+        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
-        return doRequestJson(request);
+
+        return apiClient.doRequest(request);
     }
 
     public Result getLinks(String quickKey, String linkType) {
-        ApiObject apiObject = new ApiObject("meta", "get_links.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
-        // add link type query param
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/get_links.php");
+
+        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+
         request.addQueryParameter(PARAM_LINK_TYPE, linkType);
-        // add quick key param
         request.addQueryParameter(PARAM_QUICK_KEY_GET_LINKS, quickKey);
 
-        return doRequestJson(request);
+        return apiClient.doRequest(request);
     }
 
     public Result getLinks(String quickKey) {
@@ -94,8 +112,10 @@ public class MetaClient extends PathSpecificApiClient {
     }
 
     public Result query(QueryBuilder queryBuilder) {
-        ApiObject apiObject = new ApiObject("meta", "query.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/query.php");
+
+        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_CHUNK, queryBuilder.mChunk);
         request.addQueryParameter(PARAM_ORDER_DIRECTION, queryBuilder.mOrderDirection);
@@ -106,21 +126,18 @@ public class MetaClient extends PathSpecificApiClient {
             request.addQueryParameter(PARAM_META_PREFIX + key, queryBuilder.mMetaDataFilters.get(key));
         }
 
-        return doRequestJson(request);
+        return apiClient.doRequest(request);
     }
 
     public Result set(String quickKey, Map<String, String> metaKeyValuePairs) {
-        ApiObject apiObject = new ApiObject("meta", "set.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
-        
-        // add meta K,V pairs
-        for (String key : metaKeyValuePairs.keySet()) {
-            request.addQueryParameter(PARAM_META_PREFIX + key, metaKeyValuePairs.get(key));
-        }
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/set.php");
 
-        // add quickkey param to query parameters
+        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+
+        // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
-        
-        return doRequestJson(request);
+
+        return apiClient.doRequest(request);
     }
 }

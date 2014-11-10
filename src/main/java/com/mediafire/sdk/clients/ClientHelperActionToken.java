@@ -13,10 +13,10 @@ import com.mediafire.sdk.token.UploadActionToken;
  * BaseClientHelper for API calls that use action tokens (no signature)
  */
 public class ClientHelperActionToken extends BaseClientHelper {
-    private TokenType mTokenType;
+    private String mTokenType;
     private ActionTokenManagerInterface mActionTokenManagerInterface;
 
-    public ClientHelperActionToken(TokenType tokenType, ActionTokenManagerInterface actionTokenManagerInterface) {
+    public ClientHelperActionToken(String tokenType, ActionTokenManagerInterface actionTokenManagerInterface) {
         this.mTokenType = tokenType;
         mActionTokenManagerInterface = actionTokenManagerInterface;
     }
@@ -27,15 +27,15 @@ public class ClientHelperActionToken extends BaseClientHelper {
             return;
         }
 
-        switch(mTokenType) {
-            case IMAGE:
-                ImageActionToken imageActionToken = mActionTokenManagerInterface.borrowImageActionToken();
-                request.addToken(imageActionToken);
-                break;
-            case UPLOAD:
-                UploadActionToken uploadActionToken = mActionTokenManagerInterface.borrowUploadActionToken();
-                request.addToken(uploadActionToken);
-                break;
+        if ("image".equals(mTokenType)) {
+
+            ImageActionToken imageActionToken = mActionTokenManagerInterface.borrowImageActionToken();
+            request.addToken(imageActionToken);
+        }
+
+        if ("upload".equals(mTokenType)) {
+            UploadActionToken uploadActionToken = mActionTokenManagerInterface.borrowUploadActionToken();
+            request.addToken(uploadActionToken);
         }
     }
 

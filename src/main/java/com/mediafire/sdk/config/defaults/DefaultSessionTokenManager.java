@@ -2,7 +2,7 @@ package com.mediafire.sdk.config.defaults;
 
 import com.mediafire.sdk.clients.ApiClient;
 import com.mediafire.sdk.clients.ClientHelperNewSessionToken;
-import com.mediafire.sdk.clients.RequestGenerator;
+import com.mediafire.sdk.clients.ApiRequestGenerator;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.CredentialsInterface;
 import com.mediafire.sdk.config.HttpWorkerInterface;
@@ -56,7 +56,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
      */
     @Override
     public void shutdown() {
-        mConfiguration.getLogger().v(TAG, "shutdown");
+        System.out.printf("%s - %s", TAG, "shutdown");
     }
 
     /**
@@ -66,7 +66,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
      */
     @Override
     public void receiveSessionToken(SessionToken token) {
-        mConfiguration.getLogger().v(TAG, "receiveSessionToken");
+        System.out.printf("%s - %s", TAG, "receiveSessionToken");
         subtractOutstandingRequest();
         if (token != null) {
             if(mSessionTokens.size() < MAX_SESSION_TOKEN) {
@@ -81,7 +81,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
      */
     @Override
     public SessionToken borrowSessionToken() {
-        mConfiguration.getLogger().v(TAG, "borrowSessionToken");
+        System.out.printf("%s - %s", TAG, "borrowSessionToken");
         synchronized (lock) {
             if(mSessionTokens.size() < MIN_SESSION_TOKEN) {
                 for(int i = mSessionTokens.size(); i < MIN_SESSION_TOKEN; i++) {
@@ -108,7 +108,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
      */
     @Override
     public void getNewSessionTokenFailed(Response response) {
-        mConfiguration.getLogger().v(TAG, "getNewSessionTokenFailed");
+        System.out.printf("%s - %s", TAG, "getNewSessionTokenFailed");
         subtractOutstandingRequest();
         synchronized (outstandingRequestsLock) {
             if (outstandingRequests == 0 && mSessionTokens.isEmpty()) {
@@ -121,8 +121,8 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
     private class NewSessionTokenThread extends Thread {
         @Override
         public void run() {
-            mConfiguration.getLogger().v(TAG, "requestNewSessionToken");
-            Request request = new RequestGenerator().generateRequestObject("1.2", "user", "get_session_token.php");
+            System.out.printf("%s - %s", TAG, "requestNewSessionToken");
+            Request request = new ApiRequestGenerator("1.2").createRequestObjectFromPath("user/get_session_token.php");
             request.addQueryParameter("application_id", mConfiguration.getDeveloperCredentials().getCredentials().get("application_id"));
             request.addQueryParameter("response_format", "json");
             request.addQueryParameter("token_version", 2);
@@ -135,7 +135,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
 
             if(response.getClass() == ResponseApiClientError.class) {
                 ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();
-                mConfiguration.getLogger().e(TAG, responseApiClientError.getErrorMessage());
+                System.out.printf("%s - %s", TAG, responseApiClientError.getErrorMessage());
                 SessionToken badToken = new SessionToken(null, null, null);
                 mSessionTokens.offer(badToken);
             }

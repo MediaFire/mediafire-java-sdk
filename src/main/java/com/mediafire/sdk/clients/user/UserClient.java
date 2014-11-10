@@ -1,21 +1,16 @@
 package com.mediafire.sdk.clients.user;
 
-import com.mediafire.sdk.clients.ClientHelper;
-import com.mediafire.sdk.clients.PathSpecificApiClient;
-import com.mediafire.sdk.config.HttpWorkerInterface;
-import com.mediafire.sdk.http.ApiObject;
-import com.mediafire.sdk.http.BorrowTokenType;
-import com.mediafire.sdk.http.HostObject;
-import com.mediafire.sdk.http.InstructionsObject;
+import com.mediafire.sdk.ClientHelperNoToken;
+import com.mediafire.sdk.clients.*;
+import com.mediafire.sdk.config.*;
+import com.mediafire.sdk.http.ApiVersion;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
-import com.mediafire.sdk.http.ReturnTokenType;
-import com.mediafire.sdk.http.SignatureType;
 
 /**
  * Created by Chris Najar on 10/29/2014.
  */
-public class UserClient extends PathSpecificApiClient {
+public class UserClient {
     private static final String PARAM_APPLICATION_ID = "application_id";
     private static final String PARAM_TOKEN_TYPE = "type";
     private static final String PARAM_TOKEN_LIFESPAN = "lifespan";
@@ -33,25 +28,36 @@ public class UserClient extends PathSpecificApiClient {
     private static final String PARAM_TOKEN_VERSION = "token_version";
     private static final String PARAM_COLLECT_META_DATA = "collect_metadata";
 
-    private final HostObject mHost;
-    private final InstructionsObject mInstructions;
+    private final CredentialsInterface mUserCredentials;
+    private final CredentialsInterface mDeveloperCredentials;
 
-    public UserClient(ClientHelper clientHelper, HttpWorkerInterface httpWorkerInterface, String apiVersion) {
-        super(clientHelper, httpWorkerInterface, apiVersion);
+    private final HttpWorkerInterface mHttpWorker;
+    private final SessionTokenManagerInterface mSessionTokenManager;
+    private final ActionTokenManagerInterface mActionTokenManager;
+    private final String mApiVersion;
+    private final ApiRequestGenerator mApiRequestGenerator;
 
-        // init host object
-        mHost = new HostObject("https", "www", "mediafire.com", "post");
-        // init instructions object
-        mInstructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, true);
+    public UserClient(Configuration configuration, String apiVersion) {
+        mApiVersion = apiVersion;
+        mHttpWorker = configuration.getHttpWorker();
+        mSessionTokenManager = configuration.getSessionTokenManager();
+        mActionTokenManager = configuration.getActionTokenManager();
+        mUserCredentials = configuration.getUserCredentials();
+        mDeveloperCredentials = configuration.getDeveloperCredentials();
+        mApiRequestGenerator = new ApiRequestGenerator(mApiVersion);
+    }
+
+    public UserClient(Configuration configuration) {
+        this(configuration, ApiVersion.VERSION_CURRENT);
     }
 
     public Result getSessionTokenV2() {
-        ApiObject apiObject = new ApiObject("user", "get_session_token.php");
-        InstructionsObject instructions = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NEW_SESSION_TOKEN_SIGNATURE, ReturnTokenType.NEW_V2, true);
-        Request request = new Request(mHost, apiObject, instructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_session_token.php");
         // add application_id and relative parameters are added by ApiClientHelper
         request.addQueryParameter(PARAM_TOKEN_VERSION, 2);
-        return doRequestJson(request);
+        ClientHelperNewSessionToken clientHelper = new ClientHelperNewSessionToken(mUserCredentials, mDeveloperCredentials, mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+        return apiClient.doRequest(request);
     }
 
     public Result getImageActionToken(int lifespanMinutes) {
@@ -63,67 +69,69 @@ public class UserClient extends PathSpecificApiClient {
     }
 
     private Result getActionToken(String type, int lifespan) {
-        ApiObject apiObject = new ApiObject("user", "get_action_token.php");
-        InstructionsObject instructions;
-        if ("image".equals(type)) {
-            instructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_IMAGE, true);
-        } else {
-            instructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.NEW_UPLOAD, true);
-        }
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_action_token.php");
 
-        Request request = new Request(mHost, apiObject, instructions, mVersionObject);
-
+        // add application_id and relative parameters are added by ApiClientHelper
+        request.addQueryParameter(PARAM_TOKEN_VERSION, 2);
         request.addQueryParameter(PARAM_TOKEN_TYPE, type);
         request.addQueryParameter(PARAM_TOKEN_LIFESPAN, lifespan);
 
-        return doRequestJson(request);
+        // add application_id and relative parameters are added by ApiClientHelper
+        request.addQueryParameter(PARAM_TOKEN_VERSION, 2);
+        ClientHelperNewActionToken clientHelper = new ClientHelperNewActionToken(type, mActionTokenManager, mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+        return apiClient.doRequest(request);
     }
 
     public Result getAvatar() {
-        ApiObject apiObject = new ApiObject("user", "get_avatar.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
-        return doRequestJson(request);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_avatar.php");
+        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+        return apiClient.doRequest(request);
     }
 
     public Result setAvatar(SetAvatarParameters requestParams) {
-        ApiObject apiObject = new ApiObject("user", "set_avatar.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/set_avatar.php");
 
         request.addQueryParameter(PARAM_SET_AVATAR_ACTION, requestParams.mAction);
         request.addQueryParameter(PARAM_QUICK_KEY, requestParams.mQuickKey);
         request.addQueryParameter(PARAM_URL, requestParams.mUrl);
 
-        return doRequestJson(request);
+        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+        return apiClient.doRequest(request);
     }
 
     public Result getInfo() {
-        ApiObject apiObject = new ApiObject("user", "get_info.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
-        return doRequestJson(request);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_info.php");
+
+        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+        return apiClient.doRequest(request);
     }
 
     public Result getSettings() {
-        ApiObject apiObject = new ApiObject("user", "get_settings.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_settings.php");
 
-        return doRequestJson(request);
+        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+        return apiClient.doRequest(request);
     }
 
     public Result setSettings(SetSettingsParameters requestParams) {
-        ApiObject apiObject = new ApiObject("user", "set_settings.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/set_settings.php");
 
         request.addQueryParameter(PARAM_PREVIOUS_FILE_VERSIONS, requestParams.mPreviousFileVersions);
         request.addQueryParameter(PARAM_DEFAULT_SHARE_LINK_STATUS, requestParams.mDefaultShareLinkStatus);
         request.addQueryParameter(PARAM_COLLECT_META_DATA, requestParams.mCollectMetaData);
 
-        return doRequestJson(request);
+        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+        return apiClient.doRequest(request);
     }
 
     public Result register(RegisterParameters requestParams) {
-        ApiObject apiObject = new ApiObject("user", "register.php");
-        InstructionsObject instructions = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, true);
-        Request request = new Request(mHost, apiObject, instructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/register.php");
 
         request.addQueryParameter(PARAM_APPLICATION_ID, requestParams.mApplicationId);
         request.addQueryParameter(PARAM_EMAIL, requestParams.mEmail);
@@ -133,6 +141,8 @@ public class UserClient extends PathSpecificApiClient {
         request.addQueryParameter(PARAM_LAST_NAME, requestParams.mLastName);
         request.addQueryParameter(PARAM_DISPLAY_NAME, requestParams.mDisplayName);
 
-        return doRequestJson(request);
+        ClientHelperNoToken clientHelper = new ClientHelperNoToken();
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+        return apiClient.doRequest(request);
     }
 }

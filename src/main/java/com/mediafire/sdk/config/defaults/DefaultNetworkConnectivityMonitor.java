@@ -16,7 +16,7 @@ public class DefaultNetworkConnectivityMonitor implements NetworkConnectivityMon
      */
     @Override
     public boolean haveNetworkConnection() {
-        DefaultLogger.log().v(TAG, "haveNetworkConnection");
+        System.out.printf("%s - %s", TAG, "haveNetworkConnection");
         return true;
     }
 }

@@ -1,30 +1,34 @@
 package com.mediafire.sdk.clients.system;
 
-import com.mediafire.sdk.clients.ClientHelper;
-import com.mediafire.sdk.clients.PathSpecificApiClient;
+import com.mediafire.sdk.ClientHelperNoToken;
+import com.mediafire.sdk.clients.ApiClient;
+import com.mediafire.sdk.clients.ApiRequestGenerator;
 import com.mediafire.sdk.config.HttpWorkerInterface;
-import com.mediafire.sdk.http.*;
+import com.mediafire.sdk.http.ApiVersion;
+import com.mediafire.sdk.http.Request;
+import com.mediafire.sdk.http.Result;
 
 /**
  * Created by jondh on 11/4/14.
  */
-public class SystemClient extends PathSpecificApiClient {
+public class SystemClient {
 
-    private final HostObject mHost;
-    private final InstructionsObject mInstructions;
+    private HttpWorkerInterface mHttpWorkerInterface;
+    private final ApiRequestGenerator mApiRequestGenerator;
 
-    public SystemClient(ClientHelper clientHelper, HttpWorkerInterface httpWorkerInterface, String apiVersion) {
-        super(clientHelper, httpWorkerInterface, apiVersion);
-        // init host object
-        mHost = new HostObject("https", "www", "mediafire.com", "post");
-        // init instructions object
-        mInstructions = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, true);
+    public SystemClient(HttpWorkerInterface httpWorkerInterface, String apiVersion) {
+        mHttpWorkerInterface = httpWorkerInterface;
+        mApiRequestGenerator = new ApiRequestGenerator(apiVersion);
+    }
+
+    public SystemClient(HttpWorkerInterface httpWorkerInterface) {
+        this(httpWorkerInterface, ApiVersion.VERSION_CURRENT);
     }
 
     public Result getInfo() {
-        ApiObject apiObject = new ApiObject("system", "get_info.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
-
-        return doRequestJson(request);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("system/get_info.php");
+        ClientHelperNoToken clientHelper = new ClientHelperNoToken();
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorkerInterface);
+        return apiClient.doRequest(request);
     }
 }

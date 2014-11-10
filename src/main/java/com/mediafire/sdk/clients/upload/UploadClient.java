@@ -1,14 +1,19 @@
 package com.mediafire.sdk.clients.upload;
 
-import com.mediafire.sdk.clients.ClientHelper;
-import com.mediafire.sdk.clients.PathSpecificApiClient;
+import com.mediafire.sdk.ClientHelperNoToken;
+import com.mediafire.sdk.clients.ApiClient;
+import com.mediafire.sdk.clients.ClientHelperActionToken;
+import com.mediafire.sdk.clients.ApiRequestGenerator;
+import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.config.HttpWorkerInterface;
-import com.mediafire.sdk.http.*;
+import com.mediafire.sdk.http.ApiVersion;
+import com.mediafire.sdk.http.Request;
+import com.mediafire.sdk.http.Result;
 
 /**
  * Created by jondh on 11/4/14.
  */
-public class UploadClient extends PathSpecificApiClient {
+public class UploadClient {
     private static final String PARAM_FILENAME = "filename";
     private static final String PARAM_HASH = "hash";
     private static final String PARAM_SIZE = "size";
@@ -26,21 +31,25 @@ public class UploadClient extends PathSpecificApiClient {
     private static final String PARAM_TARGET_HASH = "target_hash";
     private static final String PARAM_TARGET_SIZE = "target_size";
 
-    private final HostObject mHost;
-    private final InstructionsObject mInstructions;
+    private final ApiRequestGenerator mApiRequestGenerator;
+    private final ActionTokenManagerInterface mActionTokenManager;
+    private final HttpWorkerInterface mHttpWorker;
 
-    public UploadClient(ClientHelper clientHelper, HttpWorkerInterface httpWorkerInterface, String apiVersion) {
-        super(clientHelper, httpWorkerInterface, apiVersion);
-        // init host object
-        mHost = new HostObject("https", "www", "mediafire.com", "post");
-        // init instructions object
-        mInstructions = new InstructionsObject(BorrowTokenType.UPLOAD, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, true);
+    public UploadClient(HttpWorkerInterface httpWorkerInterface, ActionTokenManagerInterface actionTokenManagerInterface, String apiVersion) {
+        mApiRequestGenerator = new ApiRequestGenerator(apiVersion);
+        mActionTokenManager = actionTokenManagerInterface;
+        mHttpWorker = httpWorkerInterface;
+    }
+
+    public UploadClient(HttpWorkerInterface httpWorkerInterface, ActionTokenManagerInterface actionTokenManagerInterface) {
+        this(httpWorkerInterface, actionTokenManagerInterface, ApiVersion.VERSION_CURRENT);
     }
 
     public Result check(CheckParameters checkParameters) {
-        ApiObject apiObject = new ApiObject("upload", "check.php");
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/check.php");
 
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        ClientHelperActionToken clientHelper = new ClientHelperActionToken("upload", mActionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_FILENAME, checkParameters.mFilename);
         request.addQueryParameter(PARAM_HASH, checkParameters.mHash);
@@ -50,13 +59,11 @@ public class UploadClient extends PathSpecificApiClient {
         request.addQueryParameter(PARAM_PATH, checkParameters.mPath);
         request.addQueryParameter(PARAM_RESUMABLE, checkParameters.mResumable);
 
-        return doRequestJson(request);
+        return apiClient.doRequest(request);
     }
 
     public Result instant(InstantParameters instantParameters) {
-        ApiObject apiObject = new ApiObject("upload", "instant.php");
-
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/instant.php");
 
         request.addQueryParameter(PARAM_HASH, instantParameters.mHash);
         request.addQueryParameter(PARAM_SIZE, instantParameters.mSize);
@@ -68,27 +75,24 @@ public class UploadClient extends PathSpecificApiClient {
         request.addQueryParameter(PARAM_ACTION_ON_DUPLICATE, instantParameters.mActionOnDuplicate);
         request.addQueryParameter(PARAM_MTIME, instantParameters.mMTime);
         request.addQueryParameter(PARAM_VERSION_CONTROL, instantParameters.mVersionControl);
-        request.addQueryParameter(PARAM_PREVIOUS_HASH, instantParameters.mPreviousHash);
 
-        return doRequestJson(request);
+        ClientHelperActionToken clientHelper = new ClientHelperActionToken("upload", mActionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+        return apiClient.doRequest(request);
     }
 
     public Result pollUpload(String key) {
-        ApiObject apiObject = new ApiObject("upload", "poll_upload.php");
-        InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.NONE, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, true);
-
-        Request request = new Request(mHost, apiObject, instructionsObject, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/poll.php");
 
         request.addQueryParameter(PARAM_KEY, key);
 
-        return doRequestJson(request);
+        ClientHelperNoToken clientHelper = new ClientHelperNoToken();
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+        return apiClient.doRequest(request);
     }
 
     public Result resumable(ResumableParameters resumableParameters, String encodedShortFileName, long fileSize, String fileHash, int chunkNumber, String chunkHash, int chunkSize, byte[] payload) {
-        ApiObject apiObject = new ApiObject("upload", "resumable.php");
-        InstructionsObject instructionsObject = new InstructionsObject(BorrowTokenType.UPLOAD, SignatureType.NO_SIGNATURE_REQUIRED, ReturnTokenType.NONE, false);
-
-        Request request = new Request(mHost, apiObject, instructionsObject, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/resumable.php");
 
         request.addQueryParameter(PARAM_FILEDROP_KEY, resumableParameters.mFiledropKey);
         request.addQueryParameter(PARAM_SOURCE_HASH, resumableParameters.mSourceHash);
@@ -111,6 +115,8 @@ public class UploadClient extends PathSpecificApiClient {
         request.addHeader("x-unit-hash", chunkHash);
         request.addHeader("x-unit-size", Integer.toString(chunkSize));
 
-        return doRequestJson(request);
+        ClientHelperActionToken clientHelper = new ClientHelperActionToken("upload", mActionTokenManager);
+        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
+        return apiClient.doRequest(request);
     }
 }

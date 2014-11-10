@@ -5,7 +5,6 @@ import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.ImageActionToken;
-import com.mediafire.sdk.token.SessionToken;
 import com.mediafire.sdk.token.UploadActionToken;
 
 /**

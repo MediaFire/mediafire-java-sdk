@@ -11,7 +11,6 @@ import com.mediafire.sdk.token.SessionToken;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Map;
 
 /**
  * Created by Chris on 11/6/2014.
@@ -19,7 +18,7 @@ import java.util.Map;
 public abstract class BaseClientHelper {
     public final String TAG = getClass().getCanonicalName();
 
-    public BaseClientHelper() { }
+    protected BaseClientHelper() { }
 
     public final void setup(Request request) {
         System.out.println(TAG + " - " + "setup");

@@ -16,7 +16,7 @@ public class CheckResponse extends ApiResponse {
     private String used_storage_size;
     private String storage_limit;
     private String storage_limit_exceeded;
-    ResumableUpload resumable_upload;
+    private ResumableUpload resumable_upload;
 
     public class ResumableUpload {
         private String all_units_ready;

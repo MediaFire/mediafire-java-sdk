@@ -10,7 +10,7 @@ public abstract class Token {
      * Token Constructor
      * @param tokenString String for the token
      */
-    public Token(String tokenString) {
+    protected Token(String tokenString) {
         mTokenString = tokenString;
     }
 

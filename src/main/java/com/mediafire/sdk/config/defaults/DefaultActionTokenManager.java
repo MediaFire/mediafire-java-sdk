@@ -7,7 +7,10 @@ import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
-import com.mediafire.sdk.http.*;
+import com.mediafire.sdk.http.Request;
+import com.mediafire.sdk.http.Response;
+import com.mediafire.sdk.http.ResponseApiClientError;
+import com.mediafire.sdk.http.Result;
 import com.mediafire.sdk.token.ImageActionToken;
 import com.mediafire.sdk.token.UploadActionToken;
 

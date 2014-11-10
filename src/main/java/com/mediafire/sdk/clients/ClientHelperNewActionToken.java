@@ -33,7 +33,7 @@ public class ClientHelperNewActionToken extends ClientHelperApi {
 
     @Override
     public void addSignatureToRequestParameters(Request request) {
-        super.borrowToken(request);
+        super.addSignatureToRequestParameters(request);
     }
 
     @Override

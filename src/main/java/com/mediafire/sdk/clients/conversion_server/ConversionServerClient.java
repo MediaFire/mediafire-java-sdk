@@ -23,7 +23,7 @@ public class ConversionServerClient {
         mOutputBufferSize = outputBufferSize;
     }
 
-    public Response imageConversion(String baseUrl, ImageConversionParameters imageConversionParameters) throws IOException{
+    public Response imageConversion(String baseUrl, ImageConversionParameters imageConversionParameters) throws IOException {
         String url = baseUrl + imageConversionParameters.makeQuery();
 
         return downloadUrlToResponse(url);

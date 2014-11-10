@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class DefaultCredentials implements CredentialsInterface {
     private static final String TAG = DefaultCredentials.class.getCanonicalName();
-    Map<String, String> mCredentials = new LinkedHashMap<String, String>();
+    private Map<String, String> mCredentials = new LinkedHashMap<String, String>();
 
     /**
      * DefaultCredentials Constructor

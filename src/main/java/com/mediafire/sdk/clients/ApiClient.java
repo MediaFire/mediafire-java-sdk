@@ -5,6 +5,8 @@ import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 
+import java.util.Map;
+
 /**
  *  ApiClient is a wrapper for the methods required to make an request the the MediaFire API
  */
@@ -37,7 +39,8 @@ public class ApiClient {
 
     private Response doRequest(Request request, String method) {
         // both get and post use Accept-Charset header
-        request.addHeader("Accept-Charset", CHARSET);
+        HeadersHelper headersHelper = new HeadersHelper(request);
+        headersHelper.addHeaders();
 
         if ("get".equalsIgnoreCase(method)) {
             return doGet(request);
@@ -50,28 +53,18 @@ public class ApiClient {
 
     private Response doGet(Request request) {
         String url = new UrlHelper(request).getUrlForRequest();
-        // add headers to request
-        request.addHeader("Accept-Charset", CHARSET);
-        return mHttpWorker.doGet(url, request.getHeaders());
+        Map<String, String> headers = request.getHeaders();
+
+        return mHttpWorker.doGet(url, headers);
     }
 
     private Response doPost(Request request) {
         UrlHelper urlHelper = new UrlHelper(request);
         String url = urlHelper.getUrlForRequest();
 
-
         byte[] payload = request.getPayload();
+        Map<String, String> headers = request.getHeaders();
 
-        if (request.postQuery()) {
-            request.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=" + CHARSET);
-        } else {
-            request.addHeader("Content-Type", "application/octet-stream");
-        }
-
-        if (request.getPayload() != null) {
-            request.addHeader("Content-Length", String.valueOf(payload.length));
-        }
-
-        return mHttpWorker.doPost(url, request.getHeaders(), payload);
+        return mHttpWorker.doPost(url, headers, payload);
     }
 }

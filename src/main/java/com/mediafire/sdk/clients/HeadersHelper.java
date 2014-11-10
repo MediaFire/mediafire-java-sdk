@@ -7,9 +7,8 @@ import com.mediafire.sdk.http.Request;
  * HeadersHelper adds appropriate headers for a Request object
  */
 public class HeadersHelper {
-    private static final String TAG = HeadersHelper.class.getCanonicalName();
-    private final Request mRequest;
     private final String CHARSET = "UTF-8";
+    private final Request mRequest;
 
     /**
      * HeadersHelper Constructor
@@ -19,25 +18,14 @@ public class HeadersHelper {
         mRequest = request;
     }
 
-    /**
-     * Adds headers for a get http request
-     */
-    public void addGetHeaders() {
-        System.out.printf("%s - %s", TAG, "addGetHeaders");
-        mRequest.addHeader("Accept-Charset", CHARSET);
-    }
-
-    /**
-     * Adds headers for a post http request based on the the requests' query is to be posted
-     * @param payload the payload to be sent with the request
-     */
-    public void addPostHeaders(byte[] payload) {
-        System.out.printf("%s - %s", TAG, "addPostHeaders");
+    public void addHeaders() {
         mRequest.addHeader("Accept-Charset", CHARSET);
 
-        if (payload == null) {
+        if (!mRequest.getHttpMethod().equalsIgnoreCase("post")) {
             return;
         }
+
+        byte[] payload = mRequest.getPayload();
 
         if (mRequest.postQuery()) {
             mRequest.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=" + CHARSET);
@@ -45,6 +33,8 @@ public class HeadersHelper {
             mRequest.addHeader("Content-Type", "application/octet-stream");
         }
 
-        mRequest.addHeader("Content-Length", String.valueOf(payload.length));
+        if (mRequest.getPayload() != null) {
+            mRequest.addHeader("Content-Length", String.valueOf(payload.length));
+        }
     }
 }

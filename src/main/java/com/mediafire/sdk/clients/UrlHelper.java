@@ -11,8 +11,6 @@ import java.util.Map;
  * UrlHelper creates different parts of a url from a Request object
  */
 public class UrlHelper {
-    private static final String TAG = UrlHelper.class.getCanonicalName();
-
     private final Request mRequest;
 
     /**
@@ -23,45 +21,25 @@ public class UrlHelper {
         mRequest = request;
     }
 
-    public String makeConcatenatedUrlForGet() {
-        String scheme = (mRequest.getScheme() == null) ? "" : mRequest.getScheme();
-        String domain = (mRequest.getFullDomain() == null) ? "" : mRequest.getFullDomain();
-        String path = (mRequest.getPath() == null) ? "" : mRequest.getPath();
-        String query = getQueryString(true);
-
-        return scheme + "://" + domain + "/" + path + "/" + query;
-    }
-
     /**
      * Makes a url for post if the Requests' InstructionsObject says is postable, otherwise makes a url for get request
      * @return a String containing the full url
      */
-    public String makeUrlForPostRequest() {
-        System.out.printf("%s - %s", TAG, "makeUrlForPostRequest");
-        String baseUrl;
+    public String getUrlForPOSTRequest() {
+
         if (mRequest.postQuery()) {
-            baseUrl = getBaseUrlString();
-            baseUrl += getBaseUriString();
-        } else {
-            baseUrl = makeUrlForGetRequest();
+            return getBaseUrlString() + getBaseUriString();
         }
 
-        return baseUrl;
+        return getUrlForGETRequest();
     }
 
     /**
      * Makes a full url for a get request (including query params)
      * @return a String containing the full url
      */
-    public String makeUrlForGetRequest() {
-        System.out.printf("%s - %s", TAG, "makeUrlForGetRequest");
-        String baseUrl = getBaseUrlString();
-
-        String baseUri = getBaseUriString();
-
-        String query = getQueryString(true);
-
-        return baseUrl + baseUri + query;
+    public String getUrlForGETRequest() {
+        return getBaseUrlString() + getBaseUriString() + getQueryString(true);
     }
 
     /**
@@ -69,12 +47,7 @@ public class UrlHelper {
      * @return a String containing the base url
      */
     public String getBaseUrlString() {
-        System.out.printf("%s - %s", TAG, "getBaseUrlString");
-        String transferProtocol = mRequest.getScheme();
-
-        String domain = mRequest.getFullDomain();
-
-        return transferProtocol + "://" + domain;
+        return mRequest.getScheme() + "://" + mRequest.getFullDomain();
     }
 
     /**
@@ -82,11 +55,7 @@ public class UrlHelper {
      * @return a String containing the base uri
      */
     public String getBaseUriString() {
-        System.out.printf("%s - %s", TAG, "getBaseUriString");
-
-        String path = mRequest.getPath();
-
-        return "/" + path;
+        return "/" + mRequest.getPath();
     }
 
     /**
@@ -96,7 +65,6 @@ public class UrlHelper {
      * @return a String containing the query parameters
      */
     public String getQueryString(boolean encoded, boolean rawKeyValue) {
-        System.out.printf("%s - %s", TAG, "getQueryString");
         Map<String, Object> queryParameters = mRequest.getQueryParameters();
         if (queryParameters == null) {
             return "";
@@ -127,23 +95,6 @@ public class UrlHelper {
      */
     public String getQueryString(boolean encoded) {
         return getQueryString(encoded, false);
-    }
-
-    /**
-     * Returns the payload of the request, if is post query, set the query string as payload
-     * @return a byte array of the payload
-     */
-    public byte[] getPayload() {
-        System.out.printf("%s - %s", TAG, "getPayload");
-        byte[] payload;
-
-        if (mRequest.postQuery()) {
-            String queryString = getQueryString(true, true);
-            payload = queryString.getBytes();
-        } else {
-            payload = mRequest.getPayload();
-        }
-        return payload;
     }
 
     private String utf8Encode(String value) {

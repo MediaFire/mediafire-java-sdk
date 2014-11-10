@@ -15,8 +15,9 @@ public class TranscodeClient {
     private static final String PARAM_MEDIA_SIZE = "media_size";
     private static final String PARAM_EXISTS = "exists";
 
-    private HttpWorkerInterface mHttpWorker;
+    private final HttpWorkerInterface mHttpWorker;
     private final String mContainer;
+    private final String CHARSET = "UTF-8";
 
     public TranscodeClient(HttpWorkerInterface httpWorker, String container) {
         mHttpWorker = httpWorker;
@@ -24,10 +25,9 @@ public class TranscodeClient {
     }
 
     public Result doRequest(Request request) {
-        String url = new UrlHelper(request).makeConcatenatedUrlForGet();
+        String url = new UrlHelper(request).getUrlForGETRequest();
         // add headers to request
-        HeadersHelper headersHelper = new HeadersHelper(request);
-        headersHelper.addGetHeaders();
+        request.addHeader("Accept-Charset", CHARSET);
         Response response = mHttpWorker.doGet(url, request.getHeaders());
 
         return new Result(response, request);

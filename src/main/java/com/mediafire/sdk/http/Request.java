@@ -1,5 +1,6 @@
 package com.mediafire.sdk.http;
 
+import com.mediafire.sdk.clients.UrlHelper;
 import com.mediafire.sdk.token.Token;
 
 import java.util.LinkedHashMap;
@@ -27,6 +28,7 @@ public class Request {
         mDomain = builder.mFullDomain;
         mScheme = builder.mScheme;
         mPostQuery = builder.mPostQuery;
+        mPayload = builder.mPayload;
     }
 
     // TODO - finish writing constructor for url
@@ -119,9 +121,18 @@ public class Request {
 
     /**
      * Gets the payload
-     * @return byte[] for the payload (null possible)
+     * @return byte[] for the payload. for a GET this should always be null. for a POST this will either be the
+     * query as a byte[] or part of a file (null possible)
      */
     public byte[] getPayload() {
+        byte[] payload;
+
+        if (mPostQuery) {
+            String queryString = new UrlHelper(this).getQueryString(true, true);
+            payload = queryString.getBytes();
+            return payload;
+        }
+
         return mPayload;
     }
 
@@ -132,6 +143,7 @@ public class Request {
     public void addPayload(byte[] payload) {
         mPayload = payload;
     }
+
 
     /**
      * Gets the token
@@ -180,7 +192,8 @@ public class Request {
         private String mFullDomain = DEFAULT_DOMAIN;
         private String mScheme = DEFAULT_SCHEME;
         private boolean mPostQuery = DEFAULT_POST_QUERY;
-            
+        private byte[] mPayload;
+
         public Builder() { }
 
         public Builder path(String value) {
@@ -222,6 +235,12 @@ public class Request {
         public Builder postQuery(boolean postQuery) {
             mPostQuery = postQuery;
             
+            return this;
+        }
+
+        public Builder payload(byte[] payload) {
+            mPayload = payload;
+
             return this;
         }
 

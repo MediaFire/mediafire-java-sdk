@@ -11,7 +11,7 @@ import com.mediafire.sdk.http.Result;
 public class ApiClient {
     private BaseClientHelper mBaseClientHelper;
     private HttpWorkerInterface mHttpWorker;
-
+    private final String CHARSET = "UTF-8";
 
     public ApiClient(BaseClientHelper baseClientHelper, HttpWorkerInterface httpWorker) {
         mBaseClientHelper = baseClientHelper;
@@ -36,6 +36,9 @@ public class ApiClient {
     }
 
     private Response doRequest(Request request, String method) {
+        // both get and post use Accept-Charset header
+        request.addHeader("Accept-Charset", CHARSET);
+
         if ("get".equalsIgnoreCase(method)) {
             return doGet(request);
         } else if ("post".equalsIgnoreCase(method)) {
@@ -46,20 +49,28 @@ public class ApiClient {
     }
 
     private Response doGet(Request request) {
-        String url = new UrlHelper(request).makeUrlForGetRequest();
+        String url = new UrlHelper(request).getUrlForGETRequest();
         // add headers to request
-        HeadersHelper headersHelper = new HeadersHelper(request);
-        headersHelper.addGetHeaders();
+        request.addHeader("Accept-Charset", CHARSET);
         return mHttpWorker.doGet(url, request.getHeaders());
     }
 
     private Response doPost(Request request) {
         UrlHelper urlHelper = new UrlHelper(request);
-        String url = urlHelper.makeUrlForPostRequest();
-        byte[] payload = urlHelper.getPayload();
+        String url = urlHelper.getUrlForPOSTRequest();
 
-        HeadersHelper headersHelper = new HeadersHelper(request);
-        headersHelper.addPostHeaders(payload);
+
+        byte[] payload = request.getPayload();
+
+        if (request.postQuery()) {
+            request.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=" + CHARSET);
+        } else {
+            request.addHeader("Content-Type", "application/octet-stream");
+        }
+
+        if (request.getPayload() != null) {
+            request.addHeader("Content-Length", String.valueOf(payload.length));
+        }
 
         return mHttpWorker.doPost(url, request.getHeaders(), payload);
     }

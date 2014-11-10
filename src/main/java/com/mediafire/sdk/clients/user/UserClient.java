@@ -1,6 +1,6 @@
 package com.mediafire.sdk.clients.user;
 
-import com.mediafire.sdk.ClientHelperNoToken;
+import com.mediafire.sdk.clients.ClientHelperNoToken;
 import com.mediafire.sdk.clients.*;
 import com.mediafire.sdk.config.*;
 import com.mediafire.sdk.http.ApiVersion;

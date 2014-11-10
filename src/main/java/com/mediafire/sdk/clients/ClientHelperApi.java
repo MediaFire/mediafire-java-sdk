@@ -36,6 +36,10 @@ public class ClientHelperApi extends BaseClientHelper {
     @Override
     public void returnToken(Response response, Request request) {
         ApiResponse apiResponse = getResponseObject(response, ApiResponse.class);
+        if (apiResponse == null) {
+            return;
+        }
+
         if (!apiResponse.hasError() || (apiResponse.getError() != 105 && apiResponse.getError() != 127)) {
             if (apiResponse.needNewKey()) {
                 ((SessionToken) request.getToken()).updateSessionToken();

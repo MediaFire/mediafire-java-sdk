@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mediafire.sdk.ClientHelperNoToken;
+import com.mediafire.sdk.clients.ClientHelperNoToken;
 import com.mediafire.sdk.api_responses.ApiResponse;
 import com.mediafire.sdk.api_responses.ResponseCode;
 import com.mediafire.sdk.api_responses.upload.CheckResponse;

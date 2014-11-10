@@ -43,6 +43,12 @@ public class ClientHelperNewActionToken extends ClientHelperApi {
         // the ActionTokenManagerInterface
 
         GetActionTokenResponse getActionTokenResponse = getResponseObject(response, GetActionTokenResponse.class);
+
+        if (getActionTokenResponse == null) {
+            mActionTokenManagerInterface.tokensFailed();
+            return;
+        }
+
         boolean badRequest = false;
         if (getActionTokenResponse.hasError()) {
             badRequest = true;

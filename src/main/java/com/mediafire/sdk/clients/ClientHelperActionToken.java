@@ -16,6 +16,7 @@ public class ClientHelperActionToken extends BaseClientHelper {
     private ActionTokenManagerInterface mActionTokenManagerInterface;
 
     public ClientHelperActionToken(String tokenType, ActionTokenManagerInterface actionTokenManagerInterface) {
+        super();
         this.mTokenType = tokenType;
         mActionTokenManagerInterface = actionTokenManagerInterface;
     }

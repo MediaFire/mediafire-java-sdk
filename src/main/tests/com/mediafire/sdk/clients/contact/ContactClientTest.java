@@ -38,7 +38,7 @@ public class ContactClientTest extends TestCase {
         DummyHttpWorker.DummyPOSTResponse dummyPOSTResponse = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
 
         String actual = new String(dummyPOSTResponse.getOriginalPayload());
-        String expected = "response_format=json&first_name=bob&last_name=jones&avatar=some_avatar&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=de905580af513e447682e2a40256be18";
+        String expected = "response_format=json&first_name=bob&last_name=jones&avatar=some_avatar&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=b10a5b069e1a8003a12b3a73cd2dfeaf";
 
         assertEquals(expected, actual);
     }
@@ -60,7 +60,7 @@ public class ContactClientTest extends TestCase {
         DummyHttpWorker.DummyPOSTResponse dummyPOSTResponse = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
 
         String actual = new String(dummyPOSTResponse.getOriginalPayload());
-        String expected = "response_format=json&contact_key=some_contact_key&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=a56570a96367845aaeddd8893dbe39ca";
+        String expected = "response_format=json&contact_key=some_contact_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=cebbd1d3d4c5cd1dec8346ff66cfd8c9";
 
         assertEquals(expected, actual);
     }
@@ -88,7 +88,7 @@ public class ContactClientTest extends TestCase {
         DummyHttpWorker.DummyPOSTResponse dummyPOSTResponse = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
 
         String actual = new String(dummyPOSTResponse.getOriginalPayload());
-        String expected = "response_format=json&method=normal&limit=some_limit&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=27bf7d91221f1fc11540c72ac13911df";
+        String expected = "response_format=json&method=normal&limit=some_limit&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=9a007c434e7e6358a4a5a98a677c7208";
 
         assertEquals(expected, actual);
     }

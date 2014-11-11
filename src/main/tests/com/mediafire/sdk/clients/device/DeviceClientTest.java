@@ -38,7 +38,7 @@ public class DeviceClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&revision=some_revision_number&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=e6193d41d7a68323ecb6ea845c5fb3ed";
+        String expected = "response_format=json&revision=some_revision_number&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=4de2705b1b6df0069527d371d238625b";
 
         assertEquals(expected, actual);
     }
@@ -48,7 +48,7 @@ public class DeviceClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&revision=some_revision_number&device_id=some_device_id&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=788915397e44397c48cd60fa66b4091a";
+        String expected = "response_format=json&revision=some_revision_number&device_id=some_device_id&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=b2cb3570339c01352e534ac72a087a6a";
 
         assertEquals(expected, actual);
     }
@@ -68,7 +68,7 @@ public class DeviceClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=3587110338d9ed309df994c8e95ee08b";
+        String expected = "response_format=json&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=06f0ed954735bc596e14a4ff33b51e3c";
 
         assertEquals(expected, actual);
     }
@@ -107,7 +107,7 @@ public class DeviceClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&device_id=some_device_id&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=e7011038acde262c55eff8527d1fcf6b";
+        String expected = "response_format=json&device_id=some_device_id&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=f4fd66b933bc9f83557defcc1525e23a";
 
         assertEquals(expected, actual);
     }
@@ -120,7 +120,7 @@ public class DeviceClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&device_id=some_device_id&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=e7011038acde262c55eff8527d1fcf6b";
+        String expected = "response_format=json&device_id=some_device_id&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=f4fd66b933bc9f83557defcc1525e23a";
 
         assertEquals(expected, actual);
     }

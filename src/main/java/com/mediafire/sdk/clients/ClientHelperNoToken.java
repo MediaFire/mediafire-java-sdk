@@ -8,6 +8,10 @@ import com.mediafire.sdk.http.Response;
  * Created by Chris on 11/9/2014.
  */
 public class ClientHelperNoToken extends BaseClientHelper {
+    public ClientHelperNoToken() {
+        super();
+    }
+
     @Override
     public void borrowToken(Request request) { }
 

@@ -16,8 +16,19 @@ import java.security.NoSuchAlgorithmException;
  * Created by Chris on 11/6/2014.
  */
 public abstract class BaseClientHelper {
+    private boolean mDebug = false;
 
-    protected BaseClientHelper() { }
+    protected BaseClientHelper() {
+        mDebug = false;
+    }
+
+    public void debug(boolean debug) {
+        mDebug = debug;
+    }
+
+    public boolean debugging() {
+        return mDebug;
+    }
 
     public final void setup(Request request) {
         borrowToken(request);
@@ -146,7 +157,6 @@ public abstract class BaseClientHelper {
      * @return a String that is the new signature created
      */
     public final String makeSignatureForApiRequest(Request request) {
-
         // session token secret key + time + uri (concatenated)
         SessionToken sessionToken = (SessionToken) request.getToken();
 
@@ -160,13 +170,18 @@ public abstract class BaseClientHelper {
         UrlHelper urlHelper = new UrlHelper(request);
 
         String nonUrlEncodedQueryString = urlHelper.getQueryString(false);
-
         String baseUri = urlHelper.getPathString();
         String fullUri = baseUri + nonUrlEncodedQueryString;
-
         String nonUrlEncodedString = secretKeyMod256 + time + fullUri;
 
         String signature = hashString(nonUrlEncodedString, "MD5");
+
         return signature;
+    }
+
+    private void debug(String message) {
+        if (mDebug) {
+            System.out.println(message);
+        }
     }
 }

@@ -56,13 +56,13 @@ public class DummyActionTokenManager implements ActionTokenManagerInterface {
     }
 
     private ImageActionToken createImageActionToken() {
-        String token = "verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz";
+        String token = "0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6";
         ImageActionToken imageActionToken = new ImageActionToken(token, 1440);
         return imageActionToken;
     }
 
     private UploadActionToken createUploadActionToken() {
-        String token = "verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz";
+        String token = "0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6";
         UploadActionToken uploadActionToken = new UploadActionToken(token, 1440);
         return uploadActionToken;
     }

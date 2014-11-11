@@ -36,12 +36,12 @@ public class DummySessionTokenManager implements SessionTokenManagerInterface {
     public void shutdown() { }
 
     private SessionToken createNewSessionToken() {
-        String token = "verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz";
-        String key = "12345";
-        String time = "1234.56";
-        String pkey = "pkeyvalue";
-        String ekey = "ekeyvalue";
-        String permToken = "permtokenvalue";
+        String token = "0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6";
+        String key = "15005654";
+        String time = "1415665191.4128";
+        String pkey = "12345";
+        String ekey = "12345";
+        String permToken = "12345";
         SessionToken.Builder builder = new SessionToken.Builder(token);
         builder.secretKey(key).time(time).pkey(pkey).ekey(ekey).permanentToken(permToken);
         return builder.build();

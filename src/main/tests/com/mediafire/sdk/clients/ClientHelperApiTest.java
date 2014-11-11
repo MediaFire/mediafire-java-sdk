@@ -30,7 +30,7 @@ public class ClientHelperApiTest extends TestCase {
         clientHelper.addSignatureToRequestParameters(request);
 
         String actual = (String) request.getQueryParameters().get("signature");
-        String expected = "01d1c4aaeb6af0fad965dd24a33ea8bc";
+        String expected = "4a8cc9d56b4fbcc0410558304a627a3d";
 
         assertEquals(expected, actual);
     }

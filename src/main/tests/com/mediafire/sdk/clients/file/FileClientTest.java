@@ -28,7 +28,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=83b5bacd3c47e3d834b4c1992828d2d7";
+        String expected = "response_format=json&quick_key=some_quick_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=e822f45a4a7168f5131db37b2c5b5755";
 
         assertEquals(expected, actual);
     }
@@ -48,7 +48,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=d1f68138ab95096793e1ca9ce88a5b51";
+        String expected = "response_format=json&quick_key=some_quick_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=abb6c69a22723008a08701723a4fab9f";
 
         assertEquals(expected, actual);
     }
@@ -78,7 +78,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=5875c088e40fb5336c981f3cf7641267";
+        String expected = "response_format=json&quick_key=some_quick_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=898219b95d099689ce6f96ec1383db90";
 
         assertEquals(expected, actual);
     }
@@ -88,7 +88,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&folder_key=some_folder_key&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=3bd70d22e6488af16844cf1c556a6d5c";
+        String expected = "response_format=json&quick_key=some_quick_key&folder_key=some_folder_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=35cecc930e36e9c9b9e6a9297a551e28";
 
         assertEquals(expected, actual);
     }
@@ -108,7 +108,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=23f1ba5945edfd5a83622466a92e9991";
+        String expected = "response_format=json&quick_key=some_quick_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=f4a920063e9c8bb947e95e21e56ade18";
 
         assertEquals(expected, actual);
     }
@@ -138,7 +138,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=8effc4542f464d50a1482ae566d340db";
+        String expected = "response_format=json&quick_key=some_quick_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=43c8a35c1979890a69168b916583afc7";
 
         assertEquals(expected, actual);
     }
@@ -148,7 +148,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&folder_key=some_folder_key&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=276f86e8aea65689716dc8bf8858b38e";
+        String expected = "response_format=json&quick_key=some_quick_key&folder_key=some_folder_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=05cf8ae0b5e0a6514900a7ce60d993e0";
 
         assertEquals(expected, actual);
     }
@@ -187,7 +187,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&filename=newfile.txt&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=d12809fcfeef9d730b01c7f94ec03827";
+        String expected = "response_format=json&quick_key=some_quick_key&filename=newfile.txt&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=3e193354d4a48b9af6a726e92280d5ac";
 
         assertEquals(expected, actual);
     }
@@ -200,7 +200,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&filename=newfile.txt&privacy=private&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=81bb328e2da28620f88a500cd8a70c78";
+        String expected = "response_format=json&quick_key=some_quick_key&filename=newfile.txt&privacy=private&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=97868a7e5901c8199c1117d26fa66968";
 
         assertEquals(expected, actual);
     }
@@ -220,7 +220,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&filename=newFile.txt&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=05de651a79d3b4a9e9b1f1329f30a8a7";
+        String expected = "response_format=json&quick_key=some_quick_key&filename=newFile.txt&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=4c14777d0294b9aead04c6c7d82dbfd4";
 
         assertEquals(expected, actual);
     }
@@ -240,7 +240,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&privacy=public&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=d75fdb58c9ee13150536b6d5623e318c";
+        String expected = "response_format=json&quick_key=some_quick_key&privacy=public&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=72e7b13ad70b7d56b67171c634a0aea4";
 
         assertEquals(expected, actual);
     }
@@ -260,7 +260,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&privacy=private&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=e9bb5e101dac700a0b3d9ca8ec7a1e0b";
+        String expected = "response_format=json&quick_key=some_quick_key&privacy=private&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=ced155c84d9652e895943945b6b0f06d";
 
         assertEquals(expected, actual);
     }
@@ -290,7 +290,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=fce2195af452e0164a69ad36e66b479b";
+        String expected = "response_format=json&quick_key=some_quick_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=0221202c9498879ca7bb45ba7c2b151d";
 
         assertEquals(expected, actual);
     }
@@ -300,7 +300,7 @@ public class FileClientTest extends TestCase {
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
-        String expected = "response_format=json&quick_key=some_quick_key&link_type=one_time&session_token=verylongsessiontokenstring123456789abcdefghijklmnopqrstuvwxyz&signature=b350184746d2231898214fbf682d1287";
+        String expected = "response_format=json&quick_key=some_quick_key&link_type=one_time&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=e1e5bf4a81721e5d203168d7a4d792d9";
 
         assertEquals(expected, actual);
     }

@@ -255,7 +255,7 @@ public class FileClientTest extends TestCase {
         assertEquals(expected, actual);
     }
 
-    public void testMAkePrivatePayload() throws Exception {
+    public void testMakePrivatePayload() throws Exception {
         Result result = fileClient.makePrivate("some_quick_key");
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
@@ -276,7 +276,7 @@ public class FileClientTest extends TestCase {
     }
 
     public void testGetLinksSMultiParamUrl() throws Exception {
-        Result result = fileClient.getLinks("some_quick_key", FileClient.LinkType.ONE_TIME_DOWNLOAD);
+        Result result = fileClient.getLinks("some_quick_key", LinkType.ONE_TIME_DOWNLOAD);
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
@@ -296,7 +296,7 @@ public class FileClientTest extends TestCase {
     }
 
     public void testGetLinksSMultiParamPayload() throws Exception {
-        Result result = fileClient.getLinks("some_quick_key", FileClient.LinkType.ONE_TIME_DOWNLOAD);
+        Result result = fileClient.getLinks("some_quick_key", LinkType.ONE_TIME_DOWNLOAD);
 
         DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());

@@ -30,7 +30,7 @@ public abstract class ActionToken extends Token {
      * Gets the expiration time of the token
      * @return long expiration
      */
-    public long getExpiration() {
+    public final long getExpiration() {
         return mExpiration;
     }
 }

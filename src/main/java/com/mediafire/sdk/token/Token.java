@@ -18,7 +18,7 @@ public abstract class Token {
      * Gets the token string
      * @return String token string
      */
-    public String getTokenString() {
+    public final String getTokenString() {
         return mTokenString;
     }
 }

@@ -10,46 +10,6 @@ public class SessionToken extends Token {
     private final String mPkey;
     private final String mEkey;
 
-    /**
-     * SessionToken Constructor
-     * @param tokenString String for the token
-     * @param secretKey String for the secret key
-     * @param time String for the time
-     */
-    public SessionToken(String tokenString, String secretKey, String time) {
-        this(tokenString, secretKey, time, null, null);
-    }
-
-    /**
-     * SessionToken Constructor
-     * @param tokenString String for the token
-     * @param secretKey String for the secret key
-     * @param time String for the time
-     * @param pkey String for the mPkey
-     * @param ekey String for the mEkey
-     */
-    public SessionToken(String tokenString, String secretKey, String time, String pkey, String ekey) {
-        this(tokenString, secretKey, time, pkey, ekey, null);
-    }
-
-    /**
-     * SessionToken Constructor
-     * @param tokenString String for the token
-     * @param secretKey String for the secret key
-     * @param time String for the time
-     * @param pkey String for the mPkey
-     * @param ekey String for the mEkey
-     * @param permanentToken String for the permanent token
-     */
-    public SessionToken(String tokenString, String secretKey, String time, String pkey, String ekey, String permanentToken) {
-        super(tokenString);
-        mSecretKey = secretKey;
-        mTime = time;
-        mPkey = pkey;
-        mEkey = ekey;
-        mPermanentToken = permanentToken;
-    }
-
     private SessionToken(Builder builder) {
         super(builder.mTokenString);
         mTime = builder.mTime;
@@ -120,27 +80,27 @@ public class SessionToken extends Token {
             mTokenString = tokenString;
         }
 
-        public Builder time(String value) {
+        public final Builder time(String value) {
             mTime = value;
             return this;
         }
 
-        public Builder permanentToken(String value) {
+        public final Builder permanentToken(String value) {
             mPermanentToken = value;
             return this;
         }
 
-        public Builder secretKey(String value) {
+        public final Builder secretKey(String value) {
             mSecretKey = value;
             return this;
         }
 
-        public Builder pkey(String value) {
+        public final Builder pkey(String value) {
             mPkey = value;
             return this;
         }
 
-        public Builder ekey(String ekey) {
+        public final Builder ekey(String ekey) {
             mEkey = ekey;
             return this;
         }

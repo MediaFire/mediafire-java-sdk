@@ -112,7 +112,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
         subtractOutstandingRequest();
         synchronized (outstandingRequestsLock) {
             if (outstandingRequests == 0 && mSessionTokens.isEmpty()) {
-                SessionToken badToken = new SessionToken(null, null, null);
+                SessionToken badToken = new SessionToken.Builder(null).build();
                 mSessionTokens.offer(badToken);
             }
         }
@@ -136,7 +136,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
             if(response.getClass() == ResponseApiClientError.class) {
                 ResponseApiClientError responseApiClientError = (ResponseApiClientError) result.getResponse();
                 System.out.printf("%s - %s", TAG, responseApiClientError.getErrorMessage());
-                SessionToken badToken = new SessionToken(null, null, null);
+                SessionToken badToken = new SessionToken.Builder(null).build();
                 mSessionTokens.offer(badToken);
             }
         }

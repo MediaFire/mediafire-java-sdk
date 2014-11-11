@@ -42,6 +42,8 @@ public class DummySessionTokenManager implements SessionTokenManagerInterface {
         String pkey = "pkeyvalue";
         String ekey = "ekeyvalue";
         String permToken = "permtokenvalue";
-        return new SessionToken(token, key, time, pkey, ekey, permToken);
+        SessionToken.Builder builder = new SessionToken.Builder(token);
+        builder.secretKey(key).time(time).pkey(pkey).ekey(ekey).permanentToken(permToken);
+        return builder.build();
     }
 }

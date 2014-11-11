@@ -94,6 +94,8 @@ public class ClientHelperNewSessionToken extends BaseClientHelper {
         String pkey = getSessionTokenResponse.getPkey();
         String ekey = getSessionTokenResponse.getEkey();
 
-        return new SessionToken(tokenString, secretKey, time, pkey, ekey);
+        SessionToken.Builder builder = new SessionToken.Builder(tokenString);
+        builder.secretKey(secretKey).time(time).pkey(pkey).ekey(ekey);
+        return builder.build();
     }
 }

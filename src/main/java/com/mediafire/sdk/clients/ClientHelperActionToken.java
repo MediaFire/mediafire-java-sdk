@@ -53,6 +53,11 @@ public class ClientHelperActionToken extends BaseClientHelper {
 
         ApiResponse apiResponse = getResponseObject(response, ApiResponse.class);
 
+        if (apiResponse == null) {
+            mActionTokenManagerInterface.tokensFailed();
+            return;
+        }
+
         if (!apiResponse.hasError()) {
             return;
         }

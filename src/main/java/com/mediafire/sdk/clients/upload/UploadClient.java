@@ -82,7 +82,7 @@ public class UploadClient {
     }
 
     public Result pollUpload(String key) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/poll.php");
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/poll_upload.php");
 
         request.addQueryParameter(PARAM_KEY, key);
 
@@ -91,32 +91,37 @@ public class UploadClient {
         return apiClient.doRequest(request);
     }
 
-    public Result resumable(ResumableParameters resumableParameters, String encodedShortFileName, long fileSize, String fileHash, int chunkNumber, String chunkHash, int chunkSize, byte[] payload) {
+    public Result resumable(ResumableParameters resumableParameters, HeaderParameters headerParameters, byte[] payload) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/resumable.php");
 
-        request.addQueryParameter(PARAM_FILEDROP_KEY, resumableParameters.getFiledropKey());
-        request.addQueryParameter(PARAM_SOURCE_HASH, resumableParameters.getSourceHash());
-        request.addQueryParameter(PARAM_TARGET_HASH, resumableParameters.getTargetHash());
-        request.addQueryParameter(PARAM_TARGET_SIZE, resumableParameters.getTargetSize());
-        request.addQueryParameter(PARAM_QUICK_KEY, resumableParameters.getQuickKey());
-        request.addQueryParameter(PARAM_FOLDER_KEY, resumableParameters.getFolderKey());
-        request.addQueryParameter(PARAM_PATH, resumableParameters.getPath());
-        request.addQueryParameter(PARAM_ACTION_ON_DUPLICATE, resumableParameters.getActionOnDuplicate());
-        request.addQueryParameter(PARAM_MTIME, resumableParameters.getMTime());
-        request.addQueryParameter(PARAM_VERSION_CONTROL, resumableParameters.getVersionControl());
-        request.addQueryParameter(PARAM_PREVIOUS_HASH, resumableParameters.getPreviousHash());
+        if (resumableParameters != null) {
+            request.addQueryParameter(PARAM_FILEDROP_KEY, resumableParameters.getFiledropKey());
+            request.addQueryParameter(PARAM_SOURCE_HASH, resumableParameters.getSourceHash());
+            request.addQueryParameter(PARAM_TARGET_HASH, resumableParameters.getTargetHash());
+            request.addQueryParameter(PARAM_TARGET_SIZE, resumableParameters.getTargetSize());
+            request.addQueryParameter(PARAM_QUICK_KEY, resumableParameters.getQuickKey());
+            request.addQueryParameter(PARAM_FOLDER_KEY, resumableParameters.getFolderKey());
+            request.addQueryParameter(PARAM_PATH, resumableParameters.getPath());
+            request.addQueryParameter(PARAM_ACTION_ON_DUPLICATE, resumableParameters.getActionOnDuplicate());
+            request.addQueryParameter(PARAM_MTIME, resumableParameters.getMTime());
+            request.addQueryParameter(PARAM_VERSION_CONTROL, resumableParameters.getVersionControl());
+            request.addQueryParameter(PARAM_PREVIOUS_HASH, resumableParameters.getPreviousHash());
+        }
 
         request.addPayload(payload);
 
-        request.addHeader("x-filename", encodedShortFileName);
-        request.addHeader("x-filesize", String.valueOf(fileSize));
-        request.addHeader("x-filehash", fileHash);
-        request.addHeader("x-unit-id", Integer.toString(chunkNumber));
-        request.addHeader("x-unit-hash", chunkHash);
-        request.addHeader("x-unit-size", Integer.toString(chunkSize));
+        request.addHeader("x-filesize", headerParameters.getFileSize());
+        request.addHeader("x-filehash", headerParameters.getFileHash());
+        request.addHeader("x-unit-id", headerParameters.getUnitId());
+        request.addHeader("x-unit-hash", headerParameters.getUnitHash());
+        request.addHeader("x-unit-size", headerParameters.getUnitSize());
 
         ClientHelperActionToken clientHelper = new ClientHelperActionToken("upload", mActionTokenManager);
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
         return apiClient.doRequest(request);
+    }
+
+    public Result resumable(HeaderParameters headerParameters, byte[] payload) {
+        return resumable(null, headerParameters, payload);
     }
 }

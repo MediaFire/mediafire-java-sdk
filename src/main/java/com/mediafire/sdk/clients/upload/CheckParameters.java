@@ -12,7 +12,7 @@ public class CheckParameters {
     private final String mPath;
     private final String mResumable;
     
-    public CheckParameters(Builder builder) {
+    private CheckParameters(Builder builder) {
         mFilename = builder.mFilename;
         mHash = builder.mHash;
         mSize = builder.mSize;

@@ -19,7 +19,7 @@ public class ResumableParameters {
     private final String mVersionControl;
     private final String mPreviousHash;
 
-    public ResumableParameters(Builder builder) {
+    private ResumableParameters(Builder builder) {
         mFiledropKey = builder.mFiledropKey;
         mSourceHash = builder.mSourceHash;
         mTargetHash = builder.mTargetHash;
@@ -156,7 +156,7 @@ public class ResumableParameters {
             return this;
         }
 
-        public Builder actionOnDuplicate(UploadItemOptions.ActionOnDuplicate actionOnDuplicate) {
+        public Builder actionOnDuplicate(ActionOnDuplicate actionOnDuplicate) {
             if(actionOnDuplicate == null) {
                 return this;
             }
@@ -185,7 +185,7 @@ public class ResumableParameters {
             return this;
         }
 
-        public Builder versionControl(UploadItemOptions.VersionControl versionControl) {
+        public Builder versionControl(VersionControl versionControl) {
             if(versionControl == null) {
                 return this;
             }

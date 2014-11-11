@@ -107,8 +107,16 @@ public class Request {
      * @param key String key for the header to be added
      * @param value String value for the header to be added
      */
-    public void addHeader(String key, String value) {
-        if (key == null || value == null) {
+    public void addHeader(String key, Object value) {
+        if (key == null || key.isEmpty()) {
+            return;
+        }
+
+        if (value == null) {
+            return;
+        }
+
+        if (value.toString().isEmpty()) {
             return;
         }
 
@@ -116,7 +124,8 @@ public class Request {
             mHeaders = new LinkedHashMap<String, String>();
         }
 
-        mHeaders.put(key, value);
+        String valueAsString = value.toString();
+        mHeaders.put(key, valueAsString);
     }
 
     /**

@@ -7,7 +7,7 @@ import com.mediafire.sdk.uploader.uploaditem.UploadItemOptions;
  */
 public class InstantParameters {
     private final String mHash;
-    private final String mSize;
+    private final long mSize;
     private final String mFilename;
     private final String mQuickKey;
     private final String mFolderKey;
@@ -18,7 +18,7 @@ public class InstantParameters {
     private final String mVersionControl;
     private final String mPreviousHash;
 
-    public InstantParameters(Builder builder) {
+    private InstantParameters(Builder builder) {
         mHash = builder.mHash;
         mSize = builder.mSize;
         mFiledropKey = builder.mFiledropKey;
@@ -36,7 +36,7 @@ public class InstantParameters {
         return mHash;
     }
 
-    public String getSize() {
+    public long getSize() {
         return mSize;
     }
 
@@ -78,7 +78,7 @@ public class InstantParameters {
 
     public static class Builder {
         private final String mHash;
-        private final String mSize;
+        private final long mSize;
         private String mFilename;
         private String mQuickKey;
         private String mFolderKey;
@@ -89,7 +89,7 @@ public class InstantParameters {
         private String mVersionControl;
         private String mPreviousHash;
 
-        public Builder(String hash, String size) {
+        public Builder(String hash, long size) {
             mHash = hash;
             mSize = size;
         }
@@ -139,20 +139,20 @@ public class InstantParameters {
             return this;
         }
 
-        public Builder actionOnDuplicate(UploadItemOptions.ActionOnDuplicate actionOnDuplicate) {
+        public Builder actionOnDuplicate(ActionOnDuplicate actionOnDuplicate) {
             if(actionOnDuplicate == null) {
                 return this;
             }
 
             switch (actionOnDuplicate) {
                 case SKIP:
-                    mActionOnDuplicate = "skip";
+                    mActionOnDuplicate = actionOnDuplicate.getValue();
                     break;
                 case KEEP:
-                    mActionOnDuplicate = "keep";
+                    mActionOnDuplicate = actionOnDuplicate.getValue();
                     break;
                 case REPLACE:
-                    mActionOnDuplicate = "replace";
+                    mActionOnDuplicate = actionOnDuplicate.getValue();
                     break;
             }
 
@@ -168,20 +168,20 @@ public class InstantParameters {
             return this;
         }
 
-        public Builder versionControl(UploadItemOptions.VersionControl versionControl) {
+        public Builder versionControl(VersionControl versionControl) {
             if(versionControl == null) {
                 return this;
             }
 
             switch (versionControl) {
                 case CREATE_PATCHES:
-                    mVersionControl = "create_patches";
+                    mVersionControl = versionControl.getValue();
                     break;
                 case KEEP_REVISION:
-                    mVersionControl = "keep_revision";
+                    mVersionControl = versionControl.getValue();
                     break;
                 case NONE:
-                    mVersionControl = "none";
+                    mVersionControl = versionControl.getValue();
                     break;
             }
 

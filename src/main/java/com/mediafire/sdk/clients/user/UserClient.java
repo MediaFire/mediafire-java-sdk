@@ -93,9 +93,9 @@ public class UserClient {
     public Result setAvatar(SetAvatarParameters requestParams) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("user/set_avatar.php");
 
-        request.addQueryParameter(PARAM_SET_AVATAR_ACTION, requestParams.mAction);
-        request.addQueryParameter(PARAM_QUICK_KEY, requestParams.mQuickKey);
-        request.addQueryParameter(PARAM_URL, requestParams.mUrl);
+        request.addQueryParameter(PARAM_SET_AVATAR_ACTION, requestParams.getAction());
+        request.addQueryParameter(PARAM_QUICK_KEY, requestParams.getQuickKey());
+        request.addQueryParameter(PARAM_URL, requestParams.getUrl());
 
         ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
@@ -121,9 +121,9 @@ public class UserClient {
     public Result setSettings(SetSettingsParameters requestParams) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("user/set_settings.php");
 
-        request.addQueryParameter(PARAM_PREVIOUS_FILE_VERSIONS, requestParams.mPreviousFileVersions);
-        request.addQueryParameter(PARAM_DEFAULT_SHARE_LINK_STATUS, requestParams.mDefaultShareLinkStatus);
-        request.addQueryParameter(PARAM_COLLECT_META_DATA, requestParams.mCollectMetaData);
+        request.addQueryParameter(PARAM_PREVIOUS_FILE_VERSIONS, requestParams.getPreviousFileVersions());
+        request.addQueryParameter(PARAM_DEFAULT_SHARE_LINK_STATUS, requestParams.getDefaultShareLinkStatus());
+        request.addQueryParameter(PARAM_COLLECT_META_DATA, requestParams.getCollectMetaData());
 
         ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
@@ -133,13 +133,13 @@ public class UserClient {
     public Result register(RegisterParameters requestParams) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("user/register.php");
 
-        request.addQueryParameter(PARAM_APPLICATION_ID, requestParams.mApplicationId);
-        request.addQueryParameter(PARAM_EMAIL, requestParams.mEmail);
-        request.addQueryParameter(PARAM_PASSWORD, requestParams.mPassword);
-        request.addQueryParameter(PARAM_FB_ACCESS_TOKEN, requestParams.mFacebookAccessToken);
-        request.addQueryParameter(PARAM_FIRST_NAME, requestParams.mFirstName);
-        request.addQueryParameter(PARAM_LAST_NAME, requestParams.mLastName);
-        request.addQueryParameter(PARAM_DISPLAY_NAME, requestParams.mDisplayName);
+        request.addQueryParameter(PARAM_APPLICATION_ID, requestParams.getApplicationId());
+        request.addQueryParameter(PARAM_EMAIL, requestParams.getEmail());
+        request.addQueryParameter(PARAM_PASSWORD, requestParams.getPassword());
+        request.addQueryParameter(PARAM_FB_ACCESS_TOKEN, requestParams.getFacebookAccessToken());
+        request.addQueryParameter(PARAM_FIRST_NAME, requestParams.getFirstName());
+        request.addQueryParameter(PARAM_LAST_NAME, requestParams.getLastName());
+        request.addQueryParameter(PARAM_DISPLAY_NAME, requestParams.getDisplayName());
 
         ClientHelperNoToken clientHelper = new ClientHelperNoToken();
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);

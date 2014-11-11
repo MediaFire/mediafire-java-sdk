@@ -1,5 +1,6 @@
 package com.mediafire.sdk.clients;
 
+import com.mediafire.sdk.http.ApiVersion;
 import com.mediafire.sdk.http.Request;
 
 import java.util.HashMap;
@@ -8,101 +9,31 @@ import java.util.HashMap;
  * Created by Chris on 11/9/2014.
  */
 public class ApiRequestGenerator {
-    private String mApiVersion; // TODO finish implementing
 
-    public ApiRequestGenerator(String apiVersion) {
-        mApiVersion = apiVersion;
-    }
+    public ApiRequestGenerator() { }
 
-    public ApiRequestGenerator() {
-        this(null);
-    }
+    public Request createRequestObjectFromPath(String path, String version) {
+        String fullPath = "api/";
 
-    private static final HashMap<String, Request> map = new HashMap<String, Request>();
+        if (version != null) {
+            fullPath += version + "/";
+        }
 
-    static {
-        // contact
-        map.put("contact/add.php", new Request.Builder().build());
-        map.put("contact/delete.php", new Request.Builder().build());
-        map.put("contact/fetch.php", new Request.Builder().build());
-    }
+        fullPath += path;
 
-    static {
-        // device
-        map.put("device/get_status.php", new Request.Builder().build());
-        map.put("device/get_changes.php", new Request.Builder().build());
-    }
+        Request.Builder builder = new Request.Builder();
+        builder.scheme("https").fullDomain("www.mediafire.com").httpMethod("post").path(fullPath);
 
-    static {
-        // file
-        map.put("file/get_changes.php", new Request.Builder().build());
-        map.put("file/get_changes.php", new Request.Builder().build());
-        map.put("file/get_changes.php", new Request.Builder().build());
-        map.put("file/get_changes.php", new Request.Builder().build());
-        map.put("file/get_changes.php", new Request.Builder().build());
-        map.put("file/get_changes.php", new Request.Builder().build());
-        map.put("file/get_changes.php", new Request.Builder().build());
-        map.put("file/get_changes.php", new Request.Builder().build());
-        map.put("file/get_changes.php", new Request.Builder().build());
-    }
-
-    static {
-        // folder
-        map.put("folder/get_changes.php", new Request.Builder().build());
-        map.put("folder/get_changes.php", new Request.Builder().build());
-        map.put("folder/get_changes.php", new Request.Builder().build());
-        map.put("folder/get_changes.php", new Request.Builder().build());
-        map.put("folder/get_changes.php", new Request.Builder().build());
-        map.put("folder/get_changes.php", new Request.Builder().build());
-        map.put("folder/get_changes.php", new Request.Builder().build());
-        map.put("folder/get_changes.php", new Request.Builder().build());
-        map.put("folder/get_changes.php", new Request.Builder().build());
-    }
-
-    static {
-        // meta
-        map.put("meta/get_changes.php", new Request.Builder().build());
-        map.put("meta/get_changes.php", new Request.Builder().build());
-        map.put("meta/get_changes.php", new Request.Builder().build());
-        map.put("meta/get_changes.php", new Request.Builder().build());
-        map.put("meta/get_changes.php", new Request.Builder().build());
-        map.put("meta/get_changes.php", new Request.Builder().build());
-        map.put("meta/get_changes.php", new Request.Builder().build());
-        map.put("meta/get_changes.php", new Request.Builder().build());
-        map.put("meta/get_changes.php", new Request.Builder().build());
-    }
-
-    static {
-        // system
-        map.put("system/get_changes.php", new Request.Builder().build());
-        map.put("system/get_changes.php", new Request.Builder().build());
-        map.put("system/get_changes.php", new Request.Builder().build());
-        map.put("system/get_changes.php", new Request.Builder().build());
-        map.put("system/get_changes.php", new Request.Builder().build());
-        map.put("system/get_changes.php", new Request.Builder().build());
-    }
-
-    static {
-        // upload
-        map.put("upload/get_changes.php", new Request.Builder().build());
-        map.put("upload/get_changes.php", new Request.Builder().build());
-        map.put("upload/get_changes.php", new Request.Builder().build());
-        map.put("upload/get_changes.php", new Request.Builder().build());
-        map.put("upload/get_changes.php", new Request.Builder().build());
-    }
-
-    static {
-        // user
-        map.put("user/get_changes.php", new Request.Builder().build());
-        map.put("user/get_changes.php", new Request.Builder().build());
-        map.put("user/get_changes.php", new Request.Builder().build());
-        map.put("user/get_changes.php", new Request.Builder().build());
-        map.put("user/get_changes.php", new Request.Builder().build());
-        map.put("user/get_changes.php", new Request.Builder().build());
-        map.put("user/get_changes.php", new Request.Builder().build());
+        if (path.equalsIgnoreCase("upload/resumable.php")) {
+            builder.postQuery(false);
+        } else {
+            builder.postQuery(true);
+        }
+        
+        return builder.build();
     }
 
     public Request createRequestObjectFromPath(String path) {
-        return map.get(path);
+        return createRequestObjectFromPath(path, ApiVersion.VERSION_CURRENT);
     }
 }

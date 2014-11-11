@@ -16,12 +16,10 @@ import java.security.NoSuchAlgorithmException;
  * Created by Chris on 11/6/2014.
  */
 public abstract class BaseClientHelper {
-    public final String TAG = getClass().getCanonicalName();
 
     protected BaseClientHelper() { }
 
     public final void setup(Request request) {
-        System.out.println(TAG + " - " + "setup");
         borrowToken(request);
         addTokenToRequestParameters(request);
         addSignatureToRequestParameters(request);
@@ -33,7 +31,6 @@ public abstract class BaseClientHelper {
      * @param response the response the get the new token from
      */
     public final void cleanup(Response response, Request request) {
-        System.out.println(TAG + " - " + "cleanup");
         returnToken(response, request);
     }
 
@@ -67,10 +64,7 @@ public abstract class BaseClientHelper {
         if (request.getToken() != null) {
             String tokenString = request.getToken().getTokenString();
 
-            System.out.println(TAG + " - " + "addTokenToRequestParameters - " + tokenString);
             request.addQueryParameter("session_token", tokenString);
-        } else {
-            System.out.println(TAG + " - " + "addTokenToRequestParameters - no token to add for this request");
         }
     }
 
@@ -81,7 +75,6 @@ public abstract class BaseClientHelper {
      * @return the hashed version of the passed String
      */
     public final String hashString(String target, String hashAlgorithm) {
-        System.out.println(TAG + " - " + "hashString - target: " + target);
         String result;
         try {
             MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
@@ -100,7 +93,7 @@ public abstract class BaseClientHelper {
             e.printStackTrace();
             result = target;
         }
-        System.out.println(TAG + " - " + "hashString - hashed: " + result);
+
         return result;
     }
 
@@ -158,7 +151,6 @@ public abstract class BaseClientHelper {
         SessionToken sessionToken = (SessionToken) request.getToken();
 
         if (sessionToken == null) {
-            System.out.printf("%s - %s", TAG, "makeSignatureForApiRequest - request had no token, returning null for signature");
             return null;
         }
 
@@ -174,9 +166,7 @@ public abstract class BaseClientHelper {
 
         String nonUrlEncodedString = secretKeyMod256 + time + fullUri;
 
-        System.out.printf("%s - %s", TAG, "makeSignatureForApiRequest - hash target: " + nonUrlEncodedQueryString);
         String signature = hashString(nonUrlEncodedString, "MD5");
-        System.out.printf("%s - %s", TAG, "makeSignatureForApiRequest - hashed: " + signature);
         return signature;
     }
 }

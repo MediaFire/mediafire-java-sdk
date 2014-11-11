@@ -70,24 +70,20 @@ public class ClientHelperNewActionToken extends ClientHelperApi {
         if ("image".equals(mTokenType)) {
             ImageActionToken mfImageActionToken = (ImageActionToken) createActionToken(ImageActionToken.class, getActionTokenResponse, request);
             mActionTokenManagerInterface.receiveImageActionToken(mfImageActionToken);
-            System.out.printf("%s - %s", TAG, "returnToken - returned new image actiontoken to token manager");
         }
 
         if ("upload".equals(mTokenType)) {
             UploadActionToken uploadActionToken = (UploadActionToken) createActionToken(UploadActionToken.class, getActionTokenResponse, request);
             mActionTokenManagerInterface.receiveUploadActionToken(uploadActionToken);
-            System.out.printf("%s - %s", TAG, "returnToken - returned new upload actiontoken to token manager");
         }
     }
 
     private ActionToken createActionToken(Class<? extends ActionToken> clazz, GetActionTokenResponse getActionTokenResponse, Request request) {
         if (getActionTokenResponse == null) {
-            System.out.printf("%s - %s", TAG, "createActionToken - no action token response, return null action token");
             return null;
         }
 
         if (getActionTokenResponse.hasError()) {
-            System.out.printf("%s - %s", TAG, "createActionToken - action token response has error, return null action token");
             return null;
         }
 
@@ -101,19 +97,14 @@ public class ClientHelperNewActionToken extends ClientHelperApi {
             tokenExpiry = 0;
         }
 
-        System.out.printf("%s - %s", TAG, "createActionToken - creating token with expiry of " + tokenExpiry);
-
         if (clazz == ImageActionToken.class) {
-            System.out.printf("%s - %s", TAG, "createActionToken - returning new image action token");
             return new ImageActionToken(tokenString, tokenExpiry);
         }
 
         if (clazz == UploadActionToken.class) {
-            System.out.printf("%s - %s", TAG, "createActionToken - returning new upload action token");
             return new UploadActionToken(tokenString, tokenExpiry);
         }
 
-        System.out.printf("%s - %s", TAG, "createActionToken - unknown token class passed, returning null");
         return null;
     }
 }

@@ -56,24 +56,21 @@ public class ClientHelperNewSessionToken extends BaseClientHelper {
         // Note: If the app does not have the "Require Secret Key" option checked,
         // then the API key may be omitted from the signature.
         // However, this should only be done when sufficient domain and/or network restrictions are in place.
-        String hashTarget = userInfoPortionOfHashTarget + mDeveloperCredentials.getConcatenatedCredentials();
+        String devInfoPortionOfHashTarget = mDeveloperCredentials.getConcatenatedCredentials();
 
-        System.out.println(TAG + " - makeSignatureForNewSessionToken - pre-hash: " + hashTarget);
+        String hashTarget = userInfoPortionOfHashTarget + devInfoPortionOfHashTarget;
+
         String signature = hashString(hashTarget, "SHA-1");
-        System.out.println(TAG + " - makeSignatureForNewSessionToken - hashed: " + signature);
         return signature;
     }
 
     private void addRequiredParametersForNewSessionToken(Request request) {
-        System.out.println(TAG + " - addRequiredParametersForNewSessionToken");
         Map<String, String> credentialsMap = mUserCredentials.getCredentials();
         for (String key : credentialsMap.keySet()) {
             request.addQueryParameter(key, credentialsMap.get(key));
         }
 
         request.addQueryParameter("application_id", mDeveloperCredentials.getCredentials().get("application_id"));
-
-        System.out.println(TAG + " - Request parameters: " + request.getQueryParameters());
     }
 
     /**
@@ -84,12 +81,10 @@ public class ClientHelperNewSessionToken extends BaseClientHelper {
     private SessionToken createNewSessionToken(GetSessionTokenResponse getSessionTokenResponse) {
 
         if (getSessionTokenResponse == null) {
-            System.out.println(TAG + " - createNewSessionToken - response null, returning null");
             return null;
         }
 
         if (getSessionTokenResponse.hasError()) {
-            System.out.println(TAG + " - createNewSessionToken - response has error, returning null");
             return null;
         }
 

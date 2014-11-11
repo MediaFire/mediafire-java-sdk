@@ -13,7 +13,6 @@ import java.util.Map;
 public class ApiClient {
     private BaseClientHelper mBaseClientHelper;
     private HttpWorkerInterface mHttpWorker;
-    private final String CHARSET = "UTF-8";
 
     public ApiClient(BaseClientHelper baseClientHelper, HttpWorkerInterface httpWorker) {
         mBaseClientHelper = baseClientHelper;
@@ -30,14 +29,14 @@ public class ApiClient {
 
         String httpMethod = request.getHttpMethod();
 
-        Response response = doRequest(request, httpMethod);
+        Response response = getResponseForRequest(request, httpMethod);
 
         mBaseClientHelper.cleanup(response, request);
 
         return new Result(response, request);
     }
 
-    private Response doRequest(Request request, String method) {
+    private Response getResponseForRequest(Request request, String method) {
         // both get and post use Accept-Charset header
         HeadersHelper headersHelper = new HeadersHelper(request);
         headersHelper.addHeaders();

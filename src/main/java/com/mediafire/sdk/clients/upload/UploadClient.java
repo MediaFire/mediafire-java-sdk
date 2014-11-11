@@ -51,13 +51,13 @@ public class UploadClient {
         ClientHelperActionToken clientHelper = new ClientHelperActionToken("upload", mActionTokenManager);
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
-        request.addQueryParameter(PARAM_FILENAME, checkParameters.mFilename);
-        request.addQueryParameter(PARAM_HASH, checkParameters.mHash);
-        request.addQueryParameter(PARAM_SIZE, checkParameters.mSize);
-        request.addQueryParameter(PARAM_FOLDER_KEY, checkParameters.mFolderKey);
-        request.addQueryParameter(PARAM_FILEDROP_KEY, checkParameters.mFiledropKey);
-        request.addQueryParameter(PARAM_PATH, checkParameters.mPath);
-        request.addQueryParameter(PARAM_RESUMABLE, checkParameters.mResumable);
+        request.addQueryParameter(PARAM_FILENAME, checkParameters.getFilename());
+        request.addQueryParameter(PARAM_HASH, checkParameters.getHash());
+        request.addQueryParameter(PARAM_SIZE, checkParameters.getSize());
+        request.addQueryParameter(PARAM_FOLDER_KEY, checkParameters.getFolderKey());
+        request.addQueryParameter(PARAM_FILEDROP_KEY, checkParameters.getFiledropKey());
+        request.addQueryParameter(PARAM_PATH, checkParameters.getPath());
+        request.addQueryParameter(PARAM_RESUMABLE, checkParameters.getResumable());
 
         return apiClient.doRequest(request);
     }
@@ -65,16 +65,16 @@ public class UploadClient {
     public Result instant(InstantParameters instantParameters) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/instant.php");
 
-        request.addQueryParameter(PARAM_HASH, instantParameters.mHash);
-        request.addQueryParameter(PARAM_SIZE, instantParameters.mSize);
-        request.addQueryParameter(PARAM_FILENAME, instantParameters.mFilename);
-        request.addQueryParameter(PARAM_QUICK_KEY, instantParameters.mQuickKey);
-        request.addQueryParameter(PARAM_FOLDER_KEY, instantParameters.mFolderKey);
-        request.addQueryParameter(PARAM_FILEDROP_KEY, instantParameters.mFiledropKey);
-        request.addQueryParameter(PARAM_PATH, instantParameters.mPath);
-        request.addQueryParameter(PARAM_ACTION_ON_DUPLICATE, instantParameters.mActionOnDuplicate);
-        request.addQueryParameter(PARAM_MTIME, instantParameters.mMTime);
-        request.addQueryParameter(PARAM_VERSION_CONTROL, instantParameters.mVersionControl);
+        request.addQueryParameter(PARAM_HASH, instantParameters.getHash());
+        request.addQueryParameter(PARAM_SIZE, instantParameters.getSize());
+        request.addQueryParameter(PARAM_FILENAME, instantParameters.getFilename());
+        request.addQueryParameter(PARAM_QUICK_KEY, instantParameters.getQuickKey());
+        request.addQueryParameter(PARAM_FOLDER_KEY, instantParameters.getFolderKey());
+        request.addQueryParameter(PARAM_FILEDROP_KEY, instantParameters.getFiledropKey());
+        request.addQueryParameter(PARAM_PATH, instantParameters.getPath());
+        request.addQueryParameter(PARAM_ACTION_ON_DUPLICATE, instantParameters.getActionOnDuplicate());
+        request.addQueryParameter(PARAM_MTIME, instantParameters.getMTime());
+        request.addQueryParameter(PARAM_VERSION_CONTROL, instantParameters.getVersionControl());
 
         ClientHelperActionToken clientHelper = new ClientHelperActionToken("upload", mActionTokenManager);
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
@@ -94,17 +94,17 @@ public class UploadClient {
     public Result resumable(ResumableParameters resumableParameters, String encodedShortFileName, long fileSize, String fileHash, int chunkNumber, String chunkHash, int chunkSize, byte[] payload) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/resumable.php");
 
-        request.addQueryParameter(PARAM_FILEDROP_KEY, resumableParameters.mFiledropKey);
-        request.addQueryParameter(PARAM_SOURCE_HASH, resumableParameters.mSourceHash);
-        request.addQueryParameter(PARAM_TARGET_HASH, resumableParameters.mTargetHash);
-        request.addQueryParameter(PARAM_TARGET_SIZE, resumableParameters.mTargetSize);
-        request.addQueryParameter(PARAM_QUICK_KEY, resumableParameters.mQuickKey);
-        request.addQueryParameter(PARAM_FOLDER_KEY, resumableParameters.mFolderKey);
-        request.addQueryParameter(PARAM_PATH, resumableParameters.mPath);
-        request.addQueryParameter(PARAM_ACTION_ON_DUPLICATE, resumableParameters.mActionOnDuplicate);
-        request.addQueryParameter(PARAM_MTIME, resumableParameters.mMTime);
-        request.addQueryParameter(PARAM_VERSION_CONTROL, resumableParameters.mVersionControl);
-        request.addQueryParameter(PARAM_PREVIOUS_HASH, resumableParameters.mPreviousHash);
+        request.addQueryParameter(PARAM_FILEDROP_KEY, resumableParameters.getFiledropKey());
+        request.addQueryParameter(PARAM_SOURCE_HASH, resumableParameters.getSourceHash());
+        request.addQueryParameter(PARAM_TARGET_HASH, resumableParameters.getTargetHash());
+        request.addQueryParameter(PARAM_TARGET_SIZE, resumableParameters.getTargetSize());
+        request.addQueryParameter(PARAM_QUICK_KEY, resumableParameters.getQuickKey());
+        request.addQueryParameter(PARAM_FOLDER_KEY, resumableParameters.getFolderKey());
+        request.addQueryParameter(PARAM_PATH, resumableParameters.getPath());
+        request.addQueryParameter(PARAM_ACTION_ON_DUPLICATE, resumableParameters.getActionOnDuplicate());
+        request.addQueryParameter(PARAM_MTIME, resumableParameters.getMTime());
+        request.addQueryParameter(PARAM_VERSION_CONTROL, resumableParameters.getVersionControl());
+        request.addQueryParameter(PARAM_PREVIOUS_HASH, resumableParameters.getPreviousHash());
 
         request.addPayload(payload);
 

@@ -117,13 +117,13 @@ public class MetaClient {
         ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
-        request.addQueryParameter(PARAM_CHUNK, queryBuilder.mChunk);
-        request.addQueryParameter(PARAM_ORDER_DIRECTION, queryBuilder.mOrderDirection);
-        request.addQueryParameter(PARAM_ORDER_BY, queryBuilder.mOrderBy);
-        request.addQueryParameter(PARAM_RETURN_DATA, queryBuilder.mReturnData);
+        request.addQueryParameter(PARAM_CHUNK, queryBuilder.getChunk());
+        request.addQueryParameter(PARAM_ORDER_DIRECTION, queryBuilder.getOrderDirection());
+        request.addQueryParameter(PARAM_ORDER_BY, queryBuilder.getOrderBy());
+        request.addQueryParameter(PARAM_RETURN_DATA, queryBuilder.getReturnData());
 
-        for (String key : queryBuilder.mMetaDataFilters.keySet()) {
-            request.addQueryParameter(PARAM_META_PREFIX + key, queryBuilder.mMetaDataFilters.get(key));
+        for (String key : queryBuilder.getMetaDataFilters().keySet()) {
+            request.addQueryParameter(PARAM_META_PREFIX + key, queryBuilder.getMetaDataFilters().get(key));
         }
 
         return apiClient.doRequest(request);

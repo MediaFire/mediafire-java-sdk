@@ -58,8 +58,8 @@ public class DeviceClient {
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         if(getStatusParameters != null) {
-            request.addQueryParameter(PARAM_SIMPLE_REPORT, getStatusParameters.mSimpleReport);
-            request.addQueryParameter(PARAM_DEVICE_ID, getStatusParameters.mDeviceId);
+            request.addQueryParameter(PARAM_SIMPLE_REPORT, getStatusParameters.getSimpleReport());
+            request.addQueryParameter(PARAM_DEVICE_ID, getStatusParameters.getDeviceId());
         }
 
         return apiClient.doRequest(request);

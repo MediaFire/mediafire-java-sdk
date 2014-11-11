@@ -99,29 +99,26 @@ public class FileClient {
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
-        request.addQueryParameter(PARAM_FILE_NAME, params.mFileName);
-        request.addQueryParameter(PARAM_DESCRIPTION, params.mDescription);
-        request.addQueryParameter(PARAM_PRIVACY, params.mPrivacy);
-        request.addQueryParameter(PARAM_MTIME, params.mTime);
+        request.addQueryParameter(PARAM_FILE_NAME, params.getFileName());
+        request.addQueryParameter(PARAM_DESCRIPTION, params.getDescription());
+        request.addQueryParameter(PARAM_PRIVACY, params.getPrivacy());
+        request.addQueryParameter(PARAM_MTIME, params.getMtime());
 
         return apiClient.doRequest(request);
     }
 
     public Result rename(String quickKey, String newName) {
-        UpdateParameters params = new UpdateParameters();
-        params.fileName(newName);
+        UpdateParameters params = new UpdateParameters.Builder().fileName(newName).build();
         return update(quickKey, params);
     }
 
     public Result makePublic(String quickKey) {
-        UpdateParameters params = new UpdateParameters();
-        params.privacy(UpdateParameters.Privacy.PUBLIC);
+        UpdateParameters params = new UpdateParameters.Builder().privacy(UpdateParameters.Builder.Privacy.PUBLIC).build();
         return update(quickKey, params);
     }
 
     public Result makePrivate(String quickKey) {
-        UpdateParameters params = new UpdateParameters();
-        params.privacy(UpdateParameters.Privacy.PRIVATE);
+        UpdateParameters params = new UpdateParameters.Builder().privacy(UpdateParameters.Builder.Privacy.PRIVATE).build();
         return update(quickKey, params);
     }
 
@@ -137,5 +134,30 @@ public class FileClient {
         }
 
         return apiClient.doRequest(request);
+    }
+
+    /**
+     * Created by Chris Najar on 10/30/2014.
+     */
+    public static enum LinkType {
+        VIEW("view"),
+        EDIT("edit"),
+        NORMAL_DOWNLOAD("normal_download"),
+        DIRECT_DOWNLOAD("direct_download"),
+        ONE_TIME_DOWNLOAD("one_time"),
+        LISTEN("listen"),
+        WATCH("watch"),
+        STREAMING("streaming"),
+        ALL(null);
+
+        private final String mLinkType;
+
+        private LinkType(String value) {
+            mLinkType = value;
+        }
+
+        public String getLinkType() {
+            return mLinkType;
+        }
     }
 }

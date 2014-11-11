@@ -4,145 +4,239 @@ package com.mediafire.sdk.clients.contact;
  * Created by jondh on 11/4/14.
  */
 public class AddParameters {
-    public String mContactType;
-    public String mContactKey;
-    public String mDisplayName;
-    public String mFirstName;
-    public String mLastName;
-    public String mAvatar;
-    public String mSourceUid;
-    public String mEmail;
-    public String mPhone;
-    public String mBirthday;
-    public String mLocation;
-    public String mGender;
-    public String mWebsite;
-    public String mGroupId;
-
-    public AddParameters contactType(String contactType){
-        if(contactType == null) {
-            return this;
-        }
-
-        mContactType = contactType;
-        return this;
+    private String mContactType;
+    private String mContactKey;
+    private String mDisplayName;
+    private String mFirstName;
+    private String mLastName;
+    private String mAvatar;
+    private String mSourceUid;
+    private String mEmail;
+    private String mPhone;
+    private String mBirthday;
+    private String mLocation;
+    private String mGender;
+    private String mWebsite;
+    private String mGroupId;
+    
+    public AddParameters(Builder builder) {
+        mContactType = builder.mContactType;
+        mContactKey = builder.mContactKey;
+        mDisplayName = builder.mDisplayName;
+        mFirstName = builder.mFirstName;
+        mLastName = builder.mLastName;
+        mAvatar = builder.mAvatar;
+        mSourceUid = builder.mSourceUid;
+        mEmail = builder.mEmail;
+        mPhone = builder.mPhone;
+        mBirthday = builder.mBirthday;
+        mLocation = builder.mLocation;
+        mGender = builder.mGender;
+        mWebsite = builder.mWebsite;
+        mGroupId = builder.mGroupId;
     }
 
-    public AddParameters contactKey(String contactKey, String sourceUid){
-        if(contactKey == null || sourceUid == null) {
-            return this;
-        }
-
-        mContactKey = contactKey;
-        mSourceUid = sourceUid;
-        return this;
+    public String getContactType() {
+        return mContactType;
     }
 
-    public AddParameters displayName(String displayName){
-        if(displayName == null) {
-            return this;
-        }
-
-        mDisplayName = displayName;
-        return this;
+    public String getContactKey() {
+        return mContactKey;
     }
 
-    public AddParameters firstName(String firstName){
-        if(firstName == null) {
-            return this;
-        }
-
-        mFirstName = firstName;
-        return this;
+    public String getDisplayName() {
+        return mDisplayName;
     }
 
-    public AddParameters lastName(String lastName){
-        if(lastName == null) {
-            return this;
-        }
-
-        mLastName = lastName;
-        return this;
+    public String getFirstName() {
+        return mFirstName;
     }
 
-    public AddParameters avatar(String avatar){
-        if(avatar == null) {
-            return this;
-        }
-
-        mAvatar = avatar;
-        return this;
+    public String getLastName() {
+        return mLastName;
     }
 
-    public AddParameters sourceUid(String sourceUid){
-        if(sourceUid == null) {
-            return this;
-        }
-
-        mSourceUid = sourceUid;
-        return this;
+    public String getAvatar() {
+        return mAvatar;
     }
 
-    public AddParameters email(String email){
-        if(email == null) {
-            return this;
-        }
-
-        mEmail = email;
-        return this;
+    public String getSourceUid() {
+        return mSourceUid;
     }
 
-    public AddParameters phone(String phone){
-        if(phone == null) {
-            return this;
-        }
-
-        mPhone = phone;
-        return this;
+    public String getEmail() {
+        return mEmail;
     }
 
-    public AddParameters birthday(String birthday){
-        if(birthday == null) {
-            return this;
-        }
-
-        mBirthday = birthday;
-        return this;
+    public String getPhone() {
+        return mPhone;
     }
 
-    public AddParameters location(String location){
-        if(location == null) {
-            return this;
-        }
-
-        mLocation = location;
-        return this;
+    public String getBirthday() {
+        return mBirthday;
     }
 
-    public AddParameters gender(String gender){
-        if(gender == null) {
-            return this;
-        }
-
-        mGender = gender;
-        return this;
+    public String getLocation() {
+        return mLocation;
     }
 
-    public AddParameters website(String website){
-        if(website == null) {
-            return this;
-        }
-
-        mWebsite = website;
-        return this;
+    public String getGender() {
+        return mGender;
     }
 
-    public AddParameters groupId(String groupId){
-        if(groupId == null) {
+    public String getWebsite() {
+        return mWebsite;
+    }
+
+    public String getGroupId() {
+        return mGroupId;
+    }
+
+    public static class Builder {
+        private String mContactType;
+        private String mContactKey;
+        private String mDisplayName;
+        private String mFirstName;
+        private String mLastName;
+        private String mAvatar;
+        private String mSourceUid;
+        private String mEmail;
+        private String mPhone;
+        private String mBirthday;
+        private String mLocation;
+        private String mGender;
+        private String mWebsite;
+        private String mGroupId;
+    
+        public Builder contactType(String contactType) {
+            if (contactType == null) {
+                return this;
+            }
+    
+            mContactType = contactType;
             return this;
         }
-
-        mGroupId = groupId;
-        return this;
+    
+        public Builder contactKey(String contactKey, String sourceUid) {
+            if (contactKey == null || sourceUid == null) {
+                return this;
+            }
+    
+            mContactKey = contactKey;
+            mSourceUid = sourceUid;
+            return this;
+        }
+    
+        public Builder displayName(String displayName) {
+            if (displayName == null) {
+                return this;
+            }
+    
+            mDisplayName = displayName;
+            return this;
+        }
+    
+        public Builder firstName(String firstName) {
+            if (firstName == null) {
+                return this;
+            }
+    
+            mFirstName = firstName;
+            return this;
+        }
+    
+        public Builder lastName(String lastName) {
+            if (lastName == null) {
+                return this;
+            }
+    
+            mLastName = lastName;
+            return this;
+        }
+    
+        public Builder avatar(String avatar) {
+            if (avatar == null) {
+                return this;
+            }
+    
+            mAvatar = avatar;
+            return this;
+        }
+    
+        public Builder sourceUid(String sourceUid) {
+            if (sourceUid == null) {
+                return this;
+            }
+    
+            mSourceUid = sourceUid;
+            return this;
+        }
+    
+        public Builder email(String email) {
+            if (email == null) {
+                return this;
+            }
+    
+            mEmail = email;
+            return this;
+        }
+    
+        public Builder phone(String phone) {
+            if (phone == null) {
+                return this;
+            }
+    
+            mPhone = phone;
+            return this;
+        }
+    
+        public Builder birthday(String birthday) {
+            if (birthday == null) {
+                return this;
+            }
+    
+            mBirthday = birthday;
+            return this;
+        }
+    
+        public Builder location(String location) {
+            if (location == null) {
+                return this;
+            }
+    
+            mLocation = location;
+            return this;
+        }
+    
+        public Builder gender(String gender) {
+            if (gender == null) {
+                return this;
+            }
+    
+            mGender = gender;
+            return this;
+        }
+    
+        public Builder website(String website) {
+            if (website == null) {
+                return this;
+            }
+    
+            mWebsite = website;
+            return this;
+        }
+    
+        public Builder groupId(String groupId) {
+            if (groupId == null) {
+                return this;
+            }
+    
+            mGroupId = groupId;
+            return this;
+        }
+        
+        public AddParameters build() {
+            return new AddParameters(this);
+        }
     }
 }

@@ -10,10 +10,11 @@ import junit.framework.TestCase;
 
 public class ContactClientTest extends TestCase {
 
+    SessionTokenManagerInterface sessionTokenManager = new DummySessionTokenManager();
+    HttpWorkerInterface httpWorker = new DummyHttpWorker();
+    ContactClient contactClient = new ContactClient(httpWorker, sessionTokenManager);
+
     public void testAddUrl() throws Exception {
-        SessionTokenManagerInterface sessionTokenManager = new DummySessionTokenManager();
-        HttpWorkerInterface httpWorker = new DummyHttpWorker();
-        ContactClient contactClient = new ContactClient(httpWorker, sessionTokenManager);
 
         AddParameters.Builder builder = new AddParameters.Builder();
         builder.avatar("some_avatar").firstName("bob").lastName("jones");
@@ -29,10 +30,6 @@ public class ContactClientTest extends TestCase {
     }
 
     public void testAddPayload() throws Exception {
-        SessionTokenManagerInterface sessionTokenManager = new DummySessionTokenManager();
-        HttpWorkerInterface httpWorker = new DummyHttpWorker();
-        ContactClient contactClient = new ContactClient(httpWorker, sessionTokenManager);
-
         AddParameters.Builder builder = new AddParameters.Builder();
         builder.avatar("some_avatar").firstName("bob").lastName("jones");
         AddParameters addParameters = builder.build();
@@ -47,10 +44,6 @@ public class ContactClientTest extends TestCase {
     }
 
     public void testDeleteUrl() throws Exception {
-        SessionTokenManagerInterface sessionTokenManager = new DummySessionTokenManager();
-        HttpWorkerInterface httpWorker = new DummyHttpWorker();
-        ContactClient contactClient = new ContactClient(httpWorker, sessionTokenManager);
-
         Result result = contactClient.delete("some_contact_key");
 
         DummyHttpWorker.DummyPOSTResponse dummyPOSTResponse = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
@@ -62,10 +55,6 @@ public class ContactClientTest extends TestCase {
     }
 
     public void testDeletePayload() throws Exception {
-        SessionTokenManagerInterface sessionTokenManager = new DummySessionTokenManager();
-        HttpWorkerInterface httpWorker = new DummyHttpWorker();
-        ContactClient contactClient = new ContactClient(httpWorker, sessionTokenManager);
-
         Result result = contactClient.delete("some_contact_key");
 
         DummyHttpWorker.DummyPOSTResponse dummyPOSTResponse = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
@@ -77,10 +66,6 @@ public class ContactClientTest extends TestCase {
     }
 
     public void testFetchUrl() throws Exception {
-        SessionTokenManagerInterface sessionTokenManager = new DummySessionTokenManager();
-        HttpWorkerInterface httpWorker = new DummyHttpWorker();
-        ContactClient contactClient = new ContactClient(httpWorker, sessionTokenManager);
-
         FetchParameters.Builder builder = new FetchParameters.Builder();
         builder.limit("some_limit").method(FetchParameters.Builder.Method.NORMAL);
         FetchParameters fetchParameters = builder.build();
@@ -95,10 +80,6 @@ public class ContactClientTest extends TestCase {
     }
 
     public void testFetchPayload() throws Exception {
-        SessionTokenManagerInterface sessionTokenManager = new DummySessionTokenManager();
-        HttpWorkerInterface httpWorker = new DummyHttpWorker();
-        ContactClient contactClient = new ContactClient(httpWorker, sessionTokenManager);
-
         FetchParameters.Builder builder = new FetchParameters.Builder();
         builder.limit("some_limit").method(FetchParameters.Builder.Method.NORMAL);
         FetchParameters fetchParameters = builder.build();

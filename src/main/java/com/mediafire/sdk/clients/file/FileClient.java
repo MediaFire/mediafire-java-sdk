@@ -137,11 +137,17 @@ public class FileClient {
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
-        if (linkType != null) {
-            request.addQueryParameter(PARAM_LINK_TYPE, linkType.getLinkType());
+        if (linkType == null) {
+            linkType = LinkType.ALL;
         }
 
+        request.addQueryParameter(PARAM_LINK_TYPE, linkType.getLinkType());
+
         return apiClient.doRequest(request);
+    }
+
+    public Result getLinks(String quickKey) {
+        return getLinks(quickKey, LinkType.ALL);
     }
 
     /**

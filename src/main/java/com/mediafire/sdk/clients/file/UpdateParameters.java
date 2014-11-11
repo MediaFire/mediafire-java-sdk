@@ -9,7 +9,7 @@ public class UpdateParameters {
     private String mPrivacy;
     private String mTime;
 
-    public UpdateParameters(Builder builder) {
+    private UpdateParameters(Builder builder) {
         mFileName = builder.mFileName;
         mDescription = builder.mDescription;
         mPrivacy = builder.mPrivacy;

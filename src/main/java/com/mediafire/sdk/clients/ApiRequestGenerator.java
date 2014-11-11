@@ -10,13 +10,21 @@ import java.util.HashMap;
  */
 public class ApiRequestGenerator {
 
-    public ApiRequestGenerator() { }
+    private final String mApiVersion;
 
-    public Request createRequestObjectFromPath(String path, String version) {
+    public ApiRequestGenerator(String apiVersion) {
+        mApiVersion = apiVersion;
+    }
+
+    public ApiRequestGenerator() {
+        this(ApiVersion.VERSION_CURRENT);
+    }
+
+    public Request createRequestObjectFromPath(String path) {
         String fullPath = "api/";
 
-        if (version != null) {
-            fullPath += version + "/";
+        if (mApiVersion != null) {
+            fullPath += mApiVersion + "/";
         }
 
         fullPath += path;
@@ -29,11 +37,7 @@ public class ApiRequestGenerator {
         } else {
             builder.postQuery(true);
         }
-        
-        return builder.build();
-    }
 
-    public Request createRequestObjectFromPath(String path) {
-        return createRequestObjectFromPath(path, ApiVersion.VERSION_CURRENT);
+        return builder.build();
     }
 }

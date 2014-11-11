@@ -4,52 +4,101 @@ package com.mediafire.sdk.clients.folder;
  * Created by jondh on 11/4/14.
  */
 public class SearchParameters {
-    public String mFolderKey;
-    public String mFilter;
-    public String mDeviceId;
-    public String mSearchAll;
-    public String mDetails;
+    private final String mSearchText;
+    private final String mFolderKey;
+    private final String mFilter;
+    private final String mDeviceId;
+    private final String mSearchAll;
+    private final String mDetails;
 
-    public SearchParameters() { }
+    public SearchParameters(Builder builder) {
+        mSearchText = builder.mSearchText;
+        mFolderKey = builder.mFolderKey;
+        mFilter = builder.mFilter;
+        mDeviceId = builder.mDeviceId;
+        mSearchAll = builder.mSearchAll;
+        mDetails = builder.mDetails;
+    }
 
-    public SearchParameters folderKey(String folderKey) {
-        if (folderKey == null) {
+    public String getSearchText() {
+        return mSearchText;
+    }
+
+    public String getFolderKey() {
+        return mFolderKey;
+    }
+
+    public String getFilter() {
+        return mFilter;
+    }
+
+    public String getDeviceId() {
+        return mDeviceId;
+    }
+
+    public String getSearchAll() {
+        return mSearchAll;
+    }
+
+    public String getDetails() {
+        return mDetails;
+    }
+
+    public static class Builder {
+        private final String mSearchText;
+        private String mFolderKey;
+        private String mFilter;
+        private String mDeviceId;
+        private String mSearchAll;
+        private String mDetails;
+
+        public Builder(String searchText) { 
+            mSearchText = searchText;
+        }
+
+        public Builder folderKey(String folderKey) {
+            if (folderKey == null) {
+                return this;
+            }
+
+            mFolderKey = folderKey;
             return this;
         }
 
-        mFolderKey = folderKey;
-        return this;
-    }
+        public Builder filter(String filter) {
+            if (filter == null) {
+                return this;
+            }
 
-    public SearchParameters filter(String filter) {
-        if (filter == null) {
+            mFilter = filter;
             return this;
         }
 
-        mFilter = filter;
-        return this;
-    }
+        public Builder deviceId(String deviceId) {
+            if (deviceId == null) {
+                return this;
+            }
 
-    public SearchParameters deviceId(String deviceId) {
-        if (deviceId == null) {
+            mDeviceId = deviceId;
             return this;
         }
 
-        mDeviceId = deviceId;
-        return this;
-    }
-
-    public SearchParameters searchAll(boolean searchAll) {
-        mSearchAll = searchAll ? "yes" : "no";
-        return this;
-    }
-
-    public SearchParameters details(String details) {
-        if (details == null) {
+        public Builder searchAll(boolean searchAll) {
+            mSearchAll = searchAll ? "yes" : "no";
             return this;
         }
 
-        mDetails = details;
-        return this;
+        public Builder details(String details) {
+            if (details == null) {
+                return this;
+            }
+
+            mDetails = details;
+            return this;
+        }
+        
+        public SearchParameters build() {
+            return new SearchParameters(this);
+        }
     }
 }

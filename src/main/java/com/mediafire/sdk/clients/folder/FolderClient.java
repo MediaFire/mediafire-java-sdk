@@ -33,6 +33,7 @@ public class FolderClient {
     private static final String PARAM_CHUNK_SIZE = "chunk_size";
     private static final String PARAM_RETURN_CHANGES = "return_changes";
     private static final String PARAM_SEARCH_ALL = "search_all";
+    private static final String PARAM_SEARCH_TEXT = "search_text";
 
     private final ApiRequestGenerator mApiRequestGenerator;
     private final HttpWorkerInterface mHttpWorker;
@@ -48,16 +49,20 @@ public class FolderClient {
         this(httpWorker, sessionTokenManager, ApiVersion.VERSION_CURRENT);
     }
 
-    public Result copy(MovementParameters movementParameters) {
+    public Result copy(String sourceFolderKey, String destinationFolderKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/copy.php");
 
         ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
-        request.addQueryParameter(PARAM_FOLDER_KEY_SRC, movementParameters.mFolderKeySrc);
-        request.addQueryParameter(PARAM_FOLDER_KEY_DST, movementParameters.mFolderKeyDst);
+        request.addQueryParameter(PARAM_FOLDER_KEY_SRC, sourceFolderKey);
+        request.addQueryParameter(PARAM_FOLDER_KEY_DST, destinationFolderKey);
 
         return apiClient.doRequest(request);
+    }
+
+    public Result copy(String sourceFolderKey) {
+        return copy(sourceFolderKey, null);
     }
 
     public Result create(String folderName, CreateParameters createParameters) {
@@ -67,23 +72,27 @@ public class FolderClient {
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_FOLDERNAME, folderName);
-        request.addQueryParameter(PARAM_PARENT_KEY, createParameters.mParentKey);
-        request.addQueryParameter(PARAM_ALLOW_DUPLICATE_NAME, createParameters.mAllowDuplicateName);
-        request.addQueryParameter(PARAM_MTIME, createParameters.mMTime);
+        request.addQueryParameter(PARAM_PARENT_KEY, createParameters.getParentKey());
+        request.addQueryParameter(PARAM_ALLOW_DUPLICATE_NAME, createParameters.getAllowDuplicateName());
+        request.addQueryParameter(PARAM_MTIME, createParameters.getMTime());
 
         return apiClient.doRequest(request);
     }
 
-    public Result move(MovementParameters movementParameters) {
+    public Result move(String sourceFolderKey, String destinationFolderKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/move.php");
 
         ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
-        request.addQueryParameter(PARAM_FOLDER_KEY_SRC, movementParameters.mFolderKeySrc);
-        request.addQueryParameter(PARAM_FOLDER_KEY_DST, movementParameters.mFolderKeyDst);
+        request.addQueryParameter(PARAM_FOLDER_KEY_SRC, sourceFolderKey);
+        request.addQueryParameter(PARAM_FOLDER_KEY_DST, destinationFolderKey);
 
         return apiClient.doRequest(request);
+    }
+
+    public Result move(String source) {
+        return move(source, null);
     }
 
     public Result delete(String folderKey) {
@@ -115,11 +124,11 @@ public class FolderClient {
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_FOLDER_KEY, quickKey);
-        request.addQueryParameter(PARAM_FOLDERNAME, params.mFoldername);
-        request.addQueryParameter(PARAM_DESCRIPTION, params.mDescription);
-        request.addQueryParameter(PARAM_PRIVACY, params.mPrivacy);
-        request.addQueryParameter(PARAM_PRIVACY_RECURSIVE, params.mPrivacyRecursive);
-        request.addQueryParameter(PARAM_MTIME, params.mMTime);
+        request.addQueryParameter(PARAM_FOLDERNAME, params.getFoldername());
+        request.addQueryParameter(PARAM_DESCRIPTION, params.getDescription());
+        request.addQueryParameter(PARAM_PRIVACY, params.getPrivacy());
+        request.addQueryParameter(PARAM_PRIVACY_RECURSIVE, params.getPrivacyRecursive());
+        request.addQueryParameter(PARAM_MTIME, params.getMTime());
 
         return apiClient.doRequest(request);
     }
@@ -130,9 +139,9 @@ public class FolderClient {
         ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
-        request.addQueryParameter(PARAM_FOLDER_KEY, getInfoParameters.mFolderKey);
-        request.addQueryParameter(PARAM_DEVICE_ID, getInfoParameters.mDeviceId);
-        request.addQueryParameter(PARAM_DETAILS, getInfoParameters.mDetails);
+        request.addQueryParameter(PARAM_FOLDER_KEY, getInfoParameters.getFolderKey());
+        request.addQueryParameter(PARAM_DEVICE_ID, getInfoParameters.getDeviceId());
+        request.addQueryParameter(PARAM_DETAILS, getInfoParameters.getDetails());
 
         return apiClient.doRequest(request);
     }
@@ -143,15 +152,15 @@ public class FolderClient {
         ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
-        request.addQueryParameter(PARAM_FOLDER_KEY, getContentParameters.mFolderKey);
-        request.addQueryParameter(PARAM_CONTENT_TYPE, getContentParameters.mContentType);
-        request.addQueryParameter(PARAM_FILTER, getContentParameters.mFilter);
-        request.addQueryParameter(PARAM_DEVICE_ID, getContentParameters.mDeviceId);
-        request.addQueryParameter(PARAM_ORDER_BY, getContentParameters.mOrderBy);
-        request.addQueryParameter(PARAM_ORDER_DIRECTION, getContentParameters.mOrderDirection);
-        request.addQueryParameter(PARAM_CHUNK, getContentParameters.mChunk);
-        request.addQueryParameter(PARAM_CHUNK_SIZE, getContentParameters.mChunkSize);
-        request.addQueryParameter(PARAM_DETAILS, getContentParameters.mDetails);
+        request.addQueryParameter(PARAM_FOLDER_KEY, getContentParameters.getFolderKey());
+        request.addQueryParameter(PARAM_CONTENT_TYPE, getContentParameters.getContentType());
+        request.addQueryParameter(PARAM_FILTER, getContentParameters.getFilter());
+        request.addQueryParameter(PARAM_DEVICE_ID, getContentParameters.getDeviceId());
+        request.addQueryParameter(PARAM_ORDER_BY, getContentParameters.getOrderBy());
+        request.addQueryParameter(PARAM_ORDER_DIRECTION, getContentParameters.getOrderDirection());
+        request.addQueryParameter(PARAM_CHUNK, getContentParameters.getChunk());
+        request.addQueryParameter(PARAM_CHUNK_SIZE, getContentParameters.getChunkSize());
+        request.addQueryParameter(PARAM_DETAILS, getContentParameters.getDetails());
 
         return apiClient.doRequest(request);
     }
@@ -174,11 +183,12 @@ public class FolderClient {
         ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
-        request.addQueryParameter(PARAM_FOLDER_KEY, searchParameters.mFolderKey);
-        request.addQueryParameter(PARAM_FILTER, searchParameters.mFilter);
-        request.addQueryParameter(PARAM_DEVICE_ID, searchParameters.mDeviceId);
-        request.addQueryParameter(PARAM_SEARCH_ALL, searchParameters.mSearchAll);
-        request.addQueryParameter(PARAM_DETAILS, searchParameters.mDetails);
+        request.addQueryParameter(PARAM_FOLDER_KEY, searchParameters.getFolderKey());
+        request.addQueryParameter(PARAM_FILTER, searchParameters.getFilter());
+        request.addQueryParameter(PARAM_DEVICE_ID, searchParameters.getDeviceId());
+        request.addQueryParameter(PARAM_SEARCH_ALL, searchParameters.getSearchAll());
+        request.addQueryParameter(PARAM_DETAILS, searchParameters.getDetails());
+        request.addQueryParameter(PARAM_SEARCH_TEXT, searchParameters.getSearchText());
 
         return apiClient.doRequest(request);
     }

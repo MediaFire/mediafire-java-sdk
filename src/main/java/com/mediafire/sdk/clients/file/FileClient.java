@@ -69,6 +69,10 @@ public class FileClient {
         return apiClient.doRequest(request);
     }
 
+    public Result copy(String quickKey) {
+        return copy(quickKey, null);
+    }
+
     public Result getVersion(String quickKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_version.php");
 
@@ -90,6 +94,10 @@ public class FileClient {
         request.addQueryParameter(PARAM_FOLDER_KEY, folderKey);
 
         return apiClient.doRequest(request);
+    }
+
+    public Result move(String quickKey) {
+        return move(quickKey, null);
     }
 
     public Result update(String quickKey, UpdateParameters params) {

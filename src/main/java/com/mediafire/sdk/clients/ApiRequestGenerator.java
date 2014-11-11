@@ -38,6 +38,8 @@ public class ApiRequestGenerator {
             builder.postQuery(true);
         }
 
-        return builder.build();
+        Request request = builder.build();
+        request.addQueryParameter("response_format", "json");
+        return request;
     }
 }

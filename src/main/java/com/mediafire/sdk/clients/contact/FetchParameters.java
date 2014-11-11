@@ -11,7 +11,7 @@ public class FetchParameters {
     private String mLimit;
     private String mRaw;
 
-    public FetchParameters(Builder builder) {
+    private FetchParameters(Builder builder) {
         mMethod = builder.mMethod;
         mContactKey = builder.mContactKey;
         mGroupContacts = builder.mGroupContacts;

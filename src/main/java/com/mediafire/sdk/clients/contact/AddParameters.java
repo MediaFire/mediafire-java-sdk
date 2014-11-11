@@ -19,7 +19,7 @@ public class AddParameters {
     private String mWebsite;
     private String mGroupId;
     
-    public AddParameters(Builder builder) {
+    private AddParameters(Builder builder) {
         mContactType = builder.mContactType;
         mContactKey = builder.mContactKey;
         mDisplayName = builder.mDisplayName;

@@ -7,7 +7,7 @@ public class GetStatusParameters {
     private String mDeviceId;
     private String mSimpleReport;
 
-    public GetStatusParameters(Builder builder) {
+    private GetStatusParameters(Builder builder) {
         mDeviceId = builder.mDeviceId;
         mSimpleReport = builder.mSimpleReport;
     }
@@ -21,8 +21,8 @@ public class GetStatusParameters {
     }
 
     public static class Builder {
-        public String mDeviceId;
-        public String mSimpleReport;
+        private String mDeviceId;
+        private String mSimpleReport ;
 
         public Builder() { }
 

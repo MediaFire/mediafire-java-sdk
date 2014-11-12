@@ -1,7 +1,5 @@
 package com.mediafire.sdk.clients.upload;
 
-import com.mediafire.sdk.uploader.uploaditem.UploadItemOptions;
-
 /**
  * Created by jondh on 11/5/14.
  */

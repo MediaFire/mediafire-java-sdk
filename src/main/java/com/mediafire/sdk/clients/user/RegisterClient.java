@@ -2,9 +2,7 @@ package com.mediafire.sdk.clients.user;
 
 import com.mediafire.sdk.clients.ApiClient;
 import com.mediafire.sdk.clients.ApiRequestGenerator;
-import com.mediafire.sdk.clients.ClientHelperApi;
 import com.mediafire.sdk.clients.ClientHelperNoToken;
-import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.ApiVersion;
 import com.mediafire.sdk.http.Request;

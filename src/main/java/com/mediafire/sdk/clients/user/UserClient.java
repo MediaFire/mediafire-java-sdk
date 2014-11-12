@@ -3,9 +3,6 @@ package com.mediafire.sdk.clients.user;
 import com.mediafire.sdk.clients.ApiClient;
 import com.mediafire.sdk.clients.ApiRequestGenerator;
 import com.mediafire.sdk.clients.ClientHelperApi;
-import com.mediafire.sdk.clients.ClientHelperNewActionToken;
-import com.mediafire.sdk.config.ActionTokenManagerInterface;
-import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.ApiVersion;
@@ -23,18 +20,14 @@ public class UserClient {
     private static final String PARAM_DEFAULT_SHARE_LINK_STATUS = "default_share_link_status";
     private static final String PARAM_COLLECT_META_DATA = "collect_metadata";
 
-    private final HttpWorkerInterface mHttpWorker;
-    private final SessionTokenManagerInterface mSessionTokenManager;
     private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
 
-    public UserClient(Configuration configuration) {
-        mHttpWorker = configuration.getHttpWorker();
-        mSessionTokenManager = configuration.getSessionTokenManager();
+    public UserClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
         mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
 
-        ClientHelperApi clientHelperApi = new ClientHelperApi(mSessionTokenManager);
-        apiClient = new ApiClient(clientHelperApi, mHttpWorker);
+        ClientHelperApi clientHelperApi = new ClientHelperApi(sessionTokenManagerInterface);
+        apiClient = new ApiClient(clientHelperApi, httpWorkerInterface);
     }
 
     public Result getAvatar() {

@@ -1,6 +1,5 @@
 package com.mediafire.sdk.clients.transcode;
 
-import com.mediafire.sdk.clients.HeadersHelper;
 import com.mediafire.sdk.clients.UrlHelper;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.Request;

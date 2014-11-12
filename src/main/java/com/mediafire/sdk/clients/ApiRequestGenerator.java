@@ -3,8 +3,6 @@ package com.mediafire.sdk.clients;
 import com.mediafire.sdk.http.ApiVersion;
 import com.mediafire.sdk.http.Request;
 
-import java.util.HashMap;
-
 /**
  * Created by Chris on 11/9/2014.
  */

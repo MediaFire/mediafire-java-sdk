@@ -36,20 +36,17 @@ public class FolderClient {
     private static final String PARAM_SEARCH_TEXT = "search_text";
 
     private final ApiRequestGenerator mApiRequestGenerator;
-    private final HttpWorkerInterface mHttpWorker;
-    private final SessionTokenManagerInterface mSessionTokenManager;
+    private final ApiClient apiClient;
 
     public FolderClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
-        mHttpWorker = httpWorkerInterface;
-        mSessionTokenManager = sessionTokenManagerInterface;
         mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
+
+        ClientHelperApi clientHelper = new ClientHelperApi(sessionTokenManagerInterface);
+        apiClient = new ApiClient(clientHelper, httpWorkerInterface);
     }
 
     public Result copy(String sourceFolderKey, String destinationFolderKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/copy.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_FOLDER_KEY_SRC, sourceFolderKey);
         request.addQueryParameter(PARAM_FOLDER_KEY_DST, destinationFolderKey);
@@ -63,9 +60,6 @@ public class FolderClient {
 
     public Result create(String folderName, CreateParameters createParameters) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/create.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_FOLDERNAME, folderName);
         request.addQueryParameter(PARAM_PARENT_KEY, createParameters.getParentKey());
@@ -86,9 +80,6 @@ public class FolderClient {
     public Result move(String sourceFolderKey, String destinationFolderKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/move.php");
 
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-
         request.addQueryParameter(PARAM_FOLDER_KEY_SRC, sourceFolderKey);
         request.addQueryParameter(PARAM_FOLDER_KEY_DST, destinationFolderKey);
 
@@ -102,9 +93,6 @@ public class FolderClient {
     public Result delete(String folderKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/delete.php");
 
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-
         request.addQueryParameter(PARAM_FOLDER_KEY, folderKey);
 
         return apiClient.doRequest(request);
@@ -113,9 +101,6 @@ public class FolderClient {
     public Result purge(String folderKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/purge.php");
 
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-
         request.addQueryParameter(PARAM_FOLDER_KEY, folderKey);
 
         return apiClient.doRequest(request);
@@ -123,9 +108,6 @@ public class FolderClient {
 
     public Result update(String quickKey, UpdateParameters params) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/update.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_FOLDER_KEY, quickKey);
         request.addQueryParameter(PARAM_FOLDERNAME, params.getFoldername());
@@ -140,9 +122,6 @@ public class FolderClient {
     public Result getInfo(GetInfoParameters getInfoParameters) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/get_info.php");
 
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-
         request.addQueryParameter(PARAM_FOLDER_KEY, getInfoParameters.getFolderKey());
         request.addQueryParameter(PARAM_DEVICE_ID, getInfoParameters.getDeviceId());
         request.addQueryParameter(PARAM_DETAILS, getInfoParameters.getDetails());
@@ -152,9 +131,6 @@ public class FolderClient {
 
     public Result getContent(GetContentParameters getContentParameters) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/get_content.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_FOLDER_KEY, getContentParameters.getFolderKey());
         request.addQueryParameter(PARAM_CONTENT_TYPE, getContentParameters.getContentType());
@@ -172,9 +148,6 @@ public class FolderClient {
     public Result getRevision(String folderKey, boolean returnChanges) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/get_revision.php");
 
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-
         request.addQueryParameter(PARAM_FOLDER_KEY, folderKey);
         request.addQueryParameter(PARAM_RETURN_CHANGES, returnChanges ? "yes" : "no");
 
@@ -187,9 +160,6 @@ public class FolderClient {
 
     public Result search(SearchParameters searchParameters) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/search.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_FOLDER_KEY, searchParameters.getFolderKey());
         request.addQueryParameter(PARAM_FILTER, searchParameters.getFilter());

@@ -18,13 +18,13 @@ public class DeviceClient {
     private static final String PARAM_SIMPLE_REPORT = "simple_report";
     
     private final ApiRequestGenerator mApiRequestGenerator;
-    private final HttpWorkerInterface mHttpWorker;
-    private final SessionTokenManagerInterface mSessionTokenManager;
+    private final ApiClient apiClient;
 
     public DeviceClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
-        mHttpWorker = httpWorkerInterface;
-        mSessionTokenManager = sessionTokenManagerInterface;
         mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
+
+        ClientHelperApi clientHelper = new ClientHelperApi(sessionTokenManagerInterface);
+        apiClient = new ApiClient(clientHelper, httpWorkerInterface);
     }
 
     public Result getChanges(String revision) {
@@ -33,9 +33,6 @@ public class DeviceClient {
 
     public Result getChanges(String revision, String deviceId) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("device/get_changes.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_REVISION, revision);
         request.addQueryParameter(PARAM_DEVICE_ID, deviceId);
@@ -49,9 +46,6 @@ public class DeviceClient {
 
     public Result getStatus(GetStatusParameters getStatusParameters) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("device/get_status.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         if(getStatusParameters != null) {
             request.addQueryParameter(PARAM_SIMPLE_REPORT, getStatusParameters.getSimpleReport());

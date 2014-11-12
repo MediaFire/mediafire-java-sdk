@@ -32,20 +32,21 @@ public class UploadClient {
     private static final String PARAM_TARGET_SIZE = "target_size";
 
     private final ApiRequestGenerator mApiRequestGenerator;
-    private final ActionTokenManagerInterface mActionTokenManager;
-    private final HttpWorkerInterface mHttpWorker;
+    private final ApiClient apiUploadActionTokenClient;
+    private final ApiClient apiNoTokenClient;
 
     public UploadClient(HttpWorkerInterface httpWorkerInterface, ActionTokenManagerInterface actionTokenManagerInterface) {
-        mActionTokenManager = actionTokenManagerInterface;
-        mHttpWorker = httpWorkerInterface;
         mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
+
+        ClientHelperActionToken clientHelperUploadActionToken = new ClientHelperActionToken("upload", actionTokenManagerInterface);
+        apiUploadActionTokenClient = new ApiClient(clientHelperUploadActionToken, httpWorkerInterface);
+
+        ClientHelperNoToken clientHelper = new ClientHelperNoToken();
+        apiNoTokenClient = new ApiClient(clientHelper, httpWorkerInterface);
     }
 
     public Result check(CheckParameters checkParameters) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/check.php");
-
-        ClientHelperActionToken clientHelper = new ClientHelperActionToken("upload", mActionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_FILENAME, checkParameters.getFilename());
         request.addQueryParameter(PARAM_HASH, checkParameters.getHash());
@@ -55,7 +56,7 @@ public class UploadClient {
         request.addQueryParameter(PARAM_PATH, checkParameters.getPath());
         request.addQueryParameter(PARAM_RESUMABLE, checkParameters.getResumable());
 
-        return apiClient.doRequest(request);
+        return apiUploadActionTokenClient.doRequest(request);
     }
 
     public Result instant(InstantParameters instantParameters) {
@@ -72,9 +73,7 @@ public class UploadClient {
         request.addQueryParameter(PARAM_MTIME, instantParameters.getMTime());
         request.addQueryParameter(PARAM_VERSION_CONTROL, instantParameters.getVersionControl());
 
-        ClientHelperActionToken clientHelper = new ClientHelperActionToken("upload", mActionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-        return apiClient.doRequest(request);
+        return apiUploadActionTokenClient.doRequest(request);
     }
 
     public Result pollUpload(String key) {
@@ -82,9 +81,7 @@ public class UploadClient {
 
         request.addQueryParameter(PARAM_KEY, key);
 
-        ClientHelperNoToken clientHelper = new ClientHelperNoToken();
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-        return apiClient.doRequest(request);
+        return apiNoTokenClient.doRequest(request);
     }
 
     public Result resumable(ResumableParameters resumableParameters, HeaderParameters headerParameters, byte[] payload) {
@@ -112,9 +109,7 @@ public class UploadClient {
         request.addHeader("x-unit-hash", headerParameters.getUnitHash());
         request.addHeader("x-unit-size", headerParameters.getUnitSize());
 
-        ClientHelperActionToken clientHelper = new ClientHelperActionToken("upload", mActionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-        return apiClient.doRequest(request);
+        return apiUploadActionTokenClient.doRequest(request);
     }
 
     public Result resumable(HeaderParameters headerParameters, byte[] payload) {

@@ -28,23 +28,20 @@ public class MetaClient {
     private static final String PARAM_ORDER_DIRECTION = "order_direction";
     private static final String PARAM_CHUNK = "chunk";
 
-    private final SessionTokenManagerInterface mSessionTokenManager;
-    private final HttpWorkerInterface mHttpWorker;
     private final ApiRequestGenerator mApiRequestGenerator;
+    private final ApiClient apiClient;
 
     public MetaClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManager) {
         // init host object
-        mHttpWorker = httpWorkerInterface;
-        mSessionTokenManager = sessionTokenManager;
         mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
+
+        ClientHelperApi clientHelper = new ClientHelperApi(sessionTokenManager);
+        apiClient = new ApiClient(clientHelper, httpWorkerInterface);
     }
 
 
     public Result addToList(String listKey, String quickKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/add_to_list.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
@@ -57,9 +54,6 @@ public class MetaClient {
     public Result removeFromList(String listKey, String quickKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/remove_from_list.php");
 
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
         // add list key query param
@@ -71,9 +65,6 @@ public class MetaClient {
     public Result delete(String quickKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/delete.php");
 
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
 
@@ -83,9 +74,6 @@ public class MetaClient {
     public Result get(String quickKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/get.php");
 
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
 
@@ -94,9 +82,6 @@ public class MetaClient {
 
     public Result getLinks(String quickKey, String linkType) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/get_links.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_LINK_TYPE, linkType);
         request.addQueryParameter(PARAM_QUICK_KEY_GET_LINKS, quickKey);
@@ -110,9 +95,6 @@ public class MetaClient {
 
     public Result query(QueryBuilder queryBuilder) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/query.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_CHUNK, queryBuilder.getChunk());
         request.addQueryParameter(PARAM_ORDER_DIRECTION, queryBuilder.getOrderDirection());
@@ -128,9 +110,6 @@ public class MetaClient {
 
     public Result set(String quickKey, Map<String, String> metaKeyValuePairs) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/set.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);

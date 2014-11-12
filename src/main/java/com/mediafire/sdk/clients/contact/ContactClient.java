@@ -33,22 +33,18 @@ public class ContactClient {
     private static final String PARAM_LIMIT = "limit";
     private static final String PARAM_RAW = "raw";
 
-    private final HttpWorkerInterface mHttpWorker;
-    private final SessionTokenManagerInterface mSessionTokenManager;
     private ApiRequestGenerator mApiRequestGenerator;
-
+    private final ApiClient apiClient;
 
     public ContactClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
-        mHttpWorker = httpWorkerInterface;
-        mSessionTokenManager = sessionTokenManagerInterface;
         mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
+
+        ClientHelperApi clientHelper = new ClientHelperApi(sessionTokenManagerInterface);
+        apiClient = new ApiClient(clientHelper, httpWorkerInterface);
     }
 
     public Result add(AddParameters addParameters){
         Request request = mApiRequestGenerator.createRequestObjectFromPath("contact/add.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_CONTACT_TYPE, addParameters.getContactType());
         request.addQueryParameter(PARAM_CONTACT_KEY, addParameters.getContactKey());
@@ -71,9 +67,6 @@ public class ContactClient {
     public Result delete(String contactKey){
         Request request = mApiRequestGenerator.createRequestObjectFromPath("contact/delete.php");
 
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-
         request.addQueryParameter(PARAM_CONTACT_KEY, contactKey);
 
         return apiClient.doRequest(request);
@@ -81,9 +74,6 @@ public class ContactClient {
 
     public Result fetch(FetchParameters fetchParameters){
         Request request = mApiRequestGenerator.createRequestObjectFromPath("contact/fetch.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_METHOD, fetchParameters.getMethod());
         request.addQueryParameter(PARAM_CONTACT_KEY, fetchParameters.getContactKey());

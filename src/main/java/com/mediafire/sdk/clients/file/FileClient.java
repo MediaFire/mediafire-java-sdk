@@ -20,22 +20,19 @@ public class FileClient {
     private static final String PARAM_MTIME = "mtime";
     private static final String PARAM_PRIVACY = "privacy";
     private static final String PARAM_LINK_TYPE = "link_type";
-    
-    private final HttpWorkerInterface mHttpWorker;
-    private final SessionTokenManagerInterface mSessionTokenManager;
+
     private final ApiRequestGenerator mApiRequestGenerator;
+    private final ApiClient apiClient;
 
     public FileClient(HttpWorkerInterface httpWorker, SessionTokenManagerInterface sessionTokenManagerInterface) {
-        this.mHttpWorker = httpWorker;
-        this.mSessionTokenManager = sessionTokenManagerInterface;
         mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
+
+        ClientHelperApi clientHelper = new ClientHelperApi(sessionTokenManagerInterface);
+        apiClient = new ApiClient(clientHelper, httpWorker);
     }
 
     public Result getInfo(String quickKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_info.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
 
@@ -45,9 +42,6 @@ public class FileClient {
     public Result delete(String quickKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/delete.php");
 
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
 
         return apiClient.doRequest(request);
@@ -55,9 +49,6 @@ public class FileClient {
 
     public Result copy(String quickKey, String folderKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/copy.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
         request.addQueryParameter(PARAM_FOLDER_KEY, folderKey);
@@ -72,9 +63,6 @@ public class FileClient {
     public Result getVersion(String quickKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_version.php");
 
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
-
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
 
         return apiClient.doRequest(request);
@@ -82,9 +70,6 @@ public class FileClient {
 
     public Result move(String quickKey, String folderKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/move.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
         request.addQueryParameter(PARAM_FOLDER_KEY, folderKey);
@@ -98,9 +83,6 @@ public class FileClient {
 
     public Result update(String quickKey, UpdateParameters params) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/update.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
         request.addQueryParameter(PARAM_FILE_NAME, params.getFileName());
@@ -128,9 +110,6 @@ public class FileClient {
 
     public Result getLinks(String quickKey, LinkType linkType) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_links.php");
-
-        ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
         if (linkType == null) {

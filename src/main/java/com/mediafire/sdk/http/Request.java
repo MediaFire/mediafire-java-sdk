@@ -34,7 +34,6 @@ public class Request {
         mPayload = builder.mPayload;
     }
 
-    // TODO - finish writing constructor for url
     public Request(String url) {
         URI uri = null;
         try {

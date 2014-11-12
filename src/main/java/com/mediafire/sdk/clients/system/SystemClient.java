@@ -13,17 +13,18 @@ import com.mediafire.sdk.http.Result;
  */
 public class SystemClient {
 
-    private HttpWorkerInterface mHttpWorkerInterface;
+    private final ApiClient apiClient;
     private final ApiRequestGenerator mApiRequestGenerator;
 
     public SystemClient(HttpWorkerInterface httpWorkerInterface) {
-        mHttpWorkerInterface = httpWorkerInterface;
         mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
+
+        ClientHelperNoToken clientHelperNoToken = new ClientHelperNoToken();
+        apiClient = new ApiClient(clientHelperNoToken, httpWorkerInterface);
     }
+
     public Result getInfo() {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("system/get_info.php");
-        ClientHelperNoToken clientHelper = new ClientHelperNoToken();
-        ApiClient apiClient = new ApiClient(clientHelper, mHttpWorkerInterface);
         return apiClient.doRequest(request);
     }
 }

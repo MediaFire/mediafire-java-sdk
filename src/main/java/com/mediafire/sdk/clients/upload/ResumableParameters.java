@@ -190,17 +190,7 @@ public class ResumableParameters {
                 return this;
             }
 
-            switch (versionControl) {
-                case CREATE_PATCHES:
-                    mVersionControl = "create_patches";
-                    break;
-                case KEEP_REVISION:
-                    mVersionControl = "keep_revision";
-                    break;
-                case NONE:
-                    mVersionControl = "none";
-                    break;
-            }
+            mVersionControl = versionControl.getValue();
 
             return this;
         }

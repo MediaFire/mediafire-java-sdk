@@ -144,17 +144,7 @@ public class InstantParameters {
                 return this;
             }
 
-            switch (actionOnDuplicate) {
-                case SKIP:
-                    mActionOnDuplicate = actionOnDuplicate.getValue();
-                    break;
-                case KEEP:
-                    mActionOnDuplicate = actionOnDuplicate.getValue();
-                    break;
-                case REPLACE:
-                    mActionOnDuplicate = actionOnDuplicate.getValue();
-                    break;
-            }
+            mActionOnDuplicate = actionOnDuplicate.getValue();
 
             return this;
         }

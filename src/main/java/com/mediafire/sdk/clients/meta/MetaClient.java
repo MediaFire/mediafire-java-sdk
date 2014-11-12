@@ -32,16 +32,13 @@ public class MetaClient {
     private final HttpWorkerInterface mHttpWorker;
     private final ApiRequestGenerator mApiRequestGenerator;
 
-    public MetaClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManager, String apiVersion) {
+    public MetaClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManager) {
         // init host object
         mHttpWorker = httpWorkerInterface;
         mSessionTokenManager = sessionTokenManager;
-        mApiRequestGenerator = new ApiRequestGenerator(apiVersion);
+        mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
     }
 
-    public MetaClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManager) {
-        this(httpWorkerInterface, sessionTokenManager, ApiVersion.VERSION_CURRENT);
-    }
 
     public Result addToList(String listKey, String quickKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/add_to_list.php");

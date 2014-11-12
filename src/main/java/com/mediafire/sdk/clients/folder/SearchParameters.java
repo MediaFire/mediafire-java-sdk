@@ -11,7 +11,7 @@ public class SearchParameters {
     private final String mSearchAll;
     private final String mDetails;
 
-    public SearchParameters(Builder builder) {
+    private SearchParameters(Builder builder) {
         mSearchText = builder.mSearchText;
         mFolderKey = builder.mFolderKey;
         mFilter = builder.mFilter;

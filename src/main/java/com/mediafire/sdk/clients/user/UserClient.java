@@ -34,21 +34,15 @@ public class UserClient {
     private final HttpWorkerInterface mHttpWorker;
     private final SessionTokenManagerInterface mSessionTokenManager;
     private final ActionTokenManagerInterface mActionTokenManager;
-    private final String mApiVersion;
     private final ApiRequestGenerator mApiRequestGenerator;
 
-    public UserClient(Configuration configuration, String apiVersion) {
-        mApiVersion = apiVersion;
+    public UserClient(Configuration configuration) {
         mHttpWorker = configuration.getHttpWorker();
         mSessionTokenManager = configuration.getSessionTokenManager();
         mActionTokenManager = configuration.getActionTokenManager();
         mUserCredentials = configuration.getUserCredentials();
         mDeveloperCredentials = configuration.getDeveloperCredentials();
-        mApiRequestGenerator = new ApiRequestGenerator(mApiVersion);
-    }
-
-    public UserClient(Configuration configuration) {
-        this(configuration, ApiVersion.VERSION_CURRENT);
+        mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
     }
 
     public Result getSessionTokenV2() {

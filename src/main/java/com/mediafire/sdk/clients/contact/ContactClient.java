@@ -38,14 +38,10 @@ public class ContactClient {
     private ApiRequestGenerator mApiRequestGenerator;
 
 
-    public ContactClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface, String apiVersion) {
+    public ContactClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
         mHttpWorker = httpWorkerInterface;
         mSessionTokenManager = sessionTokenManagerInterface;
-        mApiRequestGenerator = new ApiRequestGenerator(apiVersion);
-    }
-
-    public ContactClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
-        this(httpWorkerInterface, sessionTokenManagerInterface, ApiVersion.VERSION_CURRENT);
+        mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
     }
 
     public Result add(AddParameters addParameters){

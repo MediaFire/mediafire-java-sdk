@@ -16,15 +16,10 @@ public class SystemClient {
     private HttpWorkerInterface mHttpWorkerInterface;
     private final ApiRequestGenerator mApiRequestGenerator;
 
-    public SystemClient(HttpWorkerInterface httpWorkerInterface, String apiVersion) {
-        mHttpWorkerInterface = httpWorkerInterface;
-        mApiRequestGenerator = new ApiRequestGenerator(apiVersion);
-    }
-
     public SystemClient(HttpWorkerInterface httpWorkerInterface) {
-        this(httpWorkerInterface, ApiVersion.VERSION_CURRENT);
+        mHttpWorkerInterface = httpWorkerInterface;
+        mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
     }
-
     public Result getInfo() {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("system/get_info.php");
         ClientHelperNoToken clientHelper = new ClientHelperNoToken();

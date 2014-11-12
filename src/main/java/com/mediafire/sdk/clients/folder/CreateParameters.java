@@ -8,7 +8,7 @@ public class CreateParameters {
     private String mAllowDuplicateName;
     private String mMTime;
 
-    public CreateParameters(Builder builder) {
+    private CreateParameters(Builder builder) {
         mParentKey = builder.mParentKey;
         mAllowDuplicateName = builder.mAllowDuplicateName;
         mMTime = builder.mMTime;

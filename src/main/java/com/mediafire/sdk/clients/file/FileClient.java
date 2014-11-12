@@ -25,14 +25,10 @@ public class FileClient {
     private final SessionTokenManagerInterface mSessionTokenManager;
     private final ApiRequestGenerator mApiRequestGenerator;
 
-    public FileClient(HttpWorkerInterface httpWorker, SessionTokenManagerInterface sessionTokenManagerInterface, String apiVersion) {
+    public FileClient(HttpWorkerInterface httpWorker, SessionTokenManagerInterface sessionTokenManagerInterface) {
         this.mHttpWorker = httpWorker;
         this.mSessionTokenManager = sessionTokenManagerInterface;
-        mApiRequestGenerator = new ApiRequestGenerator(apiVersion);
-    }
-
-    public FileClient(HttpWorkerInterface httpWorker, SessionTokenManagerInterface sessionTokenManagerInterface) {
-        this(httpWorker, sessionTokenManagerInterface, ApiVersion.VERSION_CURRENT);
+        mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
     }
 
     public Result getInfo(String quickKey) {

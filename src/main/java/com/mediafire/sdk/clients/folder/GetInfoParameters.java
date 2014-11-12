@@ -47,12 +47,13 @@ public class GetInfoParameters {
             return this;
         }
 
-        public Builder details(String details) {
+        public Builder details(Details details) {
             if (details == null) {
                 return this;
             }
 
-            mDetails = details;
+            mDetails = details.getValue();
+
             return this;
         }   
         

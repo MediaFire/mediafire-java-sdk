@@ -39,14 +39,10 @@ public class FolderClient {
     private final HttpWorkerInterface mHttpWorker;
     private final SessionTokenManagerInterface mSessionTokenManager;
 
-    public FolderClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface, String apiVersion) {
+    public FolderClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
         mHttpWorker = httpWorkerInterface;
         mSessionTokenManager = sessionTokenManagerInterface;
-        mApiRequestGenerator = new ApiRequestGenerator(apiVersion);
-    }
-
-    public FolderClient(HttpWorkerInterface httpWorker, SessionTokenManagerInterface sessionTokenManager) {
-        this(httpWorker, sessionTokenManager, ApiVersion.VERSION_CURRENT);
+        mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
     }
 
     public Result copy(String sourceFolderKey, String destinationFolderKey) {
@@ -79,6 +75,14 @@ public class FolderClient {
         return apiClient.doRequest(request);
     }
 
+    public Result create(String folderName, String destinationFolderKey) {
+        CreateParameters.Builder builder = new CreateParameters.Builder();
+        builder.allowDuplicateName(true);
+        builder.parentKey(destinationFolderKey);
+        CreateParameters createParameters = builder.build();
+        return create(folderName, createParameters);
+    }
+
     public Result move(String sourceFolderKey, String destinationFolderKey) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/move.php");
 
@@ -91,8 +95,8 @@ public class FolderClient {
         return apiClient.doRequest(request);
     }
 
-    public Result move(String source) {
-        return move(source, null);
+    public Result move(String sourceFolderKey) {
+        return move(sourceFolderKey, null);
     }
 
     public Result delete(String folderKey) {
@@ -165,16 +169,20 @@ public class FolderClient {
         return apiClient.doRequest(request);
     }
 
-    public Result getRevision(String folderKey, String returnChanges) {
+    public Result getRevision(String folderKey, boolean returnChanges) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/get_revision.php");
 
         ClientHelperApi clientHelper = new ClientHelperApi(mSessionTokenManager);
         ApiClient apiClient = new ApiClient(clientHelper, mHttpWorker);
 
         request.addQueryParameter(PARAM_FOLDER_KEY, folderKey);
-        request.addQueryParameter(PARAM_RETURN_CHANGES, returnChanges);
+        request.addQueryParameter(PARAM_RETURN_CHANGES, returnChanges ? "yes" : "no");
 
         return apiClient.doRequest(request);
+    }
+
+    public Result getRevision(String folderKey) {
+        return getRevision(folderKey, false);
     }
 
     public Result search(SearchParameters searchParameters) {

@@ -3,8 +3,11 @@ package com.mediafire.sdk.http;
 import com.mediafire.sdk.clients.UrlHelper;
 import com.mediafire.sdk.token.Token;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Request is an object used to perform an Api Request
@@ -33,11 +36,56 @@ public class Request {
 
     // TODO - finish writing constructor for url
     public Request(String url) {
-        mPath = null;
-        mDomain = null;
+        URI uri = null;
+        try {
+            uri = new URL(url).toURI();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        // scheme/authority/path/query
+        mScheme = uri.getScheme();
+        mDomain = uri.getAuthority();
+        mPath = uri.getPath().replaceFirst("/", "");
+
+        mQueryParameters = makeQueryParametersFromUri(uri);
+
         mHttpMethod = "get";
-        mScheme = null;
         mPostQuery = false;
+    }
+
+    private Map<String, Object> makeQueryParametersFromUri(URI uri) {
+        Map<String, Object> queryMap = new LinkedHashMap<String, Object>();
+
+        if (uri == null) {
+            return queryMap;
+        }
+
+        if (uri.getQuery() == null) {
+            return queryMap;
+        }
+
+        String query = uri.getQuery();
+
+        StringTokenizer st = new StringTokenizer(query, "&", false);
+
+        List<String> keyValuePairList = new ArrayList<String>();
+
+        while (st.hasMoreElements()) {
+            String keyValuePairString = (String) st.nextElement();
+            keyValuePairList.add(keyValuePairString);
+        }
+
+        for (String keyValuePair : keyValuePairList) {
+            String[] keyValueArray = keyValuePair.split("=");
+            if (keyValueArray != null && keyValueArray.length == 2) {
+                queryMap.put(keyValueArray[0], keyValueArray[1]);
+            }
+        }
+
+        return queryMap;
     }
 
     public String getPath() {

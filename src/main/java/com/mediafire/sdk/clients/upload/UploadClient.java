@@ -35,14 +35,10 @@ public class UploadClient {
     private final ActionTokenManagerInterface mActionTokenManager;
     private final HttpWorkerInterface mHttpWorker;
 
-    public UploadClient(HttpWorkerInterface httpWorkerInterface, ActionTokenManagerInterface actionTokenManagerInterface, String apiVersion) {
-        mApiRequestGenerator = new ApiRequestGenerator(apiVersion);
+    public UploadClient(HttpWorkerInterface httpWorkerInterface, ActionTokenManagerInterface actionTokenManagerInterface) {
         mActionTokenManager = actionTokenManagerInterface;
         mHttpWorker = httpWorkerInterface;
-    }
-
-    public UploadClient(HttpWorkerInterface httpWorkerInterface, ActionTokenManagerInterface actionTokenManagerInterface) {
-        this(httpWorkerInterface, actionTokenManagerInterface, ApiVersion.VERSION_CURRENT);
+        mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
     }
 
     public Result check(CheckParameters checkParameters) {

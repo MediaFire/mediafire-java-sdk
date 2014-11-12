@@ -25,10 +25,10 @@ public class CreateResponseXml {
     private final Response mResponse;
 
     public CreateResponseXml(Response response) {
-        this(response, ParseType.NONE);
+        this(response, ParseTypeXml.NONE);
     }
 
-    public CreateResponseXml(Response response, ParseType parseType) {
+    public CreateResponseXml(Response response, ParseTypeXml parseType) {
         mResponse = response;
 
         switch (parseType) {

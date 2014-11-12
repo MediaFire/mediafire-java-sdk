@@ -41,10 +41,10 @@ public class StatusResponseXml {
     private final Response mResponse;
 
     public StatusResponseXml(Response response) {
-        this(response, ParseType.NONE);
+        this(response, ParseTypeXml.NONE);
     }
 
-    public StatusResponseXml(Response response, ParseType parseType) {
+    public StatusResponseXml(Response response, ParseTypeXml parseType) {
         mResponse = response;
 
         switch (parseType) {

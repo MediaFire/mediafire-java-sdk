@@ -10,6 +10,7 @@ import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 
 import javax.print.attribute.standard.Media;
+import java.util.Map;
 
 /**
  * Created by jondh on 11/4/14.
@@ -40,6 +41,19 @@ public class TranscodeClient {
 
     public Result status(String streamingUrl, String container, MediaSize mediaSize) {
         Request request = createRequestObjectFromPath(streamingUrl, container, mediaSize, Exists.STATUS);
+        return mApiClient.doRequest(request);
+    }
+
+    public Result rawRequest(String streamingUrl, Map<String, Object> requestParams) {
+        Request request = new Request(streamingUrl);
+
+        if (requestParams != null) {
+            for (String key : requestParams.keySet()) {
+                request.addQueryParameter(key, requestParams.get(key));
+            }
+        }
+
+        request.addHeader(HEADER_PARAM_ACCEPT_CHARSET, CHARSET);
         return mApiClient.doRequest(request);
     }
 

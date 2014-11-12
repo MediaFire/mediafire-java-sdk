@@ -25,10 +25,10 @@ public class CheckResponseXml {
     private final Response mResponse;
 
     public CheckResponseXml(Response response) {
-        this(response, ParseType.NONE);
+        this(response, ParseTypeXml.NONE);
     }
 
-    public CheckResponseXml(Response response, ParseType parseType) {
+    public CheckResponseXml(Response response, ParseTypeXml parseType) {
         mResponse = response;
 
         switch (parseType) {

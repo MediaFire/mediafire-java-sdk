@@ -11,7 +11,7 @@ import com.mediafire.sdk.api.responses.upload.CheckResponse;
 import com.mediafire.sdk.api.responses.upload.InstantResponse;
 import com.mediafire.sdk.api.responses.upload.PollResponse;
 import com.mediafire.sdk.api.responses.upload.ResumableResponse;
-import com.mediafire.sdk.client_core.ApiClient;
+import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.client_helpers.ClientHelperActionToken;
 import com.mediafire.sdk.config.*;

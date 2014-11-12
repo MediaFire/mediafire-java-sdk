@@ -1,6 +1,6 @@
 package com.mediafire.sdk.config_impl;
 
-import com.mediafire.sdk.client_core.ApiClient;
+import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperNewActionToken;
 import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;

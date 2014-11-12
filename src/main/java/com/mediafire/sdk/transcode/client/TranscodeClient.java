@@ -1,17 +1,11 @@
 package com.mediafire.sdk.transcode.client;
 
-import com.mediafire.sdk.client_core.ApiClient;
 import com.mediafire.sdk.client_core.BaseClient;
-import com.mediafire.sdk.client_core.HeadersHelper;
-import com.mediafire.sdk.client_core.UrlHelper;
-import com.mediafire.sdk.client_helpers.BaseClientHelper;
-import com.mediafire.sdk.client_helpers.ClientHelperNoToken;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 
-import javax.print.attribute.standard.Media;
 import java.util.Map;
 
 /**

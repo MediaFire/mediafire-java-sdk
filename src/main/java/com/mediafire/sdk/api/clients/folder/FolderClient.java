@@ -1,6 +1,6 @@
 package com.mediafire.sdk.api.clients.folder;
 
-import com.mediafire.sdk.client_core.ApiClient;
+import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperApi;
 import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.config.HttpWorkerInterface;

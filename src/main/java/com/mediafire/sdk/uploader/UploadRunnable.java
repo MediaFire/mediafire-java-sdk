@@ -5,14 +5,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mediafire.sdk.client_helpers.ClientHelperNoToken;
-import com.mediafire.sdk.api_responses.ApiResponse;
-import com.mediafire.sdk.api_responses.ResponseCode;
-import com.mediafire.sdk.api_responses.upload.CheckResponse;
-import com.mediafire.sdk.api_responses.upload.InstantResponse;
-import com.mediafire.sdk.api_responses.upload.PollResponse;
-import com.mediafire.sdk.api_responses.upload.ResumableResponse;
+import com.mediafire.sdk.api.responses.ApiResponse;
+import com.mediafire.sdk.api.responses.ResponseCode;
+import com.mediafire.sdk.api.responses.upload.CheckResponse;
+import com.mediafire.sdk.api.responses.upload.InstantResponse;
+import com.mediafire.sdk.api.responses.upload.PollResponse;
+import com.mediafire.sdk.api.responses.upload.ResumableResponse;
 import com.mediafire.sdk.client_core.ApiClient;
-import com.mediafire.sdk.http.ApiRequestGenerator;
+import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.client_helpers.ClientHelperActionToken;
 import com.mediafire.sdk.config.*;
 import com.mediafire.sdk.http.Request;
@@ -249,7 +249,7 @@ public class UploadRunnable implements Runnable {
         // generate map with request parameters
         Map<String, String> keyValue = generateCheckUploadRequestParameters();
 
-        Request request = new ApiRequestGenerator("1.0").createRequestObjectFromPath("upload/check.php");
+        Request request = new ApiRequestGenerator().createRequestObjectFromPath("upload/check.php");
 
         for (String key : keyValue.keySet()) {
             request.addQueryParameter(key, keyValue.get(key));
@@ -332,7 +332,7 @@ public class UploadRunnable implements Runnable {
 
         // generate map with request parameters
         Map<String, String> keyValue = generateInstantUploadRequestParameters();
-        Request request = new ApiRequestGenerator("1.0").createRequestObjectFromPath("upload/instant.php");
+        Request request = new ApiRequestGenerator().createRequestObjectFromPath("upload/instant.php");
 
         for (String key : keyValue.keySet()) {
             request.addQueryParameter(key, keyValue.get(key));
@@ -536,7 +536,7 @@ public class UploadRunnable implements Runnable {
             pollCount++;
             // get api response.
 
-            Request request = new ApiRequestGenerator("1.0").createRequestObjectFromPath("upload/poll.php");
+            Request request = new ApiRequestGenerator().createRequestObjectFromPath("upload/poll.php");
 
             for (String key : keyValue.keySet()) {
                 request.addQueryParameter(key, keyValue.get(key));

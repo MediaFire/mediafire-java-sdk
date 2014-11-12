@@ -1,6 +1,6 @@
 package com.mediafire.sdk.client_helpers;
 
-import com.mediafire.sdk.api_responses.user.GetSessionTokenResponse;
+import com.mediafire.sdk.api.responses.user.GetSessionTokenResponse;
 import com.mediafire.sdk.config.CredentialsInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;

@@ -2,7 +2,7 @@ package com.mediafire.sdk.config_impl;
 
 import com.mediafire.sdk.client_core.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperNewSessionToken;
-import com.mediafire.sdk.http.ApiRequestGenerator;
+import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.CredentialsInterface;
 import com.mediafire.sdk.config.HttpWorkerInterface;
@@ -122,7 +122,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
         @Override
         public void run() {
             System.out.printf("%s - %s", TAG, "requestNewSessionToken");
-            Request request = new ApiRequestGenerator("1.2").createRequestObjectFromPath("user/get_session_token.php");
+            Request request = new ApiRequestGenerator().createRequestObjectFromPath("user/get_session_token.php");
             request.addQueryParameter("application_id", mConfiguration.getDeveloperCredentials().getCredentials().get("application_id"));
             request.addQueryParameter("response_format", "json");
             request.addQueryParameter("token_version", 2);

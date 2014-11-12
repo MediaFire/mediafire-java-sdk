@@ -2,7 +2,7 @@ package com.mediafire.sdk.config_impl;
 
 import com.mediafire.sdk.client_core.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperNewActionToken;
-import com.mediafire.sdk.http.ApiRequestGenerator;
+import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.HttpWorkerInterface;
@@ -110,7 +110,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private class NewImageActionTokenThread extends Thread {
         @Override
         public void run(){
-            Request request = new ApiRequestGenerator("1.2").createRequestObjectFromPath("user/get_action_token.php");
+            Request request = new ApiRequestGenerator().createRequestObjectFromPath("user/get_action_token.php");
             request.addQueryParameter("type", "image");
             request.addQueryParameter("response_format", "json");
 
@@ -156,7 +156,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private class NewUploadActionTokenThread extends Thread {
         @Override
         public void run(){
-            Request request = new ApiRequestGenerator("1.2").createRequestObjectFromPath("user/get_action_token.php");
+            Request request = new ApiRequestGenerator().createRequestObjectFromPath("user/get_action_token.php");
             request.addQueryParameter("type", "upload");
             request.addQueryParameter("response_format", "json");
             

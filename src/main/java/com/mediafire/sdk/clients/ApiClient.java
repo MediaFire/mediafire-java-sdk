@@ -7,9 +7,6 @@ import com.mediafire.sdk.http.Result;
 
 import java.util.Map;
 
-/**
- *  ApiClient is a wrapper for the methods required to make an request the the MediaFire API
- */
 public class ApiClient {
     private BaseClientHelper mBaseClientHelper;
     private HttpWorkerInterface mHttpWorker;

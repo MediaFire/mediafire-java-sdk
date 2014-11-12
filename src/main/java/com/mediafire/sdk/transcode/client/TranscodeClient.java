@@ -1,6 +1,8 @@
 package com.mediafire.sdk.transcode.client;
 
 import com.mediafire.sdk.client_core.ApiClient;
+import com.mediafire.sdk.client_core.BaseClient;
+import com.mediafire.sdk.client_core.HeadersHelper;
 import com.mediafire.sdk.client_core.UrlHelper;
 import com.mediafire.sdk.client_helpers.BaseClientHelper;
 import com.mediafire.sdk.client_helpers.ClientHelperNoToken;
@@ -15,33 +17,37 @@ import java.util.Map;
 /**
  * Created by jondh on 11/4/14.
  */
-public class TranscodeClient {
+public class TranscodeClient extends BaseClient {
     private static final String PARAM_CONTAINER = "container";
     private static final String PARAM_MEDIA_SIZE = "media_size";
     private static final String PARAM_EXISTS = "exists";
     private static final String HEADER_PARAM_ACCEPT_CHARSET = "Accept-Charset";
 
     private final String CHARSET = "UTF-8";
-    private final ApiClient mApiClient;
 
     public TranscodeClient(HttpWorkerInterface httpWorker) {
-        BaseClientHelper clientHelper = new ClientHelperNoToken();
-        mApiClient = new ApiClient(clientHelper, httpWorker);
+        super(httpWorker);
+    }
+
+    @Override
+    public Result doRequest(Request request) {
+        Response response = doGet(request);
+        return new Result(response, request);
     }
 
     public Result create(String streamingUrl, String container, MediaSize mediaSize) {
         Request request = createRequestObjectFromPath(streamingUrl, container, mediaSize, Exists.CREATE);
-        return mApiClient.doRequest(request);
+        return doRequest(request);
     }
 
     public Result check(String streamingUrl, String container, MediaSize mediaSize) {
         Request request = createRequestObjectFromPath(streamingUrl, container, mediaSize, Exists.CHECK);
-        return mApiClient.doRequest(request);
+        return doRequest(request);
     }
 
     public Result status(String streamingUrl, String container, MediaSize mediaSize) {
         Request request = createRequestObjectFromPath(streamingUrl, container, mediaSize, Exists.STATUS);
-        return mApiClient.doRequest(request);
+        return doRequest(request);
     }
 
     public Result rawRequest(String streamingUrl, Map<String, Object> requestParams) {
@@ -54,7 +60,7 @@ public class TranscodeClient {
         }
 
         request.addHeader(HEADER_PARAM_ACCEPT_CHARSET, CHARSET);
-        return mApiClient.doRequest(request);
+        return doRequest(request);
     }
 
     private Request createRequestObjectFromPath(String streamingUrl, String container, MediaSize mediaSize, Exists exists) {

@@ -8,11 +8,12 @@ import com.mediafire.sdk.http.Result;
 
 import java.util.Map;
 
-public class ApiClient {
+public class ApiClient extends BaseClient {
     private BaseClientHelper mBaseClientHelper;
     private HttpWorkerInterface mHttpWorker;
 
     public ApiClient(BaseClientHelper baseClientHelper, HttpWorkerInterface httpWorker) {
+        super(httpWorker);
         mBaseClientHelper = baseClientHelper;
         mHttpWorker = httpWorker;
     }
@@ -22,6 +23,7 @@ public class ApiClient {
      * @param request the request parameter to base the http request off of
      * @return returns a Result object after the http response is cleaned up
      */
+    @Override
     public Result doRequest(Request request) {
         mBaseClientHelper.setup(request);
 
@@ -46,22 +48,5 @@ public class ApiClient {
         } else {
             throw new IllegalArgumentException("request method '" + method + "' not supported");
         }
-    }
-
-    private Response doGet(Request request) {
-        String url = new UrlHelper(request).getUrlForRequest();
-        Map<String, String> headers = request.getHeaders();
-
-        return mHttpWorker.doGet(url, headers);
-    }
-
-    private Response doPost(Request request) {
-        UrlHelper urlHelper = new UrlHelper(request);
-        String url = urlHelper.getUrlForRequest();
-
-        byte[] payload = request.getPayload();
-        Map<String, String> headers = request.getHeaders();
-
-        return mHttpWorker.doPost(url, headers, payload);
     }
 }

@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * Created by jondh on 11/4/14.
  */
-public class CheckResponse {
+public class CreateResponseXml {
     private static final String NAME_STATE = "state";
     private static final String NAME_DURATION = "duration";
 
@@ -24,11 +24,11 @@ public class CheckResponse {
 
     private final Response mResponse;
 
-    public CheckResponse(Response response) {
+    public CreateResponseXml(Response response) {
         this(response, ParseType.NONE);
     }
 
-    public CheckResponse(Response response, ParseType parseType) {
+    public CreateResponseXml(Response response, ParseType parseType) {
         mResponse = response;
 
         switch (parseType) {

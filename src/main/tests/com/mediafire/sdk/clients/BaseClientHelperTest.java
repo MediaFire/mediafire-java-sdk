@@ -1,5 +1,7 @@
 package com.mediafire.sdk.clients;
 
+import com.mediafire.sdk.client_helpers.BaseClientHelper;
+import com.mediafire.sdk.client_helpers.ClientHelperApi;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.token.SessionToken;

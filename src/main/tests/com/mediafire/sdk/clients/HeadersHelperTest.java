@@ -1,5 +1,6 @@
 package com.mediafire.sdk.clients;
 
+import com.mediafire.sdk.client_core.HeadersHelper;
 import com.mediafire.sdk.http.Request;
 import junit.framework.TestCase;
 

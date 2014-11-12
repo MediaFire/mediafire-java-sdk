@@ -1,8 +1,8 @@
 package com.mediafire.sdk.clients.meta;
 
-import com.mediafire.sdk.clients.ApiClient;
-import com.mediafire.sdk.clients.ClientHelperApi;
-import com.mediafire.sdk.clients.ApiRequestGenerator;
+import com.mediafire.sdk.client_core.ApiClient;
+import com.mediafire.sdk.client_helpers.ClientHelperApi;
+import com.mediafire.sdk.http.ApiRequestGenerator;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.ApiVersion;

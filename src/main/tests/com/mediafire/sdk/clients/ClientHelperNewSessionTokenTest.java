@@ -1,8 +1,9 @@
 package com.mediafire.sdk.clients;
 
+import com.mediafire.sdk.client_helpers.ClientHelperNewSessionToken;
 import com.mediafire.sdk.config.CredentialsInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
-import com.mediafire.sdk.config.defaults.DefaultCredentials;
+import com.mediafire.sdk.config_impl.DefaultCredentials;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.token.Token;
 import junit.framework.TestCase;

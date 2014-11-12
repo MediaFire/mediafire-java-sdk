@@ -1,10 +1,11 @@
-package com.mediafire.sdk.clients;
+package com.mediafire.sdk.client_helpers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mediafire.sdk.api_responses.ApiResponse;
+import com.mediafire.sdk.client_core.UrlHelper;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.SessionToken;
@@ -170,7 +171,14 @@ public abstract class BaseClientHelper {
         UrlHelper urlHelper = new UrlHelper(request);
 
         String nonUrlEncodedQueryString = urlHelper.getQueryString(false);
-        String baseUri = urlHelper.getPathString();
+
+        String baseUri;
+        if (request.getPath() == null) {
+            baseUri = "/";
+        } else {
+            baseUri = "/" + request.getPath();
+        }
+
         String fullUri = baseUri + nonUrlEncodedQueryString;
         String nonUrlEncodedString = secretKeyMod256 + time + fullUri;
 

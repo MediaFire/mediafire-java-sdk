@@ -1,4 +1,4 @@
-package com.mediafire.sdk.clients;
+package com.mediafire.sdk.client_helpers;
 
 import com.mediafire.sdk.api_responses.ApiResponse;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;

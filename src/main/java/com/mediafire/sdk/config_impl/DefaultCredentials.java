@@ -1,4 +1,4 @@
-package com.mediafire.sdk.config.defaults;
+package com.mediafire.sdk.config_impl;
 
 import com.mediafire.sdk.config.CredentialsInterface;
 

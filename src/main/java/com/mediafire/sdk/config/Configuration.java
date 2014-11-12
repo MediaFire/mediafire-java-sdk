@@ -1,6 +1,6 @@
 package com.mediafire.sdk.config;
 
-import com.mediafire.sdk.config.defaults.*;
+import com.mediafire.sdk.config_impl.*;
 
 /**
  * Configuration contains a set of interface objects used to handle api requests

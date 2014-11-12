@@ -1,9 +1,9 @@
 package com.mediafire.sdk.clients.upload;
 
-import com.mediafire.sdk.clients.ClientHelperNoToken;
-import com.mediafire.sdk.clients.ApiClient;
-import com.mediafire.sdk.clients.ClientHelperActionToken;
-import com.mediafire.sdk.clients.ApiRequestGenerator;
+import com.mediafire.sdk.client_helpers.ClientHelperNoToken;
+import com.mediafire.sdk.client_core.ApiClient;
+import com.mediafire.sdk.client_helpers.ClientHelperActionToken;
+import com.mediafire.sdk.http.ApiRequestGenerator;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.ApiVersion;

@@ -1,5 +1,6 @@
 package com.mediafire.sdk.clients;
 
+import com.mediafire.sdk.http.ApiRequestGenerator;
 import com.mediafire.sdk.http.ApiVersion;
 import com.mediafire.sdk.http.Request;
 import junit.framework.TestCase;

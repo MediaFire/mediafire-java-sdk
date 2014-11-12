@@ -1,6 +1,5 @@
-package com.mediafire.sdk.clients;
+package com.mediafire.sdk.client_helpers;
 
-import com.mediafire.sdk.clients.BaseClientHelper;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 

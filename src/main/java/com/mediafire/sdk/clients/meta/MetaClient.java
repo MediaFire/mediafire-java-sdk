@@ -1,22 +1,20 @@
 package com.mediafire.sdk.clients.meta;
 
-import com.mediafire.sdk.clients.PathSpecificApiClient;
-import com.mediafire.sdk.config.Configuration;
-import com.mediafire.sdk.http.ApiObject;
-import com.mediafire.sdk.http.BorrowTokenType;
-import com.mediafire.sdk.http.HostObject;
-import com.mediafire.sdk.http.InstructionsObject;
+import com.mediafire.sdk.client_core.ApiClient;
+import com.mediafire.sdk.client_helpers.ClientHelperApi;
+import com.mediafire.sdk.http.ApiRequestGenerator;
+import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.http.ApiVersion;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
-import com.mediafire.sdk.http.ReturnTokenType;
-import com.mediafire.sdk.http.SignatureType;
 
 import java.util.Map;
 
 /**
  * Created by Chris Najar on 10/29/2014.
  */
-public class MetaClient extends PathSpecificApiClient {
+public class MetaClient {
     private static final String TAG = MetaClient.class.getCanonicalName();
 
     private static final String PARAM_LIST_KEY = "list_key";
@@ -30,66 +28,65 @@ public class MetaClient extends PathSpecificApiClient {
     private static final String PARAM_ORDER_DIRECTION = "order_direction";
     private static final String PARAM_CHUNK = "chunk";
 
-    private final HostObject mHost;
-    private final InstructionsObject mInstructions;
+    private final ApiRequestGenerator mApiRequestGenerator;
+    private final ApiClient apiClient;
 
-    public MetaClient(Configuration configuration, String apiVersion) {
-        super(configuration, apiVersion);
+    public MetaClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManager) {
         // init host object
-        mHost = new HostObject("https", "www", "mediafire.com", "post");
-        // init instructions object
-        mInstructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, true);
+        mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
+
+        ClientHelperApi clientHelper = new ClientHelperApi(sessionTokenManager);
+        apiClient = new ApiClient(clientHelper, httpWorkerInterface);
     }
 
-    public MetaClient(Configuration configuration) {
-        this(configuration, null);
-    }
 
     public Result addToList(String listKey, String quickKey) {
-        ApiObject apiObject = new ApiObject("meta", "add_to_list.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/add_to_list.php");
+
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
         // add list key query param
         request.addQueryParameter(PARAM_LIST_KEY, listKey);
-        return doRequestJson(request);
+
+        return apiClient.doRequest(request);
     }
 
     public Result removeFromList(String listKey, String quickKey) {
-        ApiObject apiObject = new ApiObject("meta", "remove_from_list.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/remove_from_list.php");
+
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
         // add list key query param
         request.addQueryParameter(PARAM_LIST_KEY, listKey);
-        return doRequestJson(request);
+
+        return apiClient.doRequest(request);
     }
 
     public Result delete(String quickKey) {
-        ApiObject apiObject = new ApiObject("meta", "delete.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/delete.php");
+
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
-        return doRequestJson(request);
+
+        return apiClient.doRequest(request);
     }
 
     public Result get(String quickKey) {
-        ApiObject apiObject = new ApiObject("meta", "get.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/get.php");
+
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
-        return doRequestJson(request);
+
+        return apiClient.doRequest(request);
     }
 
     public Result getLinks(String quickKey, String linkType) {
-        ApiObject apiObject = new ApiObject("meta", "get_links.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
-        // add link type query param
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/get_links.php");
+
         request.addQueryParameter(PARAM_LINK_TYPE, linkType);
-        // add quick key param
         request.addQueryParameter(PARAM_QUICK_KEY_GET_LINKS, quickKey);
 
-        return doRequestJson(request);
+        return apiClient.doRequest(request);
     }
 
     public Result getLinks(String quickKey) {
@@ -97,33 +94,26 @@ public class MetaClient extends PathSpecificApiClient {
     }
 
     public Result query(QueryBuilder queryBuilder) {
-        ApiObject apiObject = new ApiObject("meta", "query.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/query.php");
 
-        request.addQueryParameter(PARAM_CHUNK, queryBuilder.mChunk);
-        request.addQueryParameter(PARAM_ORDER_DIRECTION, queryBuilder.mOrderDirection);
-        request.addQueryParameter(PARAM_ORDER_BY, queryBuilder.mOrderBy);
-        request.addQueryParameter(PARAM_RETURN_DATA, queryBuilder.mReturnData);
+        request.addQueryParameter(PARAM_CHUNK, queryBuilder.getChunk());
+        request.addQueryParameter(PARAM_ORDER_DIRECTION, queryBuilder.getOrderDirection());
+        request.addQueryParameter(PARAM_ORDER_BY, queryBuilder.getOrderBy());
+        request.addQueryParameter(PARAM_RETURN_DATA, queryBuilder.getReturnData());
 
-        for (String key : queryBuilder.mMetaDataFilters.keySet()) {
-            request.addQueryParameter(PARAM_META_PREFIX + key, queryBuilder.mMetaDataFilters.get(key));
+        for (String key : queryBuilder.getMetaDataFilters().keySet()) {
+            request.addQueryParameter(PARAM_META_PREFIX + key, queryBuilder.getMetaDataFilters().get(key));
         }
 
-        return doRequestJson(request);
+        return apiClient.doRequest(request);
     }
 
     public Result set(String quickKey, Map<String, String> metaKeyValuePairs) {
-        ApiObject apiObject = new ApiObject("meta", "set.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
-        
-        // add meta K,V pairs
-        for (String key : metaKeyValuePairs.keySet()) {
-            request.addQueryParameter(PARAM_META_PREFIX + key, metaKeyValuePairs.get(key));
-        }
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/set.php");
 
-        // add quickkey param to query parameters
+        // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
-        
-        return doRequestJson(request);
+
+        return apiClient.doRequest(request);
     }
 }

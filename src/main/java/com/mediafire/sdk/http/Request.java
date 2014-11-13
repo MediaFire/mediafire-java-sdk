@@ -1,68 +1,110 @@
 package com.mediafire.sdk.http;
 
+import com.mediafire.sdk.client_core.UrlHelper;
 import com.mediafire.sdk.token.Token;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Request is an object used to perform an Api Request
  */
 public class Request {
-    private final HostObject mHostObject;
-    private final ApiObject mApiObject;
-    private final InstructionsObject mInstructionsObject;
-    private final VersionObject mVersionObject;
+    private final String mPath;
+    private final String mHttpMethod;
+    private final String mDomain;
+    private final String mScheme;
+    private final boolean mPostQuery;
 
     private Map<String, Object> mQueryParameters;
     private Map<String, String> mHeaders;
     private byte[] mPayload;
     private Token mToken;
+    private String mSignature;
 
-    /**
-     * Request Constructor
-     * @param hostObject HostObject is the host for the request
-     * @param apiObject ApiObject is the api for the request
-     * @param instructionsObject InstructionsObject are the instruction for the request
-     * @param versionObject VersionObject is the api version for the request
-     */
-    public Request(HostObject hostObject, ApiObject apiObject, InstructionsObject instructionsObject, VersionObject versionObject) {
-        mHostObject = hostObject;
-        mApiObject = apiObject;
-        mInstructionsObject = instructionsObject;
-        mVersionObject = versionObject;
+    private Request(Builder builder) {
+        mPath = builder.mPath;
+        mHttpMethod = builder.mHttpMethod;
+        mDomain = builder.mFullDomain;
+        mScheme = builder.mScheme;
+        mPostQuery = builder.mPostQuery;
+        mPayload = builder.mPayload;
     }
 
-    /**
-     * Gets the host object
-     * @return HostObject
-     */
-    public HostObject getHostObject() {
-        return mHostObject;
+    public Request(String url) {
+        URI uri = null;
+        try {
+            uri = new URL(url).toURI();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        // scheme/authority/path/query
+        mScheme = uri.getScheme();
+        mDomain = uri.getAuthority();
+        mPath = uri.getPath().replaceFirst("/", "");
+
+        mQueryParameters = makeQueryParametersFromUri(uri);
+
+        mHttpMethod = "get";
+        mPostQuery = false;
     }
 
-    /**
-     * Gets the api object
-     * @return ApiObject
-     */
-    public ApiObject getApiObject() {
-        return mApiObject;
+    private Map<String, Object> makeQueryParametersFromUri(URI uri) {
+        Map<String, Object> queryMap = new LinkedHashMap<String, Object>();
+
+        if (uri == null) {
+            return queryMap;
+        }
+
+        if (uri.getQuery() == null) {
+            return queryMap;
+        }
+
+        String query = uri.getQuery();
+
+        StringTokenizer st = new StringTokenizer(query, "&", false);
+
+        List<String> keyValuePairList = new ArrayList<String>();
+
+        while (st.hasMoreElements()) {
+            String keyValuePairString = (String) st.nextElement();
+            keyValuePairList.add(keyValuePairString);
+        }
+
+        for (String keyValuePair : keyValuePairList) {
+            String[] keyValueArray = keyValuePair.split("=");
+            if (keyValueArray != null && keyValueArray.length == 2) {
+                queryMap.put(keyValueArray[0], keyValueArray[1]);
+            }
+        }
+
+        return queryMap;
     }
 
-    /**
-     * Gets the instructions object
-     * @return InstructionsObject
-     */
-    public InstructionsObject getInstructionsObject() {
-        return mInstructionsObject;
+    public String getPath() {
+        return mPath;
     }
 
-    /**
-     * Gets the version object
-     * @return VersionObject
-     */
-    public VersionObject getVersionObject() {
-        return mVersionObject;
+    public String getHttpMethod() {
+        return mHttpMethod;
+    }
+
+    public String getFullDomain() {
+        return mDomain;
+    }
+
+    public String getScheme() {
+        return mScheme;
+    }
+
+    public boolean postQuery() {
+        return mPostQuery;
     }
 
     /**
@@ -112,8 +154,16 @@ public class Request {
      * @param key String key for the header to be added
      * @param value String value for the header to be added
      */
-    public void addHeader(String key, String value) {
-        if (key == null || value == null) {
+    public void addHeader(String key, Object value) {
+        if (key == null || key.isEmpty()) {
+            return;
+        }
+
+        if (value == null) {
+            return;
+        }
+
+        if (value.toString().isEmpty()) {
             return;
         }
 
@@ -121,14 +171,24 @@ public class Request {
             mHeaders = new LinkedHashMap<String, String>();
         }
 
-        mHeaders.put(key, value);
+        String valueAsString = value.toString();
+        mHeaders.put(key, valueAsString);
     }
 
     /**
      * Gets the payload
-     * @return byte[] for the payload (null possible)
+     * @return byte[] for the payload. for a GET this should always be null. for a POST this will either be the
+     * query as a byte[] or part of a file (null possible)
      */
     public byte[] getPayload() {
+        byte[] payload;
+
+        if (mPostQuery) {
+            String queryString = new UrlHelper(this).getQueryString(true, true);
+            payload = queryString.getBytes();
+            return payload;
+        }
+
         return mPayload;
     }
 
@@ -139,6 +199,7 @@ public class Request {
     public void addPayload(byte[] payload) {
         mPayload = payload;
     }
+
 
     /**
      * Gets the token
@@ -154,5 +215,94 @@ public class Request {
      */
     public void addToken(Token token) {
         mToken = token;
+    }
+
+    /**
+     * gets the signature for this Request.
+     * @return String (null possible)
+     */
+    public String getSignature() {
+        return mSignature;
+    }
+
+    /**
+     * Adds a signature to the request
+     * @param signature
+     */
+    public void addSignature(String signature) {
+        mSignature = signature;
+        addQueryParameter("signature", signature);
+    }
+
+    /**
+     * Builder used to create a request
+     */
+    public static class Builder {
+        private static final String DEFAULT_SCHEME = "https";
+        private static final String DEFAULT_DOMAIN = "www.mediafire.com";
+        private static final boolean DEFAULT_POST_QUERY = false;
+        private static final String DEFAULT_HTTP_METHOD = "get";
+
+        private String mPath;
+        private String mHttpMethod = DEFAULT_HTTP_METHOD;
+        private String mFullDomain = DEFAULT_DOMAIN;
+        private String mScheme = DEFAULT_SCHEME;
+        private boolean mPostQuery = DEFAULT_POST_QUERY;
+        private byte[] mPayload;
+
+        public Builder() { }
+
+        public Builder path(String value) {
+            if (value == null || value.isEmpty()) {
+                return this;
+            }
+
+            mPath = value;
+            return this;
+        }
+
+        public Builder httpMethod(String value) {
+            if (value == null || value.isEmpty()) {
+                return this;
+            }
+
+            mHttpMethod = value;
+            return this;
+        }
+        
+        public Builder fullDomain(String value) {
+            if (value == null || value.isEmpty()) {
+                return this;
+            }
+
+            mFullDomain = value;
+            return this;
+        }
+                
+        public Builder scheme(String value) {
+            if (value == null || value.isEmpty()) {
+                return this;
+            }
+
+            mScheme = value;
+            return this;
+        }
+        
+        public Builder postQuery(boolean postQuery) {
+            mPostQuery = postQuery;
+            mHttpMethod = "post";
+            return this;
+        }
+
+        public Builder payload(byte[] payload) {
+            mPayload = payload;
+            mHttpMethod = "post";
+            mPostQuery = false;
+            return this;
+        }
+
+        public Request build() {
+            return new Request(this);
+        }
     }
 }

@@ -60,7 +60,7 @@ public class GetResponse extends ApiResponse {
         }
 
         public class MetaList {
-            List<MetaSubList> list;
+            private List<MetaSubList> list;
 
             public List<MetaSubList> getMetaSubList() {
                 if (list == null) {

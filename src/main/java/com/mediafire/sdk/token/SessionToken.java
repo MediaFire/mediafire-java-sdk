@@ -4,98 +4,109 @@ package com.mediafire.sdk.token;
  * SessionToken is a Token with additional parameters
  */
 public class SessionToken extends Token {
-    private final String time;
-    private final String permanentToken;
-    private String secretKey;
-    private final String pkey;
-    private final String ekey;
+    private final String mTime;
+    private final String mPermanentToken;
+    private String mSecretKey;
+    private final String mPkey;
+    private final String mEkey;
 
-    /**
-     * SessionToken Constructor
-     * @param tokenString String for the token
-     * @param secretKey String for the secret key
-     * @param time String for the time
-     */
-    public SessionToken(String tokenString, String secretKey, String time) {
-        this(tokenString, secretKey, time, null, null);
-    }
-
-    /**
-     * SessionToken Constructor
-     * @param tokenString String for the token
-     * @param secretKey String for the secret key
-     * @param time String for the time
-     * @param pkey String for the pkey
-     * @param ekey String for the ekey
-     */
-    public SessionToken(String tokenString, String secretKey, String time, String pkey, String ekey) {
-        this(tokenString, secretKey, time, pkey, ekey, null);
-    }
-
-    /**
-     * SessionToken Constructor
-     * @param tokenString String for the token
-     * @param secretKey String for the secret key
-     * @param time String for the time
-     * @param pkey String for the pkey
-     * @param ekey String for the ekey
-     * @param permanentToken String for the permanent token
-     */
-    public SessionToken(String tokenString, String secretKey, String time, String pkey, String ekey, String permanentToken) {
-        super(tokenString);
-        this.secretKey = secretKey;
-        this.time = time;
-        this.pkey = pkey;
-        this.ekey = ekey;
-        this.permanentToken = permanentToken;
+    private SessionToken(Builder builder) {
+        super(builder.mTokenString);
+        mTime = builder.mTime;
+        mPermanentToken = builder.mPermanentToken;
+        mSecretKey = builder.mSecretKey;
+        mPkey = builder.mPkey;
+        mEkey = builder.mEkey;
     }
 
     /**
      * Gets the time for the token
      * @return String time
      */
-    public String getTime() {
-        return time;
+    public final String getTime() {
+        return mTime;
     }
 
     /**
      * Gets the secret key for the token
      * @return String secret key
      */
-    public String getSecretKey() {
-        return secretKey;
+    public final String getSecretKey() {
+        return mSecretKey;
     }
 
     /**
-     * Gets the pkey for the token
-     * @return String pkey
+     * Gets the mPkey for the token
+     * @return String mPkey
      */
-    public String getPkey() {
-        return pkey;
+    public final String getPkey() {
+        return mPkey;
     }
 
     /**
-     * Gets the ekey for the token
-     * @return String ekey
+     * Gets the mEkey for the token
+     * @return String mEkey
      */
-    public String getEkey() {
-        return ekey;
+    public final String getEkey() {
+        return mEkey;
     }
 
     /**
      * Gets the permanent token for the token
      * @return String permanent token
      */
-    public String getPermanentToken() {
-        return permanentToken;
+    public final String getPermanentToken() {
+        return mPermanentToken;
     }
 
     /**
      * updated the session token based on the secret key
      */
-    public void updateSessionToken() {
-        long newKey = Long.valueOf(secretKey) * 16807;
-        newKey %= 2147483647;
-        secretKey = String.valueOf(newKey);
+    public final void updateSessionToken() {
+        long newKey = Long.valueOf(mSecretKey) * 16807L;
+        newKey %= 2147483647L;
+        mSecretKey = String.valueOf(newKey);
+    }
+
+    public static class Builder {
+        private final String mTokenString;
+        private String mTime;
+        private String mPermanentToken;
+        private String mSecretKey;
+        private String mPkey;
+        private String mEkey;
+
+        public Builder(String tokenString) {
+            mTokenString = tokenString;
+        }
+
+        public final Builder time(String value) {
+            mTime = value;
+            return this;
+        }
+
+        public final Builder permanentToken(String value) {
+            mPermanentToken = value;
+            return this;
+        }
+
+        public final Builder secretKey(String value) {
+            mSecretKey = value;
+            return this;
+        }
+
+        public final Builder pkey(String value) {
+            mPkey = value;
+            return this;
+        }
+
+        public final Builder ekey(String ekey) {
+            mEkey = ekey;
+            return this;
+        }
+
+        public SessionToken build() {
+            return new SessionToken(this);
+        }
     }
 }

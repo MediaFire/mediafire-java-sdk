@@ -16,7 +16,7 @@ public enum LinkType {
 
     private final String mLinkType;
 
-    private LinkType(String value) {
+    LinkType(String value) {
         mLinkType = value;
     }
 

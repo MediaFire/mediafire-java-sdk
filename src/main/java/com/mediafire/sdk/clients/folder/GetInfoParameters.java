@@ -4,32 +4,62 @@ package com.mediafire.sdk.clients.folder;
  * Created by jondh on 11/4/14.
  */
 public class GetInfoParameters {
-    public String mFolderKey;
-    public int mDeviceId;
-    public String mDetails;
+    private String mFolderKey;
+    private String mDeviceId;
+    private String mDetails;
 
-    public GetInfoParameters() { }
+    public GetInfoParameters(Builder builder) {
+        mFolderKey = builder.mFolderKey;
+        mDetails = builder.mDetails;
+        mDeviceId = builder.mDeviceId;
+    }
 
-    public GetInfoParameters folderKey(String folderKey) {
-        if (folderKey == null) {
+    public String getFolderKey() {
+        return mFolderKey;
+    }
+
+    public String getDeviceId() {
+        return mDeviceId;
+    }
+
+    public String getDetails() {
+        return mDetails;
+    }
+    
+    public static class Builder {
+        private String mFolderKey;
+        private String mDeviceId;
+        private String mDetails;
+        
+        public Builder() { }
+        
+        public Builder folderKey(String folderKey) {
+            if (folderKey == null) {
+                return this;
+            }
+
+            mFolderKey = folderKey;
             return this;
         }
 
-        mFolderKey = folderKey;
-        return this;
-    }
-
-    public GetInfoParameters deviceId(int deviceId) {
-        mDeviceId = deviceId;
-        return this;
-    }
-
-    public GetInfoParameters details(String details) {
-        if (details == null) {
+        public Builder deviceId(String deviceId) {
+            mDeviceId = deviceId;
             return this;
         }
 
-        mDetails = details;
-        return this;
+        public Builder details(Details details) {
+            if (details == null) {
+                return this;
+            }
+
+            mDetails = details.getValue();
+
+            return this;
+        }   
+        
+        public GetInfoParameters build() {
+            return new GetInfoParameters(this);
+        }
     }
+
 }

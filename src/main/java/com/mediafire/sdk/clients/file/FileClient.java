@@ -1,20 +1,18 @@
 package com.mediafire.sdk.clients.file;
 
-import com.mediafire.sdk.clients.PathSpecificApiClient;
-import com.mediafire.sdk.config.Configuration;
-import com.mediafire.sdk.http.ApiObject;
-import com.mediafire.sdk.http.BorrowTokenType;
-import com.mediafire.sdk.http.HostObject;
-import com.mediafire.sdk.http.InstructionsObject;
+import com.mediafire.sdk.client_core.ApiClient;
+import com.mediafire.sdk.client_helpers.ClientHelperApi;
+import com.mediafire.sdk.http.ApiRequestGenerator;
+import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.http.ApiVersion;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
-import com.mediafire.sdk.http.ReturnTokenType;
-import com.mediafire.sdk.http.SignatureType;
 
 /**
  * Created by Chris Najar on 10/30/2014.
  */
-public class FileClient extends PathSpecificApiClient {
+public class FileClient {
     private static final String PARAM_QUICK_KEY = "quick_key";
     private static final String PARAM_FOLDER_KEY = "folder_key";
     private static final String PARAM_FILE_NAME = "filename";
@@ -23,104 +21,108 @@ public class FileClient extends PathSpecificApiClient {
     private static final String PARAM_PRIVACY = "privacy";
     private static final String PARAM_LINK_TYPE = "link_type";
 
-    private final HostObject mHost;
-    private final InstructionsObject mInstructions;
+    private final ApiRequestGenerator mApiRequestGenerator;
+    private final ApiClient apiClient;
 
-    public FileClient(Configuration configuration, String apiVersion) {
-        super(configuration, apiVersion);
-        // init host object
-        mHost = new HostObject("https", "www", "mediafire.com", "post");
-        // init instructions object
-        mInstructions = new InstructionsObject(BorrowTokenType.V2, SignatureType.API_REQUEST, ReturnTokenType.V2, true);
+    public FileClient(HttpWorkerInterface httpWorker, SessionTokenManagerInterface sessionTokenManagerInterface) {
+        mApiRequestGenerator = new ApiRequestGenerator(ApiVersion.VERSION_1_2);
+
+        ClientHelperApi clientHelper = new ClientHelperApi(sessionTokenManagerInterface);
+        apiClient = new ApiClient(clientHelper, httpWorker);
     }
 
     public Result getInfo(String quickKey) {
-        ApiObject apiObject = new ApiObject("file", "get_info.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_info.php");
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
 
-        return doRequestJson(request);
+        return apiClient.doRequest(request);
     }
 
     public Result delete(String quickKey) {
-        ApiObject apiObject = new ApiObject("file", "delete.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/delete.php");
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
 
-        return doRequestJson(request);
+        return apiClient.doRequest(request);
     }
 
     public Result copy(String quickKey, String folderKey) {
-        ApiObject apiObject = new ApiObject("file", "copy.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/copy.php");
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
         request.addQueryParameter(PARAM_FOLDER_KEY, folderKey);
 
-        return doRequestJson(request);
+        return apiClient.doRequest(request);
+    }
+
+    public Result copy(String quickKey) {
+        return copy(quickKey, null);
     }
 
     public Result getVersion(String quickKey) {
-        ApiObject apiObject = new ApiObject("file", "get_versions.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_version.php");
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
 
-        return doRequestJson(request);
+        return apiClient.doRequest(request);
     }
 
     public Result move(String quickKey, String folderKey) {
-        ApiObject apiObject = new ApiObject("file", "move.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/move.php");
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
         request.addQueryParameter(PARAM_FOLDER_KEY, folderKey);
 
-        return doRequestJson(request);
+        return apiClient.doRequest(request);
+    }
+
+    public Result move(String quickKey) {
+        return move(quickKey, null);
     }
 
     public Result update(String quickKey, UpdateParameters params) {
-        ApiObject apiObject = new ApiObject("file", "update.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/update.php");
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
-        request.addQueryParameter(PARAM_FILE_NAME, params.mFileName);
-        request.addQueryParameter(PARAM_DESCRIPTION, params.mDescription);
-        request.addQueryParameter(PARAM_PRIVACY, params.mPrivacy);
-        request.addQueryParameter(PARAM_MTIME, params.mTime);
+        request.addQueryParameter(PARAM_FILE_NAME, params.getFileName());
+        request.addQueryParameter(PARAM_DESCRIPTION, params.getDescription());
+        request.addQueryParameter(PARAM_PRIVACY, params.getPrivacy());
+        request.addQueryParameter(PARAM_MTIME, params.getMtime());
 
-        return doRequestJson(request);
+        return apiClient.doRequest(request);
     }
 
     public Result rename(String quickKey, String newName) {
-        UpdateParameters params = new UpdateParameters();
-        params.fileName(newName);
+        UpdateParameters params = new UpdateParameters.Builder().fileName(newName).build();
         return update(quickKey, params);
     }
 
     public Result makePublic(String quickKey) {
-        UpdateParameters params = new UpdateParameters();
-        params.privacy(UpdateParameters.Privacy.PUBLIC);
+        UpdateParameters params = new UpdateParameters.Builder().privacy(UpdateParameters.Builder.Privacy.PUBLIC).build();
         return update(quickKey, params);
     }
 
     public Result makePrivate(String quickKey) {
-        UpdateParameters params = new UpdateParameters();
-        params.privacy(UpdateParameters.Privacy.PRIVATE);
+        UpdateParameters params = new UpdateParameters.Builder().privacy(UpdateParameters.Builder.Privacy.PRIVATE).build();
         return update(quickKey, params);
     }
 
     public Result getLinks(String quickKey, LinkType linkType) {
-        ApiObject apiObject = new ApiObject("file", "get_links.php");
-        Request request = new Request(mHost, apiObject, mInstructions, mVersionObject);
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_links.php");
 
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
-        if (linkType != null) {
-            request.addQueryParameter(PARAM_LINK_TYPE, linkType.getLinkType());
+        if (linkType == null) {
+            linkType = LinkType.ALL;
         }
 
-        return doRequestJson(request);
+        request.addQueryParameter(PARAM_LINK_TYPE, linkType.getLinkType());
+
+        return apiClient.doRequest(request);
     }
+
+    public Result getLinks(String quickKey) {
+        return getLinks(quickKey, LinkType.ALL);
+    }
+
 }

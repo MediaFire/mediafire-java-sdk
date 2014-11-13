@@ -2,6 +2,7 @@ package com.mediafire.sdk.http;
 
 import com.mediafire.sdk.client_core.UrlHelper;
 import com.mediafire.sdk.token.Token;
+import com.sun.javafx.fxml.builder.URLBuilder;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -130,15 +131,15 @@ public class Request {
             return;
         }
 
-        if (value.toString().isEmpty()) {
-            return;
-        }
-
         if (mQueryParameters == null) {
             mQueryParameters = new LinkedHashMap<String, Object>();
         }
 
         mQueryParameters.put(key, value);
+    }
+
+    public void addQueryParameter(String key) {
+        addQueryParameter(key, "");
     }
 
     /**
@@ -290,7 +291,9 @@ public class Request {
         
         public Builder postQuery(boolean postQuery) {
             mPostQuery = postQuery;
-            mHttpMethod = "post";
+            if (postQuery) {
+                mHttpMethod = "post";
+            }
             return this;
         }
 

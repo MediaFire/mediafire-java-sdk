@@ -1,6 +1,6 @@
-package com.mediafire.sdk.api.clients;
+package com.mediafire.sdk.client_helpers;
 
-import com.mediafire.sdk.client_helpers.ClientHelperNoToken;
+import com.mediafire.sdk.test_utility.RequestObjectsForTesting;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.token.Token;
 import junit.framework.TestCase;

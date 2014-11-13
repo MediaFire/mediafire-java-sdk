@@ -6,8 +6,6 @@ import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 
-import java.util.Map;
-
 /**
  * Created by jondh on 11/4/14.
  */
@@ -34,9 +32,17 @@ public class TranscodeClient extends BaseClient {
         return doRequest(request);
     }
 
+    public Result create(String streamingUrl, String container) {
+        return create(streamingUrl, container, MediaSize.DEFAULT);
+    }
+
     public Result check(String streamingUrl, String container, MediaSize mediaSize) {
         Request request = createRequestObjectFromPath(streamingUrl, container, mediaSize, Exists.CHECK);
         return doRequest(request);
+    }
+
+    public Result check(String streamingUrl, String container) {
+        return check(streamingUrl, container, MediaSize.DEFAULT);
     }
 
     public Result status(String streamingUrl, String container, MediaSize mediaSize) {
@@ -44,17 +50,8 @@ public class TranscodeClient extends BaseClient {
         return doRequest(request);
     }
 
-    public Result rawRequest(String streamingUrl, Map<String, Object> requestParams) {
-        Request request = new Request(streamingUrl);
-
-        if (requestParams != null) {
-            for (String key : requestParams.keySet()) {
-                request.addQueryParameter(key, requestParams.get(key));
-            }
-        }
-
-        request.addHeader(HEADER_PARAM_ACCEPT_CHARSET, CHARSET);
-        return doRequest(request);
+    public Result status(String streamingUrl, String container) {
+        return status(streamingUrl, container, MediaSize.DEFAULT);
     }
 
     private Request createRequestObjectFromPath(String streamingUrl, String container, MediaSize mediaSize, Exists exists) {

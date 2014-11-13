@@ -1,6 +1,6 @@
 package com.mediafire.sdk.api.clients.system;
 
-import com.mediafire.sdk.api.clients.DummyHttpWorker;
+import com.mediafire.sdk.test_utility.DummyHttpWorker;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.Result;
 import junit.framework.TestCase;

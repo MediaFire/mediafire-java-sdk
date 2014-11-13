@@ -1,6 +1,6 @@
-package com.mediafire.sdk.api.clients;
+package com.mediafire.sdk.client_core;
 
-import com.mediafire.sdk.client_core.UrlHelper;
+import com.mediafire.sdk.test_utility.RequestObjectsForTesting;
 import com.mediafire.sdk.http.Request;
 import junit.framework.TestCase;
 

@@ -1,90 +1,208 @@
 package com.mediafire.sdk.conversion.clients;
 
-import com.mediafire.sdk.http.Response;
+import com.mediafire.sdk.api.clients.ApiClient;
+import com.mediafire.sdk.client_helpers.ClientHelperActionToken;
+import com.mediafire.sdk.config.ActionTokenManagerInterface;
+import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.http.Request;
+import com.mediafire.sdk.http.Result;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * Created by jondh on 11/5/14.
  */
 public class ConversionServerClient {
 
-    private final int mInputBufferSize;
-    private final int mOutputBufferSize;
+    private static final String PARAM_DOC_TYPE = "doc_type";
+    private static final String PARAM_SIZE_ID = "size_id";
+    private static final String PARAM_QUICK_KEY = "quickkey";
+    private static final String PARAM_CONVERSION_ONLY = "request_conversion_only";
+    private static final String PARAM_BAD_HASH = "0000";
+    private static final String PARAM_PAGE = "page";
+    private static final String PARAM_OUTPUT = "output";
+    private static final String PARAM_METADATA = "metadata";
 
-    public ConversionServerClient(int ioBufferSize) {
-        this(ioBufferSize, ioBufferSize);
+    private final ApiClient imageClient;
+
+    public ConversionServerClient(HttpWorkerInterface httpWorkerInterface, ActionTokenManagerInterface actionTokenManagerInterface) {
+        ClientHelperActionToken clientHelperUploadActionToken = new ClientHelperActionToken("image", actionTokenManagerInterface);
+        imageClient = new ApiClient(clientHelperUploadActionToken, httpWorkerInterface);
     }
 
-    public ConversionServerClient(int inputBufferSize, int outputBufferSize) {
-        mInputBufferSize = inputBufferSize;
-        mOutputBufferSize = outputBufferSize;
+    public Result imageConversion(ImageParams params) {
+        String quickKey = params.getQuickkey();
+        String hash = params.getHash();
+        Request request = makeBaseRequest(quickKey, hash);
+
+        String sizeId = params.getSizeId();
+        String conversionOnly = params.getRequestConversionOnly();
+        request.addQueryParameter(PARAM_DOC_TYPE, "i");
+        request.addQueryParameter(PARAM_SIZE_ID, sizeId);
+        request.addQueryParameter(PARAM_CONVERSION_ONLY, conversionOnly);
+        return imageClient.doRequest(request);
     }
 
-    public Response imageConversion(String baseUrl, ImageConversionParameters imageConversionParameters) throws IOException {
-        String url = baseUrl + imageConversionParameters.makeQuery();
+    public Result documentConversion(DocumentParams params) {
+        String quickKey = params.getQuickkey();
+        String hash = params.getHash();
+        
+        Request request = makeBaseRequest(quickKey, hash);
 
-        return downloadUrlToResponse(url);
+        String page = params.getPage();
+        String output = params.getOutput();
+        String sizeId = params.getSizeId();
+        String metadata = params.getMetaData();
+        String conversionOnly = params.getRequestConversionOnly();
+        request.addQueryParameter(PARAM_DOC_TYPE, "d");
+        request.addQueryParameter(PARAM_PAGE, page);
+        request.addQueryParameter(PARAM_OUTPUT, output);
+        request.addQueryParameter(PARAM_SIZE_ID, sizeId);
+        request.addQueryParameter(PARAM_METADATA, metadata);
+        request.addQueryParameter(PARAM_CONVERSION_ONLY, conversionOnly);
+
+        return imageClient.doRequest(request);
     }
 
-    public Response documentConversion(String baseUrl, DocumentConversionParameters documentConversionParameters) throws IOException{
-        String url = baseUrl + documentConversionParameters.makeQuery();
+    private Request makeBaseRequest(String quickKey, String hash) {
+        Request.Builder builder = new Request.Builder();
+        builder.scheme("https").fullDomain("www.mediafire.com").path("conversion_server.php").httpMethod("get").postQuery(false);
 
-        return downloadUrlToResponse(url);
+        Request request = builder.build();
+        String shortHashParam = makeShortHash(hash);
+        request.addQueryParameter(shortHashParam);
+        request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
+        return request;
     }
 
-    /**
-     * Download a bitmap from a URL and write the content to an output stream.
-     * @param urlString The URL to fetch
-     * @return status of the connection
-     * @throws IOException
-     */
-    public int downloadUrlToStream(String urlString, OutputStream outputStream) throws IOException{
-        HttpURLConnection urlConnection = null;
-        BufferedOutputStream out = null;
-        BufferedInputStream in = null;
-        try {
-            final URL url = new URL(urlString);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            in = new BufferedInputStream(urlConnection.getInputStream(), mInputBufferSize);
-            out = new BufferedOutputStream(outputStream, mOutputBufferSize);
-            int status = urlConnection.getResponseCode();
-            int b;
-            while ((b = in.read()) != -1) {
-                out.write(b);
-            }
-            return status;
+    private String makeShortHash(String hash) {
+        if (hash == null || hash.isEmpty()) {
+            return PARAM_BAD_HASH;
         }
-        finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
+
+        if (hash.length() < 4) {
+            return PARAM_BAD_HASH;
+        }
+
+        return hash.substring(0, 4);
+    }
+
+    public static class DocumentParams extends BaseParams {
+        private String mPage;
+        private String mOutput;
+        private String mSizeId;
+        private String mMetaData;
+
+        public DocumentParams(String quickKey, String hash, String page) {
+            super(quickKey, hash);
+            mPage = page;
+        }
+
+        public DocumentParams(String quickKey, String hash) {
+            this(quickKey, hash, "initial");
+        }
+
+        public DocumentParams output(Output output) {
+            if (output == null) {
+                return this;
             }
-            try {
-                if (out != null) {
-                    out.close();
-                }
-                if (in != null) {
-                    in.close();
-                }
-            } catch (final IOException ignored) {}
+
+            mOutput = output.getValue();
+            return this;
+        }
+
+        public DocumentParams sizeId(int sizeId) {
+            if (sizeId < 0 || sizeId > 2) {
+                return this;
+            }
+            
+            mSizeId = String.valueOf(sizeId);
+            return this;
+        }
+        
+        public DocumentParams metaData(boolean wantMetaData) {
+            if (wantMetaData) {
+                mMetaData = "1";
+            } 
+            
+            return this;
+        }
+
+        public String getPage() {
+            return mPage;
+        }
+
+        public String getOutput() {
+            return mOutput;
+        }
+
+        public String getSizeId() {
+            return mSizeId;
+        }
+
+        public String getMetaData() {
+            return mMetaData;
+        }
+
+        public enum Output {
+            PDF("pdf"),
+            IMAGE("img"),
+            FLASH("swf");
+
+            private String mValue;
+
+            private Output(String value) {
+                mValue = value;
+            }
+
+            public String getValue() {
+                return mValue;
+            }
         }
     }
 
-    /**
-     * Download a bitmap from a URL and write the content to a Response Object.
-     * @param urlString The URL to fetch
-     * @return the response (status and bytes) of the connection
-     * @throws IOException
-     */
-    public Response downloadUrlToResponse(String urlString) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        int status = downloadUrlToStream(urlString, outputStream);
+    public static class ImageParams extends BaseParams {
 
-        byte[] bytes = outputStream.toByteArray();
+        private String mSizeId;
 
-        return new Response(status, bytes);
+        public ImageParams(String quickkey, String hash, String sizeId) {
+            super(quickkey, hash);
+            mSizeId = sizeId;
+        }
+
+        public ImageParams(String quickKey, String hash) {
+            this(quickKey, hash, "6");
+        }
+
+        public String getSizeId() {
+            return mSizeId;
+        }
     }
 
+    private static class BaseParams {
+        private final String mQuickkey;
+        private final String mHash;
+        private String mRequestConversionOnly;
+
+        public BaseParams(String quickkey, String hash) {
+            mQuickkey = quickkey;
+            mHash = hash;
+        }
+
+        public BaseParams requestConversionOnly(boolean value) {
+            mRequestConversionOnly = value ? "1" : null;
+            return this;
+        }
+
+        public final String getQuickkey() {
+            return mQuickkey;
+        }
+
+        public String getHash() {
+            return mHash;
+        }
+
+        public String getRequestConversionOnly() {
+            return mRequestConversionOnly;
+        }
+    }
 }

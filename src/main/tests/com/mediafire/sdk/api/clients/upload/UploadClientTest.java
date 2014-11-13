@@ -1,7 +1,7 @@
 package com.mediafire.sdk.api.clients.upload;
 
-import com.mediafire.sdk.api.clients.DummyActionTokenManager;
-import com.mediafire.sdk.api.clients.DummyHttpWorker;
+import com.mediafire.sdk.test_utility.DummyActionTokenManager;
+import com.mediafire.sdk.test_utility.DummyHttpWorker;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.Result;

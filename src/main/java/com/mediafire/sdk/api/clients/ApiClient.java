@@ -8,16 +8,12 @@ import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 
-import java.util.Map;
-
 public class ApiClient extends BaseClient {
     private BaseClientHelper mBaseClientHelper;
-    private HttpWorkerInterface mHttpWorker;
 
     public ApiClient(BaseClientHelper baseClientHelper, HttpWorkerInterface httpWorker) {
         super(httpWorker);
         mBaseClientHelper = baseClientHelper;
-        mHttpWorker = httpWorker;
     }
 
     /**

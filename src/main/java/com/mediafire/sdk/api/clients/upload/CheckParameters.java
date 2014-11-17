@@ -74,12 +74,12 @@ public class CheckParameters {
             return this;
         }
 
-        public Builder size(String size) {
-            if(size == null) {
+        public Builder size(long size) {
+            if(size < 0) {
                 return this;
             }
 
-            mSize = size;
+            mSize = String.valueOf(size);
             return this;
         }
         public Builder folderKey(String folderKey) {

@@ -9,7 +9,7 @@ import java.util.List;
 public class ResumableBitmap {
     private final int count;
     private final List<Integer> words;
-    private final List<Boolean> uploadUnits;
+    private List<Boolean> uploadUnits;
 
     /**
      * ResumableBitmap Constructor
@@ -78,5 +78,9 @@ public class ResumableBitmap {
      */
     public List<Integer> getWords() {
         return words;
+    }
+
+    public void update(int count, List<Integer> words) {
+        uploadUnits = decodeBitmap(count, words);
     }
 }

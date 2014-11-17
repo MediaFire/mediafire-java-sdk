@@ -15,7 +15,7 @@ public class ResponseApiClientError extends Response {
      * @param throwable Throwable throwable for the error
      */
     public ResponseApiClientError(String message, Throwable throwable) {
-        super(-1, null);
+        super(-1, null, null);
         mMessage = message;
         mThrowable = throwable;
     }

@@ -6,7 +6,6 @@ import java.util.ArrayList;
  * UploadItem contains the information about an item to be uploaded
  */
 public class UploadItem {
-    private static final String TAG = UploadItem.class.getCanonicalName();
     private int uploadAttemptCount;
     private boolean cancelled;
     private String fileName;

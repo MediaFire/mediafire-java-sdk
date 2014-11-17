@@ -4,13 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mediafire.sdk.api.responses.upload.*;
 import com.mediafire.sdk.client_helpers.ClientHelperNoToken;
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.api.responses.ResponseCode;
-import com.mediafire.sdk.api.responses.upload.CheckResponse;
-import com.mediafire.sdk.api.responses.upload.InstantResponse;
-import com.mediafire.sdk.api.responses.upload.PollResponse;
-import com.mediafire.sdk.api.responses.upload.ResumableResponse;
 import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.client_helpers.ClientHelperActionToken;
@@ -206,19 +203,19 @@ public class UploadRunnable implements Runnable {
         // if this method is called then file error and result codes are fine, but we may not have received status 99 so
         // check status code and then possibly send item to the backlog queue.
         PollResponse.DoUpload doUpload = pollResponse.getDoUpload();
-        PollResponse.Status pollStatusCode = doUpload.getStatusCode();
-        PollResponse.Result pollResultCode = doUpload.getResultCode();
-        PollResponse.FileError pollFileErrorCode = doUpload.getFileErrorCode();
+        PollStatus pollStatusCode = doUpload.getStatusCode();
+        PollResult pollResultCode = doUpload.getResultCode();
+        PollFileError pollFileErrorCode = doUpload.getFileErrorCode();
 
         System.out.printf("%s - %s", TAG, "status code: " + pollStatusCode);
         System.out.printf("%s - %s", TAG, "result code: " + pollResultCode);
         System.out.printf("%s - %s", TAG, "file error code: " + pollFileErrorCode);
 
-        if (pollStatusCode == PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY && pollResultCode == PollResponse.Result.SUCCESS && pollFileErrorCode == PollResponse.FileError.NO_ERROR) {
+        if (pollStatusCode == PollStatus.NO_MORE_REQUESTS_FOR_THIS_KEY && pollResultCode == PollResult.SUCCESS && pollFileErrorCode == PollFileError.NO_ERROR) {
             System.out.printf("%s - %s", TAG, "done polling");
             notifyUploadListenerCompleted(doUpload.getQuickKey());
-        } else if (pollStatusCode != PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY && pollResultCode == PollResponse.Result.SUCCESS && pollFileErrorCode == PollResponse.FileError.NO_ERROR) {
-            System.out.printf("%s - %s", TAG, "still waiting for status code " + PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY + ", but was " + pollStatusCode + " so restarting upload");
+        } else if (pollStatusCode != PollStatus.NO_MORE_REQUESTS_FOR_THIS_KEY && pollResultCode == PollResult.SUCCESS && pollFileErrorCode == PollFileError.NO_ERROR) {
+            System.out.printf("%s - %s", TAG, "still waiting for status code " + PollStatus.NO_MORE_REQUESTS_FOR_THIS_KEY + ", but was " + pollStatusCode + " so restarting upload");
             startOrRestartUpload();
         } else {
             System.out.printf("%s - %s", TAG, "cancelling upload");
@@ -580,19 +577,19 @@ public class UploadRunnable implements Runnable {
                     //      first   -   result code no error? yes, keep calm and poll on. no, cancel upload because error.
                     //      second  -   fileerror code no error? yes, carry on old chap!. no, cancel upload because error.
                     //      third   -   status code 99 (no more requests)? yes, done. no, continue.
-                    if (response.getDoUpload().getResultCode() != PollResponse.Result.SUCCESS) {
+                    if (response.getDoUpload().getResultCode() != PollResult.SUCCESS) {
                         System.out.printf("%s - %s", TAG, "result code: " + response.getDoUpload().getResultCode() + " need to cancel");
                         notifyUploadListenerCancelled(MSG_RESPONSE_ERROR);
                         return;
                     }
 
-                    if (response.getDoUpload().getFileErrorCode() != PollResponse.FileError.NO_ERROR) {
+                    if (response.getDoUpload().getFileErrorCode() != PollFileError.NO_ERROR) {
                         System.out.printf("%s - %s", TAG, "result code: " + response.getDoUpload().getFileErrorCode() + " need to cancel");
                         notifyUploadListenerCancelled(MSG_RESPONSE_ERROR);
                         return;
                     }
 
-                    if (response.getDoUpload().getStatusCode() == PollResponse.Status.NO_MORE_REQUESTS_FOR_THIS_KEY) {
+                    if (response.getDoUpload().getStatusCode() == PollStatus.NO_MORE_REQUESTS_FOR_THIS_KEY) {
                         System.out.printf("%s - %s", TAG, "status code: " + response.getDoUpload().getStatusCode());
                         pollUploadFinished(response);
                         return;
@@ -666,8 +663,8 @@ public class UploadRunnable implements Runnable {
             return true;
         }
 
-        if (response.getDoUpload().getResultCode() != ResumableResponse.Result.NO_ERROR) {
-            if (response.getDoUpload().getResultCode() != ResumableResponse.Result.SUCCESS_FILE_MOVED_TO_ROOT) {
+        if (response.getDoUpload().getResultCode() != ResumableResult.NO_ERROR) {
+            if (response.getDoUpload().getResultCode() != ResumableResult.SUCCESS_FILE_MOVED_TO_ROOT) {
                 return true;
             }
         }

@@ -3,6 +3,7 @@ package com.mediafire.sdk.test_utility;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.http.Response;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,19 +12,19 @@ import java.util.Map;
 public class DummyHttpWorker implements HttpWorkerInterface {
     @Override
     public Response doGet(String url, Map<String, String> headers) {
-        return new DummyGETResponse(200, null, url);
+        return new DummyGETResponse(200, null, null, url);
     }
 
     @Override
     public Response doPost(String url, Map<String, String> headers, byte[] payload) {
-        return new DummyPOSTResponse(200, null, url, payload);
+        return new DummyPOSTResponse(200, null, null, url, payload);
     }
 
     public static class DummyGETResponse extends Response {
         private String mOriginalUrl;
 
-        public DummyGETResponse(int status, byte[] bodyBytes, String originalUrl) {
-            super(status, bodyBytes);
+        public DummyGETResponse(int status, byte[] bodyBytes, Map<String, List<String>> headers, String originalUrl) {
+            super(status, bodyBytes, headers);
             mOriginalUrl = originalUrl;
         }
 
@@ -35,8 +36,8 @@ public class DummyHttpWorker implements HttpWorkerInterface {
     public static class DummyPOSTResponse extends DummyGETResponse {
         private byte[] mOriginalPayload;
 
-        public DummyPOSTResponse(int status, byte[] bodyBytes, String originalUrl, byte[] originalPayload) {
-            super(status, bodyBytes, originalUrl);
+        public DummyPOSTResponse(int status, byte[] bodyBytes, Map<String, List<String>> headers, String originalUrl, byte[] originalPayload) {
+            super(status, bodyBytes, headers, originalUrl);
             mOriginalPayload = originalPayload;
         }
 

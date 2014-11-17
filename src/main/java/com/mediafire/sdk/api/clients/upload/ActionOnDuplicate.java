@@ -8,17 +8,17 @@ public enum ActionOnDuplicate {
     SKIP("skip"),
     REPLACE("replace");
 
-    private final String value;
+    private final String mValue;
 
     private ActionOnDuplicate(String value) {
-        this.value = value;
+        this.mValue = value;
     }
 
     /**
-     * gets the value of the enum
-     * @return String value
+     * gets the mValue of the enum
+     * @return String mValue
      */
     public String getValue() {
-        return value;
+        return mValue;
     }
 }

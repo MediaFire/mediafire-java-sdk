@@ -4,7 +4,7 @@ package com.mediafire.sdk.uploader;
 * Created by  on 7/8/2014.
 * ResumableChunkInfo
 */
-class ResumableChunkInfo {
+public class ResumableChunkInfo {
     private final String chunkHash;
     private final byte[] uploadChunk;
 

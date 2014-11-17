@@ -159,18 +159,12 @@ public class ResumableParameters {
                 return this;
             }
 
-            switch (actionOnDuplicate) {
-                case SKIP:
-                    mActionOnDuplicate = "skip";
-                    break;
-                case KEEP:
-                    mActionOnDuplicate = "keep";
-                    break;
-                case REPLACE:
-                    mActionOnDuplicate = "replace";
-                    break;
-            }
+            mActionOnDuplicate = actionOnDuplicate.getValue();
+            return this;
+        }
 
+        public Builder actionOnDuplicate(String actionOnDuplicate) {
+            mActionOnDuplicate = actionOnDuplicate;
             return this;
         }
 
@@ -190,6 +184,11 @@ public class ResumableParameters {
 
             mVersionControl = versionControl.getValue();
 
+            return this;
+        }
+
+        public Builder versionControl(String versionControl) {
+            mVersionControl = versionControl;
             return this;
         }
 

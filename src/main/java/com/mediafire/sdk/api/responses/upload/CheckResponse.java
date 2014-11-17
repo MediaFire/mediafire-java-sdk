@@ -141,41 +141,4 @@ public class CheckResponse extends ApiResponse {
         return Long.parseLong(this.available_space);
     }
 
-    public enum Error {
-        NON_OWNER_UPLOAD_WITHOUT_WRITE_PERMISSIONS_TO_FOLDER(114),
-        NO_ERROR(0),;
-
-        private final int value;
-
-        private Error(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        public static Error fromInt(int value) {
-            for (final Error e : values()) {
-                if (e.getValue() == value) {
-                    return e;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public String toString() {
-            String response;
-            switch (this.value) {
-                case 114:
-                    response = "Success";
-                    break;
-                default:
-                    response = "No error code associated with: " + this.value;
-                    break;
-            }
-            return response;
-        }
-    }
 }

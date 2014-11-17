@@ -22,7 +22,7 @@ public class UploadClient {
     private static final String PARAM_RESUMABLE = "resumable";
     private static final String PARAM_QUICK_KEY = "quick_key";
     private static final String PARAM_ACTION_ON_DUPLICATE = "action_on_duplicate";
-    private static final String PARAM_MTIME = "mTime";
+    private static final String PARAM_MTIME = "mtime";
     private static final String PARAM_VERSION_CONTROL = "version_control";
     private static final String PARAM_PREVIOUS_HASH = "previous_hash";
     private static final String PARAM_KEY = "key";

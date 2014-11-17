@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,9 +47,11 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
                 inputStream = connection.getInputStream();
             }
             byte[] response = readStream(inputStream);
+
+            Map<String, List<String>> headerFields = connection.getHeaderFields();
             inputStream.close();
             connection.disconnect();
-            return new Response(responseCode, response);
+            return new Response(responseCode, response, headerFields);
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseApiClientError("IOException while trying to do GET on url '" + url + "'", e);
@@ -84,7 +87,8 @@ public class DefaultHttpWorker implements HttpWorkerInterface {
                 inputStream = connection.getInputStream();
             }
             byte[] response = readStream(inputStream);
-            return new Response(responseCode, response);
+            Map<String, List<String>> headerFields = connection.getHeaderFields();
+            return new Response(responseCode, response, headerFields);
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseApiClientError("IOException while trying to do POST on url '" + url + "'", e);

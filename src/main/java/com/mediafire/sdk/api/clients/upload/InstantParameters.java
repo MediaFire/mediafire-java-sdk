@@ -137,42 +137,34 @@ public class InstantParameters {
             return this;
         }
 
+        public Builder actionOnDuplicate(String actionOnDuplicate) {
+            mActionOnDuplicate = actionOnDuplicate;
+            return this;
+        }
+
         public Builder actionOnDuplicate(ActionOnDuplicate actionOnDuplicate) {
-            if(actionOnDuplicate == null) {
+            if (actionOnDuplicate == null) {
                 return this;
             }
-
             mActionOnDuplicate = actionOnDuplicate.getValue();
-
             return this;
         }
 
         public Builder mTime(String mTime) {
-            if(mTime == null) {
-                return this;
-            }
-
             mMTime = mTime;
             return this;
         }
 
+        public Builder versionControl(String versionControl) {
+            mVersionControl = versionControl;
+            return this;
+        }
+
         public Builder versionControl(VersionControl versionControl) {
-            if(versionControl == null) {
+            if (versionControl == null) {
                 return this;
             }
-
-            switch (versionControl) {
-                case CREATE_PATCHES:
-                    mVersionControl = versionControl.getValue();
-                    break;
-                case KEEP_REVISION:
-                    mVersionControl = versionControl.getValue();
-                    break;
-                case NONE:
-                    mVersionControl = versionControl.getValue();
-                    break;
-            }
-
+            mVersionControl = versionControl.getValue();
             return this;
         }
 

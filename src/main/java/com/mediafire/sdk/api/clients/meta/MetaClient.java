@@ -1,14 +1,12 @@
 package com.mediafire.sdk.api.clients.meta;
 
+import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperApi;
-import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
-
-import java.util.Map;
 
 /**
  * Created by Chris Najar on 10/29/2014.
@@ -107,11 +105,12 @@ public class MetaClient {
         return apiClient.doRequest(request);
     }
 
-    public Result set(String quickKey, Map<String, String> metaKeyValuePairs) {
+    public Result set(String quickKey, String metaName, String metaValue) {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/set.php");
 
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);
+        request.addQueryParameter(PARAM_META_PREFIX + metaName, metaValue);
 
         return apiClient.doRequest(request);
     }

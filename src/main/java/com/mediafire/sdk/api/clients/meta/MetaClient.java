@@ -2,11 +2,14 @@ package com.mediafire.sdk.api.clients.meta;
 
 import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.api.clients.ApiClient;
+import com.mediafire.sdk.api.clients.ApiUtil;
 import com.mediafire.sdk.client_helpers.ClientHelperApi;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
+
+import java.util.List;
 
 /**
  * Created by Chris Najar on 10/29/2014.
@@ -66,6 +69,14 @@ public class MetaClient {
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
 
         return apiClient.doRequest(request);
+    }
+
+    public Result delete(String... quickKeys) {
+        return delete(ApiUtil.getCommaSeparatedString(quickKeys));
+    }
+
+    public Result delete(List<String> quickKeys) {
+        return delete(ApiUtil.getCommaSeparatedString(quickKeys));
     }
 
     public Result get(String quickKey) {

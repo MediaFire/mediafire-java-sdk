@@ -110,7 +110,7 @@ public class QueryBuilder {
                 return this;
             }
 
-            mReturnData = ApiUtil.getCommaSeparatedStringFromList(elementsToReturn);
+            mReturnData = ApiUtil.getCommaSeparatedString(elementsToReturn);
             return this;
         }
 
@@ -119,7 +119,7 @@ public class QueryBuilder {
                 return this;
             }
 
-            mOrderBy = ApiUtil.getCommaSeparatedStringFromList(metaDataList);
+            mOrderBy = ApiUtil.getCommaSeparatedString(metaDataList);
             return this;
         }
 

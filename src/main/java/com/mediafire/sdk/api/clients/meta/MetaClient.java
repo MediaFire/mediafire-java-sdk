@@ -63,7 +63,7 @@ public class MetaClient {
     }
 
     public Result delete(String quickKey) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/delete.php");
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/delete_property.php");
 
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEYS, quickKey);
@@ -117,7 +117,7 @@ public class MetaClient {
     }
 
     public Result set(String quickKey, String metaName, String metaValue) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/set.php");
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/set_property.php");
 
         // add comma separated key list query param
         request.addQueryParameter(PARAM_QUICK_KEY, quickKey);

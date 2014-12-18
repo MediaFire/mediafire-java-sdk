@@ -2,7 +2,6 @@ package com.mediafire.sdk.api.clients;
 
 import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.client_core.BaseClient;
-import com.mediafire.sdk.client_core.HeadersHelper;
 import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
@@ -43,6 +42,43 @@ public class ApiClient extends BaseClient {
             return doPost(request);
         } else {
             throw new IllegalArgumentException("request method '" + method + "' not supported");
+        }
+    }
+
+    /**
+     * Created by Chris Najar on 10/19/2014.
+     * HeadersHelper adds appropriate headers for a Request object
+     */
+    public static class HeadersHelper {
+        private final String CHARSET = "UTF-8";
+        private final Request mRequest;
+
+        /**
+         * HeadersHelper Constructor
+         * @param request the Request to add the headers to
+         */
+        public HeadersHelper(Request request) {
+            mRequest = request;
+        }
+
+        public void addHeaders() {
+            mRequest.addHeader("Accept-Charset", CHARSET);
+
+            if (!mRequest.getHttpMethod().equalsIgnoreCase("post")) {
+                return;
+            }
+
+            byte[] payload = mRequest.getPayload();
+
+            if (mRequest.postQuery()) {
+                mRequest.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=" + CHARSET);
+            } else {
+                mRequest.addHeader("Content-Type", "application/octet-stream");
+            }
+
+            if (mRequest.getPayload() != null) {
+                mRequest.addHeader("Content-Length", String.valueOf(payload.length));
+            }
         }
     }
 }

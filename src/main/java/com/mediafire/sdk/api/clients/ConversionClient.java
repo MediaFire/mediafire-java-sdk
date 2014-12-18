@@ -9,12 +9,12 @@ import com.mediafire.sdk.http.Result;
 
 import java.util.Map;
 
-public class ConversionServerClient {
+public class ConversionClient {
 
     private final ApiClient imageClient;
     private final Instructions mInstructions;
 
-    public ConversionServerClient(IHttp httpInterface, ITokenManager ITokenManager) {
+    public ConversionClient(IHttp httpInterface, ITokenManager ITokenManager) {
         mInstructions = new UseActionToken("image", ITokenManager);
         imageClient = new ApiClient(httpInterface);
     }

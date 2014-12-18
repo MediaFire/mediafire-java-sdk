@@ -7,7 +7,7 @@ import com.mediafire.sdk.token.SessionToken;
  * Created by Chris Najar on 9/16/2014.
  * SessionTokenManagerInterface helps to control the flow of SessionTokens
  */
-public interface SessionTokenManagerInterface extends Initializable {
+public interface SessionTokenManagerInterface {
 
     /**
      * Should be called whenever a new SessionToken is received

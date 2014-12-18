@@ -11,7 +11,6 @@ public class Configuration {
     private final CredentialsInterface mDeveloperCredentials;
     private final SessionTokenManagerInterface mSessionTokenManager;
     private final ActionTokenManagerInterface mActionTokenManager;
-    private final NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor;
     private boolean initialized = false;
 
     private Configuration(Builder builder) {
@@ -20,13 +19,6 @@ public class Configuration {
         mDeveloperCredentials = builder.mDeveloperCredentials;
         mSessionTokenManager = builder.mSessionTokenManager;
         mActionTokenManager = builder.mActionTokenManager;
-        mNetworkConnectivityMonitor = builder.mNetworkConnectivityMonitor;
-    }
-
-    public void init() {
-        initialized = true;
-        mSessionTokenManager.initialize(this);
-        mActionTokenManager.initialize(this);
     }
 
     /**
@@ -85,17 +77,6 @@ public class Configuration {
     }
 
     /**
-     * Gets the network connectivity monitor associated with this class
-     * @return NetworkConnectivityMonitorInterface
-     */
-    public NetworkConnectivityMonitorInterface getNetworkConnectivityMonitor() {
-        if (!initialized) {
-            throw new IllegalStateException("Configuration.init() must be called to finish configuration");
-        }
-        return mNetworkConnectivityMonitor;
-    }
-
-    /**
      * Builder is a class used to build a Configuration object (see the builder pattern)
      */
     public static class Builder {
@@ -104,14 +85,12 @@ public class Configuration {
         private static final CredentialsInterface DEFAULT_DEVELOPER_CREDENTIALS = new DefaultCredentials();
         private static final SessionTokenManagerInterface DEFAULT_SESSION_TOKEN_MANAGER = new DefaultSessionTokenManager(DEFAULT_HTTP_WORKER, DEFAULT_USER_CREDENTIALS, DEFAULT_DEVELOPER_CREDENTIALS);
         private static final ActionTokenManagerInterface DEFAULT_ACTION_TOKEN_MANAGER = new DefaultActionTokenManager(DEFAULT_HTTP_WORKER, DEFAULT_SESSION_TOKEN_MANAGER);
-        private static final NetworkConnectivityMonitorInterface DEFAULT_NET_MONITOR = new DefaultNetworkConnectivityMonitor();
 
         private HttpWorkerInterface mHttpWorker = DEFAULT_HTTP_WORKER;
         private CredentialsInterface mUserCredentials = DEFAULT_USER_CREDENTIALS;
         private CredentialsInterface mDeveloperCredentials = DEFAULT_DEVELOPER_CREDENTIALS;
         private SessionTokenManagerInterface mSessionTokenManager = DEFAULT_SESSION_TOKEN_MANAGER;
         private ActionTokenManagerInterface mActionTokenManager = DEFAULT_ACTION_TOKEN_MANAGER;
-        private NetworkConnectivityMonitorInterface mNetworkConnectivityMonitor = DEFAULT_NET_MONITOR;
 
         /**
          * Builder Constructor
@@ -172,20 +151,6 @@ public class Configuration {
 
             mSessionTokenManager = sessionTokenManager;
             mActionTokenManager = actionTokenManager;
-            return this;
-        }
-
-        /**
-         * Adds a NetworkConnectivityMonitorInterface to the class
-         * @param networkConnectivityMonitor NetworkConnectivityMonitorInterface to be added
-         * @return the updated Builder object
-         */
-        public Builder networkConnectivityMonitor(NetworkConnectivityMonitorInterface networkConnectivityMonitor) {
-            if (networkConnectivityMonitor == null) {
-                return this;
-            }
-
-            mNetworkConnectivityMonitor = networkConnectivityMonitor;
             return this;
         }
 

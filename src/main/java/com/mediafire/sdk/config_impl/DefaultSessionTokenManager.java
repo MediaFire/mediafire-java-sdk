@@ -45,21 +45,6 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
     }
 
     /**
-     * Initialized this class, should be called before class methods are called
-     * @param configuration Configuration Object to be used in class methods
-     */
-    @Override
-    public void initialize(Configuration configuration) { }
-
-    /**
-     * A shutdown method for this class
-     */
-    @Override
-    public void shutdown() {
-        System.out.printf("%s - %s", TAG, "shutdown");
-    }
-
-    /**
      * Called whenever a new SessionToken Object is received
      * Adds the token to the BlockingQueue
      * @param token the SessionToken that was received

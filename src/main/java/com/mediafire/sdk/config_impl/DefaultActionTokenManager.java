@@ -1,10 +1,9 @@
 package com.mediafire.sdk.config_impl;
 
+import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperNewActionToken;
-import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
-import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
@@ -37,21 +36,6 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     public DefaultActionTokenManager(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
         mSessionTokenManagerInterface = sessionTokenManagerInterface;
         mHttpWorkerInterface = httpWorkerInterface;
-    }
-
-    /**
-     * Initialized this class, should be called before class methods are called
-     * @param configuration Configuration Object to be used in class methods
-     */
-    @Override
-    public void initialize(Configuration configuration) { }
-
-    /**
-     * A shutdown method for this class
-     */
-    @Override
-    public void shutdown() {
-        System.out.printf("%s - %s", TAG, "shutdown");
     }
 
     /**

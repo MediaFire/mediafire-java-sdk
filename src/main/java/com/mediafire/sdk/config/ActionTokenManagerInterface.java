@@ -7,7 +7,7 @@ import com.mediafire.sdk.token.UploadActionToken;
  * Created by Chris Najar on 9/16/2014.
  * ActionTokenManagerInterface helps to control the flow of action tokens
  */
-public interface ActionTokenManagerInterface extends Initializable {
+public interface ActionTokenManagerInterface {
 
     /**
      * Should be called whenever a new ImageActionToken is received

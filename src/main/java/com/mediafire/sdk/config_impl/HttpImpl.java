@@ -2,7 +2,6 @@ package com.mediafire.sdk.config_impl;
 
 import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.http.Response;
-import com.mediafire.sdk.http.ResponseApiClientError;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayOutputStream;
@@ -170,5 +169,50 @@ public class HttpImpl implements IHttp {
         byte[] bytes = outputStream.toByteArray();
         outputStream.close();
         return bytes;
+    }
+
+    /**
+     * Created by Chris Najar on 10/19/2014.
+     * ResponseApiClientError is an error class for the Response Object
+     */
+    public static class ResponseApiClientError extends Response {
+
+        private final String mMessage;
+        private final Throwable mThrowable;
+
+        /**
+         * ResponseApiClientError Constructor
+         * @param message String message for the error
+         * @param throwable Throwable throwable for the error
+         */
+        public ResponseApiClientError(String message, Throwable throwable) {
+            super(-1, null, null);
+            mMessage = message;
+            mThrowable = throwable;
+        }
+
+        /**
+         * ResponseApiClientError Constructor
+         * @param message String message for the error
+         */
+        public ResponseApiClientError(String message) {
+            this(message, null);
+        }
+
+        /**
+         * Gets the error message
+         * @return String message
+         */
+        public String getErrorMessage() {
+            return mMessage;
+        }
+
+        /**
+         * Gets the throwable
+         * @return Throwable throwable
+         */
+        public Throwable getThrowable() {
+            return mThrowable;
+        }
     }
 }

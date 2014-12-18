@@ -3,11 +3,8 @@ package com.mediafire.sdk.http;
 import com.mediafire.sdk.client_core.UrlHelper;
 import com.mediafire.sdk.token.Token;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Request is an object used to perform an Api Request
@@ -18,6 +15,7 @@ public class Request {
     private final String mDomain;
     private final String mScheme;
     private final boolean mPostQuery;
+    private final Class<? extends Token> mTokenClass;
 
     private Map<String, Object> mQueryParameters;
     private Map<String, String> mHeaders;
@@ -32,59 +30,11 @@ public class Request {
         mScheme = builder.mScheme;
         mPostQuery = builder.mPostQuery;
         mPayload = builder.mPayload;
+        mTokenClass = builder.mTokenClass;
     }
 
-    public Request(String url) {
-        URI uri = null;
-        try {
-            uri = new URL(url).toURI();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        // scheme/authority/path/query
-        mScheme = uri.getScheme();
-        mDomain = uri.getAuthority();
-        mPath = uri.getPath().replaceFirst("/", "");
-
-        mQueryParameters = makeQueryParametersFromUri(uri);
-
-        mHttpMethod = "get";
-        mPostQuery = false;
-    }
-
-    private Map<String, Object> makeQueryParametersFromUri(URI uri) {
-        Map<String, Object> queryMap = new LinkedHashMap<String, Object>();
-
-        if (uri == null) {
-            return queryMap;
-        }
-
-        if (uri.getQuery() == null) {
-            return queryMap;
-        }
-
-        String query = uri.getQuery();
-
-        StringTokenizer st = new StringTokenizer(query, "&", false);
-
-        List<String> keyValuePairList = new ArrayList<String>();
-
-        while (st.hasMoreElements()) {
-            String keyValuePairString = (String) st.nextElement();
-            keyValuePairList.add(keyValuePairString);
-        }
-
-        for (String keyValuePair : keyValuePairList) {
-            String[] keyValueArray = keyValuePair.split("=");
-            if (keyValueArray != null && keyValueArray.length == 2) {
-                queryMap.put(keyValueArray[0], keyValueArray[1]);
-            }
-        }
-
-        return queryMap;
+    public Class<? extends Token> getTokenClass() {
+        return mTokenClass;
     }
 
     public String getPath() {
@@ -249,6 +199,7 @@ public class Request {
         private String mScheme = DEFAULT_SCHEME;
         private boolean mPostQuery = DEFAULT_POST_QUERY;
         private byte[] mPayload;
+        private Class<? extends Token> mTokenClass;
 
         public Builder() { }
 
@@ -258,6 +209,11 @@ public class Request {
             }
 
             mPath = value;
+            return this;
+        }
+
+        public Builder tokenToUse(Class<? extends Token> tokenClass) {
+            mTokenClass = tokenClass;
             return this;
         }
 

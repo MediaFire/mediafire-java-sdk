@@ -1,6 +1,6 @@
 package com.mediafire.sdk.http;
 
-import com.mediafire.sdk.client_core.UrlHelper;
+import com.mediafire.sdk.api.clients.UrlHelper;
 import com.mediafire.sdk.token.Token;
 
 import java.net.MalformedURLException;

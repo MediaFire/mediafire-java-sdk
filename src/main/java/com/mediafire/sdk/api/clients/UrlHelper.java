@@ -1,4 +1,4 @@
-package com.mediafire.sdk.client_core;
+package com.mediafire.sdk.api.clients;
 
 import com.mediafire.sdk.http.Request;
 

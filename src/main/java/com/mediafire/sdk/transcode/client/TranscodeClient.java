@@ -1,5 +1,6 @@
 package com.mediafire.sdk.transcode.client;
 
+import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.client_core.BaseClient;
 import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.http.Request;
@@ -22,9 +23,13 @@ public class TranscodeClient extends BaseClient {
     }
 
     @Override
-    public Result doRequest(Request request) {
+    public Result doRequest(Instructions instructions, Request request) {
         Response response = doGet(request);
         return new Result(response, request);
+    }
+
+    public Result doRequest(Request request) {
+        return doRequest(null, request);
     }
 
     public Result create(String streamingUrl, String container, MediaSize mediaSize) {

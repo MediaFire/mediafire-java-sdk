@@ -1,8 +1,7 @@
 package com.mediafire.sdk.client_helpers;
 
 import com.mediafire.sdk.api.responses.user.GetActionTokenResponse;
-import com.mediafire.sdk.config.ActionTokenManagerInterface;
-import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.ActionToken;
@@ -17,13 +16,13 @@ import com.mediafire.sdk.token.UploadActionToken;
 public class ClientHelperNewActionToken extends ClientHelperApi {
 
     private String mTokenType;
-    private ActionTokenManagerInterface mActionTokenManagerInterface;
+    private ITokenManager mActionITokenManagerInterface;
 
-    public ClientHelperNewActionToken(String tokenType, ActionTokenManagerInterface actionTokenManagerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
-        super(sessionTokenManagerInterface);
+    public ClientHelperNewActionToken(String tokenType, ITokenManager actionITokenManagerInterface) {
+        super(actionITokenManagerInterface);
 
         mTokenType = tokenType;
-        mActionTokenManagerInterface = actionTokenManagerInterface;
+        mActionITokenManagerInterface = actionITokenManagerInterface;
     }
 
     @Override
@@ -45,7 +44,7 @@ public class ClientHelperNewActionToken extends ClientHelperApi {
         GetActionTokenResponse getActionTokenResponse = getResponseObject(response, GetActionTokenResponse.class);
 
         if (getActionTokenResponse == null) {
-            mActionTokenManagerInterface.tokensFailed();
+            mActionITokenManagerInterface.tokensBad();
             return;
         }
 
@@ -63,18 +62,18 @@ public class ClientHelperNewActionToken extends ClientHelperApi {
         }
 
         if (badRequest) {
-            mActionTokenManagerInterface.tokensFailed();
+            mActionITokenManagerInterface.tokensBad();
             return;
         }
 
         if ("image".equals(mTokenType)) {
             ImageActionToken mfImageActionToken = (ImageActionToken) createActionToken(ImageActionToken.class, getActionTokenResponse, request);
-            mActionTokenManagerInterface.receiveImageActionToken(mfImageActionToken);
+            mActionITokenManagerInterface.give(mfImageActionToken);
         }
 
         if ("upload".equals(mTokenType)) {
             UploadActionToken uploadActionToken = (UploadActionToken) createActionToken(UploadActionToken.class, getActionTokenResponse, request);
-            mActionTokenManagerInterface.receiveUploadActionToken(uploadActionToken);
+            mActionITokenManagerInterface.give(uploadActionToken);
         }
     }
 

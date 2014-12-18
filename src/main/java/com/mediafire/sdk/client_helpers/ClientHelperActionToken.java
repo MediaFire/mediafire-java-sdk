@@ -1,7 +1,7 @@
 package com.mediafire.sdk.client_helpers;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
-import com.mediafire.sdk.config.ActionTokenManagerInterface;
+import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.ImageActionToken;
@@ -13,12 +13,12 @@ import com.mediafire.sdk.token.UploadActionToken;
  */
 public class ClientHelperActionToken extends BaseClientHelper {
     private String mTokenType;
-    private ActionTokenManagerInterface mActionTokenManagerInterface;
+    private ITokenManager mActionITokenManagerInterface;
 
-    public ClientHelperActionToken(String tokenType, ActionTokenManagerInterface actionTokenManagerInterface) {
+    public ClientHelperActionToken(String tokenType, ITokenManager actionITokenManagerInterface) {
         super();
         this.mTokenType = tokenType;
-        mActionTokenManagerInterface = actionTokenManagerInterface;
+        mActionITokenManagerInterface = actionITokenManagerInterface;
     }
 
     @Override
@@ -29,12 +29,12 @@ public class ClientHelperActionToken extends BaseClientHelper {
 
         if ("image".equals(mTokenType)) {
 
-            ImageActionToken imageActionToken = mActionTokenManagerInterface.borrowImageActionToken();
+            ImageActionToken imageActionToken = mActionITokenManagerInterface.take(ImageActionToken.class);
             request.addToken(imageActionToken);
         }
 
         if ("upload".equals(mTokenType)) {
-            UploadActionToken uploadActionToken = mActionTokenManagerInterface.borrowUploadActionToken();
+            UploadActionToken uploadActionToken = mActionITokenManagerInterface.take(UploadActionToken.class);
             request.addToken(uploadActionToken);
         }
     }
@@ -55,7 +55,7 @@ public class ClientHelperActionToken extends BaseClientHelper {
         ApiResponse apiResponse = getResponseObject(response, ApiResponse.class);
 
         if (apiResponse == null) {
-            mActionTokenManagerInterface.tokensFailed();
+            mActionITokenManagerInterface.tokensBad();
             return;
         }
 
@@ -64,7 +64,7 @@ public class ClientHelperActionToken extends BaseClientHelper {
         }
 
         if (apiResponse.getError() == 105) {
-            mActionTokenManagerInterface.tokensFailed();
+            mActionITokenManagerInterface.tokensBad();
         }
     }
 }

@@ -2,7 +2,7 @@ package com.mediafire.sdk.client_helpers;
 
 import com.mediafire.sdk.api.responses.user.GetSessionTokenResponse;
 import com.mediafire.sdk.config.CredentialsInterface;
-import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.SessionToken;
@@ -16,13 +16,13 @@ import java.util.Map;
 public class ClientHelperNewSessionToken extends BaseClientHelper {
     private CredentialsInterface mUserCredentials;
     private CredentialsInterface mDeveloperCredentials;
-    private SessionTokenManagerInterface mSessionTokenManagerInterface;
+    private ITokenManager mSessionITokenManagerInterface;
 
-    public ClientHelperNewSessionToken(CredentialsInterface userCredentials, CredentialsInterface developerCredentials, SessionTokenManagerInterface sessionTokenManagerInterface) {
+    public ClientHelperNewSessionToken(CredentialsInterface userCredentials, CredentialsInterface developerCredentials, ITokenManager sessionITokenManagerInterface) {
         super();
         mUserCredentials = userCredentials;
         mDeveloperCredentials = developerCredentials;
-        mSessionTokenManagerInterface = sessionTokenManagerInterface;
+        mSessionITokenManagerInterface = sessionITokenManagerInterface;
     }
     
     @Override
@@ -42,7 +42,7 @@ public class ClientHelperNewSessionToken extends BaseClientHelper {
         GetSessionTokenResponse newSessionTokenResponse = getResponseObject(response, GetSessionTokenResponse.class);
         SessionToken newSessionToken = createNewSessionToken(newSessionTokenResponse);
         if (newSessionToken != null) {
-            mSessionTokenManagerInterface.receiveSessionToken(newSessionToken);
+            mSessionITokenManagerInterface.give(newSessionToken);
         }
     }
 

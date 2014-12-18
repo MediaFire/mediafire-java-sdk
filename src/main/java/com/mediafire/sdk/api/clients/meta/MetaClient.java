@@ -4,8 +4,8 @@ import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.api.clients.ApiUtil;
 import com.mediafire.sdk.client_helpers.ClientHelperApi;
-import com.mediafire.sdk.config.HttpInterface;
-import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.config.IHttp;
+import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 
@@ -31,11 +31,11 @@ public class MetaClient {
     private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
 
-    public MetaClient(HttpInterface httpInterface, SessionTokenManagerInterface sessionTokenManager) {
+    public MetaClient(IHttp httpInterface, ITokenManager sessionITokenManager) {
         // init host object
         mApiRequestGenerator = new ApiRequestGenerator();
 
-        ClientHelperApi clientHelper = new ClientHelperApi(sessionTokenManager);
+        ClientHelperApi clientHelper = new ClientHelperApi(sessionITokenManager);
         apiClient = new ApiClient(clientHelper, httpInterface);
     }
 

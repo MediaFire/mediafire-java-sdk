@@ -1,11 +1,10 @@
 package com.mediafire.sdk.api.clients.user;
 
-import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.api.ApiRequestGenerator;
+import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperNewActionToken;
-import com.mediafire.sdk.config.ActionTokenManagerInterface;
-import com.mediafire.sdk.config.HttpInterface;
-import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.config.IHttp;
+import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 
@@ -21,13 +20,13 @@ public class ActionTokenClient {
     private final ApiClient imageActionTokenClient;
     private final ApiClient uploadActionTokenClient;
 
-    public ActionTokenClient(HttpInterface httpInterface, SessionTokenManagerInterface sessionTokenManagerInterface, ActionTokenManagerInterface actionTokenManagerInterface) {
+    public ActionTokenClient(IHttp httpInterface, ITokenManager ITokenManager) {
         mApiRequestGenerator = new ApiRequestGenerator();
 
-        ClientHelperNewActionToken imageActionTokenClientHelper = new ClientHelperNewActionToken("image", actionTokenManagerInterface, sessionTokenManagerInterface);
+        ClientHelperNewActionToken imageActionTokenClientHelper = new ClientHelperNewActionToken("image", ITokenManager);
         imageActionTokenClient = new ApiClient(imageActionTokenClientHelper, httpInterface);
 
-        ClientHelperNewActionToken uploadActionTokenClientHelper = new ClientHelperNewActionToken("upload", actionTokenManagerInterface, sessionTokenManagerInterface);
+        ClientHelperNewActionToken uploadActionTokenClientHelper = new ClientHelperNewActionToken("upload", ITokenManager);
         uploadActionTokenClient = new ApiClient(uploadActionTokenClientHelper, httpInterface);
     }
 

@@ -1,10 +1,10 @@
 package com.mediafire.sdk.api.clients.file;
 
+import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperApi;
-import com.mediafire.sdk.api.ApiRequestGenerator;
-import com.mediafire.sdk.config.HttpInterface;
-import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.config.IHttp;
+import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 
@@ -23,10 +23,10 @@ public class FileClient {
     private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
 
-    public FileClient(HttpInterface httpWorker, SessionTokenManagerInterface sessionTokenManagerInterface) {
+    public FileClient(IHttp httpWorker, ITokenManager ITokenManager) {
         mApiRequestGenerator = new ApiRequestGenerator();
 
-        ClientHelperApi clientHelper = new ClientHelperApi(sessionTokenManagerInterface);
+        ClientHelperApi clientHelper = new ClientHelperApi(ITokenManager);
         apiClient = new ApiClient(clientHelper, httpWorker);
     }
 

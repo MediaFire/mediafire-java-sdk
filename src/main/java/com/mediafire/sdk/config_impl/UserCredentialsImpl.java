@@ -10,14 +10,14 @@ import java.util.Map;
  * DefaultCredentials is a default implementation of the CredentialsInterface
  * A custom implementation is recommended
  */
-public class DefaultCredentials implements CredentialsInterface {
-    private static final String TAG = DefaultCredentials.class.getCanonicalName();
+public class UserCredentialsImpl implements CredentialsInterface {
+    private static final String TAG = UserCredentialsImpl.class.getCanonicalName();
     private Map<String, String> mCredentials = new LinkedHashMap<String, String>();
 
     /**
      * DefaultCredentials Constructor
      */
-    public DefaultCredentials() {}
+    public UserCredentialsImpl() {}
 
     /**
      * Sets the passed credentials

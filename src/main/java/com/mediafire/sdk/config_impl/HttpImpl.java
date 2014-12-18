@@ -1,6 +1,6 @@
 package com.mediafire.sdk.config_impl;
 
-import com.mediafire.sdk.config.HttpInterface;
+import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.ResponseApiClientError;
 
@@ -19,11 +19,22 @@ import java.util.Map;
  * DefaultHttpWorker is a default implementation of the HttpWorkerInterface
  * A custom implementation is recommended
  */
-public class DefaultHttp implements HttpInterface {
-    private static final String TAG = DefaultHttp.class.getCanonicalName();
+public class HttpImpl implements IHttp {
+    private static final String TAG = HttpImpl.class.getCanonicalName();
     private static final int CONNECTION_TIMEOUT_MILLISECONDS = 5000;
     private static final int READ_TIMEOUT_MILLISECONDS = 45000;
+    private boolean mDebug = false;
 
+    public void debug(boolean debug) {
+        mDebug = debug;
+    }
+    
+    private void printMessage(String message) {
+        if (mDebug) {
+            System.out.println(TAG + " - " + message);
+        }
+    }
+    
     /**
      * Performs a http get request
      * @param url the url to open the connection to
@@ -32,7 +43,7 @@ public class DefaultHttp implements HttpInterface {
      */
     @Override
     public Response doGet(String url, Map<String, String> headers) {
-        System.out.printf("%s - %s", TAG, "doGet - " + url);
+        printMessage("doGet - " + url);
         HttpURLConnection connection;
         InputStream inputStream;
         try {
@@ -72,7 +83,7 @@ public class DefaultHttp implements HttpInterface {
      */
     @Override
     public Response doPost(String url, Map<String, String> headers, byte[] payload) {
-        System.out.printf("%s - %s", TAG, "doPost - " + url);
+        printMessage("doPost - " + url);
         try{
             HttpURLConnection connection = getURLConnection(url);
             setTimeouts(connection);
@@ -99,12 +110,12 @@ public class DefaultHttp implements HttpInterface {
         String urlScheme = url.substring(0, 5);
 
         if ("http:".equals(urlScheme)) {
-            System.out.printf("%s - %s", TAG, "getURLConnection - HttpUrlConnection");
+            printMessage("getURLConnection - HttpUrlConnection");
             return (HttpURLConnection) new URL(url).openConnection();
         }
 
         if ("https".equals(urlScheme)) {
-            System.out.printf("%s - %s", TAG, "getURLConnection - HttpsUrlConnection");
+            printMessage("getURLConnection - HttpsUrlConnection");
             return (HttpsURLConnection) new URL(url).openConnection();
         }
 
@@ -112,39 +123,39 @@ public class DefaultHttp implements HttpInterface {
     }
 
     private void addRequestHeadersToConnection(URLConnection connection, Map<String, String> headers) {
-        System.out.printf("%s - %s", TAG, "addRequestHeadersToConnection - " + headers.size());
+        printMessage("addRequestHeadersToConnection - " + headers.size());
         for (String key : headers.keySet()) {
             if (headers.get(key) != null) {
                 connection.addRequestProperty(key, headers.get(key));
             }
         }
-        System.out.printf("%s - %s", TAG, "addRequestHeadersToConnection - added request properties:" + connection.getRequestProperties());
+        printMessage("addRequestHeadersToConnection - added request properties:" + connection.getRequestProperties());
     }
 
     private void setTimeouts(URLConnection connection) {
-        System.out.printf("%s - %s", TAG, "setTimeouts - conn/read = " + CONNECTION_TIMEOUT_MILLISECONDS + "/" + READ_TIMEOUT_MILLISECONDS);
+        printMessage("setTimeouts - conn/read = " + CONNECTION_TIMEOUT_MILLISECONDS + "/" + READ_TIMEOUT_MILLISECONDS);
         connection.setConnectTimeout(CONNECTION_TIMEOUT_MILLISECONDS);
         connection.setReadTimeout(READ_TIMEOUT_MILLISECONDS);
     }
 
     private void postData(URLConnection connection, byte[] payload) throws IOException {
         if (payload == null) {
-            System.out.printf("%s - %s", TAG, "postData - byte array empty, not posting anything");
+            printMessage("postData - byte array empty, not posting anything");
             return;
         } else {
-            System.out.printf("%s - %s", TAG, "postData - posting " + payload.length + " bytes");
+            printMessage("postData - posting " + payload.length + " bytes");
         }
-        System.out.printf("%s - %s", TAG, "postData - request properties: " + connection.getRequestProperties());
+        printMessage("postData - request properties: " + connection.getRequestProperties());
 
         String postDataAsString = new String(payload, "UTF-8");
-        System.out.printf("%s - %s", TAG, "postData - payload: " + postDataAsString);
-        System.out.printf("%s - %s", TAG, "postData - writing payload");
+        printMessage("postData - payload: " + postDataAsString);
+        printMessage("postData - writing payload");
         connection.getOutputStream().write(payload);
-        System.out.printf("%s - %s", TAG, "postData - finished writing payload");
+        printMessage("postData - finished writing payload");
     }
 
     private byte[] readStream(InputStream inputStream) throws IOException {
-        System.out.printf("%s - %s", TAG, "readStream");
+        printMessage("readStream");
         if (inputStream == null) {
             return null;
         }

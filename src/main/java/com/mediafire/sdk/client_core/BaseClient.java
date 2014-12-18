@@ -1,6 +1,6 @@
 package com.mediafire.sdk.client_core;
 
-import com.mediafire.sdk.config.HttpInterface;
+import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
@@ -12,9 +12,9 @@ import java.util.Map;
  */
 public abstract class BaseClient {
 
-    private HttpInterface mHttpWorker;
+    private IHttp mHttpWorker;
 
-    public BaseClient(HttpInterface httpInterface) {
+    public BaseClient(IHttp httpInterface) {
         mHttpWorker = httpInterface;
     }
 

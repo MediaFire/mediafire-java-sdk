@@ -1,7 +1,7 @@
 package com.mediafire.sdk.client_helpers;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
-import com.mediafire.sdk.config.SessionTokenManagerInterface;
+import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.SessionToken;
@@ -14,16 +14,16 @@ import com.mediafire.sdk.token.SessionToken;
  */
 public class ClientHelperApi extends BaseClientHelper {
 
-    private SessionTokenManagerInterface mSessionTokenManagerInterface;
+    private ITokenManager mSessionITokenManagerInterface;
 
-    public ClientHelperApi(SessionTokenManagerInterface sessionTokenManagerInterface) {
+    public ClientHelperApi(ITokenManager sessionITokenManagerInterface) {
         super();
-        mSessionTokenManagerInterface = sessionTokenManagerInterface;
+        mSessionITokenManagerInterface = sessionITokenManagerInterface;
     }
 
     @Override
     public void borrowToken(Request request) {
-        SessionToken sessionToken = mSessionTokenManagerInterface.borrowSessionToken();
+        SessionToken sessionToken = mSessionITokenManagerInterface.take(SessionToken.class);
         request.addToken(sessionToken);
     }
 
@@ -44,7 +44,7 @@ public class ClientHelperApi extends BaseClientHelper {
             if (apiResponse.needNewKey()) {
                 ((SessionToken) request.getToken()).updateSessionToken();
             }
-            mSessionTokenManagerInterface.receiveSessionToken(((SessionToken) request.getToken()));
+            mSessionITokenManagerInterface.give(request.getToken());
         }
     }
 }

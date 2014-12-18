@@ -1,19 +1,17 @@
 package com.mediafire.sdk.api.clients;
 
+import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.client_core.BaseClient;
 import com.mediafire.sdk.client_core.HeadersHelper;
-import com.mediafire.sdk.client_helpers.BaseClientHelper;
 import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 
 public class ApiClient extends BaseClient {
-    private BaseClientHelper mBaseClientHelper;
 
-    public ApiClient(BaseClientHelper baseClientHelper, IHttp httpWorker) {
+    public ApiClient(IHttp httpWorker) {
         super(httpWorker);
-        mBaseClientHelper = baseClientHelper;
     }
 
     /**
@@ -22,14 +20,14 @@ public class ApiClient extends BaseClient {
      * @return returns a Result object after the http response is cleaned up
      */
     @Override
-    public Result doRequest(Request request) {
-        mBaseClientHelper.setup(request);
+    public Result doRequest(Instructions instructions, Request request) {
+        instructions.setup(request);
 
         String httpMethod = request.getHttpMethod();
 
         Response response = getResponseForRequest(request, httpMethod);
 
-        mBaseClientHelper.cleanup(response, request);
+        instructions.cleanup(response, request);
 
         return new Result(response, request);
     }

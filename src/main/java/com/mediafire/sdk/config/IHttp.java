@@ -16,7 +16,7 @@ public interface IHttp {
      * @param headers Map<String, String> headers for the request
      * @return Response from the request
      */
-    public Response doGet(String url, Map<String, String> headers);
+    public Response doGet(String url, Map<String, Object> headers);
 
     /**
      * Performs a http get request
@@ -25,6 +25,6 @@ public interface IHttp {
      * @param payload byte array for the payload to be sent
      * @return Response from the request
      */
-    public Response doPost(String url, Map<String, String> headers, byte[] payload);
+    public Response doPost(String url, Map<String, Object> headers, byte[] payload);
 
 }

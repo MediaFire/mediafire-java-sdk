@@ -1,4 +1,4 @@
-package com.mediafire.sdk.client_helpers;
+package com.mediafire.sdk.api.helpers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -16,10 +16,10 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by Chris on 11/6/2014.
  */
-public abstract class BaseClientHelper {
+public abstract class Instructions {
     private boolean mDebug = false;
 
-    protected BaseClientHelper() {
+    protected Instructions() {
         mDebug = false;
     }
 

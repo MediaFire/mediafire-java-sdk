@@ -1,5 +1,6 @@
 package com.mediafire.sdk.client_core;
 
+import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
@@ -7,9 +8,6 @@ import com.mediafire.sdk.http.Result;
 
 import java.util.Map;
 
-/**
- * Created by Chris on 11/12/2014.
- */
 public abstract class BaseClient {
 
     private IHttp mHttpWorker;
@@ -18,11 +16,11 @@ public abstract class BaseClient {
         mHttpWorker = httpInterface;
     }
 
-    public abstract Result doRequest(Request request);
+    public abstract Result doRequest(Instructions instructions, Request request);
 
     public final Response doGet(Request request) {
         String url = new UrlHelper(request).getUrlForRequest();
-        Map<String, String> headers = request.getHeaders();
+        Map<String, Object> headers = request.getHeaders();
 
         return mHttpWorker.doGet(url, headers);
     }
@@ -32,7 +30,7 @@ public abstract class BaseClient {
         String url = urlHelper.getUrlForRequest();
 
         byte[] payload = request.getPayload();
-        Map<String, String> headers = request.getHeaders();
+        Map<String, Object> headers = request.getHeaders();
 
         return mHttpWorker.doPost(url, headers, payload);
     }

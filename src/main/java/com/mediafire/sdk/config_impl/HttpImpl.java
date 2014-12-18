@@ -42,7 +42,7 @@ public class HttpImpl implements IHttp {
      * @return a Response containing the response from the connection
      */
     @Override
-    public Response doGet(String url, Map<String, String> headers) {
+    public Response doGet(String url, Map<String, Object> headers) {
         printMessage("doGet - " + url);
         HttpURLConnection connection;
         InputStream inputStream;
@@ -82,7 +82,7 @@ public class HttpImpl implements IHttp {
      * @return a Response containing the response from the connection
      */
     @Override
-    public Response doPost(String url, Map<String, String> headers, byte[] payload) {
+    public Response doPost(String url, Map<String, Object> headers, byte[] payload) {
         printMessage("doPost - " + url);
         try{
             HttpURLConnection connection = getURLConnection(url);
@@ -122,11 +122,11 @@ public class HttpImpl implements IHttp {
         return null;
     }
 
-    private void addRequestHeadersToConnection(URLConnection connection, Map<String, String> headers) {
+    private void addRequestHeadersToConnection(URLConnection connection, Map<String, Object> headers) {
         printMessage("addRequestHeadersToConnection - " + headers.size());
         for (String key : headers.keySet()) {
             if (headers.get(key) != null) {
-                connection.addRequestProperty(key, headers.get(key));
+                connection.addRequestProperty(key, headers.get(key).toString());
             }
         }
         printMessage("addRequestHeadersToConnection - added request properties:" + connection.getRequestProperties());

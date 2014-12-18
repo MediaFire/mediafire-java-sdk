@@ -1,7 +1,7 @@
 package com.mediafire.sdk.conversion.clients;
 
 import com.mediafire.sdk.api.clients.ApiClient;
-import com.mediafire.sdk.client_helpers.ClientHelperActionToken;
+import com.mediafire.sdk.api.helpers.UseActionToken;
 import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Request;
@@ -23,10 +23,11 @@ public class ConversionServerClient {
     private static final String PARAM_METADATA = "metadata";
 
     private final ApiClient imageClient;
+    private final UseActionToken mInstructions;
 
     public ConversionServerClient(IHttp httpInterface, ITokenManager ITokenManager) {
-        ClientHelperActionToken clientHelperUploadActionToken = new ClientHelperActionToken("image", ITokenManager);
-        imageClient = new ApiClient(clientHelperUploadActionToken, httpInterface);
+        mInstructions = new UseActionToken("image", ITokenManager);
+        imageClient = new ApiClient(httpInterface);
     }
 
     public Result imageConversion(ImageParams params) {
@@ -39,7 +40,7 @@ public class ConversionServerClient {
         request.addQueryParameter(PARAM_DOC_TYPE, "i");
         request.addQueryParameter(PARAM_SIZE_ID, sizeId);
         request.addQueryParameter(PARAM_CONVERSION_ONLY, conversionOnly);
-        return imageClient.doRequest(request);
+        return imageClient.doRequest(mInstructions, request);
     }
 
     public Result documentConversion(DocumentParams params) {
@@ -60,7 +61,7 @@ public class ConversionServerClient {
         request.addQueryParameter(PARAM_METADATA, metadata);
         request.addQueryParameter(PARAM_CONVERSION_ONLY, conversionOnly);
 
-        return imageClient.doRequest(request);
+        return imageClient.doRequest(mInstructions, request);
     }
 
     private Request makeBaseRequest(String quickKey, String hash) {

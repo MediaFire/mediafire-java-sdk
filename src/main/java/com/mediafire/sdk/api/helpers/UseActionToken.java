@@ -1,4 +1,4 @@
-package com.mediafire.sdk.client_helpers;
+package com.mediafire.sdk.api.helpers;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.config.ITokenManager;
@@ -11,11 +11,11 @@ import com.mediafire.sdk.token.UploadActionToken;
  * Created by Chris on 11/9/2014.
  * BaseClientHelper for API calls that use action tokens (no signature)
  */
-public class ClientHelperActionToken extends BaseClientHelper {
+public class UseActionToken extends Instructions {
     private String mTokenType;
     private ITokenManager mActionITokenManagerInterface;
 
-    public ClientHelperActionToken(String tokenType, ITokenManager actionITokenManagerInterface) {
+    public UseActionToken(String tokenType, ITokenManager actionITokenManagerInterface) {
         super();
         this.mTokenType = tokenType;
         mActionITokenManagerInterface = actionITokenManagerInterface;
@@ -28,7 +28,6 @@ public class ClientHelperActionToken extends BaseClientHelper {
         }
 
         if ("image".equals(mTokenType)) {
-
             ImageActionToken imageActionToken = mActionITokenManagerInterface.take(ImageActionToken.class);
             request.addToken(imageActionToken);
         }

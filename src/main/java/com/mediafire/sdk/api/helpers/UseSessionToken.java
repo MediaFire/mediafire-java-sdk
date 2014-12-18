@@ -1,4 +1,4 @@
-package com.mediafire.sdk.client_helpers;
+package com.mediafire.sdk.api.helpers;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.config.ITokenManager;
@@ -12,11 +12,11 @@ import com.mediafire.sdk.token.SessionToken;
  * This BaseClientHelper implementation should not be used for calls to get new session tokens or calls that use
  * action tokens
  */
-public class ClientHelperApi extends BaseClientHelper {
+public class UseSessionToken extends Instructions {
 
     private ITokenManager mSessionITokenManagerInterface;
 
-    public ClientHelperApi(ITokenManager sessionITokenManagerInterface) {
+    public UseSessionToken(ITokenManager sessionITokenManagerInterface) {
         super();
         mSessionITokenManagerInterface = sessionITokenManagerInterface;
     }

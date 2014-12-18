@@ -1,4 +1,4 @@
-package com.mediafire.sdk.client_helpers;
+package com.mediafire.sdk.api.helpers;
 
 import com.mediafire.sdk.api.responses.user.GetSessionTokenResponse;
 import com.mediafire.sdk.config.IDeveloperCredentials;
@@ -12,12 +12,12 @@ import com.mediafire.sdk.token.SessionToken;
  * Created by Chris on 11/9/2014.
  * BaseClientHelper used with ApiClient to get new session tokens.
  */
-public class ClientHelperNewSessionToken extends BaseClientHelper {
+public class NewSessionToken extends Instructions {
     private IUserCredentials mUserCredentials;
     private IDeveloperCredentials mDeveloperCredentials;
     private ITokenManager mSessionITokenManagerInterface;
 
-    public ClientHelperNewSessionToken(IUserCredentials userCredentials, IDeveloperCredentials developerCredentials, ITokenManager sessionITokenManagerInterface) {
+    public NewSessionToken(IUserCredentials userCredentials, IDeveloperCredentials developerCredentials, ITokenManager sessionITokenManagerInterface) {
         super();
         mUserCredentials = userCredentials;
         mDeveloperCredentials = developerCredentials;

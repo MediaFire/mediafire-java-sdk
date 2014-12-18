@@ -1,60 +1,51 @@
 package com.mediafire.sdk.config_impl;
 
-import com.mediafire.sdk.config.CredentialsInterface;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.mediafire.sdk.config.IUserCredentials;
 
 /**
- * Created by Chris Najar on 10/19/2014.
- * DefaultCredentials is a default implementation of the CredentialsInterface
- * A custom implementation is recommended
+ *
  */
-public class UserCredentialsImpl implements CredentialsInterface {
-    private static final String TAG = UserCredentialsImpl.class.getCanonicalName();
-    private Map<String, String> mCredentials = new LinkedHashMap<String, String>();
+public class UserCredentialsImpl implements IUserCredentials {
+    private String mCredentialsString;
+    private Credentials mCredentialsObject;
 
-    /**
-     * DefaultCredentials Constructor
-     */
-    public UserCredentialsImpl() {}
-
-    /**
-     * Sets the passed credentials
-     * @param credentials the credentials to be set (override current credentials)
-     */
     @Override
-    public void setCredentials(Map<String, String> credentials) {
-        mCredentials = credentials;
+    public void setCredentials(Email email) {
+        mCredentialsString = email.getCredentialsString();
+        mCredentialsObject = email;
     }
 
-    /**
-     * Gets the stored credentials
-     * @return a Map<String, String> containing the stored credentials
-     */
     @Override
-    public Map<String, String> getCredentials() {
-        return mCredentials;
+    public void setCredentials(Ekey ekey) {
+        mCredentialsString = ekey.getCredentialsString();
+        mCredentialsObject = ekey;
     }
 
-    /**
-     * Clears the stored credentials
-     */
+    @Override
+    public void setCredentials(Facebook facebook) {
+        mCredentialsString = facebook.getCredentialsString();
+        mCredentialsObject = facebook;
+    }
+
+    @Override
+    public void setCredentials(Twitter twitter) {
+        mCredentialsString = twitter.getCredentialsString();
+        mCredentialsObject = twitter;
+    }
+
+    @Override
+    public String getCredentialsString() {
+        return mCredentialsString;
+    }
+
+    @Override
+    public Credentials getCredentials() {
+        return mCredentialsObject;
+    }
+
+
     @Override
     public void clearCredentials() {
-        mCredentials.clear();
-    }
 
-    /**
-     * Concatenates the stored credentials (only the value, not the key)
-     * @return a new String of the concatenated credentials
-     */
-    @Override
-    public String getConcatenatedCredentials() {
-        String str = "";
-        for (String key : mCredentials.keySet()) {
-            str += mCredentials.get(key);
-        }
-        return str;
     }
 }

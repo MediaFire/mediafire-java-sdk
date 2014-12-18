@@ -5,12 +5,12 @@ package com.mediafire.sdk.config;
  */
 public class Configuration {
     private final IHttp mHttpWorker;
-    private final CredentialsInterface mUserCredentials;
+    private final IUserCredentials mUserCredentials;
     private final IDeveloperCredentials mDeveloperCredentials;
     private final ITokenManager mITokenManager;
 
     private Configuration(IDeveloperCredentials devCred,
-                          CredentialsInterface userCred,
+                          IUserCredentials userCred,
                           IHttp httpInterface,
                           ITokenManager tokenManager) {
         mDeveloperCredentials = devCred;
@@ -31,7 +31,7 @@ public class Configuration {
      * Gets the user credentials associated with this class
      * @return CredentialsInterface
      */
-    public CredentialsInterface getUserCredentials() {
+    public IUserCredentials getUserCredentials() {
         return mUserCredentials;
     }
 

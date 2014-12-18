@@ -3,7 +3,8 @@ package com.mediafire.sdk.api.clients.user;
 import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperNewSessionToken;
-import com.mediafire.sdk.config.CredentialsInterface;
+import com.mediafire.sdk.config.IDeveloperCredentials;
+import com.mediafire.sdk.config.IUserCredentials;
 import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Request;
@@ -19,7 +20,7 @@ public class SessionTokenClient {
     private final IHttp mHttpWorker;
     private final ApiClient apiClient;
 
-    public SessionTokenClient(IHttp httpInterface, CredentialsInterface userCredentials, CredentialsInterface developerCredentials, ITokenManager ITokenManager) {
+    public SessionTokenClient(IHttp httpInterface, IUserCredentials userCredentials, IDeveloperCredentials developerCredentials, ITokenManager ITokenManager) {
         mHttpWorker = httpInterface;
         mApiRequestGenerator = new ApiRequestGenerator();
 

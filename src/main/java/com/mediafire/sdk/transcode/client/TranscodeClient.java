@@ -55,22 +55,21 @@ public class TranscodeClient extends BaseClient {
     }
 
     private Request createRequestObjectFromPath(String streamingUrl, String container, MediaSize mediaSize, Exists exists) {
-//        if (mediaSize == null) {
-//            mediaSize = MediaSize.DEFAULT;
-//        }
-//
-//        if (exists == null) {
-//            exists = Exists.CHECK;
-//        }
-//
-//        Request request = new Request(streamingUrl);
-//        request.addQueryParameter(PARAM_CONTAINER, container);
-//        request.addQueryParameter(PARAM_MEDIA_SIZE, mediaSize.getValue());
-//        request.addQueryParameter(PARAM_EXISTS, exists.getValue());
-//        request.addQueryParameter("response_format", "json");
-//
-//        request.addHeader(HEADER_PARAM_ACCEPT_CHARSET, CHARSET);
-//        return request;
-        return null;
+        if (mediaSize == null) {
+            mediaSize = MediaSize.DEFAULT;
+        }
+
+        if (exists == null) {
+            exists = Exists.CHECK;
+        }
+
+        Request request = new Request(streamingUrl);
+        request.addQueryParameter(PARAM_CONTAINER, container);
+        request.addQueryParameter(PARAM_MEDIA_SIZE, mediaSize.getValue());
+        request.addQueryParameter(PARAM_EXISTS, exists.getValue());
+        request.addQueryParameter("response_format", "json");
+
+        request.addHeader(HEADER_PARAM_ACCEPT_CHARSET, CHARSET);
+        return request;
     }
 }

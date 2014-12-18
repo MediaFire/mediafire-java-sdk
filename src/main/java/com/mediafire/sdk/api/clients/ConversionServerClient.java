@@ -1,6 +1,5 @@
-package com.mediafire.sdk.conversion.clients;
+package com.mediafire.sdk.api.clients;
 
-import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.api.helpers.UseActionToken;
 import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.config.ITokenManager;

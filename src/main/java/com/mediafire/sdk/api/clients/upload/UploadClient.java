@@ -5,7 +5,7 @@ import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperActionToken;
 import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 
@@ -34,14 +34,14 @@ public class UploadClient {
     private final ApiClient apiUploadActionTokenClient;
     private final ApiClient apiNoTokenClient;
 
-    public UploadClient(HttpWorkerInterface httpWorkerInterface, ActionTokenManagerInterface actionTokenManagerInterface) {
+    public UploadClient(HttpInterface httpInterface, ActionTokenManagerInterface actionTokenManagerInterface) {
         mApiRequestGenerator = new ApiRequestGenerator();
 
         ClientHelperActionToken clientHelperUploadActionToken = new ClientHelperActionToken("upload", actionTokenManagerInterface);
-        apiUploadActionTokenClient = new ApiClient(clientHelperUploadActionToken, httpWorkerInterface);
+        apiUploadActionTokenClient = new ApiClient(clientHelperUploadActionToken, httpInterface);
 
         ClientHelperNoToken clientHelper = new ClientHelperNoToken();
-        apiNoTokenClient = new ApiClient(clientHelper, httpWorkerInterface);
+        apiNoTokenClient = new ApiClient(clientHelper, httpInterface);
     }
 
     public Result check(CheckParameters checkParameters) {

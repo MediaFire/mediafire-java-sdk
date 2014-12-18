@@ -3,7 +3,7 @@ package com.mediafire.sdk.api.clients.device;
 import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperApi;
 import com.mediafire.sdk.api.ApiRequestGenerator;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
@@ -19,11 +19,11 @@ public class DeviceClient {
     private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
 
-    public DeviceClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
+    public DeviceClient(HttpInterface httpInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
         mApiRequestGenerator = new ApiRequestGenerator();
 
         ClientHelperApi clientHelper = new ClientHelperApi(sessionTokenManagerInterface);
-        apiClient = new ApiClient(clientHelper, httpWorkerInterface);
+        apiClient = new ApiClient(clientHelper, httpInterface);
     }
 
     public Result getChanges(String revision) {

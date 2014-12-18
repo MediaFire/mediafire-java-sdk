@@ -4,7 +4,7 @@ import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.client_helpers.ClientHelperNewActionToken;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
@@ -21,14 +21,14 @@ public class ActionTokenClient {
     private final ApiClient imageActionTokenClient;
     private final ApiClient uploadActionTokenClient;
 
-    public ActionTokenClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface, ActionTokenManagerInterface actionTokenManagerInterface) {
+    public ActionTokenClient(HttpInterface httpInterface, SessionTokenManagerInterface sessionTokenManagerInterface, ActionTokenManagerInterface actionTokenManagerInterface) {
         mApiRequestGenerator = new ApiRequestGenerator();
 
         ClientHelperNewActionToken imageActionTokenClientHelper = new ClientHelperNewActionToken("image", actionTokenManagerInterface, sessionTokenManagerInterface);
-        imageActionTokenClient = new ApiClient(imageActionTokenClientHelper, httpWorkerInterface);
+        imageActionTokenClient = new ApiClient(imageActionTokenClientHelper, httpInterface);
 
         ClientHelperNewActionToken uploadActionTokenClientHelper = new ClientHelperNewActionToken("upload", actionTokenManagerInterface, sessionTokenManagerInterface);
-        uploadActionTokenClient = new ApiClient(uploadActionTokenClientHelper, httpWorkerInterface);
+        uploadActionTokenClient = new ApiClient(uploadActionTokenClientHelper, httpInterface);
     }
 
     public Result getImageActionToken(int lifespanMinutes) {

@@ -6,7 +6,7 @@ import com.mediafire.sdk.config_impl.*;
  * Configuration contains a set of interface objects used to handle api requests
  */
 public class Configuration {
-    private final HttpWorkerInterface mHttpWorker;
+    private final HttpInterface mHttpWorker;
     private final CredentialsInterface mUserCredentials;
     private final CredentialsInterface mDeveloperCredentials;
     private final SessionTokenManagerInterface mSessionTokenManager;
@@ -25,7 +25,7 @@ public class Configuration {
      * Gets the HttpWorker associated with this class
      * @return HttpWorkerInterface
      */
-    public HttpWorkerInterface getHttpWorker() {
+    public HttpInterface getHttpWorker() {
         if (!initialized) {
             throw new IllegalStateException("Configuration.init() must be called to finish configuration");
         }
@@ -80,13 +80,13 @@ public class Configuration {
      * Builder is a class used to build a Configuration object (see the builder pattern)
      */
     public static class Builder {
-        private static final HttpWorkerInterface DEFAULT_HTTP_WORKER = new DefaultHttpWorker();
+        private static final HttpInterface DEFAULT_HTTP_WORKER = new DefaultHttp();
         private static final CredentialsInterface DEFAULT_USER_CREDENTIALS = new DefaultCredentials();
         private static final CredentialsInterface DEFAULT_DEVELOPER_CREDENTIALS = new DefaultCredentials();
         private static final SessionTokenManagerInterface DEFAULT_SESSION_TOKEN_MANAGER = new DefaultSessionTokenManager(DEFAULT_HTTP_WORKER, DEFAULT_USER_CREDENTIALS, DEFAULT_DEVELOPER_CREDENTIALS);
         private static final ActionTokenManagerInterface DEFAULT_ACTION_TOKEN_MANAGER = new DefaultActionTokenManager(DEFAULT_HTTP_WORKER, DEFAULT_SESSION_TOKEN_MANAGER);
 
-        private HttpWorkerInterface mHttpWorker = DEFAULT_HTTP_WORKER;
+        private HttpInterface mHttpWorker = DEFAULT_HTTP_WORKER;
         private CredentialsInterface mUserCredentials = DEFAULT_USER_CREDENTIALS;
         private CredentialsInterface mDeveloperCredentials = DEFAULT_DEVELOPER_CREDENTIALS;
         private SessionTokenManagerInterface mSessionTokenManager = DEFAULT_SESSION_TOKEN_MANAGER;
@@ -102,7 +102,7 @@ public class Configuration {
          * @param httpWorker HttpWorkerInterface to be added
          * @return the updated Builder object
          */
-        public Builder httpWorker(HttpWorkerInterface httpWorker) {
+        public Builder httpWorker(HttpInterface httpWorker) {
             if (httpWorker == null) {
                 return this;
             }

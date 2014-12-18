@@ -4,7 +4,7 @@ import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.client_helpers.ClientHelperNewSessionToken;
 import com.mediafire.sdk.config.CredentialsInterface;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
@@ -16,11 +16,11 @@ public class SessionTokenClient {
     private static final String PARAM_TOKEN_VERSION = "token_version";
 
     private final ApiRequestGenerator mApiRequestGenerator;
-    private final HttpWorkerInterface mHttpWorker;
+    private final HttpInterface mHttpWorker;
     private final ApiClient apiClient;
 
-    public SessionTokenClient(HttpWorkerInterface httpWorkerInterface, CredentialsInterface userCredentials, CredentialsInterface developerCredentials, SessionTokenManagerInterface sessionTokenManager) {
-        mHttpWorker = httpWorkerInterface;
+    public SessionTokenClient(HttpInterface httpInterface, CredentialsInterface userCredentials, CredentialsInterface developerCredentials, SessionTokenManagerInterface sessionTokenManager) {
+        mHttpWorker = httpInterface;
         mApiRequestGenerator = new ApiRequestGenerator();
 
         ClientHelperNewSessionToken clientHelper = new ClientHelperNewSessionToken(userCredentials, developerCredentials, sessionTokenManager);

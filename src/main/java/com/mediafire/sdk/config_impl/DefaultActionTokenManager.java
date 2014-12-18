@@ -4,7 +4,7 @@ import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperNewActionToken;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
@@ -28,14 +28,14 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
     private static final Object mUploadActionTokenLock = new Object();
 
     private SessionTokenManagerInterface mSessionTokenManagerInterface;
-    private HttpWorkerInterface mHttpWorkerInterface;
+    private HttpInterface mHttpInterface;
 
     /**
      * DefaultActionTokenManager Constructor
      */
-    public DefaultActionTokenManager(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
+    public DefaultActionTokenManager(HttpInterface httpInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
         mSessionTokenManagerInterface = sessionTokenManagerInterface;
-        mHttpWorkerInterface = httpWorkerInterface;
+        mHttpInterface = httpInterface;
     }
 
     /**
@@ -99,7 +99,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
             request.addQueryParameter("response_format", "json");
 
             ClientHelperNewActionToken clientHelperNewActionToken = new ClientHelperNewActionToken("image", DefaultActionTokenManager.this, mSessionTokenManagerInterface);
-            ApiClient apiClient = new ApiClient(clientHelperNewActionToken, mHttpWorkerInterface);
+            ApiClient apiClient = new ApiClient(clientHelperNewActionToken, mHttpInterface);
             Result result = apiClient.doRequest(request);
             
             Response response = result.getResponse();
@@ -145,7 +145,7 @@ public class DefaultActionTokenManager implements ActionTokenManagerInterface {
             request.addQueryParameter("response_format", "json");
             
             ClientHelperNewActionToken clientHelperNewActionToken = new ClientHelperNewActionToken("upload", DefaultActionTokenManager.this, mSessionTokenManagerInterface);
-            ApiClient apiClient = new ApiClient(clientHelperNewActionToken, mHttpWorkerInterface);
+            ApiClient apiClient = new ApiClient(clientHelperNewActionToken, mHttpInterface);
             Result result = apiClient.doRequest(request);
 
             Response response = result.getResponse();

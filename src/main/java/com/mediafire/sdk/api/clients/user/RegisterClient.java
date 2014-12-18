@@ -3,7 +3,7 @@ package com.mediafire.sdk.api.clients.user;
 import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.client_helpers.ClientHelperNoToken;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 
@@ -19,12 +19,12 @@ public class RegisterClient {
     private static final String PARAM_LAST_NAME = "last_name";
     private static final String PARAM_DISPLAY_NAME = "display_name";
 
-    private final HttpWorkerInterface mHttpWorker;
+    private final HttpInterface mHttpWorker;
     private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
 
-    public RegisterClient(HttpWorkerInterface httpWorkerInterface) {
-        mHttpWorker = httpWorkerInterface;
+    public RegisterClient(HttpInterface httpInterface) {
+        mHttpWorker = httpInterface;
         mApiRequestGenerator = new ApiRequestGenerator();
 
         ClientHelperNoToken clientHelper = new ClientHelperNoToken();

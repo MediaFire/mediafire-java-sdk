@@ -3,7 +3,7 @@ package com.mediafire.sdk.conversion.clients;
 import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperActionToken;
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 
@@ -24,9 +24,9 @@ public class ConversionServerClient {
 
     private final ApiClient imageClient;
 
-    public ConversionServerClient(HttpWorkerInterface httpWorkerInterface, ActionTokenManagerInterface actionTokenManagerInterface) {
+    public ConversionServerClient(HttpInterface httpInterface, ActionTokenManagerInterface actionTokenManagerInterface) {
         ClientHelperActionToken clientHelperUploadActionToken = new ClientHelperActionToken("image", actionTokenManagerInterface);
-        imageClient = new ApiClient(clientHelperUploadActionToken, httpWorkerInterface);
+        imageClient = new ApiClient(clientHelperUploadActionToken, httpInterface);
     }
 
     public Result imageConversion(ImageParams params) {

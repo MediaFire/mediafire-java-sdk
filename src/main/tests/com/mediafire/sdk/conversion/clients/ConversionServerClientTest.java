@@ -1,15 +1,15 @@
 package com.mediafire.sdk.conversion.clients;
 
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.http.Result;
 import com.mediafire.sdk.test_utility.DummyActionTokenManager;
-import com.mediafire.sdk.test_utility.DummyHttpWorker;
+import com.mediafire.sdk.test_utility.DummyHttp;
 import junit.framework.TestCase;
 
 public class ConversionServerClientTest extends TestCase {
 
-    private HttpWorkerInterface mHttpWorker = new DummyHttpWorker();
+    private HttpInterface mHttpWorker = new DummyHttp();
     private ActionTokenManagerInterface mActionTokenManager = new DummyActionTokenManager();
 
     public void testImageConversionNoParamsConstructorFull() throws Exception {
@@ -18,7 +18,7 @@ public class ConversionServerClientTest extends TestCase {
         ConversionServerClient.ImageParams params = new ConversionServerClient.ImageParams("some_quick_key", "some_hash", "0");
         Result result = conversionServerClient.imageConversion(params);
 
-        DummyHttpWorker.DummyGETResponse response = (DummyHttpWorker.DummyGETResponse) result.getResponse();
+        DummyHttp.DummyGETResponse response = (DummyHttp.DummyGETResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/conversion_server.php?some=&quickkey=some_quick_key&doc_type=i&size_id=0&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6";
 
@@ -31,7 +31,7 @@ public class ConversionServerClientTest extends TestCase {
         ConversionServerClient.ImageParams params = new ConversionServerClient.ImageParams("some_quick_key", "some_hash");
         Result result = conversionServerClient.imageConversion(params);
 
-        DummyHttpWorker.DummyGETResponse response = (DummyHttpWorker.DummyGETResponse) result.getResponse();
+        DummyHttp.DummyGETResponse response = (DummyHttp.DummyGETResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/conversion_server.php?some=&quickkey=some_quick_key&doc_type=i&size_id=6&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6";
 
@@ -46,7 +46,7 @@ public class ConversionServerClientTest extends TestCase {
 
         Result result = conversionServerClient.imageConversion(params);
 
-        DummyHttpWorker.DummyGETResponse response = (DummyHttpWorker.DummyGETResponse) result.getResponse();
+        DummyHttp.DummyGETResponse response = (DummyHttp.DummyGETResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/conversion_server.php?some=&quickkey=some_quick_key&doc_type=i&size_id=6&request_conversion_only=1&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6";
 
@@ -59,7 +59,7 @@ public class ConversionServerClientTest extends TestCase {
         ConversionServerClient.DocumentParams params = new ConversionServerClient.DocumentParams("some_quick_key", "some_hash", "some_page");
         Result result = conversionServerClient.documentConversion(params);
 
-        DummyHttpWorker.DummyGETResponse response = (DummyHttpWorker.DummyGETResponse) result.getResponse();
+        DummyHttp.DummyGETResponse response = (DummyHttp.DummyGETResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/conversion_server.php?some=&quickkey=some_quick_key&doc_type=d&page=some_page&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6";
 
@@ -72,7 +72,7 @@ public class ConversionServerClientTest extends TestCase {
         ConversionServerClient.DocumentParams params = new ConversionServerClient.DocumentParams("some_quick_key", "some_hash");
         Result result = conversionServerClient.documentConversion(params);
 
-        DummyHttpWorker.DummyGETResponse response = (DummyHttpWorker.DummyGETResponse) result.getResponse();
+        DummyHttp.DummyGETResponse response = (DummyHttp.DummyGETResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/conversion_server.php?some=&quickkey=some_quick_key&doc_type=d&page=initial&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6";
 
@@ -86,7 +86,7 @@ public class ConversionServerClientTest extends TestCase {
         params.sizeId(2);
         Result result = conversionServerClient.documentConversion(params);
 
-        DummyHttpWorker.DummyGETResponse response = (DummyHttpWorker.DummyGETResponse) result.getResponse();
+        DummyHttp.DummyGETResponse response = (DummyHttp.DummyGETResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/conversion_server.php?some=&quickkey=some_quick_key&doc_type=d&page=some_page&size_id=2&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6";
 
@@ -100,7 +100,7 @@ public class ConversionServerClientTest extends TestCase {
         params.sizeId(9);
         Result result = conversionServerClient.documentConversion(params);
 
-        DummyHttpWorker.DummyGETResponse response = (DummyHttpWorker.DummyGETResponse) result.getResponse();
+        DummyHttp.DummyGETResponse response = (DummyHttp.DummyGETResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/conversion_server.php?some=&quickkey=some_quick_key&doc_type=d&page=some_page&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6";
 
@@ -114,7 +114,7 @@ public class ConversionServerClientTest extends TestCase {
         params.output(ConversionServerClient.DocumentParams.Output.IMAGE);
         Result result = conversionServerClient.documentConversion(params);
 
-        DummyHttpWorker.DummyGETResponse response = (DummyHttpWorker.DummyGETResponse) result.getResponse();
+        DummyHttp.DummyGETResponse response = (DummyHttp.DummyGETResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/conversion_server.php?some=&quickkey=some_quick_key&doc_type=d&page=some_page&output=img&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6";
 
@@ -128,7 +128,7 @@ public class ConversionServerClientTest extends TestCase {
         params.output(null);
         Result result = conversionServerClient.documentConversion(params);
 
-        DummyHttpWorker.DummyGETResponse response = (DummyHttpWorker.DummyGETResponse) result.getResponse();
+        DummyHttp.DummyGETResponse response = (DummyHttp.DummyGETResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/conversion_server.php?some=&quickkey=some_quick_key&doc_type=d&page=some_page&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6";
 

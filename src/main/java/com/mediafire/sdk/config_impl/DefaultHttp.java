@@ -1,6 +1,6 @@
 package com.mediafire.sdk.config_impl;
 
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.ResponseApiClientError;
 
@@ -19,8 +19,8 @@ import java.util.Map;
  * DefaultHttpWorker is a default implementation of the HttpWorkerInterface
  * A custom implementation is recommended
  */
-public class DefaultHttpWorker implements HttpWorkerInterface {
-    private static final String TAG = DefaultHttpWorker.class.getCanonicalName();
+public class DefaultHttp implements HttpInterface {
+    private static final String TAG = DefaultHttp.class.getCanonicalName();
     private static final int CONNECTION_TIMEOUT_MILLISECONDS = 5000;
     private static final int READ_TIMEOUT_MILLISECONDS = 45000;
 

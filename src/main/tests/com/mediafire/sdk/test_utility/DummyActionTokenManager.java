@@ -1,7 +1,6 @@
 package com.mediafire.sdk.test_utility;
 
 import com.mediafire.sdk.config.ActionTokenManagerInterface;
-import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.token.ImageActionToken;
 import com.mediafire.sdk.token.UploadActionToken;
 
@@ -42,16 +41,6 @@ public class DummyActionTokenManager implements ActionTokenManagerInterface {
     public void tokensFailed() {
         imageActionToken = null;
         uploadActionToken = null;
-    }
-
-    @Override
-    public void initialize(Configuration configuration) {
-
-    }
-
-    @Override
-    public void shutdown() {
-
     }
 
     private ImageActionToken createImageActionToken() {

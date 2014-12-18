@@ -3,7 +3,7 @@ package com.mediafire.sdk.api.clients;
 import com.mediafire.sdk.client_core.BaseClient;
 import com.mediafire.sdk.client_core.HeadersHelper;
 import com.mediafire.sdk.client_helpers.BaseClientHelper;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
@@ -11,7 +11,7 @@ import com.mediafire.sdk.http.Result;
 public class ApiClient extends BaseClient {
     private BaseClientHelper mBaseClientHelper;
 
-    public ApiClient(BaseClientHelper baseClientHelper, HttpWorkerInterface httpWorker) {
+    public ApiClient(BaseClientHelper baseClientHelper, HttpInterface httpWorker) {
         super(httpWorker);
         mBaseClientHelper = baseClientHelper;
     }

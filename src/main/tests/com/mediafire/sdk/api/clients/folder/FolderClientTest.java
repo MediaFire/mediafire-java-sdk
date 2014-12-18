@@ -1,22 +1,22 @@
 package com.mediafire.sdk.api.clients.folder;
 
-import com.mediafire.sdk.test_utility.DummyHttpWorker;
+import com.mediafire.sdk.config.HttpInterface;
+import com.mediafire.sdk.test_utility.DummyHttp;
 import com.mediafire.sdk.test_utility.DummySessionTokenManager;
-import com.mediafire.sdk.config.HttpWorkerInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Result;
 import junit.framework.TestCase;
 
 public class FolderClientTest extends TestCase {
 
-    HttpWorkerInterface httpWorker = new DummyHttpWorker();
+    HttpInterface httpWorker = new DummyHttp();
     SessionTokenManagerInterface sessionManager = new DummySessionTokenManager();
     FolderClient folderClient = new FolderClient(httpWorker, sessionManager);
 
     public void testCopySingleParamUrl() throws Exception {
         Result result = folderClient.copy("some_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/copy.php";
 
@@ -26,7 +26,7 @@ public class FolderClientTest extends TestCase {
     public void testCopyMultiParamUrl() throws Exception {
         Result result = folderClient.copy("some_folder_key", "some_destination_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/copy.php";
 
@@ -36,7 +36,7 @@ public class FolderClientTest extends TestCase {
     public void testCopySingleParamPayload() throws Exception {
         Result result = folderClient.copy("some_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&folder_key_src=some_folder_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=27b512e24ee70c23a08df6e890b72f8f";
 
@@ -46,7 +46,7 @@ public class FolderClientTest extends TestCase {
     public void testCopyMultiParamPayload() throws Exception {
         Result result = folderClient.copy("some_folder_key", "some_destination_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&folder_key_src=some_folder_key&folder_key_dst=some_destination_folder_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=a7003181a232af69600baec63590f524";
 
@@ -56,7 +56,7 @@ public class FolderClientTest extends TestCase {
     public void testCreateBaseParamUrl() throws Exception {
         Result result = folderClient.create("some_new_folder_name", "some_parent_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/create.php";
 
@@ -69,7 +69,7 @@ public class FolderClientTest extends TestCase {
         CreateParameters createParameters = builder.build();
         Result result = folderClient.create("some_new_folder_name", createParameters);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/create.php";
 
@@ -79,7 +79,7 @@ public class FolderClientTest extends TestCase {
     public void testCreateBaseParamPayload() throws Exception {
         Result result = folderClient.create("some_new_folder_name", "some_parent_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&foldername=some_new_folder_name&parent_key=some_parent_folder_key&allow_duplicate_name=yes&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=d2f0fe1c283917b747eb06269a4feddd";
 
@@ -92,7 +92,7 @@ public class FolderClientTest extends TestCase {
         CreateParameters createParameters = builder.build();
         Result result = folderClient.create("some_new_folder_name", createParameters);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&foldername=some_new_folder_name&parent_key=some_parent_folder_key&allow_duplicate_name=yes&mtime=some_mtime&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=6a0679aea55d795663f32f0b0816f7c0";
 
@@ -102,7 +102,7 @@ public class FolderClientTest extends TestCase {
     public void testMoveSingleParamUrl() throws Exception {
         Result result = folderClient.move("some_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/move.php";
 
@@ -112,7 +112,7 @@ public class FolderClientTest extends TestCase {
     public void testMoveMultiParamUrl() throws Exception {
         Result result = folderClient.move("some_folder_key", "some_destination_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/move.php";
 
@@ -122,7 +122,7 @@ public class FolderClientTest extends TestCase {
     public void testMoveSingleParamPayload() throws Exception {
         Result result = folderClient.move("some_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&folder_key_src=some_folder_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=9eefd14b8ae14cd40b6d9971833b0dde";
 
@@ -132,7 +132,7 @@ public class FolderClientTest extends TestCase {
     public void testMoveMultiParamPayload() throws Exception {
         Result result = folderClient.move("some_folder_key", "some_destination_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&folder_key_src=some_folder_key&folder_key_dst=some_destination_folder_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=a0bb69bb10f8a712c3954a0386e03479";
 
@@ -142,7 +142,7 @@ public class FolderClientTest extends TestCase {
     public void testDeleteUrl() throws Exception {
         Result result = folderClient.delete("some_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/delete.php";
 
@@ -152,7 +152,7 @@ public class FolderClientTest extends TestCase {
     public void testDeletePayload() throws Exception {
         Result result = folderClient.delete("some_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&folder_key=some_folder_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=dbb4b3de25ee2f03bc669021f50b7220";
 
@@ -162,7 +162,7 @@ public class FolderClientTest extends TestCase {
     public void testPurgeUrl() throws Exception {
         Result result = folderClient.purge("some_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/purge.php";
 
@@ -172,7 +172,7 @@ public class FolderClientTest extends TestCase {
     public void testPurgePayload() throws Exception {
         Result result = folderClient.purge("some_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&folder_key=some_folder_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=14d5b83c4034bc4dce4d93d58f468db8";
 
@@ -189,7 +189,7 @@ public class FolderClientTest extends TestCase {
         GetInfoParameters params = builder.build();
         Result result = folderClient.getInfo(params);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/get_info.php";
 
@@ -202,7 +202,7 @@ public class FolderClientTest extends TestCase {
         GetInfoParameters params = builder.build();
         Result result = folderClient.getInfo(params);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/get_info.php";
 
@@ -215,7 +215,7 @@ public class FolderClientTest extends TestCase {
         GetInfoParameters params = builder.build();
         Result result = folderClient.getInfo(params);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&folder_key=some_folder_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=fe7b7bea684b18db94b8ed4a75c0a8cc";
 
@@ -228,7 +228,7 @@ public class FolderClientTest extends TestCase {
         GetInfoParameters params = builder.build();
         Result result = folderClient.getInfo(params);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&folder_key=some_folder_key&device_id=some_device_id&details=yes&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=46a0ebe82c837ed33d22362119c4a310";
 
@@ -241,7 +241,7 @@ public class FolderClientTest extends TestCase {
         GetContentParameters params = builder.build();
         Result result = folderClient.getContent(params);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/get_content.php";
 
@@ -254,7 +254,7 @@ public class FolderClientTest extends TestCase {
         GetContentParameters params = builder.build();
         Result result = folderClient.getContent(params);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/get_content.php";
 
@@ -267,7 +267,7 @@ public class FolderClientTest extends TestCase {
         GetContentParameters params = builder.build();
         Result result = folderClient.getContent(params);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&folder_key=some_folder_key&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=e7168d22f3363816e055f3513b032dbd";
 
@@ -280,7 +280,7 @@ public class FolderClientTest extends TestCase {
         GetContentParameters params = builder.build();
         Result result = folderClient.getContent(params);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=4cda84598670fdf21dde9877a86e8d2a";
 
@@ -290,7 +290,7 @@ public class FolderClientTest extends TestCase {
     public void testGetRevisionSingleParamUrl() throws Exception {
         Result result = folderClient.getRevision("some_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/get_revision.php";
 
@@ -300,7 +300,7 @@ public class FolderClientTest extends TestCase {
     public void testGetRevisionMultiParamUrl() throws Exception {
         Result result = folderClient.getRevision("some_folder_key", true);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/get_revision.php";
 
@@ -310,7 +310,7 @@ public class FolderClientTest extends TestCase {
     public void testGetRevisionSingleParamPayload() throws Exception {
         Result result = folderClient.getRevision("some_folder_key");
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&folder_key=some_folder_key&return_changes=no&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=10ed0ac372d9e33ac6765ad9e5f2867d";
 
@@ -320,7 +320,7 @@ public class FolderClientTest extends TestCase {
     public void testGetRevisionMultiParamPayload() throws Exception {
         Result result = folderClient.getRevision("some_folder_key", true);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&folder_key=some_folder_key&return_changes=yes&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=8a9c2f8532e6c7d478fa8962b6eadd66";
 
@@ -332,7 +332,7 @@ public class FolderClientTest extends TestCase {
         SearchParameters searchParameters = builder.build();
         Result result = folderClient.search(searchParameters);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/search.php";
 
@@ -345,7 +345,7 @@ public class FolderClientTest extends TestCase {
         SearchParameters searchParameters = builder.build();
         Result result = folderClient.search(searchParameters);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = response.getOriginalUrl();
         String expected = "https://www.mediafire.com/api/1.2/folder/search.php";
 
@@ -357,7 +357,7 @@ public class FolderClientTest extends TestCase {
         SearchParameters searchParameters = builder.build();
         Result result = folderClient.search(searchParameters);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&search_text=some_search_text&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=d71f175cf66a0d78e5f08e28a8c8ff54";
 
@@ -370,7 +370,7 @@ public class FolderClientTest extends TestCase {
         SearchParameters searchParameters = builder.build();
         Result result = folderClient.search(searchParameters);
 
-        DummyHttpWorker.DummyPOSTResponse response = (DummyHttpWorker.DummyPOSTResponse) result.getResponse();
+        DummyHttp.DummyPOSTResponse response = (DummyHttp.DummyPOSTResponse) result.getResponse();
         String actual = new String(response.getOriginalPayload());
         String expected = "response_format=json&folder_key=some_folder_key&search_all=yes&search_text=some_search_text&session_token=0dc472b926a1fef9878fa95a9332d8299ad4f93f3cad147de8a9bce1c540b729d20d0f7080a9051f308eedc7d11764f1055cdeb7e7115a2d8c9adcc8a2d8d79885a4a0ec91f306f6&signature=9eb3099030b5b5b2df91cc3cfe519a59";
 

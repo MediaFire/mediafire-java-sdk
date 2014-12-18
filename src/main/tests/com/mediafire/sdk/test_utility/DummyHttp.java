@@ -1,6 +1,6 @@
 package com.mediafire.sdk.test_utility;
 
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.http.Response;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by Chris on 11/10/2014.
  */
-public class DummyHttpWorker implements HttpWorkerInterface {
+public class DummyHttp implements HttpInterface {
     @Override
     public Response doGet(String url, Map<String, String> headers) {
         return new DummyGETResponse(200, null, null, url);

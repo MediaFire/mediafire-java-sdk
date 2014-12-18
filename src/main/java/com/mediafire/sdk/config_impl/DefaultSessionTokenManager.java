@@ -5,7 +5,7 @@ import com.mediafire.sdk.client_helpers.ClientHelperNewSessionToken;
 import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.config.CredentialsInterface;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
@@ -33,13 +33,13 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
     private static final Object outstandingRequestsLock = new Object();
     private CredentialsInterface mUserCredentials;
     private CredentialsInterface mDeveloperCredentials;
-    private HttpWorkerInterface mHttpWorkerInterface;
+    private HttpInterface mHttpInterface;
 
     /**
      * DefaultSessionTokenManager Constructor
      */
-    public DefaultSessionTokenManager(HttpWorkerInterface httpWorkerInterface, CredentialsInterface userCredentials, CredentialsInterface developerCredentials){
-        mHttpWorkerInterface = httpWorkerInterface;
+    public DefaultSessionTokenManager(HttpInterface httpInterface, CredentialsInterface userCredentials, CredentialsInterface developerCredentials){
+        mHttpInterface = httpInterface;
         mUserCredentials = userCredentials;
         mDeveloperCredentials = developerCredentials;
     }
@@ -114,7 +114,7 @@ public class DefaultSessionTokenManager implements SessionTokenManagerInterface 
             addOutstandingRequest();
 
             ClientHelperNewSessionToken clientHelperNewSessionToken = new ClientHelperNewSessionToken(mUserCredentials, mDeveloperCredentials, DefaultSessionTokenManager.this);
-            ApiClient apiClient = new ApiClient(clientHelperNewSessionToken, mHttpWorkerInterface);
+            ApiClient apiClient = new ApiClient(clientHelperNewSessionToken, mHttpInterface);
             Result result = apiClient.doRequest(request);
             Response response = result.getResponse();
 

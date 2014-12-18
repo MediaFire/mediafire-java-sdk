@@ -3,7 +3,7 @@ package com.mediafire.sdk.api.clients.user;
 import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.client_helpers.ClientHelperApi;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
@@ -22,11 +22,11 @@ public class UserClient {
     private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
 
-    public UserClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
+    public UserClient(HttpInterface httpInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
         mApiRequestGenerator = new ApiRequestGenerator();
 
         ClientHelperApi clientHelperApi = new ClientHelperApi(sessionTokenManagerInterface);
-        apiClient = new ApiClient(clientHelperApi, httpWorkerInterface);
+        apiClient = new ApiClient(clientHelperApi, httpInterface);
     }
 
     public Result getAvatar() {

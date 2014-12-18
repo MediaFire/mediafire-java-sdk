@@ -3,7 +3,7 @@ package com.mediafire.sdk.api.clients.folder;
 import com.mediafire.sdk.api.clients.ApiClient;
 import com.mediafire.sdk.client_helpers.ClientHelperApi;
 import com.mediafire.sdk.api.ApiRequestGenerator;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.config.SessionTokenManagerInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
@@ -37,11 +37,11 @@ public class FolderClient {
     private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
 
-    public FolderClient(HttpWorkerInterface httpWorkerInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
+    public FolderClient(HttpInterface httpInterface, SessionTokenManagerInterface sessionTokenManagerInterface) {
         mApiRequestGenerator = new ApiRequestGenerator();
 
         ClientHelperApi clientHelper = new ClientHelperApi(sessionTokenManagerInterface);
-        apiClient = new ApiClient(clientHelper, httpWorkerInterface);
+        apiClient = new ApiClient(clientHelper, httpInterface);
     }
 
     public Result copy(String sourceFolderKey, String destinationFolderKey) {

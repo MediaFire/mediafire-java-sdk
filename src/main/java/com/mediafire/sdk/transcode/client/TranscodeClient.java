@@ -1,7 +1,7 @@
 package com.mediafire.sdk.transcode.client;
 
 import com.mediafire.sdk.client_core.BaseClient;
-import com.mediafire.sdk.config.HttpWorkerInterface;
+import com.mediafire.sdk.config.HttpInterface;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
@@ -17,7 +17,7 @@ public class TranscodeClient extends BaseClient {
 
     private final String CHARSET = "UTF-8";
 
-    public TranscodeClient(HttpWorkerInterface httpWorker) {
+    public TranscodeClient(HttpInterface httpWorker) {
         super(httpWorker);
     }
 

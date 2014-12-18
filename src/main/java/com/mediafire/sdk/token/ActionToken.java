@@ -9,11 +9,11 @@ public abstract class ActionToken extends Token {
     /**
      * ActionToken Constructor
      * @param tokenString String for the token
-     * @param expiration long expiration time for the token
+     * @param expirationMillis long expiration time for the token
      */
-    protected ActionToken(String tokenString, long expiration) {
+    protected ActionToken(String tokenString, long expirationMillis) {
         super(tokenString);
-        mExpiration = expiration;
+        mExpiration = expirationMillis;
     }
 
     /**

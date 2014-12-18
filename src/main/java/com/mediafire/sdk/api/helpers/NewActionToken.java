@@ -96,6 +96,11 @@ public class NewActionToken extends UseSessionToken {
             tokenExpiry = 0;
         }
 
+        // lifespan is in minutes, but milliseconds needed by ImageActionToken
+        int multiplier = 60 * 1000;
+
+        tokenExpiry *= multiplier;
+
         if (clazz == ImageActionToken.class) {
             return new ImageActionToken(tokenString, tokenExpiry);
         }

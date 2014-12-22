@@ -108,26 +108,47 @@ public class CheckResponse extends ApiResponse {
         if (resumable_upload == null) {
             return new ResumableUpload();
         }
+
         return resumable_upload;
     }
 
     public boolean doesHashExists() {
+        if (hash_exists == null) {
+            return false;
+        }
+
         return "yes".equals(hash_exists);
     }
 
     public boolean isInAccount() {
+        if (in_account == null) {
+            return false;
+        }
+
         return "yes".equals(in_account);
     }
 
     public boolean isInFolder() {
+        if (in_folder == null) {
+            return false;
+        }
+
         return "yes".equals(in_folder);
     }
 
     public boolean doesFileExist() {
+        if (file_exists == null) {
+            return false;
+        }
+
         return "yes".equals(file_exists);
     }
 
     public boolean isDifferentHash() {
+        if (different_hash == null) {
+            return false;
+        }
+
         return "yes".equals(different_hash);
     }
 

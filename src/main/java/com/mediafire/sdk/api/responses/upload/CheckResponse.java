@@ -96,7 +96,11 @@ public class CheckResponse extends ApiResponse {
         return Long.parseLong(storage_limit);
     }
 
-    public boolean getStorageLimitExceeded() {
+    public boolean isStorageLimitExceeded() {
+        if (storage_limit_exceeded == null) {
+            return false;
+        }
+
         return "yes".equals(storage_limit_exceeded);
     }
 

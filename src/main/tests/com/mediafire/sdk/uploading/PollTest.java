@@ -37,7 +37,21 @@ public class PollTest extends TestCase {
             String payloadString = new String(payload);
             String responseString;
 
-            if (payloadString.equals("response_format=json&key=the_poll_key_return_null")) {
+            if (payloadString.equals("response_format=json&key=the_poll_key_loop_stuck")) {
+                responseString = "{" +
+                        "\"response\": {\"action\": \"upload/poll_upload\"," +
+                        "\"doupload\": {" +
+                        "\"result\": \"0\",\"status\": \"5\",\"description\": \"Waiting for verification\",\"size\": \"1334903\"," +
+                        "\"revision\": \"456222\"}," +
+                        "\"result\": \"Success\"," +
+                        "\"current_api_version\": \"1.0\"" +
+                        "}" +
+                        "}";
+                System.out.println(sRunNumber);
+            } else if (payloadString.equals("response_format=json&key=the_poll_key_response_object_null")) {
+                responseString = "";
+                resetRuns();
+            } else if (payloadString.equals("response_format=json&key=the_poll_key_return_null")) {
                 resetRuns();
                 return null;
             } else if (payloadString.equals("response_format=json&key=the_poll_key_api_error")) {
@@ -170,7 +184,6 @@ public class PollTest extends TestCase {
                     default:
                         responseString = null;
                 }
-                sRunNumber++;
             } else {
                 resetRuns();
                 responseString = "{" +
@@ -184,7 +197,8 @@ public class PollTest extends TestCase {
                         "}";
             }
 
-            return new Response(200, responseString.getBytes(), headerFields);
+            sRunNumber++;
+            return new Response(200, responseString == null ? null : responseString.getBytes(), headerFields);
         }
 
         public void resetRuns() {
@@ -294,5 +308,29 @@ public class PollTest extends TestCase {
         thread.join();
 
         assertEquals(true, sUploadManager.mResultInvalidDuringUpload);
+    }
+
+    @Test
+    public void testRunResponseObjectNull() throws Exception {
+        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "the_poll_key_response_object_null");
+        Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
+
+        Thread thread = new Thread(poll);
+        thread.start();
+        thread.join();
+
+        assertEquals(true, sUploadManager.mResponseObjectNull);
+    }
+
+    @Test
+    public void testRunMaxPollsReached() throws Exception {
+        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "the_poll_key_loop_stuck");
+        Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
+
+        Thread thread = new Thread(poll);
+        thread.start();
+        thread.join();
+
+        assertEquals(true, sUploadManager.mPollMaxAttemptsReached);
     }
 }

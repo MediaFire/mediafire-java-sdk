@@ -112,7 +112,7 @@ public class CheckResponse extends ApiResponse {
         return resumable_upload;
     }
 
-    public boolean doesHashExists() {
+    public boolean doesHashExist() {
         if (hash_exists == null) {
             return false;
         }
@@ -120,7 +120,7 @@ public class CheckResponse extends ApiResponse {
         return "yes".equals(hash_exists);
     }
 
-    public boolean isInAccount() {
+    public boolean doesHashExistInAccount() {
         if (in_account == null) {
             return false;
         }

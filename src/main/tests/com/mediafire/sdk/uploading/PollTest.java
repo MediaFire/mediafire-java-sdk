@@ -47,7 +47,6 @@ public class PollTest extends TestCase {
                         "\"current_api_version\": \"1.0\"" +
                         "}" +
                         "}";
-                System.out.println(sRunNumber);
             } else if (payloadString.equals("response_format=json&key=the_poll_key_response_object_null")) {
                 responseString = "";
                 resetRuns();
@@ -229,7 +228,7 @@ public class PollTest extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         long id = 55555;
-        File file = new File("PollTestSuccess.txt");
+        File file = new File("PollTest.txt");
         file.createNewFile();
 
 
@@ -244,7 +243,7 @@ public class PollTest extends TestCase {
 
     @Override
     public void tearDown() throws Exception {
-        File file = new File("PollTestSuccess.txt");
+        File file = new File("PollTest.txt");
         file.delete();
         mUpload = null;
         sUploadManager.resetTestFields();

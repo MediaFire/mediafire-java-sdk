@@ -13,11 +13,11 @@ public class ResumableResponse extends ApiResponse {
         private String result;
         private String key;
 
-        public ResumableResult getResultCode() {
+        public int getResultCode() {
             if (result == null || result.isEmpty()) {
-                return ResumableResult.fromInt(0);
+                result = "0";
             }
-            return ResumableResult.fromInt(Integer.parseInt(result));
+            return Integer.parseInt(result);
         }
 
         public int getResult() {

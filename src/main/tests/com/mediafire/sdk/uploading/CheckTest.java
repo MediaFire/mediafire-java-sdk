@@ -192,7 +192,6 @@ public class CheckTest extends TestCase {
         thread.start();
         thread.join();
 
-        sUploadManager.printTestFields();
         assertEquals(true, sUploadManager.mStorageLimitExceeded);
     }
 
@@ -235,8 +234,6 @@ public class CheckTest extends TestCase {
         thread.start();
         thread.join();
 
-//        sUploadManager.printTestFields();
-        // TODO - resolve JsonSyntaxException - java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 1 column 183
         assertEquals(true, sUploadManager.mCheckFinished);
     }
 

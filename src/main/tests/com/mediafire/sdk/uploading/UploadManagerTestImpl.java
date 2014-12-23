@@ -155,10 +155,6 @@ public class UploadManagerTestImpl extends UploadManager {
     @Override
     void exceptionDuringUpload(State state, Exception exception, Upload upload) {
         mExceptionDuringUpload = true;
-        System.out.println("EXCEPTION - " + exception);
-        System.out.println("STATE - " + state);
-        System.out.println("Upload ID - " + upload.getId());
-        System.out.println("Upload File - " + upload.getFile());
     }
 
     @Override

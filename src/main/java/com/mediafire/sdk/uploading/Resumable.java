@@ -223,6 +223,10 @@ class Resumable extends UploadRunnable {
         private List<Boolean> decodeBitmap(int count, List<Integer> words) {
             List<Boolean> uploadUnits = new LinkedList<Boolean>();
 
+            if (words == null || words.isEmpty()) {
+                return uploadUnits;
+            }
+
             //loop count times
             for (int i = 0; i < count; i++) {
                 //convert words to binary string

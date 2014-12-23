@@ -5,6 +5,7 @@ import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.Token;
 import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -125,6 +126,7 @@ public class CheckTest extends TestCase {
         sUploadManager.resetTestFields();
     }
 
+    @Test
     public void testRunResultInvalid() throws Exception {
         mId = 1;
         File file = new File("CheckTest.txt");
@@ -139,6 +141,7 @@ public class CheckTest extends TestCase {
         assertEquals(true, sUploadManager.mResultInvalidDuringUpload);
     }
 
+    @Test
     public void testRunApiResponseNull() throws Exception {
         mId = 2;
         File file = new File("CheckTest.txt");
@@ -153,6 +156,7 @@ public class CheckTest extends TestCase {
         assertEquals(true, sUploadManager.mResponseObjectNull);
     }
 
+    @Test
     public void testRunApiError() throws Exception {
         mId = 3;
         File file = new File("CheckTest.txt");
@@ -167,6 +171,7 @@ public class CheckTest extends TestCase {
         assertEquals(true, sUploadManager.mApiError);
     }
 
+    @Test
     public void testRunFileWillExceedStorage() throws Exception {
         mId = 4;
         File file = new File("CheckTest.txt");
@@ -181,6 +186,7 @@ public class CheckTest extends TestCase {
         assertEquals(true, sUploadManager.mFileLargerThanStorageSpaceAvailable);
     }
 
+    @Test
     public void testRunStorageLimitExceeded() throws Exception {
         mId = 5;
         File file = new File("CheckTest.txt");
@@ -195,6 +201,7 @@ public class CheckTest extends TestCase {
         assertEquals(true, sUploadManager.mStorageLimitExceeded);
     }
 
+    @Test
     public void testRunResumableUploadNull() throws Exception {
         mId = 6;
         File file = new File("CheckTest.txt");
@@ -209,6 +216,7 @@ public class CheckTest extends TestCase {
         assertEquals(true, sUploadManager.mCheckFinished);
     }
 
+    @Test
     public void testRunResumableUploadBitmapNull() throws Exception {
         mId = 7;
         File file = new File("CheckTest.txt");
@@ -223,6 +231,7 @@ public class CheckTest extends TestCase {
         assertEquals(true, sUploadManager.mCheckFinished);
     }
 
+    @Test
     public void testRunGood() throws Exception {
         mId = 8;
         File file = new File("CheckTest.txt");

@@ -1,6 +1,7 @@
 package com.mediafire.sdk.uploading;
 
 import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,6 +32,7 @@ public class HasherTest extends TestCase {
         file.delete();
     }
 
+    @Test
     public void testGetSHA256HashFile() throws Exception {
         String actual = Hasher.getSHA256Hash(new File("HasherTest.txt"));
 
@@ -38,6 +40,7 @@ public class HasherTest extends TestCase {
         assertEquals(expected, actual);
     }
 
+    @Test
     public void testGetSHA256HashByteArray() throws Exception {
         String actual = Hasher.getSHA256Hash(TEXT.getBytes());
 

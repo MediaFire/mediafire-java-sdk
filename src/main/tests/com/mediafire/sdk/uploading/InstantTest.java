@@ -9,6 +9,7 @@ import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 import com.mediafire.sdk.token.Token;
 import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -102,6 +103,7 @@ public class InstantTest extends TestCase {
         sUploadManager.resetTestFields();
     }
 
+    @Test
     public void testRunResultInvalid() throws Exception {
         mId = 1;
         File file = new File("InstantTest.txt");
@@ -118,6 +120,7 @@ public class InstantTest extends TestCase {
         assertEquals(true, sUploadManager.mResultInvalidDuringUpload);
     }
 
+    @Test
     public void testRunResponseObjectNull() throws Exception {
         mId = 2;
         File file = new File("InstantTest.txt");
@@ -133,6 +136,8 @@ public class InstantTest extends TestCase {
 
         assertEquals(true, sUploadManager.mResponseObjectNull);
     }
+
+    @Test
     public void testRunApiError() throws Exception {
         mId = 3;
         File file = new File("InstantTest.txt");
@@ -149,6 +154,7 @@ public class InstantTest extends TestCase {
         assertEquals(true, sUploadManager.mApiError);
     }
 
+    @Test
     public void testRunSuccess() throws Exception {
         mId = 4;
         File file = new File("InstantTest.txt");

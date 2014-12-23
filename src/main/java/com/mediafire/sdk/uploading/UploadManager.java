@@ -2,6 +2,7 @@ package com.mediafire.sdk.uploading;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.api.responses.upload.CheckResponse;
+import com.mediafire.sdk.api.responses.upload.ResumableUpload;
 import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Result;
@@ -229,7 +230,7 @@ public class UploadManager {
     }
 
     private void doResumableUpload(Instant.InstantUpload upload, CheckResponse checkResponse) {
-        CheckResponse.ResumableUpload resumableUploadObj = checkResponse.getResumableUpload();
+        ResumableUpload resumableUploadObj = checkResponse.getResumableUpload();
         int numUnits = resumableUploadObj.getNumberOfUnits();
         int unitSize = resumableUploadObj.getUnitSize();
         int count = resumableUploadObj.getBitmap().getCount();

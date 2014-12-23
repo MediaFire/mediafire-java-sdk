@@ -311,7 +311,6 @@ public class ResumableTest extends TestCase {
         thread.start();
         thread.join();
 
-        sUploadManager.printTestFields();
         assertEquals(true, sUploadManager.mResumableFinished);
     }
 

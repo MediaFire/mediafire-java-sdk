@@ -83,16 +83,18 @@ public class CheckResponse extends ApiResponse {
     }
 
     public long getUsedStorageSize() {
-        if ("".equals(used_storage_size)) {
-            return 0;
+        if (used_storage_size == null || used_storage_size.isEmpty()) {
+            used_storage_size = "0";
         }
+
         return Long.parseLong(used_storage_size);
     }
 
     public long getStorageLimit() {
-        if ("".equals(storage_limit)) {
-            return 0;
+        if (storage_limit == null || storage_limit.isEmpty()) {
+            storage_limit = "0";
         }
+
         return Long.parseLong(storage_limit);
     }
 

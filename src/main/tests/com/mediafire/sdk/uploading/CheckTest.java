@@ -1,19 +1,240 @@
 package com.mediafire.sdk.uploading;
 
+import com.mediafire.sdk.config.IHttp;
+import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.http.Response;
+import com.mediafire.sdk.token.Token;
 import junit.framework.TestCase;
 
-public class CheckTest extends TestCase {
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+public class CheckTest extends TestCase {
+    private static final String TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nisi nisl, pretium in rhoncus id, mattis ac ligula. Curabitur leo nisi, molestie sed ullamcorper vitae, mattis at lectus. Cras efficitur libero sed risus laoreet pellentesque. Nam suscipit quam ex, interdum imperdiet justo pharetra a. Vivamus laoreet ex massa, iaculis placerat est efficitur quis. Nullam nec nulla vitae lorem suscipit vehicula. In tincidunt vitae lacus a finibus. In a tempor magna, vel ultrices massa.";
+
+    private static final long RESULT_INVALID = 1;
+    private static final long API_RESPONSE_NULL = 2;
+    private static final long API_ERROR = 3;
+    private static final long FILE_WILL_EXCEED_STORAGE = 4;
+    private static final long STORAGE_LIMIT_EXCEEDED = 5;
+    private static final long RESUMABLE_UPLOAD_NULL = 6;
+    private static final long RESUMABLE_BITMAP_NULL = 7;
+    private static final long RESUMABLE_GOOD = 8;
+
+
+    private Upload mUpload;
+    private static int mId;
+
+    private static IHttp sHttp = new IHttp() {
+
+        @Override
+        public Response doGet(String url, Map<String, Object> headers) {
+            return null;
+        }
+
+        @Override
+        public Response doPost(String url, Map<String, Object> headers, byte[] payload) {
+            Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
+            List<String> contentTypeList = new ArrayList<String>();
+            contentTypeList.add("application/json");
+            headerFields.put("Content-Type", contentTypeList);
+
+            String responseString;
+
+            if (mId == RESULT_INVALID) {
+                return new Response(0, null, null);
+            } else if (mId == API_RESPONSE_NULL) {
+                responseString = "";
+            } else if (mId == API_ERROR) {
+                responseString = "{\"response\":{\"action\":\"upload\\/check\"," +
+                        "\"message\":\"The supplied Session Token is expired or invalid\"," +
+                        "\"error\":126,\"result\":\"Error\",\"current_api_version\":\"1.2\"}}";
+            } else if (mId == FILE_WILL_EXCEED_STORAGE) {
+                responseString = "{\"response\":{\"action\":\"upload/check\",\"hash_exists\":\"no\"," +
+                        "\"file_exists\":\"no\",\"available_space\":\"0\",\"used_storage_size\":\"53687091199\"," +
+                        "\"storage_limit\":\"53687091200\",\"storage_limit_exceeded\":\"no\"," +
+                        "\"result\":\"Success\",\"current_api_version\":\"1.0\"}}";
+            } else if (mId == STORAGE_LIMIT_EXCEEDED) {
+                responseString = "{\"response\":{\"action\":\"upload/check\",\"hash_exists\":\"no\"," +
+                        "\"file_exists\":\"no\",\"available_space\":\"0\"," +
+                        "\"used_storage_size\":\"54882441579\",\"storage_limit\":\"53687091200\"," +
+                        "\"storage_limit_exceeded\":\"yes\",\"result\":\"Success\",\"current_api_version\":\"1.0\"}}";
+            } else if (mId == RESUMABLE_UPLOAD_NULL) {
+                responseString = "{\"response\":{\"action\":\"upload/check\"," +
+                        "\"hash_exists\":\"no\",\"file_exists\":\"no\"," +
+                        "\"result\":\"Success\",\"current_api_version\":\"1.0\"}}";
+            } else if (mId == RESUMABLE_BITMAP_NULL) {
+                responseString = "{\"response\":{\"action\":\"upload/check\",\"hash_exists\":\"no\"," +
+                        "\"file_exists\":\"no\",\"resumable_upload\":{\"all_units_ready\":\"no\"," +
+                        "\"number_of_units\":\"28\",\"unit_size\":\"2097152\"}," +
+                        "\"result\":\"Success\",\"current_api_version\":\"1.0\"}}";
+            } else {
+                responseString = "{\"response\":{\"action\":\"upload/check\",\"hash_exists\":\"no\"," +
+                        "\"file_exists\":\"no\",\"resumable_upload\":{\"all_units_ready\":\"no\"," +
+                        "\"number_of_units\":\"28\",\"unit_size\":\"2097152\",\"bitmap\":" +
+                        "{\"count\":\"2\",\"words\":{\"word\":[\"1258\",\"495\"]}}}," +
+                        "\"result\":\"Success\",\"current_api_version\":\"1.0\"}}";
+            }
+
+            return new Response(200, responseString.getBytes(), headerFields);
+        }
+    };
+
+    private static ITokenManager sTokenManager = new ITokenManager() {
+        @Override
+        public <T extends Token> T take(Class<T> token) {
+            return null;
+        }
+
+        @Override
+        public <T extends Token> void give(T token) {
+
+        }
+
+        @Override
+        public void tokensBad() {
+
+        }
+    };
+
+    private static UploadManagerTestImpl sUploadManager = new UploadManagerTestImpl(1, sHttp, sTokenManager);
+
+    @Override
     public void setUp() throws Exception {
         super.setUp();
+        File file = new File("CheckTest.txt");
+        file.createNewFile();
 
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        fileOutputStream.write(TEXT.getBytes());
+        fileOutputStream.close();
     }
 
+    @Override
     public void tearDown() throws Exception {
-
+        File file = new File("CheckTest.txt");
+        file.delete();
+        mUpload = null;
+        sUploadManager.resetTestFields();
     }
 
-    public void testRun() throws Exception {
+    public void testRunResultInvalid() throws Exception {
+        mId = 1;
+        File file = new File("CheckTest.txt");
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
 
+        Thread thread = new Thread(check);
+        thread.start();
+        thread.join();
+
+        assertEquals(true, sUploadManager.mResultInvalidDuringUpload);
     }
+
+    public void testRunApiResponseNull() throws Exception {
+        mId = 2;
+        File file = new File("CheckTest.txt");
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
+
+        Thread thread = new Thread(check);
+        thread.start();
+        thread.join();
+
+        assertEquals(true, sUploadManager.mResponseObjectNull);
+    }
+
+    public void testRunApiError() throws Exception {
+        mId = 3;
+        File file = new File("CheckTest.txt");
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
+
+        Thread thread = new Thread(check);
+        thread.start();
+        thread.join();
+
+        assertEquals(true, sUploadManager.mApiError);
+    }
+
+    public void testRunFileWillExceedStorage() throws Exception {
+        mId = 4;
+        File file = new File("CheckTest.txt");
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
+
+        Thread thread = new Thread(check);
+        thread.start();
+        thread.join();
+
+        assertEquals(true, sUploadManager.mFileLargerThanStorageSpaceAvailable);
+    }
+
+    public void testRunStorageLimitExceeded() throws Exception {
+        mId = 5;
+        File file = new File("CheckTest.txt");
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
+
+        Thread thread = new Thread(check);
+        thread.start();
+        thread.join();
+
+        sUploadManager.printTestFields();
+        assertEquals(true, sUploadManager.mStorageLimitExceeded);
+    }
+
+    public void testRunResumableUploadNull() throws Exception {
+        mId = 6;
+        File file = new File("CheckTest.txt");
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
+
+        Thread thread = new Thread(check);
+        thread.start();
+        thread.join();
+
+        assertEquals(true, sUploadManager.mCheckFinished);
+    }
+
+    public void testRunResumableUploadBitmapNull() throws Exception {
+        mId = 7;
+        File file = new File("CheckTest.txt");
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
+
+        Thread thread = new Thread(check);
+        thread.start();
+        thread.join();
+
+        assertEquals(true, sUploadManager.mCheckFinished);
+    }
+
+    public void testRunGood() throws Exception {
+        mId = 8;
+        File file = new File("CheckTest.txt");
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
+
+        Thread thread = new Thread(check);
+        thread.start();
+        thread.join();
+
+//        sUploadManager.printTestFields();
+        // TODO - resolve JsonSyntaxException - java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT at line 1 column 183
+        assertEquals(true, sUploadManager.mCheckFinished);
+    }
+
 }

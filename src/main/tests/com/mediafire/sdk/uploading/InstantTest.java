@@ -29,8 +29,6 @@ public class InstantTest extends TestCase {
     private static int mId;
 
     private static IHttp sHttp = new IHttp() {
-        public int sRunNumber = 0;
-
         @Override
         public Response doGet(String url, Map<String, Object> headers) {
             return null;
@@ -43,7 +41,6 @@ public class InstantTest extends TestCase {
             contentTypeList.add("application/json");
             headerFields.put("Content-Type", contentTypeList);
 
-            String payloadString = new String(payload);
             String responseString;
 
             if (mId == RESPONSE_OBJECT_NULL) {
@@ -63,10 +60,6 @@ public class InstantTest extends TestCase {
             }
 
             return new Response(200, responseString.getBytes(), headerFields);
-        }
-
-        public void resetRuns() {
-            sRunNumber = 0;
         }
     };
 

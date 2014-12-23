@@ -68,23 +68,14 @@ class Check extends UploadRunnable {
             return;
         }
 
-        if (apiResponse.getStorageLimit() - apiResponse.getUsedStorageSize() < mUpload.getFile().length()) {
-            mManager.fileLargerThanStorageSpaceAvailable(State.CHECK, mUpload);
-            return;
-        }
-
         if (apiResponse.isStorageLimitExceeded()) {
             mManager.storageLimitExceeded(State.CHECK, mUpload);
             return;
         }
 
-        if (apiResponse.getResumableUpload() == null) {
-            mManager.resumableUploadPortionOfApiResponseMissing(mUpload, apiResponse, result);
-            return;
-        }
-
-        if (apiResponse.getResumableUpload().getBitmap() == null) {
-            mManager.bitmapPortionOfApiResponseMissing(mUpload, apiResponse, result);
+        if (apiResponse.getStorageLimit() - apiResponse.getUsedStorageSize() < mUpload.getFile().length()
+                && apiResponse.getStorageLimit() != 0) {
+            mManager.fileLargerThanStorageSpaceAvailable(State.CHECK, mUpload);
             return;
         }
 

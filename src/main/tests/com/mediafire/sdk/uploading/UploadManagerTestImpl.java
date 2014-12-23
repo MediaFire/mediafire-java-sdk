@@ -68,6 +68,34 @@ public class UploadManagerTestImpl extends UploadManager {
         mApiError = false;
         mResumableProgress = false;
     }
+    
+    public final void printTestFields() {
+        System.out.println("mResumableFinished                          " + mResumableFinished);
+        System.out.println("mAddListener                                " + mAddListener);
+        System.out.println("mRemoveListener                             " + mRemoveListener);
+        System.out.println("mAddUpload                                  " + mAddUpload);
+        System.out.println("mPurge                                      " + mPurge);
+        System.out.println("mPause                                      " + mPause);
+        System.out.println("mResume                                     " + mResume);
+        System.out.println("mStartNextAvailableUpload                   " + mStartNextAvailableUpload);
+        System.out.println("mSortQueueByFileSize                        " + mSortQueueByFileSize);
+        System.out.println("mMoveToFrontOfQueue                         " + mMoveToFrontOfQueue);
+        System.out.println("mMoveToEndOfQueue                           " + mMoveToEndOfQueue);
+        System.out.println("mExceptionDuringUpload                      " + mExceptionDuringUpload);
+        System.out.println("mResultInvalidDuringUpload                  " + mResultInvalidDuringUpload);
+        System.out.println("mResponseObjectNull                         " + mResponseObjectNull);
+        System.out.println("mStorageLimitExceeded                       " + mStorageLimitExceeded);
+        System.out.println("mFileLargerThanStorageSpaceAvailable        " + mFileLargerThanStorageSpaceAvailable);
+        System.out.println("mResumableUploadPortionOfApiResponseMissing " + mResumableUploadPortionOfApiResponseMissing);
+        System.out.println("mBitmapPortionOfApiResponseMissing          " + mBitmapPortionOfApiResponseMissing);
+        System.out.println("mCheckFinished                              " + mCheckFinished);
+        System.out.println("mPollFinished                               " + mPollFinished);
+        System.out.println("mPollUpdate                                 " + mPollUpdate);
+        System.out.println("mPollMaxAttemptsReached                     " + mPollMaxAttemptsReached);
+        System.out.println("mInstantFinished                            " + mInstantFinished);
+        System.out.println("mApiError                                   " + mApiError);
+        System.out.println("mResumableProgress                          " + mResumableProgress);
+    }
 
     @Override
     void resumableFinished(Resumable.ResumableUpload upload, String responsePollKey, boolean allUnitsReady) {
@@ -127,6 +155,10 @@ public class UploadManagerTestImpl extends UploadManager {
     @Override
     void exceptionDuringUpload(State state, Exception exception, Upload upload) {
         mExceptionDuringUpload = true;
+        System.out.println("EXCEPTION - " + exception);
+        System.out.println("STATE - " + state);
+        System.out.println("Upload ID - " + upload.getId());
+        System.out.println("Upload File - " + upload.getFile());
     }
 
     @Override

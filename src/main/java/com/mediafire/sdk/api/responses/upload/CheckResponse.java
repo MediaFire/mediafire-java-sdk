@@ -52,7 +52,7 @@ public class CheckResponse extends ApiResponse {
 
     public class Bitmap {
         private String count;
-        private String[] words;
+        private List<String> words;
 
         public int getCount() {
             if (count == null || count.isEmpty()) {
@@ -62,19 +62,19 @@ public class CheckResponse extends ApiResponse {
         }
 
         public List<Integer> getWords() {
-            if (words == null || words.length == 0) {
+            if (words == null || words.size() == 0) {
                 return new ArrayList<Integer>();
             }
             return convert(words);
         }
 
-        private List<Integer> convert(String[] words) {
+        private List<Integer> convert(List<String> words) {
             List<Integer> ret = new ArrayList<Integer>();
             for (String str : words) {
                 ret.add(Integer.parseInt(str));
             }
 
-            if (ret.size() == words.length) {
+            if (ret.size() == words.size()) {
                 return ret;
             } else {
                 return new ArrayList<Integer>();

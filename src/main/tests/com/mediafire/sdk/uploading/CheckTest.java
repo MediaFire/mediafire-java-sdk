@@ -73,11 +73,14 @@ public class CheckTest extends TestCase {
                         "\"number_of_units\":\"28\",\"unit_size\":\"2097152\"}," +
                         "\"result\":\"Success\",\"current_api_version\":\"1.0\"}}";
             } else {
-                responseString = "{\"response\":{\"action\":\"upload/check\",\"hash_exists\":\"no\"," +
-                        "\"file_exists\":\"no\",\"resumable_upload\":{\"all_units_ready\":\"no\"," +
-                        "\"number_of_units\":\"28\",\"unit_size\":\"2097152\",\"bitmap\":" +
-                        "{\"count\":\"2\",\"words\":{\"word\":[\"1258\",\"495\"]}}}," +
-                        "\"result\":\"Success\",\"current_api_version\":\"1.0\"}}";
+                responseString = "{\"response\":{\"action\":\"upload\\/check\",\"hash_exists\":\"yes\"," +
+                        "\"in_account\":\"yes\",\"in_folder\":\"yes\",\"file_exists\":\"yes\"," +
+                        "\"different_hash\":\"no\",\"duplicate_quickkey\":\"oqu8a32pt7nkou1\"," +
+                        "\"resumable_upload\":{\"all_units_ready\":\"no\",\"number_of_units\":\"21\"," +
+                        "\"unit_size\":\"4194304\",\"bitmap\":{\"count\":\"2\",\"words\":[\"0\",\"0\"]}}," +
+                        "\"available_space\":\"19024902978\",\"used_storage_size\":\"2452030654\"," +
+                        "\"storage_limit\":\"21476933632\",\"storage_limit_exceeded\":\"no\"," +
+                        "\"result\":\"Success\",\"current_api_version\":\"1.2\"}}";
             }
 
             return new Response(200, responseString.getBytes(), headerFields);

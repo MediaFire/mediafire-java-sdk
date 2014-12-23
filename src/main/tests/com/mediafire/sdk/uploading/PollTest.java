@@ -19,6 +19,17 @@ public class PollTest extends TestCase {
     private static final String TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nisi nisl, pretium in rhoncus id, mattis ac ligula. Curabitur leo nisi, molestie sed ullamcorper vitae, mattis at lectus. Cras efficitur libero sed risus laoreet pellentesque. Nam suscipit quam ex, interdum imperdiet justo pharetra a. Vivamus laoreet ex massa, iaculis placerat est efficitur quis. Nullam nec nulla vitae lorem suscipit vehicula. In tincidunt vitae lacus a finibus. In a tempor magna, vel ultrices massa.";
 
     private Upload mUpload;
+
+    private static final long LOOP_1_TIME = 1;
+    private static final long LOOP_10_TIMES = 2;
+    private static final long PARAMS_FILE_ERROR = 3;
+    private static final long PARAMS_INVALID = 4;
+    private static final long HTTP_WORKER_RETURN_NULL = 5;
+    private static final long RESPONSE_OBJECT_NULL = 6;
+    private static final long MAX_POLLS_REACHED = 7;
+
+    private static long mId;
+
     private static IHttp sHttp = new IHttp() {
         public int sRunNumber = 0;
 
@@ -37,7 +48,7 @@ public class PollTest extends TestCase {
             String payloadString = new String(payload);
             String responseString;
 
-            if (payloadString.equals("response_format=json&key=the_poll_key_loop_stuck")) {
+            if (mId == MAX_POLLS_REACHED) {
                 responseString = "{" +
                         "\"response\": {\"action\": \"upload/poll_upload\"," +
                         "\"doupload\": {" +
@@ -47,16 +58,16 @@ public class PollTest extends TestCase {
                         "\"current_api_version\": \"1.0\"" +
                         "}" +
                         "}";
-            } else if (payloadString.equals("response_format=json&key=the_poll_key_response_object_null")) {
+            } else if (mId == RESPONSE_OBJECT_NULL) {
                 responseString = "";
                 resetRuns();
-            } else if (payloadString.equals("response_format=json&key=the_poll_key_return_null")) {
+            } else if (mId == HTTP_WORKER_RETURN_NULL) {
                 resetRuns();
                 return null;
-            } else if (payloadString.equals("response_format=json&key=the_poll_key_api_error")) {
+            } else if (mId == PARAMS_INVALID) {
                 responseString = "{\"response\":{\"action\":\"upload\\/poll_upload\",\"message\":\"One or more parameters for this request are invalid\",\"error\":129,\"result\":\"Error\",\"current_api_version\":\"1.2\"}}";
                 resetRuns();
-            } else if (payloadString.equalsIgnoreCase("response_format=json&key=the_poll_key_loop_file_error")) {
+            } else if (mId == PARAMS_FILE_ERROR) {
                 responseString = "{" +
                         "\"response\": {\"action\": \"upload/poll_upload\"," +
                         "\"doupload\": {" +
@@ -67,7 +78,7 @@ public class PollTest extends TestCase {
                         "}" +
                         "}";
                 resetRuns();
-            } else if (payloadString.equals("response_format=json&key=the_poll_key_loop_10")) {
+            } else if (mId == LOOP_10_TIMES) {
                 switch (sRunNumber) {
                     case 0:
                         responseString = "{" +
@@ -227,7 +238,6 @@ public class PollTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        long id = 55555;
         File file = new File("PollTest.txt");
         file.createNewFile();
 
@@ -235,10 +245,6 @@ public class PollTest extends TestCase {
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         fileOutputStream.write(TEXT.getBytes());
         fileOutputStream.close();
-
-
-        Upload.Options options = new Upload.Options.Builder().build();
-        mUpload = new Upload(id, file, options);
     }
 
     @Override
@@ -251,7 +257,12 @@ public class PollTest extends TestCase {
 
     @Test
     public void testRun1Loop() throws Exception {
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "the_poll_key_loop_1");
+        mId = 1;
+        File file = new File("PollTest.txt");
+
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);
@@ -263,7 +274,12 @@ public class PollTest extends TestCase {
 
     @Test
     public void testRun10Loop() throws Exception {
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "the_poll_key_loop_10");
+        mId = 2;
+        File file = new File("PollTest.txt");
+
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);
@@ -275,7 +291,12 @@ public class PollTest extends TestCase {
 
     @Test
     public void testRunFileError() throws Exception {
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "the_poll_key_loop_file_error");
+        mId = 3;
+        File file = new File("PollTest.txt");
+
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);
@@ -287,7 +308,12 @@ public class PollTest extends TestCase {
 
     @Test
     public void testRunParamsInvalid() throws Exception {
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "the_poll_key_api_error");
+        mId = 4;
+        File file = new File("PollTest.txt");
+
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);
@@ -299,7 +325,12 @@ public class PollTest extends TestCase {
 
     @Test
     public void testRunHttpWorkerReturnNull() throws Exception {
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "the_poll_key_return_null");
+        mId = 5;
+        File file = new File("PollTest.txt");
+
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);
@@ -311,7 +342,12 @@ public class PollTest extends TestCase {
 
     @Test
     public void testRunResponseObjectNull() throws Exception {
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "the_poll_key_response_object_null");
+        mId = 6;
+        File file = new File("PollTest.txt");
+
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);
@@ -323,7 +359,12 @@ public class PollTest extends TestCase {
 
     @Test
     public void testRunMaxPollsReached() throws Exception {
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "the_poll_key_loop_stuck");
+        mId = 7;
+        File file = new File("PollTest.txt");
+
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);

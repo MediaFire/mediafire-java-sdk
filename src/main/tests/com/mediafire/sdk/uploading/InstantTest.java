@@ -20,7 +20,14 @@ import java.util.Map;
 public class InstantTest extends TestCase {
     private static final String TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nisi nisl, pretium in rhoncus id, mattis ac ligula. Curabitur leo nisi, molestie sed ullamcorper vitae, mattis at lectus. Cras efficitur libero sed risus laoreet pellentesque. Nam suscipit quam ex, interdum imperdiet justo pharetra a. Vivamus laoreet ex massa, iaculis placerat est efficitur quis. Nullam nec nulla vitae lorem suscipit vehicula. In tincidunt vitae lacus a finibus. In a tempor magna, vel ultrices massa.";
 
+    private static final long RESULT_INVALID = 1;
+    private static final long RESPONSE_OBJECT_NULL = 2;
+    private static final long API_ERROR = 3;
+    private static final long HASH_GOOD = 4;
+
     private Upload mUpload;
+    private static int mId;
+
     private static IHttp sHttp = new IHttp() {
         public int sRunNumber = 0;
 
@@ -39,13 +46,13 @@ public class InstantTest extends TestCase {
             String payloadString = new String(payload);
             String responseString;
 
-            if (payloadString.equals("response_format=json&hash=hash_response_object_null&size=485&filename=InstantTest.txt&action_on_duplicate=keep")) {
+            if (mId == RESPONSE_OBJECT_NULL) {
                 responseString = "";
-            } else if (payloadString.equals("response_format=json&hash=hash_api_error&size=485&filename=InstantTest.txt&action_on_duplicate=keep")) {
+            } else if (mId == API_ERROR) {
                 responseString = "{\"response\":{\"action\":\"upload\\/instant\"," +
                         "\"message\":\"The supplied Session Token is expired or invalid\"," +
                         "\"error\":105,\"result\":\"Error\",\"current_api_version\":\"1.2\"}}";
-            } else if (payloadString.equals("response_format=json&hash=hash_result_invalid&size=485&filename=InstantTest.txt&action_on_duplicate=keep")) {
+            } else if (mId == RESULT_INVALID) {
                 return new Response(0, null, null);
             } else {
                 responseString = "{\"response\":" +
@@ -85,7 +92,6 @@ public class InstantTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        long id = 55555;
         File file = new File("InstantTest.txt");
         file.createNewFile();
 
@@ -93,10 +99,6 @@ public class InstantTest extends TestCase {
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         fileOutputStream.write(TEXT.getBytes());
         fileOutputStream.close();
-
-
-        Upload.Options options = new Upload.Options.Builder().build();
-        mUpload = new Upload(id, file, options);
     }
 
     @Override
@@ -108,6 +110,11 @@ public class InstantTest extends TestCase {
     }
 
     public void testRunResultInvalid() throws Exception {
+        mId = 1;
+        File file = new File("InstantTest.txt");
+
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
         Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, "hash_result_invalid");
         Instant instant = new Instant(upload, sHttp, sTokenManager, sUploadManager);
 
@@ -119,6 +126,11 @@ public class InstantTest extends TestCase {
     }
 
     public void testRunResponseObjectNull() throws Exception {
+        mId = 2;
+        File file = new File("InstantTest.txt");
+
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
         Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, "hash_response_object_null");
         Instant instant = new Instant(upload, sHttp, sTokenManager, sUploadManager);
 
@@ -128,9 +140,13 @@ public class InstantTest extends TestCase {
 
         assertEquals(true, sUploadManager.mResponseObjectNull);
     }
-
     public void testRunApiError() throws Exception {
-        Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, "hash_api_error");
+        mId = 3;
+        File file = new File("InstantTest.txt");
+
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
+        Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, "hash");
         Instant instant = new Instant(upload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(instant);
@@ -141,6 +157,11 @@ public class InstantTest extends TestCase {
     }
 
     public void testRunSuccess() throws Exception {
+        mId = 4;
+        File file = new File("InstantTest.txt");
+
+        Upload.Options options = new Upload.Options.Builder().build();
+        mUpload = new Upload(mId, file, options);
         Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, "hash");
         Instant instant = new Instant(upload, sHttp, sTokenManager, sUploadManager);
 

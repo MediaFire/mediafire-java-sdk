@@ -7,30 +7,39 @@ import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Result;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by Chris on 12/22/2014.
  */
-public class UploadManager {
+public class UploadManager implements IUploadManager<Upload> {
 
-    private final int mConcurrentUploads;
-
-    private final List<Upload> mUploads;
-    private final List<IUploadListener> mListeners;
-    private boolean mPaused;
+    private final ArrayList<IUploadListener> mListeners;
+    private final PausableExecutor mExecutor;
     private final IHttp mHttp;
     private final ITokenManager mTokenManager;
+    private final LinkedList<Upload> mUploadList;
 
-    public UploadManager(int concurrentUploads, IHttp http, ITokenManager tokenManager) {
-        mConcurrentUploads = concurrentUploads;
+    // debugging
+    private boolean mDebug;
+
+    // lock
+    private Object mUploadListLock = new Object();
+
+    public UploadManager(int numUploads, IHttp http, ITokenManager tokenManager) {
         mHttp = http;
         mTokenManager = tokenManager;
-        mUploads = new LinkedList<Upload>();
+        mUploadList = new LinkedList<Upload>();
         mListeners = new ArrayList<IUploadListener>();
-        mPaused = true;
+        LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
+        mExecutor = new PausableExecutor(1, numUploads, 1, TimeUnit.SECONDS, workQueue);
+    }
+
+    public void debug(boolean on) {
+        mDebug = on;
     }
 
     public void addListener(IUploadListener uploadListener) {
@@ -41,37 +50,137 @@ public class UploadManager {
         mListeners.remove(uploadListener);
     }
 
+    @Override
     public void addUpload(Upload upload) {
-        // TODO(cnajar) synchronization
-        mUploads.add(upload);
+        mUploadList.add(upload);
     }
 
-    public void purge(boolean letCurrentUploadFinish) {
-        // TODO(cnajar) implement
+    @Override
+    public void purge(boolean shutdown) {
+        mUploadList.clear();
+        mExecutor.getQueue().clear();
+
+        if (shutdown) {
+            mExecutor.shutdownNow();
+        }
     }
 
+    @Override
     public void pause() {
-        // TODO(cnajar) implement
+        mExecutor.pause();
     }
 
+    @Override
     public void resume() {
-        // TODO(cnajar) implement
+        mExecutor.resume();
     }
 
+    @Override
+    public List<Upload> getQueuedUploads() {
+        return mUploadList;
+    }
+
+    @Override
+    public List<UploadRunnable> getRunningUploads() {
+        return mExecutor.getRunningTasks();
+    }
+
+    @Override
     public void startNextAvailableUpload() {
-        // TODO(cnajar) implement
+        synchronized (mUploadListLock) {
+            while (!mUploadList.isEmpty() && mExecutor.getMaximumPoolSize() > mExecutor.getRunningTasks().size()) {
+                if (!mUploadList.isEmpty()) {
+                    Upload upload = mUploadList.get(0);
+                    mUploadList.remove(0);
+                    Check check = new Check(upload, mHttp, mTokenManager, this);
+                    mExecutor.execute(check);
+                }
+            }
+        }
     }
 
+    @Override
     public void sortQueueByFileSize(boolean ascending) {
-        // TODO(cnajar) implement
+        pause();
+        Upload upload;
+        int slot;
+        for (int currentSlot = 1; currentSlot < mUploadList.size(); currentSlot++) {
+            upload = mUploadList.get(currentSlot);
+            slot = currentSlot;
+
+            if (ascending) {
+                sortAscending(currentSlot, upload);
+            } else {
+                sortDescending(currentSlot, upload);
+            }
+
+            mUploadList.set(slot, upload);
+        }
+        resume();
     }
 
+    private void sortDescending(int slot, Upload upload) {
+        while (slot > 0 && mUploadList.get(slot - 1).getFile().length() < upload.getFile().length()) {
+            mUploadList.set(slot, mUploadList.get(slot - 1));
+            slot--;
+        }
+    }
+
+    private void sortAscending(int slot, Upload upload) {
+        while (slot > 0 && mUploadList.get(slot - 1).getFile().length() < upload.getFile().length()) {
+            mUploadList.set(slot, mUploadList.get(slot - 1));
+            slot--;
+        }
+    }
+
+    @Override
     public void moveToFrontOfQueue(long id) {
-        // TODO(cnajar) implement
+        pause();
+        synchronized (mUploadListLock) {
+            boolean match = false;
+            Upload upload = null;
+            Iterator<Upload> iterator = mUploadList.iterator();
+
+            while (iterator.hasNext() && !match) {
+                upload = iterator.next();
+                if (upload.getId() == id) {
+                    match = true;
+                    iterator.remove();
+                } else {
+                    upload = null;
+                }
+            }
+
+            if (upload != null) {
+                mUploadList.addFirst(upload);
+            }
+        }
+        resume();
     }
 
+    @Override
     public void moveToEndOfQueue(long id) {
-        // TODO(cnajar) implement
+        pause();
+        synchronized (mUploadListLock) {
+            boolean match = false;
+            Upload upload = null;
+            Iterator<Upload> iterator = mUploadList.iterator();
+
+            while (iterator.hasNext() && !match) {
+                upload = iterator.next();
+                if (upload.getId() == id) {
+                    match = true;
+                    iterator.remove();
+                } else {
+                    upload = null;
+                }
+            }
+
+            if (upload != null) {
+                mUploadList.addLast(upload);
+            }
+        }
+        resume();
     }
 
     void exceptionDuringUpload(State state, Exception exception, Upload upload) {
@@ -218,15 +327,18 @@ public class UploadManager {
 
     private void doCheckUpload(Resumable.ResumableUpload upload) {
         Check check = new Check(upload, mHttp, mTokenManager, this);
+        mExecutor.execute(check);
     }
 
     private void doPollUpload(Resumable.ResumableUpload upload, String responsePollKey) {
         Poll.PollUpload pollUpload = new Poll.PollUpload(upload, responsePollKey);
         Poll poll = new Poll(pollUpload, mHttp, mTokenManager, this);
+        mExecutor.execute(poll);
     }
 
     private void doInstantUpload(Instant.InstantUpload upload) {
         Instant instant = new Instant(upload, mHttp, mTokenManager, this);
+        mExecutor.execute(instant);
     }
 
     private void doResumableUpload(Instant.InstantUpload upload, CheckResponse checkResponse) {
@@ -238,6 +350,7 @@ public class UploadManager {
 
         Resumable.ResumableUpload resumableUpload = new Resumable.ResumableUpload(upload, upload.getHash(), numUnits, unitSize, count, words);
         Resumable resumable = new Resumable(resumableUpload, mHttp, mTokenManager, this);
+        mExecutor.execute(resumable);
     }
 
     /**
@@ -258,5 +371,77 @@ public class UploadManager {
         public void uploadFinished(long id, String quickKey);
         public void pollUpdate(long id, int status);
         public void resumableUpdate(long id, double percentFinished);
+    }
+
+    private class PausableExecutor extends ThreadPoolExecutor {
+        private boolean isPaused;
+        private final ReentrantLock pauseLock = new ReentrantLock();
+        private final Condition unpaused = pauseLock.newCondition();
+        private final List<UploadRunnable> mRunning = Collections.synchronizedList(new ArrayList<UploadRunnable>());
+
+        public PausableExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
+            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+        }
+
+        @Override
+        protected void beforeExecute(Thread t, Runnable r) {
+            super.beforeExecute(t, r);
+            pauseLock.lock();
+            try {
+                while (isPaused) {
+                    unpaused.await();
+                }
+            } catch (InterruptedException ie) {
+                t.interrupt();
+            } finally {
+                pauseLock.unlock();
+            }
+
+            mRunning.add((UploadRunnable) r);
+        }
+
+        @Override
+        public void afterExecute(Runnable r, Throwable t) {
+            super.afterExecute(r, t);
+            if (r instanceof UploadRunnable) {
+                UploadRunnable runnable = (UploadRunnable) r;
+                mRunning.remove(runnable);
+            }
+        }
+
+        public void pause() {
+            pauseLock.lock();
+            try {
+                isPaused = true;
+                for (Runnable runnable : mRunning) {
+                    try {
+                        runnable.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        runnable.notify();
+                    }
+                }
+            } finally {
+                pauseLock.unlock();
+            }
+        }
+
+        public void resume() {
+            pauseLock.lock();
+            try {
+                isPaused = false;
+                unpaused.signalAll();
+
+                for (Runnable runnable : mRunning) {
+                    runnable.notify();
+                }
+            } finally {
+                pauseLock.unlock();
+            }
+        }
+
+        public List<UploadRunnable> getRunningTasks() {
+            return mRunning;
+        }
     }
 }

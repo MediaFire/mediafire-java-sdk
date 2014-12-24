@@ -118,7 +118,7 @@ public class UploadManagerTestImpl extends UploadManager {
     }
 
     @Override
-    public void purge(boolean letCurrentUploadFinish) {
+    public void purge(boolean shutdown) {
         mPurge = true;
     }
 

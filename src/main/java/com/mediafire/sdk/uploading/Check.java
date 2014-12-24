@@ -39,6 +39,7 @@ class Check extends UploadRunnable {
             return;
         }
 
+        yieldIfPaused();
         Result result = getUploadClient().check(requestParams);
 
         if (!resultValid(result)) {

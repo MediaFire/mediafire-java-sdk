@@ -29,6 +29,7 @@ class Instant extends UploadRunnable {
 
         Map<String, Object> requestParams = makeQueryParams();
 
+        yieldIfPaused();
         Result result = getUploadClient().instant(requestParams);
 
         if (!resultValid(result)) {

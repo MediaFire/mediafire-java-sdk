@@ -52,6 +52,7 @@ class Poll extends UploadRunnable {
         while (pollCount < mMaxPolls) {
             pollCount++;
 
+            yieldIfPaused();
             Result result = getUploadClient().pollUpload(requestParameters);
 
             if (!resultValid(result)) {

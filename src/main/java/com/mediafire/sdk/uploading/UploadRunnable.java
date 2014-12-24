@@ -17,6 +17,7 @@ import java.util.Map;
 abstract class UploadRunnable implements Runnable {
 
     private final UploadClient mUploadClient;
+    private boolean mPaused;
 
     public UploadRunnable(IHttp http, ITokenManager tokenManager) {
         mUploadClient = new UploadClient(http, tokenManager);
@@ -73,5 +74,24 @@ abstract class UploadRunnable implements Runnable {
 
     abstract Map<String, Object> makeQueryParams() throws Exception;
 
+    @Override
     public abstract void run();
+
+    public final void pause() {
+        mPaused = true;
+    }
+
+    public final void resume() {
+        mPaused = false;
+    }
+
+    public final boolean isPaused() {
+        return mPaused;
+    }
+
+    public final void yieldIfPaused() {
+        while (isPaused()) {
+            Thread.currentThread().yield();
+        }
+    }
 }

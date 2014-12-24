@@ -81,6 +81,10 @@ public class UploadManager implements IUploadManager<Upload> {
         return mUploadList;
     }
 
+    public BlockingQueue<Runnable> getQueuedRunnables() {
+        return mExecutor.getQueue();
+    }
+
     @Override
     public List<UploadRunnable> getRunningUploads() {
         return mExecutor.getRunningTasks();

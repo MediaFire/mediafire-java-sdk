@@ -413,13 +413,8 @@ public class UploadManager implements IUploadManager<Upload> {
             pauseLock.lock();
             try {
                 isPaused = true;
-                for (Runnable runnable : mRunning) {
-                    try {
-                        runnable.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        runnable.notify();
-                    }
+                for (UploadRunnable runnable : mRunning) {
+                    runnable.pause();
                 }
             } finally {
                 pauseLock.unlock();
@@ -432,8 +427,8 @@ public class UploadManager implements IUploadManager<Upload> {
                 isPaused = false;
                 unpaused.signalAll();
 
-                for (Runnable runnable : mRunning) {
-                    runnable.notify();
+                for (UploadRunnable runnable : mRunning) {
+                    runnable.resume();
                 }
             } finally {
                 pauseLock.unlock();

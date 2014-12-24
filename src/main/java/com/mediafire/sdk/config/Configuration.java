@@ -9,7 +9,7 @@ public class Configuration {
     private final IDeveloperCredentials mDeveloperCredentials;
     private final ITokenManager mITokenManager;
 
-    private Configuration(IDeveloperCredentials devCred,
+    public Configuration(IDeveloperCredentials devCred,
                           IUserCredentials userCred,
                           IHttp httpInterface,
                           ITokenManager tokenManager) {

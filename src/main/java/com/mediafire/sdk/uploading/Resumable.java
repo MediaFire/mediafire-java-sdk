@@ -44,7 +44,12 @@ class Resumable extends UploadRunnable {
         boolean allUnitsReady = false;
 
         for (int chunkNumber = 0; chunkNumber < numUnits; chunkNumber++) {
-            yieldIfPaused();
+            try {
+                yieldIfPaused();
+            } catch (InterruptedException exception) {
+                mManager.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
+                return;
+            }
             if (!mUpload.isChunkUploaded(chunkNumber)) {
                 int chunkSize = getChunkSize(chunkNumber, numUnits, fileSize, unitSize);
 
@@ -64,7 +69,12 @@ class Resumable extends UploadRunnable {
 
 
                 Map<String, Object> headerParams = makeHeaderParams(chunkNumber, chunkSize, chunkHash);
-                yieldIfPaused();
+                try {
+                    yieldIfPaused();
+                } catch (InterruptedException exception) {
+                    mManager.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
+                    return;
+                }
                 Result result = getUploadClient().resumable(requestParams, headerParams, chunk);
 
                 if (!resultValid(result)) {

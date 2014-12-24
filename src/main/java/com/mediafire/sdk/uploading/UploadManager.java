@@ -73,6 +73,7 @@ public class UploadManager implements IUploadManager<Upload> {
     @Override
     public void resume() {
         mExecutor.resume();
+        startNextAvailableUpload();
     }
 
     @Override
@@ -87,6 +88,10 @@ public class UploadManager implements IUploadManager<Upload> {
 
     @Override
     public void startNextAvailableUpload() {
+        if (!mExecutor.isPaused()) {
+            return;
+        }
+
         synchronized (mUploadListLock) {
             while (!mUploadList.isEmpty() && mExecutor.getMaximumPoolSize() > mExecutor.getRunningTasks().size()) {
                 if (!mUploadList.isEmpty()) {
@@ -101,22 +106,26 @@ public class UploadManager implements IUploadManager<Upload> {
 
     @Override
     public void sortQueueByFileSize(boolean ascending) {
-        pause();
-        Upload upload;
-        int slot;
-        for (int currentSlot = 1; currentSlot < mUploadList.size(); currentSlot++) {
-            upload = mUploadList.get(currentSlot);
-            slot = currentSlot;
-
-            if (ascending) {
-                sortAscending(currentSlot, upload);
-            } else {
-                sortDescending(currentSlot, upload);
-            }
-
-            mUploadList.set(slot, upload);
+        if (!mExecutor.isPaused()) {
+            return;
         }
-        resume();
+
+        synchronized (mUploadListLock) {
+            Upload upload;
+            int slot;
+            for (int currentSlot = 1; currentSlot < mUploadList.size(); currentSlot++) {
+                upload = mUploadList.get(currentSlot);
+                slot = currentSlot;
+
+                if (ascending) {
+                    sortAscending(currentSlot, upload);
+                } else {
+                    sortDescending(currentSlot, upload);
+                }
+
+                mUploadList.set(slot, upload);
+            }
+        }
     }
 
     private void sortDescending(int slot, Upload upload) {
@@ -135,7 +144,9 @@ public class UploadManager implements IUploadManager<Upload> {
 
     @Override
     public void moveToFrontOfQueue(long id) {
-        pause();
+        if (!mExecutor.isPaused()) {
+            return;
+        }
         synchronized (mUploadListLock) {
             boolean match = false;
             Upload upload = null;
@@ -160,7 +171,10 @@ public class UploadManager implements IUploadManager<Upload> {
 
     @Override
     public void moveToEndOfQueue(long id) {
-        pause();
+        if (!mExecutor.isPaused()) {
+            return;
+        }
+
         synchronized (mUploadListLock) {
             boolean match = false;
             Upload upload = null;
@@ -180,7 +194,6 @@ public class UploadManager implements IUploadManager<Upload> {
                 mUploadList.addLast(upload);
             }
         }
-        resume();
     }
 
     void exceptionDuringUpload(State state, Exception exception, Upload upload) {
@@ -443,6 +456,10 @@ public class UploadManager implements IUploadManager<Upload> {
 
         public List<UploadRunnable> getRunningTasks() {
             return mRunning;
+        }
+
+        public boolean isPaused() {
+            return isPaused;
         }
     }
 }

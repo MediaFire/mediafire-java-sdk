@@ -29,7 +29,12 @@ class Instant extends UploadRunnable {
 
         Map<String, Object> requestParams = makeQueryParams();
 
-        yieldIfPaused();
+        try {
+            yieldIfPaused();
+        } catch (InterruptedException exception) {
+            mManager.exceptionDuringUpload(State.INSTANT, exception, mUpload);
+            return;
+        }
         Result result = getUploadClient().instant(requestParams);
 
         if (!resultValid(result)) {

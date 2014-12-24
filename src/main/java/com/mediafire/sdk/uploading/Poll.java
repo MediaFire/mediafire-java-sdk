@@ -52,7 +52,12 @@ class Poll extends UploadRunnable {
         while (pollCount < mMaxPolls) {
             pollCount++;
 
-            yieldIfPaused();
+            try {
+                yieldIfPaused();
+            } catch (InterruptedException exception) {
+                mManager.exceptionDuringUpload(State.POLL, exception, mUpload);
+                return;
+            }
             Result result = getUploadClient().pollUpload(requestParameters);
 
             if (!resultValid(result)) {

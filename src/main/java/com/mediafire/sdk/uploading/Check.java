@@ -44,7 +44,12 @@ class Check extends UploadRunnable {
             return;
         }
 
-        yieldIfPaused();
+        try {
+            yieldIfPaused();
+        } catch (InterruptedException exception) {
+            mManager.exceptionDuringUpload(State.CHECK, exception, mUpload);
+            return;
+        }
         Result result = getUploadClient().check(requestParams);
 
         if (!resultValid(result)) {

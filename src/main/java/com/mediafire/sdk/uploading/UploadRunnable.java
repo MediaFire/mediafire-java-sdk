@@ -89,9 +89,12 @@ abstract class UploadRunnable implements Runnable {
         return mPaused;
     }
 
-    public final void yieldIfPaused() {
+    public final void yieldIfPaused() throws InterruptedException {
         while (isPaused()) {
             Thread.currentThread().yield();
+            if (Thread.currentThread().isInterrupted()) {
+                throw new InterruptedException("Runnable interrupted while in pause state");
+            }
         }
     }
 }

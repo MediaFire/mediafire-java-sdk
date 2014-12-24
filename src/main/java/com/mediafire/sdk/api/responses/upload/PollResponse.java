@@ -17,18 +17,18 @@ public class PollResponse extends ApiResponse {
         private String filename;
         private String hash;
 
-        public PollResult getResultCode() {
+        public int getResultCode() {
             if (result == null || result.isEmpty()) {
                 result = "0";
             }
-            return PollResult.fromInt(Integer.parseInt(result));
+            return Integer.parseInt(result);
         }
 
-        public PollStatus getStatusCode() {
+        public int getStatusCode() {
             if (status == null || status.isEmpty()) {
-                return PollStatus.fromInt(0);
+                status = "0";
             }
-            return PollStatus.fromInt(Integer.parseInt(status));
+            return Integer.parseInt(status);
         }
 
         public String getDescription() {
@@ -38,11 +38,11 @@ public class PollResponse extends ApiResponse {
             return description;
         }
 
-        public PollFileError getFileErrorCode() {
+        public int getFileErrorCode() {
             if (fileerror == null || fileerror.isEmpty()) {
                 fileerror = "0";
             }
-            return PollFileError.fromInt(Integer.parseInt(fileerror));
+            return Integer.parseInt(fileerror);
         }
 
         public String getQuickKey() {

@@ -1,0 +1,102 @@
+package com.mediafire.sdk.api.clients;
+
+import com.mediafire.sdk.api.ApiRequestGenerator;
+import com.mediafire.sdk.api.helpers.Instructions;
+import com.mediafire.sdk.api.helpers.UseSessionToken;
+import com.mediafire.sdk.config.IHttp;
+import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.http.Request;
+import com.mediafire.sdk.http.Result;
+
+import java.util.Map;
+
+public class FileClient {
+
+    private final ApiRequestGenerator mApiRequestGenerator;
+    private final ApiClient apiClient;
+    private final Instructions mInstructions;
+
+    public FileClient(IHttp httpInterface, ITokenManager tokenManager) {
+        mApiRequestGenerator = new ApiRequestGenerator();
+
+        mInstructions = new UseSessionToken(tokenManager);
+        apiClient = new ApiClient(httpInterface);
+    }
+
+    public Result getInfo(Map<String, Object> requestParams) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_info.php");
+
+        for (String key : requestParams.keySet()) {
+            Object value = requestParams.get(key);
+            request.addQueryParameter(key, value);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
+    public Result delete(Map<String, Object> requestParams) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/delete.php");
+
+        for (String key : requestParams.keySet()) {
+            Object value = requestParams.get(key);
+            request.addQueryParameter(key, value);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
+    public Result copy(Map<String, Object> requestParams) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/copy.php");
+
+        for (String key : requestParams.keySet()) {
+            Object value = requestParams.get(key);
+            request.addQueryParameter(key, value);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
+    public Result getVersion(Map<String, Object> requestParams) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_version.php");
+
+        for (String key : requestParams.keySet()) {
+            Object value = requestParams.get(key);
+            request.addQueryParameter(key, value);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
+    public Result move(Map<String, Object> requestParams) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/move.php");
+
+        for (String key : requestParams.keySet()) {
+            Object value = requestParams.get(key);
+            request.addQueryParameter(key, value);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
+    public Result update(Map<String, Object> requestParams) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/update.php");
+
+        for (String key : requestParams.keySet()) {
+            Object value = requestParams.get(key);
+            request.addQueryParameter(key, value);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
+    public Result getLinks(Map<String, Object> requestParams) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_links.php");
+
+        for (String key : requestParams.keySet()) {
+            Object value = requestParams.get(key);
+            request.addQueryParameter(key, value);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+}

@@ -9,21 +9,11 @@ public abstract class ActionToken extends Token {
     /**
      * ActionToken Constructor
      * @param tokenString String for the token
-     * @param expiration long expiration time for the token
+     * @param expirationMillis long expiration time for the token
      */
-    protected ActionToken(String tokenString, long expiration) {
+    protected ActionToken(String tokenString, long expirationMillis) {
         super(tokenString);
-        mExpiration = expiration;
-    }
-
-    /**
-     * ActionToken Constructor
-     * Adds the current system time to the expiration of the passed in token
-     * @param token ActionToken to get the token string and expiration from
-     */
-    protected ActionToken(ActionToken token) {
-        super(token.getTokenString());
-        mExpiration = System.currentTimeMillis() + token.getExpiration();
+        mExpiration = System.currentTimeMillis() + expirationMillis;
     }
 
     /**

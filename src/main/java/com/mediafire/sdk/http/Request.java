@@ -1,6 +1,6 @@
 package com.mediafire.sdk.http;
 
-import com.mediafire.sdk.client_core.UrlHelper;
+import com.mediafire.sdk.api.clients.UrlHelper;
 import com.mediafire.sdk.token.Token;
 
 import java.net.MalformedURLException;
@@ -20,7 +20,7 @@ public class Request {
     private final boolean mPostQuery;
 
     private Map<String, Object> mQueryParameters;
-    private Map<String, String> mHeaders;
+    private Map<String, Object> mHeaders;
     private byte[] mPayload;
     private Token mToken;
     private String mSignature;
@@ -145,7 +145,7 @@ public class Request {
      * Gets the headers
      * @return Map of headers (null possible)
      */
-    public Map<String, String> getHeaders() {
+    public Map<String, Object> getHeaders() {
         return mHeaders;
     }
 
@@ -168,7 +168,7 @@ public class Request {
         }
 
         if (mHeaders == null) {
-            mHeaders = new LinkedHashMap<String, String>();
+            mHeaders = new LinkedHashMap<String, Object>();
         }
 
         String valueAsString = value.toString();

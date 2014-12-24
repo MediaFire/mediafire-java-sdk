@@ -1,24 +1,14 @@
 package com.mediafire.sdk.api;
 
-import com.mediafire.sdk.http.ApiVersion;
 import com.mediafire.sdk.http.Request;
 
-/**
- * Created by Chris on 11/9/2014.
- */
 public class ApiRequestGenerator {
 
-    private final String mApiVersion;
-
-    public ApiRequestGenerator() {
-        mApiVersion = ApiVersion.VERSION_1_2;
-    }
-
-    public Request createRequestObjectFromPath(String path) {
+    public static Request createRequestObjectFromPath(String path, String version) {
         String fullPath = "api/";
 
-        if (mApiVersion != null) {
-            fullPath += mApiVersion + "/";
+        if (version != null) {
+            fullPath += version + "/";
         }
 
         fullPath += path;
@@ -35,5 +25,9 @@ public class ApiRequestGenerator {
         Request request = builder.build();
         request.addQueryParameter("response_format", "json");
         return request;
+    }
+
+    public static Request createRequestObjectFromPath(String path) {
+        return createRequestObjectFromPath(path, null);
     }
 }

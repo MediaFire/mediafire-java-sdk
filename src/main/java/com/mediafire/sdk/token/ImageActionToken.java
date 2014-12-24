@@ -15,12 +15,4 @@ public class ImageActionToken extends ActionToken {
         super(tokenString, expirationMillis);
     }
 
-    /**
-     * ImageActionToken Constructor
-     * Adds the current system time to the expiration of the passed in token
-     * @param token ActionToken to get the token string and expiration from
-     */
-    public ImageActionToken(ActionToken token) {
-        super(token);
-    }
 }

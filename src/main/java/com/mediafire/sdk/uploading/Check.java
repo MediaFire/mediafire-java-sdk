@@ -28,6 +28,11 @@ class Check extends UploadRunnable {
 
     @Override
     public void run() {
+
+        if (!(mUpload instanceof Resumable.ResumableUpload)) {
+            mManager.uploadStarted(mUpload);
+        }
+
         Map<String, Object> requestParams;
         try {
             requestParams = makeQueryParams();

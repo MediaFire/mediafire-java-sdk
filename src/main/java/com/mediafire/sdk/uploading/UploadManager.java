@@ -311,7 +311,7 @@ public class UploadManager implements IUploadManager<Upload> {
     }
 
     void resumableProgress(Resumable.ResumableUpload upload, double percentFinished) {
-        for (IUploadListener listener :mListeners) {
+        for (IUploadListener listener : mListeners) {
             listener.resumableUpdate(upload.getId(), percentFinished);
         }
     }
@@ -322,6 +322,12 @@ public class UploadManager implements IUploadManager<Upload> {
             doPollUpload(upload, responsePollKey);
         } else {
             doCheckUpload(upload);
+        }
+    }
+
+    void uploadStarted(Upload mUpload) {
+        for (IUploadListener listener : mListeners) {
+            listener.uploadStarted(mUpload.getId());
         }
     }
 

@@ -67,7 +67,6 @@ class Resumable extends UploadRunnable {
                     return;
                 }
 
-
                 Map<String, Object> headerParams = makeHeaderParams(chunkNumber, chunkSize, chunkHash);
                 try {
                     yieldIfPaused();

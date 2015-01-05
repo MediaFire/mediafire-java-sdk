@@ -1,6 +1,7 @@
 package com.mediafire.sdk.api.clients;
 
 import com.mediafire.sdk.api.ApiRequestGenerator;
+import com.mediafire.sdk.api.Debug;
 import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.api.helpers.UseSessionToken;
 import com.mediafire.sdk.config.IHttp;
@@ -10,11 +11,12 @@ import com.mediafire.sdk.http.Result;
 
 import java.util.Map;
 
-public class FileClient {
+public class FileClient implements Debug {
 
     private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
     private final Instructions mInstructions;
+    private boolean mDebug;
 
     public FileClient(IHttp httpInterface, ITokenManager tokenManager) {
         mApiRequestGenerator = new ApiRequestGenerator();
@@ -24,6 +26,10 @@ public class FileClient {
     }
 
     public Result getInfo(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " getInfo, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_info.php");
 
         for (String key : requestParams.keySet()) {
@@ -35,6 +41,10 @@ public class FileClient {
     }
 
     public Result delete(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " delete, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/delete.php");
 
         for (String key : requestParams.keySet()) {
@@ -46,6 +56,10 @@ public class FileClient {
     }
 
     public Result copy(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " copy, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/copy.php");
 
         for (String key : requestParams.keySet()) {
@@ -57,6 +71,10 @@ public class FileClient {
     }
 
     public Result getVersion(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " getVersion, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_version.php");
 
         for (String key : requestParams.keySet()) {
@@ -68,6 +86,10 @@ public class FileClient {
     }
 
     public Result move(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " move, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/move.php");
 
         for (String key : requestParams.keySet()) {
@@ -79,6 +101,10 @@ public class FileClient {
     }
 
     public Result update(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " update, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/update.php");
 
         for (String key : requestParams.keySet()) {
@@ -90,6 +116,10 @@ public class FileClient {
     }
 
     public Result getLinks(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " getLinks, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_links.php");
 
         for (String key : requestParams.keySet()) {
@@ -98,5 +128,16 @@ public class FileClient {
         }
 
         return apiClient.doRequest(mInstructions, request);
+    }
+
+    @Override
+    public void debug(boolean debug) {
+        mDebug = debug;
+        mInstructions.debug(debug);
+    }
+
+    @Override
+    public boolean debugging() {
+        return mDebug;
     }
 }

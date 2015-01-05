@@ -1,6 +1,7 @@
 package com.mediafire.sdk.api.clients;
 
 import com.mediafire.sdk.api.ApiRequestGenerator;
+import com.mediafire.sdk.api.Debug;
 import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.api.helpers.UseSessionToken;
 import com.mediafire.sdk.config.IHttp;
@@ -10,10 +11,11 @@ import com.mediafire.sdk.http.Result;
 
 import java.util.Map;
 
-public class MetaClient {
+public class MetaClient implements Debug {
     private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
     private final Instructions mInstructions;
+    private boolean mDebug;
 
     public MetaClient(IHttp httpInterface, ITokenManager tokenManager) {
         // init host object
@@ -25,6 +27,10 @@ public class MetaClient {
 
 
     public Result addToList(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " addToList, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/add_to_list.php");
 
         for (String key : requestParams.keySet()) {
@@ -36,6 +42,10 @@ public class MetaClient {
     }
 
     public Result removeFromList(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " removeFromList, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/remove_from_list.php");
 
         for (String key : requestParams.keySet()) {
@@ -47,6 +57,10 @@ public class MetaClient {
     }
 
     public Result delete(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " delete, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/delete_property.php");
 
         for (String key : requestParams.keySet()) {
@@ -58,6 +72,10 @@ public class MetaClient {
     }
 
     public Result getProperty(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " getProperty, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/get.php");
 
         for (String key : requestParams.keySet()) {
@@ -69,6 +87,10 @@ public class MetaClient {
     }
 
     public Result getLinks(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " getLinks, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/get_links.php");
 
         for (String key : requestParams.keySet()) {
@@ -80,6 +102,10 @@ public class MetaClient {
     }
 
     public Result query(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " query, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/query.php");
 
         for (String key : requestParams.keySet()) {
@@ -91,6 +117,10 @@ public class MetaClient {
     }
 
     public Result setProperty(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " setProperty, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/set_property.php");
 
         for (String key : requestParams.keySet()) {
@@ -99,5 +129,16 @@ public class MetaClient {
         }
 
         return apiClient.doRequest(mInstructions, request);
+    }
+
+    @Override
+    public void debug(boolean debug) {
+        mDebug = debug;
+        mInstructions.debug(debug);
+    }
+
+    @Override
+    public boolean debugging() {
+        return mDebug;
     }
 }

@@ -13,12 +13,12 @@ dependencies {
     compile 'commons-codec:commons-codec:1.9'
 }
 
-// task to make jar from java files?
+// task to make jar from java files
 task sourceJar(type: Jar) {
     from sourceSets.main.java
 }
 
-def pVersion = '3.1.98-SNAPSHOT'
+def pVersion = '3.2.0-SNAPSHOT'
 
 publishing {
     publications {

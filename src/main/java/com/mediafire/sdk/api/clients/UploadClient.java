@@ -1,6 +1,7 @@
 package com.mediafire.sdk.api.clients;
 
 import com.mediafire.sdk.api.ApiRequestGenerator;
+import com.mediafire.sdk.api.Debug;
 import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.api.helpers.NoToken;
 import com.mediafire.sdk.api.helpers.UseActionToken;
@@ -11,12 +12,13 @@ import com.mediafire.sdk.http.Result;
 
 import java.util.Map;
 
-public class UploadClient {
+public class UploadClient implements Debug {
 
     private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient mApiClient;
     private final Instructions mInstructionsActionToken;
     private final Instructions mInstructionsNoToken;
+    private boolean mDebug;
 
     public UploadClient(IHttp httpInterface, ITokenManager tokenManager) {
         mApiRequestGenerator = new ApiRequestGenerator();
@@ -27,6 +29,10 @@ public class UploadClient {
     }
 
     public Result check(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " check, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/check.php");
 
 
@@ -39,6 +45,10 @@ public class UploadClient {
     }
 
     public Result instant(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " instant, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/instant.php");
 
         for (String key : requestParams.keySet()) {
@@ -50,6 +60,10 @@ public class UploadClient {
     }
 
     public Result pollUpload(Map<String, Object> requestParams) {
+        if (debugging()) {
+            System.out.println(getClass() + " pollUpload, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/poll_upload.php");
 
         for (String key : requestParams.keySet()) {
@@ -61,6 +75,10 @@ public class UploadClient {
     }
 
     public Result resumable(Map<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload) {
+        if (debugging()) {
+            System.out.println(getClass() + " resumable, params: " + requestParams);
+        }
+
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/resumable.php");
 
         for (String key : requestParams.keySet()) {
@@ -76,5 +94,17 @@ public class UploadClient {
         }
 
         return mApiClient.doRequest(mInstructionsActionToken, request);
+    }
+
+    @Override
+    public void debug(boolean debug) {
+        mDebug = debug;
+        mInstructionsNoToken.debug(debug);
+        mInstructionsActionToken.debug(debug);
+    }
+
+    @Override
+    public boolean debugging() {
+        return mDebug;
     }
 }

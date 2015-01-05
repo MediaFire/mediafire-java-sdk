@@ -33,7 +33,6 @@ public class TokenClient {
         mUploadTokenInstructions = new NewActionToken("upload", tokenManager);
     }
 
-
     public Result getSessionTokenV2() {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_session_token.php");
         request.addQueryParameter("token_version", "2");

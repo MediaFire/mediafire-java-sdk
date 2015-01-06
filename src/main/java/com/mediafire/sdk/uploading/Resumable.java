@@ -80,6 +80,9 @@ class Resumable extends UploadRunnable {
                 }
 
                 Map<String, Object> headerParams = makeHeaderParams(chunkNumber, chunkSize, chunkHash);
+                if (isDebugging()) {
+                    System.out.println(getClass() + "header params: " + headerParams);
+                }
                 try {
                     yieldIfPaused();
                 } catch (InterruptedException exception) {

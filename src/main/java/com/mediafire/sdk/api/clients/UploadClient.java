@@ -79,7 +79,8 @@ public class UploadClient implements Debug {
 
     public Result resumable(Map<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload) {
         if (debugging()) {
-            System.out.println(getClass() + " resumable, params: " + requestParams);
+            System.out.println(getClass() + " resumable, requestParams: " + requestParams);
+            System.out.println(getClass() + " resumable, headerParams: " + headerParameters);
         }
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/resumable.php");
@@ -92,7 +93,7 @@ public class UploadClient implements Debug {
         request.addPayload(payload);
 
         for (String key : headerParameters.keySet()) {
-            Object value = requestParams.get(key);
+            Object value = headerParameters.get(key);
             request.addHeader(key, value);
         }
 

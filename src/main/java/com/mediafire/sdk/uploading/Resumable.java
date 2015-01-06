@@ -136,7 +136,15 @@ class Resumable extends UploadRunnable {
                 mUpload.updateUploadBitmap(newCount, newWords);
             }
 
-            double percentFinished = 0.0;
+            int numUploaded = 0;
+            for (int chunkCount = 0; chunkCount < numUnits; chunkCount++) {
+                if (mUpload.isChunkUploaded(chunkCount)) {
+                    numUploaded++;
+                }
+            }
+
+            double percentFinished = (double) numUploaded / (double) numUnits;
+
             mManager.resumableProgress(mUpload, percentFinished);
         }
 

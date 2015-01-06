@@ -46,7 +46,7 @@ abstract class UploadRunnable implements Runnable {
         }
     }
 
-    public final boolean resultValid(Result result) {
+    public boolean resultValid(Result result) {
         if (result == null){
             return false;
         }

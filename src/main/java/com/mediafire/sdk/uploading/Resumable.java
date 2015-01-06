@@ -143,6 +143,39 @@ class Resumable extends UploadRunnable {
         mManager.resumableFinished(mUpload, responsePollKey, allUnitsReady);
     }
 
+    @Override
+    public boolean resultValid(Result result) {
+        if (result == null){
+            return false;
+        }
+
+        if (result.getResponse() == null) {
+            return false;
+        }
+
+        if (result.getResponse().getBytes() == null) {
+            return false;
+        }
+
+        if (result.getResponse().getHeaderFields() == null) {
+            return false;
+        }
+
+        if (!result.getResponse().getHeaderFields().containsKey("Content-Type")) {
+            return false;
+        }
+
+        List<String> contentTypeHeaders = result.getResponse().getHeaderFields().get("Content-Type");
+
+        // TODO(cnajar) - once MFBU is fixed and returning the correct Content-Type in the response headers, this
+        // TODO(cnajar) -          override method from UploadRunnable can be removed.
+//        if (!contentTypeHeaders.contains("application/json")) {
+//            return false;
+//        }
+
+        return true;
+    }
+
     private byte[] makeChunk(int unitSize, int chunkNumber) throws IOException {
         if (isDebugging()) {
             System.out.println(getClass() + " - makeChunk");

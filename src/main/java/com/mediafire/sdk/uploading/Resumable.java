@@ -144,7 +144,7 @@ class Resumable extends UploadRunnable {
             }
 
             double percentFinished = (double) numUploaded / (double) numUnits;
-
+            percentFinished *= 100;
             mManager.resumableProgress(mUpload, percentFinished);
         }
 

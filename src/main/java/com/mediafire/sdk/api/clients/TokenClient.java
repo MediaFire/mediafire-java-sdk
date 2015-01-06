@@ -42,6 +42,7 @@ public class TokenClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_session_token.php");
         request.addQueryParameter("token_version", "2");
+
         return mApiClient.doRequest(mSessionTokenInstructions, request);
     }
 
@@ -52,6 +53,8 @@ public class TokenClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_action_token.php");
         request.addQueryParameter("lifespan", lifespan);
+        request.addQueryParameter("type", "upload");
+
         return mApiClient.doRequest(mUploadTokenInstructions, request);
     }
 
@@ -62,6 +65,8 @@ public class TokenClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_action_token.php");
         request.addQueryParameter("lifespan", lifespan);
+        request.addQueryParameter("type", "image");
+
         return mApiClient.doRequest(mImageTokenInstructions, request);
     }
 

@@ -18,6 +18,7 @@ public class ApiRequestGenerator {
 
         if (path.equalsIgnoreCase("upload/resumable.php")) {
             builder.postQuery(false);
+            builder.scheme("http");
         } else {
             builder.postQuery(true);
         }

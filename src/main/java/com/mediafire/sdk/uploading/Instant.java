@@ -26,6 +26,9 @@ class Instant extends UploadRunnable {
 
     @Override
     public void run() {
+        if (isDebugging()) {
+            System.out.println(getClass() + " - run");
+        }
 
         Map<String, Object> requestParams = makeQueryParams();
 
@@ -70,6 +73,9 @@ class Instant extends UploadRunnable {
 
     @Override
     protected Map<String, Object> makeQueryParams() {
+        if (isDebugging()) {
+            System.out.println(getClass() + " - makeQueryParams");
+        }
         String hash = mUpload.getHash();
         long size = mUpload.getFile().length();
         String customFileName = mUpload.getOptions().getCustomFileName();

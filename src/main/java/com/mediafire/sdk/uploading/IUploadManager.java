@@ -14,6 +14,8 @@ interface IUploadManager<T extends Upload> {
 
     public void resume();
 
+    public boolean isPaused();
+
     public List<T> getQueuedUploads();
 
     public List<UploadRunnable> getRunningUploads();

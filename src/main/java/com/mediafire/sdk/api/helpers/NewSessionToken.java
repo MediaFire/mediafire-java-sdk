@@ -89,11 +89,11 @@ public class NewSessionToken extends Instructions {
     private void addRequiredParametersForNewSessionToken(Request request) {
         IUserCredentials.Credentials credentials = mUserCredentials.getCredentials();
 
-        if (debugging()) {
-            System.out.println(getClass() + " - addRequiredParametersForNewSessionToken, credentials class " + credentials.getClass());
-        }
-
-        if (credentials instanceof IUserCredentials.Ekey) {
+        if (credentials == null) {
+            if (debugging()) {
+                System.out.println(getClass() + " - addRequiredParametersForNewSessionToken, credentials null, no params added");
+            }
+        } else if (credentials instanceof IUserCredentials.Ekey) {
             request.addQueryParameter("ekey", ((IUserCredentials.Ekey) credentials).getEkey());
             request.addQueryParameter("password", ((IUserCredentials.Ekey) credentials).getPassword());
         } else if (credentials instanceof IUserCredentials.Email) {
@@ -105,7 +105,10 @@ public class NewSessionToken extends Instructions {
             request.addQueryParameter("tw_oauth_token", ((IUserCredentials.Twitter) credentials).getOauthToken());
             request.addQueryParameter("tw_oauth_token_secret", ((IUserCredentials.Twitter) credentials).getTokenSecret());
         } else {
-
+            if (debugging()) {
+                System.out.println(getClass() + " - addRequiredParametersForNewSessionToken, " +
+                        "credentials unknown class: " + credentials.getClass() + ", no params added");
+            }
         }
 
         request.addQueryParameter("application_id", mDeveloperCredentials.getApplicationId());

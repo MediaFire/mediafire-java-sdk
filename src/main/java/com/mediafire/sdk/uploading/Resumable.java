@@ -33,6 +33,10 @@ class Resumable extends UploadRunnable {
 
     @Override
     public void run() {
+        if (isDebugging()) {
+            System.out.println(getClass() + " - run");
+        }
+
         Map<String, Object> requestParams = makeQueryParams();
 
         long fileSize = mUpload.getFile().length();
@@ -43,7 +47,15 @@ class Resumable extends UploadRunnable {
         String responsePollKey = null;
         boolean allUnitsReady = false;
 
+        if (isDebugging()) {
+            System.out.println(getClass() + " - run - expecting loop count " + numUnits);
+        }
+
         for (int chunkNumber = 0; chunkNumber < numUnits; chunkNumber++) {
+            if (isDebugging()) {
+                System.out.println(getClass() + " - run - loop #" + chunkNumber);
+            }
+
             try {
                 yieldIfPaused();
             } catch (InterruptedException exception) {
@@ -125,6 +137,9 @@ class Resumable extends UploadRunnable {
     }
 
     private byte[] makeChunk(int unitSize, int chunkNumber) throws IOException {
+        if (isDebugging()) {
+            System.out.println(getClass() + " - makeChunk");
+        }
         // generate the chunk
         FileInputStream fis = new FileInputStream(mUpload.getFile());
         BufferedInputStream bis = new BufferedInputStream(fis);
@@ -135,6 +150,9 @@ class Resumable extends UploadRunnable {
     }
 
     private int getChunkSize(int chunkNumber, int numChunks, long fileSize, int unitSize) {
+        if (isDebugging()) {
+            System.out.println(getClass() + " - getChunkSize");
+        }
         int chunkSize;
         if (chunkNumber >= numChunks) {
             chunkSize = 0; // represents bad size
@@ -152,6 +170,9 @@ class Resumable extends UploadRunnable {
     }
 
     private byte[] createUploadChunk(long unitSize, int chunkNumber, BufferedInputStream fileStream) throws IOException {
+        if (isDebugging()) {
+            System.out.println(getClass() + " - createUploadChunk");
+        }
         int offset = (int) (unitSize * chunkNumber);
         fileStream.skip(offset);
 
@@ -182,6 +203,9 @@ class Resumable extends UploadRunnable {
 
     @Override
     protected Map<String, Object> makeQueryParams() {
+        if (isDebugging()) {
+            System.out.println(getClass() + " - makeQueryParams");
+        }
         String folderKey = mUpload.getOptions().getUploadFolderKey();
         String uploadPath = mUpload.getOptions().getUploadPath();
         String actionOnDuplicate = "keep";
@@ -204,6 +228,9 @@ class Resumable extends UploadRunnable {
     }
 
     private Map<String, Object> makeHeaderParams(int unitId, int chunkSize, String chunkHash) {
+        if (isDebugging()) {
+            System.out.println(getClass() + " - makeHeaderParams");
+        }
         long fileSize = mUpload.getFile().length();
         String fileHash = mUpload.getHash();
 

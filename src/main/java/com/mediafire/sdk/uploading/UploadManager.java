@@ -43,20 +43,33 @@ public class UploadManager implements IUploadManager<Upload> {
     }
 
     public void addListener(IUploadListener uploadListener) {
+        if (mDebug) {
+            System.out.println(getClass() + " - addListener");
+        }
         mListeners.add(uploadListener);
     }
 
     public void removeListener(IUploadListener uploadListener) {
+        if (mDebug) {
+            System.out.println(getClass() + " - removeListener");
+        }
         mListeners.remove(uploadListener);
     }
 
     @Override
     public void addUpload(Upload upload) {
+        if (mDebug) {
+            System.out.println(getClass() + " - addUpload");
+        }
+
         mUploadList.add(upload);
     }
 
     @Override
     public void purge(boolean shutdown) {
+        if (mDebug) {
+            System.out.println(getClass() + " - purge");
+        }
         mUploadList.clear();
         mExecutor.getQueue().clear();
 
@@ -67,37 +80,70 @@ public class UploadManager implements IUploadManager<Upload> {
 
     @Override
     public void pause() {
+        if (mDebug) {
+            System.out.println(getClass() + " - pause");
+        }
         mExecutor.pause();
     }
 
     @Override
     public void resume() {
+        if (mDebug) {
+            System.out.println(getClass() + " - resume");
+        }
         mExecutor.resume();
         startNextAvailableUpload();
     }
 
     @Override
+    public boolean isPaused() {
+        if (mDebug) {
+            System.out.println(getClass() + " - isPaused");
+        }
+        return mExecutor.isPaused();
+    }
+
+    @Override
     public List<Upload> getQueuedUploads() {
+        if (mDebug) {
+            System.out.println(getClass() + " - getQueuedUploads");
+        }
         return mUploadList;
     }
 
     public BlockingQueue<Runnable> getQueuedRunnables() {
+        if (mDebug) {
+            System.out.println(getClass() + " - getQueuedRunnables");
+        }
         return mExecutor.getQueue();
     }
 
     @Override
     public List<UploadRunnable> getRunningUploads() {
+        if (mDebug) {
+            System.out.println(getClass() + " - getRunningUploads");
+        }
         return mExecutor.getRunningTasks();
     }
 
     @Override
     public void startNextAvailableUpload() {
-        if (!mExecutor.isPaused()) {
+        if (mDebug) {
+            System.out.println(getClass() + " - startNextAvailableUpload");
+        }
+
+        if (mExecutor.isPaused()) {
+            if (mDebug) {
+                System.out.println(getClass() + " - startNextAvailableUpload - executor paused, not starting an upload");
+            }
             return;
         }
 
         synchronized (mUploadListLock) {
-            while (!mUploadList.isEmpty() && mExecutor.getMaximumPoolSize() > mExecutor.getRunningTasks().size()) {
+            if (mDebug) {
+                System.out.println(getClass() + " - startNextAvailableUpload - begin start attempt");
+            }
+            while (!mUploadList.isEmpty() && mExecutor.getMaximumPoolSize() >= mExecutor.getRunningTasks().size()) {
                 if (!mUploadList.isEmpty()) {
                     Upload upload = mUploadList.get(0);
                     mUploadList.remove(0);
@@ -110,6 +156,9 @@ public class UploadManager implements IUploadManager<Upload> {
 
     @Override
     public void sortQueueByFileSize(boolean ascending) {
+        if (mDebug) {
+            System.out.println(getClass() + " - sortQueueByFileSize");
+        }
         if (!mExecutor.isPaused()) {
             return;
         }
@@ -148,6 +197,9 @@ public class UploadManager implements IUploadManager<Upload> {
 
     @Override
     public void moveToFrontOfQueue(long id) {
+        if (mDebug) {
+            System.out.println(getClass() + " - moveToFrontOfQueue");
+        }
         if (!mExecutor.isPaused()) {
             return;
         }
@@ -175,6 +227,9 @@ public class UploadManager implements IUploadManager<Upload> {
 
     @Override
     public void moveToEndOfQueue(long id) {
+        if (mDebug) {
+            System.out.println(getClass() + " - moveToEndOfQueue");
+        }
         if (!mExecutor.isPaused()) {
             return;
         }
@@ -201,6 +256,9 @@ public class UploadManager implements IUploadManager<Upload> {
     }
 
     void exceptionDuringUpload(State state, Exception exception, Upload upload) {
+        if (mDebug) {
+            System.out.println(getClass() + " - exceptionDuringUpload - exception: " + exception + ", upload id: " + upload.getId());
+        }
         for (IUploadListener listener : mListeners) {
             listener.uploadCancelledException(upload.getId(), exception, state);
         }
@@ -209,6 +267,10 @@ public class UploadManager implements IUploadManager<Upload> {
     }
 
     void resultInvalidDuringUpload(State state, Result result, Upload upload) {
+        if (mDebug) {
+            System.out.println(getClass() + " - addListener - state: " + state + ", upload id: " + upload.getId());
+        }
+
         for (IUploadListener listener : mListeners) {
             listener.uploadCancelledResultInvalid(upload.getId(), result, state);
         }
@@ -217,6 +279,10 @@ public class UploadManager implements IUploadManager<Upload> {
     }
 
     void responseObjectNull(State state, Result result, Upload upload) {
+        if (mDebug) {
+            System.out.println(getClass() + " - responseObjectNull - state: " + state + ", upload id: " + upload.getId());
+        }
+
         for (IUploadListener listener : mListeners) {
             listener.uploadCancelledResponseObjectInvalid(upload.getId(), result, state);
         }
@@ -225,6 +291,10 @@ public class UploadManager implements IUploadManager<Upload> {
     }
 
     void storageLimitExceeded(State state, Upload upload) {
+        if (mDebug) {
+            System.out.println(getClass() + " - storageLimitExceeded - state: " + state + ", upload id: " + upload.getId());
+        }
+
         for (IUploadListener listener : mListeners) {
             listener.uploadCancelledStorageLimitExceeded(upload.getId(), state);
         }
@@ -233,6 +303,10 @@ public class UploadManager implements IUploadManager<Upload> {
     }
 
     void fileLargerThanStorageSpaceAvailable(State state, Upload upload) {
+        if (mDebug) {
+            System.out.println(getClass() + " - fileLargerThanStorageSpaceAvailable - state: " + state + ", upload id: " + upload.getId());
+        }
+
         for (IUploadListener listener : mListeners) {
             listener.uploadCancelledFileLargerThanStorageSpaceAvailable(upload.getId(), state);
         }
@@ -257,17 +331,25 @@ public class UploadManager implements IUploadManager<Upload> {
     }
 
     void checkFinished(Instant.InstantUpload upload, CheckResponse checkResponse) {
+        if (mDebug) {
+            System.out.println(getClass() + " - checkFinished - upload id: " + upload.getId());
+        }
         // does the hash exist in the account?
         if (checkResponse.doesHashExistInAccount()) {
             boolean inFolder = checkResponse.isInFolder();
-            switch (upload.getOptions().getActionOnInAccount()) {
+            Upload.Options.ActionOnInAccount actionOnInAccount = upload.getOptions().getActionOnInAccount();
+            System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount);
+            switch (actionOnInAccount) {
                 case UPLOAD_ALWAYS:
+                    System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", uploading (upload always)");
                     doInstantUpload(upload);
                     break;
                 case UPLOAD_IF_NOT_IN_FOLDER:
                     if (!inFolder) {
+                        System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", uploading (not in folder)");
                         doInstantUpload(upload);
                     } else {
+                        System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", not uploading (already in folder)");
                         for (IUploadListener listener : mListeners) {
                             listener.uploadFinished(upload.getId(), checkResponse.getDuplicateQuickkey());
                         }
@@ -275,6 +357,7 @@ public class UploadManager implements IUploadManager<Upload> {
                     break;
                 case DO_NOT_UPLOAD:
                 default:
+                    System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", not uploading (do not upload)");
                     for (IUploadListener listener : mListeners) {
                         listener.uploadFinished(upload.getId(), checkResponse.getDuplicateQuickkey());
                     }
@@ -294,6 +377,10 @@ public class UploadManager implements IUploadManager<Upload> {
     }
 
     void pollFinished(Poll.PollUpload upload, String quickKey) {
+        if (mDebug) {
+            System.out.println(getClass() + " - pollFinished - upload id: " + upload.getId() + ", quickKey: " + quickKey);
+        }
+
         for (IUploadListener listener : mListeners) {
             listener.uploadFinished(upload.getId(), quickKey);
         }
@@ -301,12 +388,20 @@ public class UploadManager implements IUploadManager<Upload> {
     }
 
     void pollUpdate(Poll.PollUpload upload, int status) {
+        if (mDebug) {
+            System.out.println(getClass() + " - pollUpdate - upload id: " + upload.getId() + ", status #" + status);
+        }
+
         for (IUploadListener listener : mListeners) {
             listener.pollUpdate(upload.getId(), status);
         }
     }
 
     void pollMaxAttemptsReached(Poll.PollUpload upload) {
+        if (mDebug) {
+            System.out.println(getClass() + " - pollMaxAttemptsReached - upload id: " + upload.getId());
+        }
+
         for (IUploadListener listener : mListeners) {
             listener.uploadCancelledPollAttempts(upload.getId());
         }
@@ -314,6 +409,10 @@ public class UploadManager implements IUploadManager<Upload> {
     }
 
     void instantFinished(Instant.InstantUpload upload, String quickKey) {
+        if (mDebug) {
+            System.out.println(getClass() + " - instantFinished - upload id: " + upload.getId() + ", quickKey: " + quickKey);
+        }
+
         for (IUploadListener listener : mListeners) {
             listener.uploadFinished(upload.getId(), quickKey);
         }
@@ -321,6 +420,10 @@ public class UploadManager implements IUploadManager<Upload> {
     }
 
     void apiError(State state, Upload upload, ApiResponse response, Result result) {
+        if (mDebug) {
+            System.out.println(getClass() + " - apiError - state: " + state + ", upload id: " + upload.getId() +", api error message: " + response.getMessage());
+        }
+
         for (IUploadListener listener : mListeners) {
             listener.uploadCancelledApiError(upload.getId(), state, response, result);
         }
@@ -328,12 +431,20 @@ public class UploadManager implements IUploadManager<Upload> {
     }
 
     void resumableProgress(Resumable.ResumableUpload upload, double percentFinished) {
+        if (mDebug) {
+            System.out.println(getClass() + " - resumableProgress - upload id: " + upload.getId() + ", %completed: " + percentFinished);
+        }
+
         for (IUploadListener listener : mListeners) {
             listener.resumableUpdate(upload.getId(), percentFinished);
         }
     }
 
     void resumableFinished(Resumable.ResumableUpload upload, String responsePollKey, boolean allUnitsReady) {
+        if (mDebug) {
+            System.out.println(getClass() + " - resumableFinished - upload id: " + upload.getId() + ", responsePollKey: " + responsePollKey);
+        }
+
         // poll if poll key exists and all units ready
         if (responsePollKey != null && allUnitsReady) {
             doPollUpload(upload, responsePollKey);
@@ -342,29 +453,52 @@ public class UploadManager implements IUploadManager<Upload> {
         }
     }
 
-    void uploadStarted(Upload mUpload) {
+    void uploadStarted(Upload upload) {
+        if (mDebug) {
+            System.out.println(getClass() + " - uploadStarted - upload id: " + upload.getId());
+        }
+
         for (IUploadListener listener : mListeners) {
-            listener.uploadStarted(mUpload.getId());
+            listener.uploadStarted(upload.getId());
         }
     }
 
     private void doCheckUpload(Resumable.ResumableUpload upload) {
+        if (mDebug) {
+            System.out.println(getClass() + " - doCheckUpload - upload id: " + upload.getId());
+        }
+
         Check check = new Check(upload, mHttp, mTokenManager, this);
+        check.debug(mDebug);
         mExecutor.execute(check);
     }
 
     private void doPollUpload(Resumable.ResumableUpload upload, String responsePollKey) {
+        if (mDebug) {
+            System.out.println(getClass() + " - doPollUpload - upload id: " + upload.getId());
+        }
+
         Poll.PollUpload pollUpload = new Poll.PollUpload(upload, responsePollKey);
         Poll poll = new Poll(pollUpload, mHttp, mTokenManager, this);
+        poll.debug(mDebug);
         mExecutor.execute(poll);
     }
 
     private void doInstantUpload(Instant.InstantUpload upload) {
+        if (mDebug) {
+            System.out.println(getClass() + " - doInstantUpload - upload id: " + upload.getId());
+        }
+
         Instant instant = new Instant(upload, mHttp, mTokenManager, this);
+        instant.debug(mDebug);
         mExecutor.execute(instant);
     }
 
     private void doResumableUpload(Instant.InstantUpload upload, CheckResponse checkResponse) {
+        if (mDebug) {
+            System.out.println(getClass() + " - doResumableUpload - upload id: " + upload.getId());
+        }
+
         ResumableUpload resumableUploadObj = checkResponse.getResumableUpload();
         int numUnits = resumableUploadObj.getNumberOfUnits();
         int unitSize = resumableUploadObj.getUnitSize();
@@ -373,6 +507,7 @@ public class UploadManager implements IUploadManager<Upload> {
 
         Resumable.ResumableUpload resumableUpload = new Resumable.ResumableUpload(upload, upload.getHash(), numUnits, unitSize, count, words);
         Resumable resumable = new Resumable(resumableUpload, mHttp, mTokenManager, this);
+        resumable.debug(mDebug);
         mExecutor.execute(resumable);
     }
 

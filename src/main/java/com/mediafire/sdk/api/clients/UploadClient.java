@@ -5,6 +5,7 @@ import com.mediafire.sdk.api.Debug;
 import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.api.helpers.NoToken;
 import com.mediafire.sdk.api.helpers.UseActionToken;
+import com.mediafire.sdk.api.helpers.UseSessionToken;
 import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Request;
@@ -18,6 +19,7 @@ public class UploadClient implements Debug {
     private final ApiClient mApiClient;
     private final Instructions mInstructionsActionToken;
     private final Instructions mInstructionsNoToken;
+    private final Instructions mInstructionsSessionToken;
     private boolean mDebug;
 
     public UploadClient(IHttp httpInterface, ITokenManager tokenManager) {
@@ -25,6 +27,7 @@ public class UploadClient implements Debug {
 
         mInstructionsNoToken = new NoToken();
         mInstructionsActionToken = new UseActionToken("upload", tokenManager);
+        mInstructionsSessionToken = new UseSessionToken(tokenManager);
         mApiClient = new ApiClient(httpInterface);
     }
 
@@ -41,7 +44,7 @@ public class UploadClient implements Debug {
             request.addQueryParameter(key, value);
         }
 
-        return mApiClient.doRequest(mInstructionsActionToken, request);
+        return mApiClient.doRequest(mInstructionsSessionToken, request);
     }
 
     public Result instant(Map<String, Object> requestParams) {
@@ -56,7 +59,7 @@ public class UploadClient implements Debug {
             request.addQueryParameter(key, value);
         }
 
-        return mApiClient.doRequest(mInstructionsActionToken, request);
+        return mApiClient.doRequest(mInstructionsSessionToken, request);
     }
 
     public Result pollUpload(Map<String, Object> requestParams) {

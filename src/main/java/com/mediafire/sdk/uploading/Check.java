@@ -28,7 +28,9 @@ class Check extends UploadRunnable {
 
     @Override
     public void run() {
-
+        if (isDebugging()) {
+            System.out.println(getClass() + " - run");
+        }
         if (!(mUpload instanceof Resumable.ResumableUpload)) {
             mManager.uploadStarted(mUpload);
         }
@@ -98,6 +100,9 @@ class Check extends UploadRunnable {
 
     @Override
     protected Map<String, Object> makeQueryParams() throws IOException, NoSuchAlgorithmException {
+        if (isDebugging()) {
+            System.out.println(getClass() + " - makeQueryParams");
+        }
         String customFileName = mUpload.getOptions().getCustomFileName();
         String hash = Hasher.getSHA256Hash(mUpload.getFile());
         long size = mUpload.getFile().length();

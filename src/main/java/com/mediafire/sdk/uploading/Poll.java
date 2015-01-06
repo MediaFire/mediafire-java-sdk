@@ -46,6 +46,9 @@ class Poll extends UploadRunnable {
 
     @Override
     public void run() {
+        if (isDebugging()) {
+            System.out.println(getClass() + " - run");
+        }
         Map<String, Object> requestParameters = makeQueryParams();
         int pollCount = 0;
 
@@ -116,6 +119,10 @@ class Poll extends UploadRunnable {
 
     @Override
     protected Map<String, Object> makeQueryParams() {
+        if (isDebugging()) {
+            System.out.println(getClass() + " - makeQueryParams");
+        }
+
         String key = mUpload.getPollingKey();
 
         String responseFormat = "json";

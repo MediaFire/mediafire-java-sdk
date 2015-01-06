@@ -18,6 +18,7 @@ abstract class UploadRunnable implements Runnable {
 
     private final UploadClient mUploadClient;
     private boolean mPaused;
+    private boolean mDebug;
 
     public UploadRunnable(IHttp http, ITokenManager tokenManager) {
         mUploadClient = new UploadClient(http, tokenManager);
@@ -28,6 +29,9 @@ abstract class UploadRunnable implements Runnable {
     }
 
     public final String getResponseStringForGson(String response) {
+        if (isDebugging()) {
+            System.out.println(getClass() + " - getResponseStringForGson - response: " + response);
+        }
         if (response == null || response.isEmpty()) {
             return null;
         }
@@ -96,5 +100,13 @@ abstract class UploadRunnable implements Runnable {
                 throw new InterruptedException("Runnable interrupted while in pause state");
             }
         }
+    }
+
+    public void debug(boolean on) {
+        mDebug = on;
+    }
+
+    public boolean isDebugging() {
+        return mDebug;
     }
 }

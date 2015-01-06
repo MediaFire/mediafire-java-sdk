@@ -338,18 +338,23 @@ public class UploadManager implements IUploadManager<Upload> {
         if (checkResponse.doesHashExistInAccount()) {
             boolean inFolder = checkResponse.isInFolder();
             Upload.Options.ActionOnInAccount actionOnInAccount = upload.getOptions().getActionOnInAccount();
-            System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount);
             switch (actionOnInAccount) {
                 case UPLOAD_ALWAYS:
-                    System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", uploading (upload always)");
+                    if (mDebug) {
+                        System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", uploading (upload always)");
+                    }
                     doInstantUpload(upload);
                     break;
                 case UPLOAD_IF_NOT_IN_FOLDER:
                     if (!inFolder) {
-                        System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", uploading (not in folder)");
+                        if (mDebug) {
+                            System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", uploading (not in folder)");
+                        }
                         doInstantUpload(upload);
                     } else {
-                        System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", not uploading (already in folder)");
+                        if (mDebug) {
+                            System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", not uploading (already in folder)");
+                        }
                         for (IUploadListener listener : mListeners) {
                             listener.uploadFinished(upload.getId(), checkResponse.getDuplicateQuickkey());
                         }
@@ -357,7 +362,9 @@ public class UploadManager implements IUploadManager<Upload> {
                     break;
                 case DO_NOT_UPLOAD:
                 default:
-                    System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", not uploading (do not upload)");
+                    if (mDebug) {
+                        System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", not uploading (do not upload)");
+                    }
                     for (IUploadListener listener : mListeners) {
                         listener.uploadFinished(upload.getId(), checkResponse.getDuplicateQuickkey());
                     }

@@ -39,6 +39,10 @@ class Resumable extends UploadRunnable {
 
         Map<String, Object> requestParams = makeQueryParams();
 
+        String customFileName = mUpload.getOptions().getCustomFileName();
+
+        String filename = customFileName != null ? customFileName : mUpload.getFile().getName();
+
         long fileSize = mUpload.getFile().length();
 
         int numUnits = mUpload.getNumberOfUnits();
@@ -79,7 +83,7 @@ class Resumable extends UploadRunnable {
                     return;
                 }
 
-                Map<String, Object> headerParams = makeHeaderParams(chunkNumber, chunkSize, chunkHash);
+                Map<String, Object> headerParams = makeHeaderParams(chunkNumber, chunkSize, chunkHash, filename);
                 if (isDebugging()) {
                     System.out.println(getClass() + "header params: " + headerParams);
                 }
@@ -230,7 +234,7 @@ class Resumable extends UploadRunnable {
         return requestParams;
     }
 
-    private Map<String, Object> makeHeaderParams(int unitId, int chunkSize, String chunkHash) {
+    private Map<String, Object> makeHeaderParams(int unitId, int chunkSize, String chunkHash, String filename) {
         if (isDebugging()) {
             System.out.println(getClass() + " - makeHeaderParams");
         }
@@ -244,6 +248,7 @@ class Resumable extends UploadRunnable {
         headerParams.put("x-unit-hash", chunkHash);
         headerParams.put("x-unit-id", unitId);
         headerParams.put("x-unit-size", chunkSize);
+        headerParams.put("x-filename", filename);
 
         return headerParams;
     }

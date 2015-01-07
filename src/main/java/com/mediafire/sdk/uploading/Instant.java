@@ -117,7 +117,7 @@ class Instant extends UploadRunnable {
         private String mHash;
 
         public InstantUpload(Upload upload, String hash) {
-            super(upload.getId(), upload.getFile(), upload.getOptions());
+            super(upload.getId(), upload.getFile(), upload.getOptions(), upload.getInfo());
             mHash = hash;
         }
 

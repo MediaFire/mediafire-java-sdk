@@ -140,7 +140,7 @@ class Poll extends UploadRunnable {
         private String mPollingKey;
 
         public PollUpload(Upload upload, String pollingKey) {
-            super(upload.getId(), upload.getFile(), upload.getOptions());
+            super(upload.getId(), upload.getFile(), upload.getOptions(), upload.getInfo());
             mPollingKey = pollingKey;
         }
 

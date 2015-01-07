@@ -2,24 +2,29 @@ package com.mediafire.sdk.uploading;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Created by Chris on 12/22/2014.
  */
 public class Upload {
-    private long mId;
+    private final long mId;
     private final File mFile;
     private final Options mOptions;
     private final HashMap<String, Object> mInfo;
 
-    public Upload(long id, File file, Options options) {
+    Upload(long id, File file, Options options, HashMap<String, Object> info) {
         mId = id;
         mFile = file;
         if (options == null) {
             options = new Options.Builder().build();
         }
         mOptions = options;
-        mInfo = new HashMap<String, Object>();
+        mInfo = info;
+    }
+
+    public Upload(long id, File file, Options options) {
+        this(id, file, options, new HashMap<String, Object>());
     }
 
     public Upload(long id, File file) {

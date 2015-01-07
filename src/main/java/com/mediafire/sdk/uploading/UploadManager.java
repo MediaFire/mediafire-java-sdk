@@ -410,7 +410,7 @@ public class UploadManager implements IUploadManager<Upload> {
         }
 
         for (IUploadListener listener : mListeners) {
-            listener.uploadCancelledPollAttempts(upload.getId());
+            listener.uploadCancelledPollAttempts(upload.getId(), upload.getInfo());
         }
         startNextAvailableUpload();
     }
@@ -466,7 +466,7 @@ public class UploadManager implements IUploadManager<Upload> {
         }
 
         for (IUploadListener listener : mListeners) {
-            listener.uploadStarted(upload.getId());
+            listener.uploadStarted(upload.getId(), upload.getInfo());
         }
     }
 

@@ -15,12 +15,12 @@ public interface IUploadListener {
     public void uploadCancelledResponseObjectInvalid(long id, Map<String, Object> uploadInfo, Result result, State state);
     public void uploadCancelledStorageLimitExceeded(long id, Map<String, Object> uploadInfo, State state);
     public void uploadCancelledFileLargerThanStorageSpaceAvailable(long id, Map<String, Object> uploadInfo, State state);
-    public void uploadCancelledPollAttempts(long id);
+    public void uploadCancelledPollAttempts(long id, Map<String, Object> uploadInfo);
     public void uploadCancelledApiError(long id, Map<String, Object> uploadInfo, State state, ApiResponse response, Result result);
     public void uploadCancelledApiResponseMissingResumableUpload(long id, Map<String, Object> uploadInfo, CheckResponse apiResponse, Result result);
     public void uploadCancelledApiResponseMissingBitmap(long id, Map<String, Object> uploadInfo, CheckResponse apiResponse, Result result);
 
-    public void uploadStarted(long id);
+    public void uploadStarted(long id, Map<String, Object> uploadInfo);
     public void uploadFinished(long id, Map<String, Object> uploadInfo, String quickKey);
     public void pollUpdate(long id, Map<String, Object> uploadInfo, int status);
     public void resumableUpdate(long id, Map<String, Object> uploadInfo, double percentFinished);

@@ -1,6 +1,7 @@
 package com.mediafire.sdk.uploading;
 
 import java.io.File;
+import java.util.HashMap;
 
 /**
  * Created by Chris on 12/22/2014.
@@ -9,6 +10,7 @@ public class Upload {
     private long mId;
     private final File mFile;
     private final Options mOptions;
+    private final HashMap<String, Object> mInfo;
 
     public Upload(long id, File file, Options options) {
         mId = id;
@@ -17,6 +19,7 @@ public class Upload {
             options = new Options.Builder().build();
         }
         mOptions = options;
+        mInfo = new HashMap<String, Object>();
     }
 
     public Upload(long id, File file) {
@@ -41,6 +44,14 @@ public class Upload {
 
     public long getId() {
         return mId;
+    }
+
+    public void addInfo(String key, Object value) {
+        mInfo.put(key, value);
+    }
+
+    public HashMap<String, Object> getInfo() {
+        return mInfo;
     }
 
     /**

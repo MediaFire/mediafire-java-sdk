@@ -7,10 +7,11 @@ import com.mediafire.sdk.config.IHttp;
 import com.mediafire.sdk.config.ITokenManager;
 import com.mediafire.sdk.http.Result;
 
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Chris on 12/22/2014.
@@ -18,10 +19,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public class UploadManager implements IUploadManager<Upload> {
 
     private final ArrayList<IUploadListener> mListeners;
-    private final PausableExecutor mExecutor;
     private final IHttp mHttp;
     private final ITokenManager mTokenManager;
     private final LinkedList<Upload> mUploadList;
+    private final PausableExecutor mExecutor;
 
     // debugging
     private boolean mDebug;
@@ -29,13 +30,12 @@ public class UploadManager implements IUploadManager<Upload> {
     // lock
     private Object mUploadListLock = new Object();
 
-    public UploadManager(int numUploads, IHttp http, ITokenManager tokenManager) {
+    public UploadManager(IHttp http, ITokenManager tokenManager, PausableExecutor executor) {
         mHttp = http;
         mTokenManager = tokenManager;
         mUploadList = new LinkedList<Upload>();
         mListeners = new ArrayList<IUploadListener>();
-        LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
-        mExecutor = new PausableExecutor(1, numUploads, 1, TimeUnit.SECONDS, workQueue);
+        mExecutor = executor;
     }
 
     public void debug(boolean on) {
@@ -518,74 +518,4 @@ public class UploadManager implements IUploadManager<Upload> {
         mExecutor.execute(resumable);
     }
 
-    private class PausableExecutor extends ThreadPoolExecutor {
-        private boolean isPaused;
-        private final ReentrantLock pauseLock = new ReentrantLock();
-        private final Condition unpaused = pauseLock.newCondition();
-        private final List<UploadRunnable> mRunning = Collections.synchronizedList(new ArrayList<UploadRunnable>());
-
-        public PausableExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
-            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
-        }
-
-        @Override
-        protected void beforeExecute(Thread t, Runnable r) {
-            super.beforeExecute(t, r);
-            pauseLock.lock();
-            try {
-                while (isPaused) {
-                    unpaused.await();
-                }
-            } catch (InterruptedException ie) {
-                t.interrupt();
-            } finally {
-                pauseLock.unlock();
-            }
-
-            mRunning.add((UploadRunnable) r);
-        }
-
-        @Override
-        public void afterExecute(Runnable r, Throwable t) {
-            super.afterExecute(r, t);
-            if (r instanceof UploadRunnable) {
-                UploadRunnable runnable = (UploadRunnable) r;
-                mRunning.remove(runnable);
-            }
-        }
-
-        public void pause() {
-            pauseLock.lock();
-            try {
-                isPaused = true;
-                for (UploadRunnable runnable : mRunning) {
-                    runnable.pause();
-                }
-            } finally {
-                pauseLock.unlock();
-            }
-        }
-
-        public void resume() {
-            pauseLock.lock();
-            try {
-                isPaused = false;
-                unpaused.signalAll();
-
-                for (UploadRunnable runnable : mRunning) {
-                    runnable.resume();
-                }
-            } finally {
-                pauseLock.unlock();
-            }
-        }
-
-        public List<UploadRunnable> getRunningTasks() {
-            return mRunning;
-        }
-
-        public boolean isPaused() {
-            return isPaused;
-        }
-    }
 }

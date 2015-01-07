@@ -260,7 +260,7 @@ public class UploadManager implements IUploadManager<Upload> {
             System.out.println(getClass() + " - exceptionDuringUpload - exception: " + exception + ", upload id: " + upload.getId());
         }
         for (IUploadListener listener : mListeners) {
-            listener.uploadCancelledException(upload.getId(), exception, state);
+            listener.uploadCancelledException(upload.getId(), upload.getInfo(), exception, state);
         }
 
         startNextAvailableUpload();
@@ -272,7 +272,7 @@ public class UploadManager implements IUploadManager<Upload> {
         }
 
         for (IUploadListener listener : mListeners) {
-            listener.uploadCancelledResultInvalid(upload.getId(), result, state);
+            listener.uploadCancelledResultInvalid(upload.getId(), upload.getInfo(), result, state);
         }
 
         startNextAvailableUpload();
@@ -284,7 +284,7 @@ public class UploadManager implements IUploadManager<Upload> {
         }
 
         for (IUploadListener listener : mListeners) {
-            listener.uploadCancelledResponseObjectInvalid(upload.getId(), result, state);
+            listener.uploadCancelledResponseObjectInvalid(upload.getId(), upload.getInfo(), result, state);
         }
 
         startNextAvailableUpload();
@@ -296,7 +296,7 @@ public class UploadManager implements IUploadManager<Upload> {
         }
 
         for (IUploadListener listener : mListeners) {
-            listener.uploadCancelledStorageLimitExceeded(upload.getId(), state);
+            listener.uploadCancelledStorageLimitExceeded(upload.getId(), upload.getInfo(), state);
         }
 
         startNextAvailableUpload();
@@ -308,7 +308,7 @@ public class UploadManager implements IUploadManager<Upload> {
         }
 
         for (IUploadListener listener : mListeners) {
-            listener.uploadCancelledFileLargerThanStorageSpaceAvailable(upload.getId(), state);
+            listener.uploadCancelledFileLargerThanStorageSpaceAvailable(upload.getId(), upload.getInfo(), state);
         }
 
         startNextAvailableUpload();
@@ -316,7 +316,7 @@ public class UploadManager implements IUploadManager<Upload> {
 
     void resumableUploadPortionOfApiResponseMissing(Upload upload, CheckResponse apiResponse, Result result) {
         for (IUploadListener listener : mListeners) {
-            listener.uploadCancelledApiResponseMissingResumableUpload(upload.getId(), apiResponse, result);
+            listener.uploadCancelledApiResponseMissingResumableUpload(upload.getId(), upload.getInfo(), apiResponse, result);
         }
 
         startNextAvailableUpload();
@@ -324,7 +324,7 @@ public class UploadManager implements IUploadManager<Upload> {
 
     void bitmapPortionOfApiResponseMissing(Upload upload, CheckResponse apiResponse, Result result) {
         for (IUploadListener listener : mListeners) {
-            listener.uploadCancelledApiResponseMissingBitmap(upload.getId(), apiResponse, result);
+            listener.uploadCancelledApiResponseMissingBitmap(upload.getId(), upload.getInfo(), apiResponse, result);
         }
 
         startNextAvailableUpload();
@@ -356,7 +356,7 @@ public class UploadManager implements IUploadManager<Upload> {
                             System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", not uploading (already in folder)");
                         }
                         for (IUploadListener listener : mListeners) {
-                            listener.uploadFinished(upload.getId(), checkResponse.getDuplicateQuickkey());
+                            listener.uploadFinished(upload.getId(), upload.getInfo(), checkResponse.getDuplicateQuickkey());
                         }
                     }
                     break;
@@ -366,7 +366,7 @@ public class UploadManager implements IUploadManager<Upload> {
                         System.out.println(getClass() + " - checkFinished - ActionOnInAccount: " + actionOnInAccount + ", not uploading (do not upload)");
                     }
                     for (IUploadListener listener : mListeners) {
-                        listener.uploadFinished(upload.getId(), checkResponse.getDuplicateQuickkey());
+                        listener.uploadFinished(upload.getId(), upload.getInfo(), checkResponse.getDuplicateQuickkey());
                     }
                     break;
             }
@@ -389,7 +389,7 @@ public class UploadManager implements IUploadManager<Upload> {
         }
 
         for (IUploadListener listener : mListeners) {
-            listener.uploadFinished(upload.getId(), quickKey);
+            listener.uploadFinished(upload.getId(), upload.getInfo(), quickKey);
         }
         startNextAvailableUpload();
     }
@@ -400,7 +400,7 @@ public class UploadManager implements IUploadManager<Upload> {
         }
 
         for (IUploadListener listener : mListeners) {
-            listener.pollUpdate(upload.getId(), status);
+            listener.pollUpdate(upload.getId(), upload.getInfo(), status);
         }
     }
 
@@ -421,7 +421,7 @@ public class UploadManager implements IUploadManager<Upload> {
         }
 
         for (IUploadListener listener : mListeners) {
-            listener.uploadFinished(upload.getId(), quickKey);
+            listener.uploadFinished(upload.getId(), upload.getInfo(), quickKey);
         }
         startNextAvailableUpload();
     }
@@ -432,7 +432,7 @@ public class UploadManager implements IUploadManager<Upload> {
         }
 
         for (IUploadListener listener : mListeners) {
-            listener.uploadCancelledApiError(upload.getId(), state, response, result);
+            listener.uploadCancelledApiError(upload.getId(), upload.getInfo(), state, response, result);
         }
         startNextAvailableUpload();
     }
@@ -443,7 +443,7 @@ public class UploadManager implements IUploadManager<Upload> {
         }
 
         for (IUploadListener listener : mListeners) {
-            listener.resumableUpdate(upload.getId(), percentFinished);
+            listener.resumableUpdate(upload.getId(), upload.getInfo(), percentFinished);
         }
     }
 
@@ -516,26 +516,6 @@ public class UploadManager implements IUploadManager<Upload> {
         Resumable resumable = new Resumable(resumableUpload, mHttp, mTokenManager, this);
         resumable.debug(mDebug);
         mExecutor.execute(resumable);
-    }
-
-    /**
-    * Created by Chris on 12/22/2014.
-    */
-    public static interface IUploadListener {
-        public void uploadCancelledException(long id, Exception exception, State state);
-        public void uploadCancelledResultInvalid(long id, Result result, State state);
-        public void uploadCancelledResponseObjectInvalid(long id, Result result, State state);
-        public void uploadCancelledStorageLimitExceeded(long id, State state);
-        public void uploadCancelledFileLargerThanStorageSpaceAvailable(long id, State state);
-        public void uploadCancelledPollAttempts(long id);
-        public void uploadCancelledApiError(long id, State state, ApiResponse response, Result result);
-        public void uploadCancelledApiResponseMissingResumableUpload(long id, CheckResponse apiResponse, Result result);
-        public void uploadCancelledApiResponseMissingBitmap(long id, CheckResponse apiResponse, Result result);
-
-        public void uploadStarted(long id);
-        public void uploadFinished(long id, String quickKey);
-        public void pollUpdate(long id, int status);
-        public void resumableUpdate(long id, double percentFinished);
     }
 
     private class PausableExecutor extends ThreadPoolExecutor {

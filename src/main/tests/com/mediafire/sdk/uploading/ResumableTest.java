@@ -10,6 +10,8 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class ResumableTest extends TestCase {
 
@@ -183,7 +185,7 @@ public class ResumableTest extends TestCase {
         }
     };
 
-    private static UploadManagerTestImpl sUploadManager = new UploadManagerTestImpl(1, sHttp, sTokenManager);
+    private static UploadManagerTestImpl sUploadManager = new UploadManagerTestImpl(sHttp, sTokenManager, new PausableExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>()));
 
     @Override
     public void setUp() throws Exception {

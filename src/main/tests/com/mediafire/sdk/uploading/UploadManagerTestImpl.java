@@ -37,8 +37,8 @@ public class UploadManagerTestImpl extends UploadManager {
     boolean mApiError;
     boolean mResumableProgress;
 
-    public UploadManagerTestImpl(int concurrentUploads, IHttp http, ITokenManager tokenManager) {
-        super(concurrentUploads, http, tokenManager);
+    public UploadManagerTestImpl(IHttp http, ITokenManager tokenManager, PausableExecutor executor) {
+        super(http, tokenManager, executor);
     }
 
     public final void resetTestFields() {

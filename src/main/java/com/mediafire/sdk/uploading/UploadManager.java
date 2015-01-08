@@ -63,6 +63,9 @@ public class UploadManager implements IUploadManager<Upload> {
         }
 
         mUploadList.add(upload);
+        if (!mExecutor.isPaused()) {
+            startNextAvailableUpload();
+        }
     }
 
     @Override

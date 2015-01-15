@@ -3,8 +3,8 @@ package com.mediafire.sdk.uploading;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.mediafire.sdk.api.responses.upload.CheckResponse;
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Result;
 
 import java.io.IOException;
@@ -18,44 +18,35 @@ import java.util.Map;
 class Check extends UploadRunnable {
 
     private Upload mUpload;
-    private UploadManager mManager;
+    private UploadProcess mProcessMonitor;
 
-    public Check(Upload upload, IHttp http, ITokenManager tokenManager, UploadManager manager) {
+    public Check(Upload upload, HttpHandler http, TokenManager tokenManager, UploadProcess processMonitor) {
         super(http, tokenManager);
         mUpload = upload;
-        mManager = manager;
+        mProcessMonitor = processMonitor;
     }
 
     @Override
     public void run() {
-        if (isDebugging()) {
-            System.out.println(getClass() + " - run");
-        }
         if (!(mUpload instanceof Resumable.ResumableUpload)) {
-            mManager.uploadStarted(mUpload);
+            mProcessMonitor.uploadStarted(mUpload);
         }
 
         Map<String, Object> requestParams;
         try {
             requestParams = makeQueryParams();
         } catch (IOException exception) {
-            mManager.exceptionDuringUpload(State.CHECK, exception, mUpload);
+            mProcessMonitor.exceptionDuringUpload(State.CHECK, exception, mUpload);
             return;
         } catch (NoSuchAlgorithmException exception) {
-            mManager.exceptionDuringUpload(State.CHECK, exception, mUpload);
+            mProcessMonitor.exceptionDuringUpload(State.CHECK, exception, mUpload);
             return;
         }
 
-        try {
-            yieldIfPaused();
-        } catch (InterruptedException exception) {
-            mManager.exceptionDuringUpload(State.CHECK, exception, mUpload);
-            return;
-        }
         Result result = getUploadClient().check(requestParams);
 
         if (!resultValid(result)) {
-            mManager.resultInvalidDuringUpload(State.CHECK, result, mUpload);
+            mProcessMonitor.resultInvalidDuringUpload(State.CHECK, result, mUpload);
             return;
         }
 
@@ -67,42 +58,39 @@ class Check extends UploadRunnable {
         try {
             apiResponse = new Gson().fromJson(response, CheckResponse.class);
         } catch (JsonSyntaxException exception) {
-            mManager.exceptionDuringUpload(State.CHECK, exception, mUpload);
+            mProcessMonitor.exceptionDuringUpload(State.CHECK, exception, mUpload);
             return;
         }
 
         if (apiResponse == null) {
-            mManager.responseObjectNull(State.CHECK, result, mUpload);
+            mProcessMonitor.responseObjectNull(State.CHECK, result, mUpload);
             return;
         }
 
         if (apiResponse.hasError()) {
-            mManager.apiError(State.CHECK, mUpload, apiResponse, result);
+            mProcessMonitor.apiError(State.CHECK, mUpload, apiResponse, result);
             return;
         }
 
         if (apiResponse.isStorageLimitExceeded()) {
-            mManager.storageLimitExceeded(State.CHECK, mUpload);
+            mProcessMonitor.storageLimitExceeded(State.CHECK, mUpload);
             return;
         }
 
         if (apiResponse.getStorageLimit() - apiResponse.getUsedStorageSize() < mUpload.getFile().length()
                 && apiResponse.getStorageLimit() != 0) {
-            mManager.fileLargerThanStorageSpaceAvailable(State.CHECK, mUpload);
+            mProcessMonitor.fileLargerThanStorageSpaceAvailable(State.CHECK, mUpload);
             return;
         }
 
         String hash = String.valueOf(requestParams.get("hash"));
         Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, hash);
         // add check for all units ready and have poll upload key (do poll upload)
-        mManager.checkFinished(upload, apiResponse);
+        mProcessMonitor.checkFinished(upload, apiResponse);
     }
 
     @Override
     protected Map<String, Object> makeQueryParams() throws IOException, NoSuchAlgorithmException {
-        if (isDebugging()) {
-            System.out.println(getClass() + " - makeQueryParams");
-        }
         String customFileName = mUpload.getOptions().getCustomFileName();
         String hash = Hasher.getSHA256Hash(mUpload.getFile());
         long size = mUpload.getFile().length();

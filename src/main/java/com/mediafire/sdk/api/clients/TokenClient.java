@@ -5,10 +5,10 @@ import com.mediafire.sdk.api.Debug;
 import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.api.helpers.NewActionToken;
 import com.mediafire.sdk.api.helpers.NewSessionToken;
-import com.mediafire.sdk.config.IDeveloperCredentials;
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
-import com.mediafire.sdk.config.IUserCredentials;
+import com.mediafire.sdk.config.DeveloperCredentials;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
+import com.mediafire.sdk.config.UserCredentials;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 
@@ -24,10 +24,10 @@ public class TokenClient implements Debug {
     private final Instructions mUploadTokenInstructions;
     private boolean mDebug;
 
-    public TokenClient(IHttp httpInterface,
-                       IUserCredentials userCredentials,
-                       IDeveloperCredentials developerCredentials,
-                       ITokenManager tokenManager) {
+    public TokenClient(HttpHandler httpInterface,
+                       UserCredentials userCredentials,
+                       DeveloperCredentials developerCredentials,
+                       TokenManager tokenManager) {
         mApiRequestGenerator = new ApiRequestGenerator();
         mApiClient = new ApiClient(httpInterface);
         mSessionTokenInstructions = new NewSessionToken(userCredentials, developerCredentials, tokenManager);

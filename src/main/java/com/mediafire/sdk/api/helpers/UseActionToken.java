@@ -1,7 +1,7 @@
 package com.mediafire.sdk.api.helpers;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.ImageActionToken;
@@ -13,12 +13,12 @@ import com.mediafire.sdk.token.UploadActionToken;
  */
 public class UseActionToken extends Instructions {
     private String mTokenType;
-    private ITokenManager mActionITokenManagerInterface;
+    private TokenManager mActionTokenManagerInterface;
 
-    public UseActionToken(String tokenType, ITokenManager actionITokenManagerInterface) {
+    public UseActionToken(String tokenType, TokenManager actionTokenManagerInterface) {
         super();
         this.mTokenType = tokenType;
-        mActionITokenManagerInterface = actionITokenManagerInterface;
+        mActionTokenManagerInterface = actionTokenManagerInterface;
     }
 
     @Override
@@ -36,14 +36,14 @@ public class UseActionToken extends Instructions {
                 System.out.println(getClass() + " - borrowToken, borrowing image token from ITokenManager");
             }
 
-            ImageActionToken imageActionToken = mActionITokenManagerInterface.take(ImageActionToken.class);
+            ImageActionToken imageActionToken = mActionTokenManagerInterface.take(ImageActionToken.class);
             request.addToken(imageActionToken);
         } else if ("upload".equals(mTokenType)) {
             if (debugging()) {
                 System.out.println(getClass() + " - borrowToken, borrowing upload token from ITokenManager");
             }
 
-            UploadActionToken uploadActionToken = mActionITokenManagerInterface.take(UploadActionToken.class);
+            UploadActionToken uploadActionToken = mActionTokenManagerInterface.take(UploadActionToken.class);
             request.addToken(uploadActionToken);
         } else {
             if (debugging()) {
@@ -78,7 +78,7 @@ public class UseActionToken extends Instructions {
                 System.out.println(getClass() + " - returnToken, ApiResponse null, not returning token, notifying token " +
                         "manager that tokens are bad");
             }
-            mActionITokenManagerInterface.tokensBad();
+            mActionTokenManagerInterface.tokensBad();
             return;
         }
 
@@ -92,7 +92,7 @@ public class UseActionToken extends Instructions {
                 System.out.println(getClass() + " - returnToken, ApiResponse error, not returning token, notifying token " +
                         "manager that tokens are bad, error #" + apiResponse.getError());
             }
-            mActionITokenManagerInterface.tokensBad();
+            mActionTokenManagerInterface.tokensBad();
         }
     }
 }

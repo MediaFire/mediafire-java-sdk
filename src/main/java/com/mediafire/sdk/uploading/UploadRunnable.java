@@ -4,8 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mediafire.sdk.api.clients.UploadClient;
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Result;
 
 import java.util.List;
@@ -17,10 +17,8 @@ import java.util.Map;
 abstract class UploadRunnable implements Runnable {
 
     private final UploadClient mUploadClient;
-    private boolean mPaused;
-    private boolean mDebug;
 
-    public UploadRunnable(IHttp http, ITokenManager tokenManager) {
+    public UploadRunnable(HttpHandler http, TokenManager tokenManager) {
         mUploadClient = new UploadClient(http, tokenManager);
     }
 
@@ -29,9 +27,6 @@ abstract class UploadRunnable implements Runnable {
     }
 
     public final String getResponseStringForGson(String response) {
-        if (isDebugging()) {
-            System.out.println(getClass() + " - getResponseStringForGson - response: " + response);
-        }
         if (response == null || response.isEmpty()) {
             return null;
         }
@@ -80,33 +75,4 @@ abstract class UploadRunnable implements Runnable {
 
     @Override
     public abstract void run();
-
-    public final void pause() {
-        mPaused = true;
-    }
-
-    public final void resume() {
-        mPaused = false;
-    }
-
-    public final boolean isPaused() {
-        return mPaused;
-    }
-
-    public final void yieldIfPaused() throws InterruptedException {
-        while (isPaused()) {
-            Thread.currentThread().yield();
-            if (Thread.currentThread().isInterrupted()) {
-                throw new InterruptedException("Runnable interrupted while in pause state");
-            }
-        }
-    }
-
-    public void debug(boolean on) {
-        mDebug = on;
-    }
-
-    public boolean isDebugging() {
-        return mDebug;
-    }
 }

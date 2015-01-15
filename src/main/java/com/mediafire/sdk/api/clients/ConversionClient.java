@@ -3,8 +3,8 @@ package com.mediafire.sdk.api.clients;
 import com.mediafire.sdk.api.Debug;
 import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.api.helpers.UseActionToken;
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 
@@ -16,8 +16,8 @@ public class ConversionClient implements Debug {
     private final Instructions mInstructions;
     private boolean mDebug;
 
-    public ConversionClient(IHttp httpInterface, ITokenManager ITokenManager) {
-        mInstructions = new UseActionToken("image", ITokenManager);
+    public ConversionClient(HttpHandler httpInterface, TokenManager tokenManager) {
+        mInstructions = new UseActionToken("image", tokenManager);
         imageClient = new ApiClient(httpInterface);
     }
 

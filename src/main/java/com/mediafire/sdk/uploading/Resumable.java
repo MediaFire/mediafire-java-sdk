@@ -3,8 +3,8 @@ package com.mediafire.sdk.uploading;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.mediafire.sdk.api.responses.upload.ResumableResponse;
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Result;
 
 import java.io.BufferedInputStream;
@@ -23,20 +23,16 @@ import java.util.Map;
 class Resumable extends UploadRunnable {
 
     private ResumableUpload mUpload;
-    private UploadManager mManager;
+    private UploadProcess mProcessMonitor;
 
-    public Resumable(ResumableUpload upload, IHttp http, ITokenManager tokenManager, UploadManager manager) {
+    public Resumable(ResumableUpload upload, HttpHandler http, TokenManager tokenManager, UploadProcess processMonitor) {
         super(http, tokenManager);
         mUpload = upload;
-        mManager = manager;
+        mProcessMonitor = processMonitor;
     }
 
     @Override
     public void run() {
-        if (isDebugging()) {
-            System.out.println(getClass() + " - run");
-        }
-
         Map<String, Object> requestParams = makeQueryParams();
 
         String customFileName = mUpload.getOptions().getCustomFileName();
@@ -51,21 +47,7 @@ class Resumable extends UploadRunnable {
         String responsePollKey = null;
         boolean allUnitsReady = false;
 
-        if (isDebugging()) {
-            System.out.println(getClass() + " - run - expecting loop count " + numUnits);
-        }
-
         for (int chunkNumber = 0; chunkNumber < numUnits; chunkNumber++) {
-            if (isDebugging()) {
-                System.out.println(getClass() + " - run - loop #" + chunkNumber);
-            }
-
-            try {
-                yieldIfPaused();
-            } catch (InterruptedException exception) {
-                mManager.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
-                return;
-            }
             if (!mUpload.isChunkUploaded(chunkNumber)) {
                 int chunkSize = getChunkSize(chunkNumber, numUnits, fileSize, unitSize);
 
@@ -76,27 +58,19 @@ class Resumable extends UploadRunnable {
                     chunk = makeChunk(unitSize, chunkNumber);
                     chunkHash = Hasher.getSHA256Hash(chunk);
                 } catch (IOException exception) {
-                    mManager.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
+                    mProcessMonitor.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
                     return;
                 } catch (NoSuchAlgorithmException e) {
-                    mManager.exceptionDuringUpload(State.RESUMABLE, e, mUpload);
+                    mProcessMonitor.exceptionDuringUpload(State.RESUMABLE, e, mUpload);
                     return;
                 }
 
                 Map<String, Object> headerParams = makeHeaderParams(chunkNumber, chunkSize, chunkHash, filename);
-                if (isDebugging()) {
-                    System.out.println(getClass() + "header params: " + headerParams);
-                }
-                try {
-                    yieldIfPaused();
-                } catch (InterruptedException exception) {
-                    mManager.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
-                    return;
-                }
+
                 Result result = getUploadClient().resumable(requestParams, headerParams, chunk);
 
                 if (!resultValid(result)) {
-                    mManager.resultInvalidDuringUpload(State.RESUMABLE, result, mUpload);
+                    mProcessMonitor.resultInvalidDuringUpload(State.RESUMABLE, result, mUpload);
                     return;
                 }
 
@@ -108,17 +82,17 @@ class Resumable extends UploadRunnable {
                 try {
                     apiResponse = new Gson().fromJson(response, ResumableResponse.class);
                 } catch (JsonSyntaxException exception) {
-                    mManager.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
+                    mProcessMonitor.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
                     return;
                 }
 
                 if (apiResponse == null) {
-                    mManager.responseObjectNull(State.RESUMABLE, result, mUpload);
+                    mProcessMonitor.responseObjectNull(State.RESUMABLE, result, mUpload);
                     return;
                 }
 
                 if (apiResponse.hasError()) {
-                    mManager.apiError(State.RESUMABLE, mUpload, apiResponse, result);
+                    mProcessMonitor.apiError(State.RESUMABLE, mUpload, apiResponse, result);
                     return;
                 }
 
@@ -145,10 +119,10 @@ class Resumable extends UploadRunnable {
 
             double percentFinished = (double) numUploaded / (double) numUnits;
             percentFinished *= 100;
-            mManager.resumableProgress(mUpload, percentFinished);
+            mProcessMonitor.resumableProgress(mUpload, percentFinished);
         }
 
-        mManager.resumableFinished(mUpload, responsePollKey, allUnitsReady);
+        mProcessMonitor.resumableFinished(mUpload, responsePollKey, allUnitsReady);
     }
 
     @Override
@@ -185,9 +159,6 @@ class Resumable extends UploadRunnable {
     }
 
     private byte[] makeChunk(int unitSize, int chunkNumber) throws IOException {
-        if (isDebugging()) {
-            System.out.println(getClass() + " - makeChunk");
-        }
         // generate the chunk
         FileInputStream fis = new FileInputStream(mUpload.getFile());
         BufferedInputStream bis = new BufferedInputStream(fis);
@@ -198,9 +169,6 @@ class Resumable extends UploadRunnable {
     }
 
     private int getChunkSize(int chunkNumber, int numChunks, long fileSize, int unitSize) {
-        if (isDebugging()) {
-            System.out.println(getClass() + " - getChunkSize");
-        }
         int chunkSize;
         if (chunkNumber >= numChunks) {
             chunkSize = 0; // represents bad size
@@ -218,9 +186,6 @@ class Resumable extends UploadRunnable {
     }
 
     private byte[] createUploadChunk(long unitSize, int chunkNumber, BufferedInputStream fileStream) throws IOException {
-        if (isDebugging()) {
-            System.out.println(getClass() + " - createUploadChunk");
-        }
         int offset = (int) (unitSize * chunkNumber);
         fileStream.skip(offset);
 
@@ -251,9 +216,6 @@ class Resumable extends UploadRunnable {
 
     @Override
     protected Map<String, Object> makeQueryParams() {
-        if (isDebugging()) {
-            System.out.println(getClass() + " - makeQueryParams");
-        }
         String folderKey = mUpload.getOptions().getUploadFolderKey();
         String uploadPath = mUpload.getOptions().getUploadPath();
         String actionOnDuplicate = "keep";
@@ -276,9 +238,6 @@ class Resumable extends UploadRunnable {
     }
 
     private Map<String, Object> makeHeaderParams(int unitId, int chunkSize, String chunkHash, String filename) {
-        if (isDebugging()) {
-            System.out.println(getClass() + " - makeHeaderParams");
-        }
         long fileSize = mUpload.getFile().length();
         String fileHash = mUpload.getHash();
 

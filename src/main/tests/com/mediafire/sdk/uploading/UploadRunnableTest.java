@@ -76,7 +76,7 @@ public class UploadRunnableTest extends TestCase {
     public void testPollQueryKey() throws Exception {
         Upload upload = new Upload(1, "QueryParamsTest.txt");
         Poll.PollUpload pollUpload = new Poll.PollUpload(upload, "polling_key");
-        Poll poll = new Poll(pollUpload, null, null, null);
+        Poll poll = new Poll(pollUpload, null, null, null, 1, 20);
 
         Map<String, Object> query = poll.makeQueryParams();
         assertTrue(query.containsKey("key") && query.get("key").equals("polling_key"));
@@ -86,7 +86,7 @@ public class UploadRunnableTest extends TestCase {
     public void testPollQueryResponseFormat() throws Exception {
         Upload upload = new Upload(1, "QueryParamsTest.txt");
         Poll.PollUpload pollUpload = new Poll.PollUpload(upload, "polling_key");
-        Poll poll = new Poll(pollUpload, null, null, null);
+        Poll poll = new Poll(pollUpload, null, null, null, 1, 20);
 
         Map<String, Object> query = poll.makeQueryParams();
         assertTrue(query.containsKey("response_format") && query.get("response_format").equals("json"));

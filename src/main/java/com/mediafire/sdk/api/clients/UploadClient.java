@@ -6,8 +6,8 @@ import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.api.helpers.NoToken;
 import com.mediafire.sdk.api.helpers.UseActionToken;
 import com.mediafire.sdk.api.helpers.UseSessionToken;
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 
@@ -22,7 +22,7 @@ public class UploadClient implements Debug {
     private final Instructions mInstructionsSessionToken;
     private boolean mDebug;
 
-    public UploadClient(IHttp httpInterface, ITokenManager tokenManager) {
+    public UploadClient(HttpHandler httpInterface, TokenManager tokenManager) {
         mApiRequestGenerator = new ApiRequestGenerator();
 
         mInstructionsNoToken = new NoToken();

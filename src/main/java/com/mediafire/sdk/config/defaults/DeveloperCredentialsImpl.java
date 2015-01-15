@@ -1,11 +1,11 @@
 package com.mediafire.sdk.config.defaults;
 
-import com.mediafire.sdk.config.IDeveloperCredentials;
+import com.mediafire.sdk.config.DeveloperCredentials;
 
 /**
  * Created by Chris on 12/17/2014.
  */
-public final class DeveloperCredentialsImpl implements IDeveloperCredentials {
+public final class DeveloperCredentialsImpl implements DeveloperCredentials {
 
     private final String mApplicationId;
     private final String mApiKey;

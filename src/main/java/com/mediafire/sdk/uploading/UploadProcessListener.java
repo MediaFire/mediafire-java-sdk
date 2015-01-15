@@ -9,7 +9,7 @@ import java.util.Map;
 /**
 * Created by Chris on 12/22/2014.
 */
-public interface IUploadListener {
+public interface UploadProcessListener {
     public void uploadCancelledException(long id, Map<String, Object> uploadInfo, Exception exception, State state);
     public void uploadCancelledResultInvalid(long id, Map<String, Object> uploadInfo, Result result, State state);
     public void uploadCancelledResponseObjectInvalid(long id, Map<String, Object> uploadInfo, Result result, State state);

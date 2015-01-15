@@ -1,7 +1,7 @@
 package com.mediafire.sdk.uploading;
 
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.Token;
 import junit.framework.TestCase;
@@ -32,7 +32,7 @@ public class CheckTest extends TestCase {
     private Upload mUpload;
     private static int mId;
 
-    private static IHttp sHttp = new IHttp() {
+    private static HttpHandler sHttp = new HttpHandler() {
 
         @Override
         public Response doGet(String url, Map<String, Object> headers) {
@@ -90,7 +90,7 @@ public class CheckTest extends TestCase {
         }
     };
 
-    private static ITokenManager sTokenManager = new ITokenManager() {
+    private static TokenManager sTokenManager = new TokenManager() {
         @Override
         public <T extends Token> T take(Class<T> token) {
             return null;
@@ -106,8 +106,6 @@ public class CheckTest extends TestCase {
 
         }
     };
-
-    private static UploadManagerTestImpl sUploadManager = new UploadManagerTestImpl(sHttp, sTokenManager, new PausableExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>()));
 
     @Override
     public void setUp() throws Exception {
@@ -125,7 +123,6 @@ public class CheckTest extends TestCase {
         File file = new File("CheckTest.txt");
         file.delete();
         mUpload = null;
-        sUploadManager.resetTestFields();
     }
 
     @Test
@@ -134,6 +131,7 @@ public class CheckTest extends TestCase {
         File file = new File("CheckTest.txt");
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
@@ -149,6 +147,7 @@ public class CheckTest extends TestCase {
         File file = new File("CheckTest.txt");
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
@@ -164,6 +163,7 @@ public class CheckTest extends TestCase {
         File file = new File("CheckTest.txt");
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
@@ -179,6 +179,7 @@ public class CheckTest extends TestCase {
         File file = new File("CheckTest.txt");
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
@@ -194,6 +195,7 @@ public class CheckTest extends TestCase {
         File file = new File("CheckTest.txt");
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
@@ -209,6 +211,7 @@ public class CheckTest extends TestCase {
         File file = new File("CheckTest.txt");
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
@@ -224,6 +227,7 @@ public class CheckTest extends TestCase {
         File file = new File("CheckTest.txt");
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
@@ -239,6 +243,7 @@ public class CheckTest extends TestCase {
         File file = new File("CheckTest.txt");
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Check check = new Check(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);

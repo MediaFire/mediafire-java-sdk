@@ -3,8 +3,8 @@ package com.mediafire.sdk.uploading;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.mediafire.sdk.api.responses.upload.PollResponse;
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Result;
 
 import java.util.LinkedHashMap;
@@ -14,23 +14,19 @@ import java.util.Map;
  * Created by Chris on 12/22/2014.
  */
 class Poll extends UploadRunnable {
-    private static final int DEFAULT_SLEEP_TIME = 2000;
-    private static final int DEFAULT_MAX_POLLS = 60;
+    public static final int DEFAULT_SLEEP_TIME = 2000;
+    public static final int DEFAULT_MAX_POLLS = 60;
 
     private final PollUpload mUpload;
-    private UploadManager mManager;
+    private UploadProcess mProcessMonitor;
     private long mWaitTimeBetweenPollsMillis = DEFAULT_SLEEP_TIME;
     private int mMaxPolls = DEFAULT_MAX_POLLS;
 
-    public Poll(PollUpload upload,
-                IHttp mHttp,
-                ITokenManager mTokenManager,
-                UploadManager manager,
-                long waitTimeBetweenPollsMillis,
-                int maxPolls) {
+    public Poll(PollUpload upload, HttpHandler mHttp, TokenManager mTokenManager, UploadProcess processMonitor,
+                long waitTimeBetweenPollsMillis, int maxPolls) {
         super(mHttp, mTokenManager);
         mUpload = upload;
-        mManager = manager;
+        mProcessMonitor = processMonitor;
         if (waitTimeBetweenPollsMillis > 0 && waitTimeBetweenPollsMillis <= 10000) {
             mWaitTimeBetweenPollsMillis = waitTimeBetweenPollsMillis;
         }
@@ -40,31 +36,18 @@ class Poll extends UploadRunnable {
         }
     }
 
-    public Poll(PollUpload upload, IHttp http, ITokenManager tokenManager, UploadManager manager) {
-        this(upload, http, tokenManager, manager, DEFAULT_SLEEP_TIME, DEFAULT_MAX_POLLS);
-    }
-
     @Override
     public void run() {
-        if (isDebugging()) {
-            System.out.println(getClass() + " - run");
-        }
         Map<String, Object> requestParameters = makeQueryParams();
         int pollCount = 0;
 
         while (pollCount < mMaxPolls) {
             pollCount++;
 
-            try {
-                yieldIfPaused();
-            } catch (InterruptedException exception) {
-                mManager.exceptionDuringUpload(State.POLL, exception, mUpload);
-                return;
-            }
             Result result = getUploadClient().pollUpload(requestParameters);
 
             if (!resultValid(result)) {
-                mManager.resultInvalidDuringUpload(State.POLL, result, mUpload);
+                mProcessMonitor.resultInvalidDuringUpload(State.POLL, result, mUpload);
                 return;
             }
 
@@ -76,53 +59,49 @@ class Poll extends UploadRunnable {
             try {
                 apiResponse = new Gson().fromJson(response, PollResponse.class);
             } catch (JsonSyntaxException exception) {
-                mManager.exceptionDuringUpload(State.POLL, exception, mUpload);
+                mProcessMonitor.exceptionDuringUpload(State.POLL, exception, mUpload);
                 return;
             }
 
             if (apiResponse == null) {
-                mManager.responseObjectNull(State.POLL, result, mUpload);
+                mProcessMonitor.responseObjectNull(State.POLL, result, mUpload);
                 return;
             }
 
             if (apiResponse.hasError()) {
-                mManager.apiError(State.POLL, mUpload, apiResponse, result);
+                mProcessMonitor.apiError(State.POLL, mUpload, apiResponse, result);
                 return;
             }
 
             PollResponse.DoUpload doUpload = apiResponse.getDoUpload();
 
             if (doUpload.getFileErrorCode() != 0) {
-                mManager.apiError(State.POLL, mUpload, apiResponse, result);
+                mProcessMonitor.apiError(State.POLL, mUpload, apiResponse, result);
                 return;
             }
 
             if (doUpload.getQuickKey() != null && !doUpload.getQuickKey().isEmpty()) {
-                mManager.pollFinished(mUpload, doUpload.getQuickKey());
+                mProcessMonitor.pollFinished(mUpload, doUpload.getQuickKey());
                 return;
             }
 
             int status = doUpload.getStatusCode();
 
-            mManager.pollUpdate(mUpload, status);
+            mProcessMonitor.pollUpdate(mUpload, status);
 
             try {
                 Thread.sleep(mWaitTimeBetweenPollsMillis);
             } catch (InterruptedException exception) {
-                mManager.exceptionDuringUpload(State.POLL, exception, mUpload);
+                mProcessMonitor.exceptionDuringUpload(State.POLL, exception, mUpload);
                 return;
             }
         }
 
-        mManager.pollMaxAttemptsReached(mUpload);
+        mProcessMonitor.pollMaxAttemptsReached(mUpload);
     }
 
     @Override
     protected Map<String, Object> makeQueryParams() {
-        if (isDebugging()) {
-            System.out.println(getClass() + " - makeQueryParams");
-        }
-
         String key = mUpload.getPollingKey();
 
         String responseFormat = "json";

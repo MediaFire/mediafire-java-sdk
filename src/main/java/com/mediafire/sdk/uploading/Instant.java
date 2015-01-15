@@ -3,8 +3,8 @@ package com.mediafire.sdk.uploading;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.mediafire.sdk.api.responses.upload.InstantResponse;
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Result;
 
 import java.util.LinkedHashMap;
@@ -16,32 +16,22 @@ import java.util.Map;
 class Instant extends UploadRunnable {
 
     private InstantUpload mUpload;
-    private UploadManager mManager;
+    private UploadProcess mProcessMonitor;
 
-    public Instant(InstantUpload upload, IHttp http, ITokenManager tokenManager, UploadManager manager) {
+    public Instant(InstantUpload upload, HttpHandler http, TokenManager tokenManager, UploadProcess processMonitor) {
         super(http, tokenManager);
         mUpload = upload;
-        mManager = manager;
+        mProcessMonitor = processMonitor;
     }
 
     @Override
     public void run() {
-        if (isDebugging()) {
-            System.out.println(getClass() + " - run");
-        }
-
         Map<String, Object> requestParams = makeQueryParams();
 
-        try {
-            yieldIfPaused();
-        } catch (InterruptedException exception) {
-            mManager.exceptionDuringUpload(State.INSTANT, exception, mUpload);
-            return;
-        }
         Result result = getUploadClient().instant(requestParams);
 
         if (!resultValid(result)) {
-            mManager.resultInvalidDuringUpload(State.INSTANT, result, mUpload);
+            mProcessMonitor.resultInvalidDuringUpload(State.INSTANT, result, mUpload);
             return;
         }
 
@@ -53,29 +43,26 @@ class Instant extends UploadRunnable {
         try {
             apiResponse = new Gson().fromJson(response, InstantResponse.class);
         } catch (JsonSyntaxException exception) {
-            mManager.exceptionDuringUpload(State.INSTANT, exception, mUpload);
+            mProcessMonitor.exceptionDuringUpload(State.INSTANT, exception, mUpload);
             return;
         }
 
         if (apiResponse == null) {
-            mManager.responseObjectNull(State.INSTANT, result, mUpload);
+            mProcessMonitor.responseObjectNull(State.INSTANT, result, mUpload);
             return;
         }
 
         if (apiResponse.hasError()) {
-            mManager.apiError(State.INSTANT, mUpload, apiResponse, result);
+            mProcessMonitor.apiError(State.INSTANT, mUpload, apiResponse, result);
         }
 
         String quickKey = apiResponse.getQuickkey();
 
-        mManager.instantFinished(mUpload, quickKey);
+        mProcessMonitor.instantFinished(mUpload, quickKey);
     }
 
     @Override
     protected Map<String, Object> makeQueryParams() {
-        if (isDebugging()) {
-            System.out.println(getClass() + " - makeQueryParams");
-        }
         String hash = mUpload.getHash();
         long size = mUpload.getFile().length();
         String customFileName = mUpload.getOptions().getCustomFileName();

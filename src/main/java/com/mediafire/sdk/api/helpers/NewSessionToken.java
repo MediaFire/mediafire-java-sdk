@@ -1,9 +1,9 @@
 package com.mediafire.sdk.api.helpers;
 
 import com.mediafire.sdk.api.responses.user.GetSessionTokenResponse;
-import com.mediafire.sdk.config.IDeveloperCredentials;
-import com.mediafire.sdk.config.ITokenManager;
-import com.mediafire.sdk.config.IUserCredentials;
+import com.mediafire.sdk.config.DeveloperCredentials;
+import com.mediafire.sdk.config.TokenManager;
+import com.mediafire.sdk.config.UserCredentials;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.SessionToken;
@@ -13,15 +13,15 @@ import com.mediafire.sdk.token.SessionToken;
  * BaseClientHelper used with ApiClient to get new session tokens.
  */
 public class NewSessionToken extends Instructions {
-    private IUserCredentials mUserCredentials;
-    private IDeveloperCredentials mDeveloperCredentials;
-    private ITokenManager mSessionITokenManagerInterface;
+    private UserCredentials mUserCredentials;
+    private DeveloperCredentials mDeveloperCredentials;
+    private TokenManager mSessionTokenManagerInterface;
 
-    public NewSessionToken(IUserCredentials userCredentials, IDeveloperCredentials developerCredentials, ITokenManager sessionITokenManagerInterface) {
+    public NewSessionToken(UserCredentials userCredentials, DeveloperCredentials developerCredentials, TokenManager sessionTokenManagerInterface) {
         super();
         mUserCredentials = userCredentials;
         mDeveloperCredentials = developerCredentials;
-        mSessionITokenManagerInterface = sessionITokenManagerInterface;
+        mSessionTokenManagerInterface = sessionTokenManagerInterface;
     }
     
     @Override
@@ -50,7 +50,7 @@ public class NewSessionToken extends Instructions {
         GetSessionTokenResponse newSessionTokenResponse = getResponseObject(response, GetSessionTokenResponse.class);
         SessionToken newSessionToken = createNewSessionToken(newSessionTokenResponse);
         if (newSessionToken != null) {
-            mSessionITokenManagerInterface.give(newSessionToken);
+            mSessionTokenManagerInterface.give(newSessionToken);
         } else {
             if (debugging()) {
                 System.out.println(getClass() + " - session token is null, not returning");
@@ -87,25 +87,28 @@ public class NewSessionToken extends Instructions {
     }
 
     private void addRequiredParametersForNewSessionToken(Request request) {
-        IUserCredentials.Credentials credentials = mUserCredentials.getCredentials();
+        UserCredentials.Credentials credentials = mUserCredentials.getCredentials();
 
-        if (debugging()) {
-            System.out.println(getClass() + " - addRequiredParametersForNewSessionToken, credentials class " + credentials.getClass());
-        }
-
-        if (credentials instanceof IUserCredentials.Ekey) {
-            request.addQueryParameter("ekey", ((IUserCredentials.Ekey) credentials).getEkey());
-            request.addQueryParameter("password", ((IUserCredentials.Ekey) credentials).getPassword());
-        } else if (credentials instanceof IUserCredentials.Email) {
-            request.addQueryParameter("email", ((IUserCredentials.Email) credentials).getEmail());
-            request.addQueryParameter("password", ((IUserCredentials.Email) credentials).getPassword());
-        } else if (credentials instanceof IUserCredentials.Facebook) {
-            request.addQueryParameter("fb_access_token", ((IUserCredentials.Facebook) credentials).getFacebookAccessToken());
-        } else if (credentials instanceof IUserCredentials.Twitter) {
-            request.addQueryParameter("tw_oauth_token", ((IUserCredentials.Twitter) credentials).getOauthToken());
-            request.addQueryParameter("tw_oauth_token_secret", ((IUserCredentials.Twitter) credentials).getTokenSecret());
+        if (credentials == null) {
+            if (debugging()) {
+                System.out.println(getClass() + " - addRequiredParametersForNewSessionToken, credentials null, no params added");
+            }
+        } else if (credentials instanceof UserCredentials.Ekey) {
+            request.addQueryParameter("ekey", ((UserCredentials.Ekey) credentials).getEkey());
+            request.addQueryParameter("password", ((UserCredentials.Ekey) credentials).getPassword());
+        } else if (credentials instanceof UserCredentials.Email) {
+            request.addQueryParameter("email", ((UserCredentials.Email) credentials).getEmail());
+            request.addQueryParameter("password", ((UserCredentials.Email) credentials).getPassword());
+        } else if (credentials instanceof UserCredentials.Facebook) {
+            request.addQueryParameter("fb_access_token", ((UserCredentials.Facebook) credentials).getFacebookAccessToken());
+        } else if (credentials instanceof UserCredentials.Twitter) {
+            request.addQueryParameter("tw_oauth_token", ((UserCredentials.Twitter) credentials).getOauthToken());
+            request.addQueryParameter("tw_oauth_token_secret", ((UserCredentials.Twitter) credentials).getTokenSecret());
         } else {
-
+            if (debugging()) {
+                System.out.println(getClass() + " - addRequiredParametersForNewSessionToken, " +
+                        "credentials unknown class: " + credentials.getClass() + ", no params added");
+            }
         }
 
         request.addQueryParameter("application_id", mDeveloperCredentials.getApplicationId());

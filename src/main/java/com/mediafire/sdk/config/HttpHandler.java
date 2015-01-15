@@ -8,7 +8,7 @@ import java.util.Map;
  * Created by Chris Najar on 10/18/2014.
  * HttpWorkerInterface provides a interface to perform get and post http requests
  */
-public interface IHttp {
+public interface HttpHandler {
 
     /**
      * Performs a http get request

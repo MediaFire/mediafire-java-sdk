@@ -2,14 +2,14 @@ package com.mediafire.sdk.uploading;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.api.responses.upload.CheckResponse;
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Result;
 
 /**
  * Created by Chris on 12/22/2014.
  */
-public class UploadManagerTestImpl extends UploadManager {
+public class UploadProcessTestImpl extends UploadProcess {
 
     boolean mResumableFinished;
     boolean mAddListener;
@@ -37,36 +37,8 @@ public class UploadManagerTestImpl extends UploadManager {
     boolean mApiError;
     boolean mResumableProgress;
 
-    public UploadManagerTestImpl(int concurrentUploads, IHttp http, ITokenManager tokenManager) {
-        super(concurrentUploads, http, tokenManager);
-    }
-
-    public final void resetTestFields() {
-        mResumableFinished = false;
-        mAddListener = false;
-        mRemoveListener = false;
-        mAddUpload = false;
-        mPurge = false;
-        mPause = false;
-        mResume = false;
-        mStartNextAvailableUpload = false;
-        mSortQueueByFileSize = false;
-        mMoveToFrontOfQueue = false;
-        mMoveToEndOfQueue = false;
-        mExceptionDuringUpload = false;
-        mResultInvalidDuringUpload = false;
-        mResponseObjectNull = false;
-        mStorageLimitExceeded = false;
-        mFileLargerThanStorageSpaceAvailable = false;
-        mResumableUploadPortionOfApiResponseMissing = false;
-        mBitmapPortionOfApiResponseMissing = false;
-        mCheckFinished = false;
-        mPollFinished = false;
-        mPollUpdate = false;
-        mPollMaxAttemptsReached = false;
-        mInstantFinished = false;
-        mApiError = false;
-        mResumableProgress = false;
+    public UploadProcessTestImpl(HttpHandler http, TokenManager tokenManager, Upload upload) {
+        super(http, tokenManager, upload);
     }
     
     public final void printTestFields() {
@@ -100,56 +72,6 @@ public class UploadManagerTestImpl extends UploadManager {
     @Override
     void resumableFinished(Resumable.ResumableUpload upload, String responsePollKey, boolean allUnitsReady) {
         mResumableFinished = true;
-    }
-
-    @Override
-    public void addListener(IUploadListener uploadListener) {
-        mAddListener = true;
-    }
-
-    @Override
-    public void removeListener(IUploadListener uploadListener) {
-        mRemoveListener = true;
-    }
-
-    @Override
-    public void addUpload(Upload upload) {
-        mAddUpload = true;
-    }
-
-    @Override
-    public void purge(boolean shutdown) {
-        mPurge = true;
-    }
-
-    @Override
-    public void pause() {
-        mPause = true;
-    }
-
-    @Override
-    public void resume() {
-        mResume = true;
-    }
-
-    @Override
-    public void startNextAvailableUpload() {
-        mStartNextAvailableUpload = true;
-    }
-
-    @Override
-    public void sortQueueByFileSize(boolean ascending) {
-        mSortQueueByFileSize = true;
-    }
-
-    @Override
-    public void moveToFrontOfQueue(long id) {
-        mMoveToFrontOfQueue = true;
-    }
-
-    @Override
-    public void moveToEndOfQueue(long id) {
-        mMoveToEndOfQueue = true;
     }
 
     @Override

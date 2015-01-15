@@ -5,8 +5,8 @@ import java.util.List;
 /**
  * Created by Chris on 12/23/2014.
  */
-interface IUploadManager<T extends Upload> {
-    public void addUpload(T t);
+public interface UploadProcessManager {
+    public void addUpload(UploadProcess upload);
 
     public void purge(boolean shutdown);
 
@@ -14,7 +14,9 @@ interface IUploadManager<T extends Upload> {
 
     public void resume();
 
-    public List<T> getQueuedUploads();
+    public boolean isPaused();
+
+    public List<UploadProcess> getQueuedUploads();
 
     public List<UploadRunnable> getRunningUploads();
 

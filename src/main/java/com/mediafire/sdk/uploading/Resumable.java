@@ -3,8 +3,8 @@ package com.mediafire.sdk.uploading;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.mediafire.sdk.api.responses.upload.ResumableResponse;
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Result;
 
 import java.io.BufferedInputStream;
@@ -23,17 +23,21 @@ import java.util.Map;
 class Resumable extends UploadRunnable {
 
     private ResumableUpload mUpload;
-    private UploadManager mManager;
+    private UploadProcess mProcessMonitor;
 
-    public Resumable(ResumableUpload upload, IHttp http, ITokenManager tokenManager, UploadManager manager) {
+    public Resumable(ResumableUpload upload, HttpHandler http, TokenManager tokenManager, UploadProcess processMonitor) {
         super(http, tokenManager);
         mUpload = upload;
-        mManager = manager;
+        mProcessMonitor = processMonitor;
     }
 
     @Override
     public void run() {
         Map<String, Object> requestParams = makeQueryParams();
+
+        String customFileName = mUpload.getOptions().getCustomFileName();
+
+        String filename = customFileName != null ? customFileName : mUpload.getFile().getName();
 
         long fileSize = mUpload.getFile().length();
 
@@ -44,12 +48,6 @@ class Resumable extends UploadRunnable {
         boolean allUnitsReady = false;
 
         for (int chunkNumber = 0; chunkNumber < numUnits; chunkNumber++) {
-            try {
-                yieldIfPaused();
-            } catch (InterruptedException exception) {
-                mManager.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
-                return;
-            }
             if (!mUpload.isChunkUploaded(chunkNumber)) {
                 int chunkSize = getChunkSize(chunkNumber, numUnits, fileSize, unitSize);
 
@@ -60,24 +58,19 @@ class Resumable extends UploadRunnable {
                     chunk = makeChunk(unitSize, chunkNumber);
                     chunkHash = Hasher.getSHA256Hash(chunk);
                 } catch (IOException exception) {
-                    mManager.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
+                    mProcessMonitor.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
                     return;
                 } catch (NoSuchAlgorithmException e) {
-                    mManager.exceptionDuringUpload(State.RESUMABLE, e, mUpload);
+                    mProcessMonitor.exceptionDuringUpload(State.RESUMABLE, e, mUpload);
                     return;
                 }
 
-                Map<String, Object> headerParams = makeHeaderParams(chunkNumber, chunkSize, chunkHash);
-                try {
-                    yieldIfPaused();
-                } catch (InterruptedException exception) {
-                    mManager.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
-                    return;
-                }
+                Map<String, Object> headerParams = makeHeaderParams(chunkNumber, chunkSize, chunkHash, filename);
+
                 Result result = getUploadClient().resumable(requestParams, headerParams, chunk);
 
                 if (!resultValid(result)) {
-                    mManager.resultInvalidDuringUpload(State.RESUMABLE, result, mUpload);
+                    mProcessMonitor.resultInvalidDuringUpload(State.RESUMABLE, result, mUpload);
                     return;
                 }
 
@@ -89,17 +82,17 @@ class Resumable extends UploadRunnable {
                 try {
                     apiResponse = new Gson().fromJson(response, ResumableResponse.class);
                 } catch (JsonSyntaxException exception) {
-                    mManager.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
+                    mProcessMonitor.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
                     return;
                 }
 
                 if (apiResponse == null) {
-                    mManager.responseObjectNull(State.RESUMABLE, result, mUpload);
+                    mProcessMonitor.responseObjectNull(State.RESUMABLE, result, mUpload);
                     return;
                 }
 
                 if (apiResponse.hasError()) {
-                    mManager.apiError(State.RESUMABLE, mUpload, apiResponse, result);
+                    mProcessMonitor.apiError(State.RESUMABLE, mUpload, apiResponse, result);
                     return;
                 }
 
@@ -117,11 +110,52 @@ class Resumable extends UploadRunnable {
                 mUpload.updateUploadBitmap(newCount, newWords);
             }
 
-            double percentFinished = 0.0;
-            mManager.resumableProgress(mUpload, percentFinished);
+            int numUploaded = 0;
+            for (int chunkCount = 0; chunkCount < numUnits; chunkCount++) {
+                if (mUpload.isChunkUploaded(chunkCount)) {
+                    numUploaded++;
+                }
+            }
+
+            double percentFinished = (double) numUploaded / (double) numUnits;
+            percentFinished *= 100;
+            mProcessMonitor.resumableProgress(mUpload, percentFinished);
         }
 
-        mManager.resumableFinished(mUpload, responsePollKey, allUnitsReady);
+        mProcessMonitor.resumableFinished(mUpload, responsePollKey, allUnitsReady);
+    }
+
+    @Override
+    public boolean resultValid(Result result) {
+        if (result == null){
+            return false;
+        }
+
+        if (result.getResponse() == null) {
+            return false;
+        }
+
+        if (result.getResponse().getBytes() == null) {
+            return false;
+        }
+
+        if (result.getResponse().getHeaderFields() == null) {
+            return false;
+        }
+
+        if (!result.getResponse().getHeaderFields().containsKey("Content-Type")) {
+            return false;
+        }
+
+        List<String> contentTypeHeaders = result.getResponse().getHeaderFields().get("Content-Type");
+
+        // TODO(cnajar) - once MFBU is fixed and returning the correct Content-Type in the response headers, this
+        // TODO(cnajar) -          override method from UploadRunnable can be removed.
+//        if (!contentTypeHeaders.contains("application/json")) {
+//            return false;
+//        }
+
+        return true;
     }
 
     private byte[] makeChunk(int unitSize, int chunkNumber) throws IOException {
@@ -203,7 +237,7 @@ class Resumable extends UploadRunnable {
         return requestParams;
     }
 
-    private Map<String, Object> makeHeaderParams(int unitId, int chunkSize, String chunkHash) {
+    private Map<String, Object> makeHeaderParams(int unitId, int chunkSize, String chunkHash, String filename) {
         long fileSize = mUpload.getFile().length();
         String fileHash = mUpload.getHash();
 
@@ -214,6 +248,7 @@ class Resumable extends UploadRunnable {
         headerParams.put("x-unit-hash", chunkHash);
         headerParams.put("x-unit-id", unitId);
         headerParams.put("x-unit-size", chunkSize);
+        headerParams.put("x-filename", filename);
 
         return headerParams;
     }

@@ -1,12 +1,8 @@
 package com.mediafire.sdk.uploading;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.mediafire.sdk.api.responses.upload.InstantResponse;
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Response;
-import com.mediafire.sdk.http.Result;
 import com.mediafire.sdk.token.Token;
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -17,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class InstantTest extends TestCase {
     private static final String TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nisi nisl, pretium in rhoncus id, mattis ac ligula. Curabitur leo nisi, molestie sed ullamcorper vitae, mattis at lectus. Cras efficitur libero sed risus laoreet pellentesque. Nam suscipit quam ex, interdum imperdiet justo pharetra a. Vivamus laoreet ex massa, iaculis placerat est efficitur quis. Nullam nec nulla vitae lorem suscipit vehicula. In tincidunt vitae lacus a finibus. In a tempor magna, vel ultrices massa.";
@@ -29,7 +27,7 @@ public class InstantTest extends TestCase {
     private Upload mUpload;
     private static int mId;
 
-    private static IHttp sHttp = new IHttp() {
+    private static HttpHandler sHttp = new HttpHandler() {
         @Override
         public Response doGet(String url, Map<String, Object> headers) {
             return null;
@@ -64,7 +62,7 @@ public class InstantTest extends TestCase {
         }
     };
 
-    private static ITokenManager sTokenManager = new ITokenManager() {
+    private static TokenManager sTokenManager = new TokenManager() {
         @Override
         public <T extends Token> T take(Class<T> token) {
             return null;
@@ -80,8 +78,6 @@ public class InstantTest extends TestCase {
 
         }
     };
-
-    private static UploadManagerTestImpl sUploadManager = new UploadManagerTestImpl(1, sHttp, sTokenManager);
 
     @Override
     public void setUp() throws Exception {
@@ -100,7 +96,6 @@ public class InstantTest extends TestCase {
         File file = new File("InstantTest.txt");
         file.delete();
         mUpload = null;
-        sUploadManager.resetTestFields();
     }
 
     @Test
@@ -111,6 +106,7 @@ public class InstantTest extends TestCase {
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
         Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, "hash_result_invalid");
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Instant instant = new Instant(upload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(instant);
@@ -128,6 +124,7 @@ public class InstantTest extends TestCase {
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
         Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, "hash_response_object_null");
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Instant instant = new Instant(upload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(instant);
@@ -145,6 +142,7 @@ public class InstantTest extends TestCase {
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
         Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, "hash");
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Instant instant = new Instant(upload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(instant);
@@ -162,6 +160,7 @@ public class InstantTest extends TestCase {
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
         Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, "hash");
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Instant instant = new Instant(upload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(instant);

@@ -3,7 +3,7 @@ package com.mediafire.sdk.config;
 /**
  * CredentialsInterface stores a set of credentials
  */
-public interface IUserCredentials {
+public interface UserCredentials {
 
     public void setCredentials(Email email);
 

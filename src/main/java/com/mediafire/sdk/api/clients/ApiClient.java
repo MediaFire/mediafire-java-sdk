@@ -1,14 +1,14 @@
 package com.mediafire.sdk.api.clients;
 
 import com.mediafire.sdk.api.helpers.Instructions;
-import com.mediafire.sdk.config.IHttp;
+import com.mediafire.sdk.config.HttpHandler;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.http.Result;
 
 public class ApiClient extends BaseClient {
 
-    public ApiClient(IHttp httpWorker) {
+    public ApiClient(HttpHandler httpWorker) {
         super(httpWorker);
     }
 

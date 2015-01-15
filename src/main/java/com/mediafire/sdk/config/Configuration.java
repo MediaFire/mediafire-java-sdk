@@ -4,15 +4,15 @@ package com.mediafire.sdk.config;
  * Configuration contains a set of interface objects used to handle api requests
  */
 public class Configuration {
-    private final IHttp mHttpWorker;
-    private final IUserCredentials mUserCredentials;
-    private final IDeveloperCredentials mDeveloperCredentials;
-    private final ITokenManager mITokenManager;
+    private final HttpHandler mHttpWorker;
+    private final UserCredentials mUserCredentials;
+    private final DeveloperCredentials mDeveloperCredentials;
+    private final TokenManager mITokenManager;
 
-    public Configuration(IDeveloperCredentials devCred,
-                          IUserCredentials userCred,
-                          IHttp httpInterface,
-                          ITokenManager tokenManager) {
+    public Configuration(DeveloperCredentials devCred,
+                          UserCredentials userCred,
+                          HttpHandler httpInterface,
+                          TokenManager tokenManager) {
         mDeveloperCredentials = devCred;
         mUserCredentials = userCred;
         mHttpWorker = httpInterface;
@@ -23,7 +23,7 @@ public class Configuration {
      * Gets the HttpWorker associated with this class
      * @return HttpWorkerInterface
      */
-    public IHttp getHttpWorker() {
+    public HttpHandler getHttpWorker() {
         return mHttpWorker;
     }
 
@@ -31,7 +31,7 @@ public class Configuration {
      * Gets the user credentials associated with this class
      * @return CredentialsInterface
      */
-    public IUserCredentials getUserCredentials() {
+    public UserCredentials getUserCredentials() {
         return mUserCredentials;
     }
 
@@ -39,7 +39,7 @@ public class Configuration {
      * Gets the developer credentials associated with this class
      * @return CredentialsInterface
      */
-    public IDeveloperCredentials getDeveloperCredentials() {
+    public DeveloperCredentials getDeveloperCredentials() {
         return mDeveloperCredentials;
     }
 
@@ -47,7 +47,7 @@ public class Configuration {
      * Gets the session token manager associated with this class
      * @return SessionTokenManagerInterface
      */
-    public ITokenManager getTokenManager() {
+    public TokenManager getTokenManager() {
         return mITokenManager;
     }
 }

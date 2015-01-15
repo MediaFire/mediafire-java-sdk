@@ -1,7 +1,7 @@
 package com.mediafire.sdk.uploading;
 
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.Token;
 import junit.framework.TestCase;
@@ -9,11 +9,12 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class PollTest extends TestCase {
     private static final String TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nisi nisl, pretium in rhoncus id, mattis ac ligula. Curabitur leo nisi, molestie sed ullamcorper vitae, mattis at lectus. Cras efficitur libero sed risus laoreet pellentesque. Nam suscipit quam ex, interdum imperdiet justo pharetra a. Vivamus laoreet ex massa, iaculis placerat est efficitur quis. Nullam nec nulla vitae lorem suscipit vehicula. In tincidunt vitae lacus a finibus. In a tempor magna, vel ultrices massa.";
@@ -30,7 +31,7 @@ public class PollTest extends TestCase {
 
     private static long mId;
 
-    private static IHttp sHttp = new IHttp() {
+    private static HttpHandler sHttp = new HttpHandler() {
         public int sRunNumber = 0;
 
         @Override
@@ -216,7 +217,7 @@ public class PollTest extends TestCase {
         }
     };
 
-    private static ITokenManager sTokenManager = new ITokenManager() {
+    private static TokenManager sTokenManager = new TokenManager() {
         @Override
         public <T extends Token> T take(Class<T> token) {
             return null;
@@ -232,8 +233,6 @@ public class PollTest extends TestCase {
 
         }
     };
-
-    private static UploadManagerTestImpl sUploadManager = new UploadManagerTestImpl(1, sHttp, sTokenManager);
 
     @Override
     public void setUp() throws Exception {
@@ -252,7 +251,6 @@ public class PollTest extends TestCase {
         File file = new File("PollTest.txt");
         file.delete();
         mUpload = null;
-        sUploadManager.resetTestFields();
     }
 
     @Test
@@ -263,6 +261,7 @@ public class PollTest extends TestCase {
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
         Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);
@@ -280,6 +279,7 @@ public class PollTest extends TestCase {
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
         Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);
@@ -297,6 +297,7 @@ public class PollTest extends TestCase {
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
         Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);
@@ -314,6 +315,7 @@ public class PollTest extends TestCase {
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
         Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);
@@ -331,6 +333,7 @@ public class PollTest extends TestCase {
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
         Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);
@@ -348,6 +351,7 @@ public class PollTest extends TestCase {
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
         Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);
@@ -365,6 +369,7 @@ public class PollTest extends TestCase {
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
         Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
 
         Thread thread = new Thread(poll);

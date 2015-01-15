@@ -1,6 +1,6 @@
 package com.mediafire.sdk.config.defaults;
 
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.token.Token;
 
 /**
@@ -8,7 +8,7 @@ import com.mediafire.sdk.token.Token;
  * DefaultSessionTokenManager is a default implementation of the SessionTokenManagerInterface
  * A custom implementation is recommended
  */
-public class TokenManagerImpl implements ITokenManager {
+public class TokenManagerImpl implements TokenManager {
     /**
      * DefaultSessionTokenManager Constructor
      */

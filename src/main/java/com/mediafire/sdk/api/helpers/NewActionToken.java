@@ -1,7 +1,7 @@
 package com.mediafire.sdk.api.helpers;
 
 import com.mediafire.sdk.api.responses.user.GetActionTokenResponse;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.ActionToken;
@@ -16,13 +16,13 @@ import com.mediafire.sdk.token.UploadActionToken;
 public class NewActionToken extends UseSessionToken {
 
     private String mTokenType;
-    private ITokenManager mActionITokenManagerInterface;
+    private TokenManager mActionTokenManagerInterface;
 
-    public NewActionToken(String tokenType, ITokenManager actionITokenManagerInterface) {
-        super(actionITokenManagerInterface);
+    public NewActionToken(String tokenType, TokenManager actionTokenManagerInterface) {
+        super(actionTokenManagerInterface);
 
         mTokenType = tokenType;
-        mActionITokenManagerInterface = actionITokenManagerInterface;
+        mActionTokenManagerInterface = actionTokenManagerInterface;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class NewActionToken extends UseSessionToken {
         GetActionTokenResponse getActionTokenResponse = getResponseObject(response, GetActionTokenResponse.class);
 
         if (getActionTokenResponse == null) {
-            mActionITokenManagerInterface.tokensBad();
+            mActionTokenManagerInterface.tokensBad();
             return;
         }
 
@@ -76,16 +76,16 @@ public class NewActionToken extends UseSessionToken {
             if (debugging()) {
                 System.out.println(getClass() + " - returnToken, not returning token, notifying ActionTokenManager tokens bad");
             }
-            mActionITokenManagerInterface.tokensBad();
+            mActionTokenManagerInterface.tokensBad();
             return;
         }
 
         if ("image".equals(mTokenType)) {
             ImageActionToken mfImageActionToken = (ImageActionToken) createActionToken(ImageActionToken.class, getActionTokenResponse, request);
-            mActionITokenManagerInterface.give(mfImageActionToken);
+            mActionTokenManagerInterface.give(mfImageActionToken);
         } else if ("upload".equals(mTokenType)) {
             UploadActionToken uploadActionToken = (UploadActionToken) createActionToken(UploadActionToken.class, getActionTokenResponse, request);
-            mActionITokenManagerInterface.give(uploadActionToken);
+            mActionTokenManagerInterface.give(uploadActionToken);
         } else {
             if (debugging()) {
                 System.out.println(getClass() + " - returnToken, not returning token, type " + mTokenType + " not valid");

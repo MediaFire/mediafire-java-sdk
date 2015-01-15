@@ -4,7 +4,7 @@ import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.api.Debug;
 import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.api.helpers.NoToken;
-import com.mediafire.sdk.config.IHttp;
+import com.mediafire.sdk.config.HttpHandler;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 
@@ -15,7 +15,7 @@ public class SystemClient implements Debug {
     private final Instructions mInstructions;
     private boolean mDebug;
 
-    public SystemClient(IHttp httpInterface) {
+    public SystemClient(HttpHandler httpInterface) {
         mApiRequestGenerator = new ApiRequestGenerator();
 
         mInstructions = new NoToken();

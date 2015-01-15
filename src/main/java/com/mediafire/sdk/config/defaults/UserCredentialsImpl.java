@@ -1,11 +1,11 @@
 package com.mediafire.sdk.config.defaults;
 
-import com.mediafire.sdk.config.IUserCredentials;
+import com.mediafire.sdk.config.UserCredentials;
 
 /**
  *
  */
-public class UserCredentialsImpl implements IUserCredentials {
+public class UserCredentialsImpl implements UserCredentials {
     private String mCredentialsString;
     private Credentials mCredentialsObject;
 

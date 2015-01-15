@@ -1,7 +1,7 @@
 package com.mediafire.sdk.api.helpers;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.SessionToken;
@@ -14,11 +14,11 @@ import com.mediafire.sdk.token.SessionToken;
  */
 public class UseSessionToken extends Instructions {
 
-    private ITokenManager mSessionITokenManagerInterface;
+    private TokenManager mSessionTokenManagerInterface;
 
-    public UseSessionToken(ITokenManager sessionITokenManagerInterface) {
+    public UseSessionToken(TokenManager sessionTokenManagerInterface) {
         super();
-        mSessionITokenManagerInterface = sessionITokenManagerInterface;
+        mSessionTokenManagerInterface = sessionTokenManagerInterface;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class UseSessionToken extends Instructions {
             System.out.println(getClass() + " - borrowToken, borrowing token from ITokenManager");
         }
 
-        SessionToken sessionToken = mSessionITokenManagerInterface.take(SessionToken.class);
+        SessionToken sessionToken = mSessionTokenManagerInterface.take(SessionToken.class);
         request.addToken(sessionToken);
     }
 
@@ -67,7 +67,7 @@ public class UseSessionToken extends Instructions {
             }
 
 
-            mSessionITokenManagerInterface.give(request.getToken());
+            mSessionTokenManagerInterface.give(request.getToken());
         } else {
             if (debugging()) {
                 System.out.println(getClass() + " - returnToken, error #" + apiResponse.getError() +

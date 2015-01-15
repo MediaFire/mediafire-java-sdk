@@ -1,6 +1,6 @@
 package com.mediafire.sdk.config.defaults;
 
-import com.mediafire.sdk.config.IHttp;
+import com.mediafire.sdk.config.HttpHandler;
 import com.mediafire.sdk.http.Response;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -18,8 +18,8 @@ import java.util.Map;
  * DefaultHttpWorker is a default implementation of the HttpWorkerInterface
  * A custom implementation is recommended
  */
-public class HttpImpl implements IHttp {
-    private static final String TAG = HttpImpl.class.getCanonicalName();
+public class HttpWorker implements HttpHandler {
+    private static final String TAG = HttpWorker.class.getCanonicalName();
     private static final int CONNECTION_TIMEOUT_MILLISECONDS = 5000;
     private static final int READ_TIMEOUT_MILLISECONDS = 45000;
     private boolean mDebug = false;

@@ -4,8 +4,8 @@ import com.mediafire.sdk.api.ApiRequestGenerator;
 import com.mediafire.sdk.api.Debug;
 import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.api.helpers.UseSessionToken;
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 
@@ -18,7 +18,7 @@ public class DeviceClient implements Debug {
     private final Instructions mInstructions;
     private boolean mDebug;
 
-    public DeviceClient(IHttp httpInterface, ITokenManager tokenManager) {
+    public DeviceClient(HttpHandler httpInterface, TokenManager tokenManager) {
         mApiRequestGenerator = new ApiRequestGenerator();
 
         mInstructions = new UseSessionToken(tokenManager);

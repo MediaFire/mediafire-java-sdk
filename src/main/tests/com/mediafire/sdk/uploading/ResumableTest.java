@@ -1,7 +1,7 @@
 package com.mediafire.sdk.uploading;
 
-import com.mediafire.sdk.config.IHttp;
-import com.mediafire.sdk.config.ITokenManager;
+import com.mediafire.sdk.config.HttpHandler;
+import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.Token;
 import junit.framework.TestCase;
@@ -10,6 +10,8 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class ResumableTest extends TestCase {
 
@@ -30,7 +32,7 @@ public class ResumableTest extends TestCase {
 
     private static int sLoopCount = 0;
 
-    private static IHttp sHttp = new IHttp() {
+    private static HttpHandler sHttp = new HttpHandler() {
 
         @Override
         public Response doGet(String url, Map<String, Object> headers) {
@@ -166,7 +168,7 @@ public class ResumableTest extends TestCase {
         }
     };
 
-    private static ITokenManager sTokenManager = new ITokenManager() {
+    private static TokenManager sTokenManager = new TokenManager() {
         @Override
         public <T extends Token> T take(Class<T> token) {
             return null;
@@ -182,8 +184,6 @@ public class ResumableTest extends TestCase {
 
         }
     };
-
-    private static UploadManagerTestImpl sUploadManager = new UploadManagerTestImpl(1, sHttp, sTokenManager);
 
     @Override
     public void setUp() throws Exception {
@@ -202,7 +202,6 @@ public class ResumableTest extends TestCase {
         File file = new File("ResumableTest.txt");
         file.delete();
         mUpload = null;
-        sUploadManager.resetTestFields();
         sLoopCount = 0;
     }
 
@@ -215,6 +214,7 @@ public class ResumableTest extends TestCase {
 
         List<Integer> words = new LinkedList<Integer>();
         Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 1, 1, 1, words);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
@@ -233,6 +233,7 @@ public class ResumableTest extends TestCase {
 
         List<Integer> words = new LinkedList<Integer>();
         Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 1, 1, 1, words);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
@@ -251,6 +252,7 @@ public class ResumableTest extends TestCase {
 
         List<Integer> words = new LinkedList<Integer>();
         Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 1, 1, 1, words);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
@@ -269,6 +271,7 @@ public class ResumableTest extends TestCase {
 
         List<Integer> words = new LinkedList<Integer>();
         Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 1, 1, 1, words);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
@@ -287,6 +290,7 @@ public class ResumableTest extends TestCase {
 
         List<Integer> words = new LinkedList<Integer>();
         Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 10, 1, 1, words);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
@@ -305,6 +309,7 @@ public class ResumableTest extends TestCase {
 
         List<Integer> words = new LinkedList<Integer>();
         Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 10, 1, 1, words);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
@@ -323,6 +328,7 @@ public class ResumableTest extends TestCase {
 
         List<Integer> words = new LinkedList<Integer>();
         Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 1, 1, 1, words);
+        UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
         Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);

@@ -6,5 +6,5 @@ import com.mediafire.sdk.api.responses.ApiResponse;
  * Created by Chris on 1/19/2015.
  */
 public class SendMessageResponse extends ApiResponse {
-    
+
 }

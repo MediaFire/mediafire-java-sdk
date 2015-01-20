@@ -100,6 +100,29 @@ public class UploadClient implements Debug {
         return mApiClient.doRequest(mInstructionsActionToken, request);
     }
 
+    public Result update(Map<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload) {
+        if (debugging()) {
+            System.out.println(getClass() + " resumable, requestParams: " + requestParams);
+            System.out.println(getClass() + " resumable, headerParams: " + headerParameters);
+        }
+
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/update.php");
+
+        for (String key : requestParams.keySet()) {
+            Object value = requestParams.get(key);
+            request.addQueryParameter(key, value);
+        }
+
+        request.addPayload(payload);
+
+        for (String key : headerParameters.keySet()) {
+            Object value = headerParameters.get(key);
+            request.addHeader(key, value);
+        }
+
+        return mApiClient.doRequest(mInstructionsActionToken, request);
+    }
+
     @Override
     public void debug(boolean debug) {
         mDebug = debug;

@@ -39,9 +39,8 @@ public class UploadClient implements Debug {
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/check.php");
 
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return mApiClient.doRequest(mInstructionsSessionToken, request);
@@ -54,9 +53,8 @@ public class UploadClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/instant.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return mApiClient.doRequest(mInstructionsSessionToken, request);
@@ -69,9 +67,8 @@ public class UploadClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/poll_upload.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return mApiClient.doRequest(mInstructionsNoToken, request);
@@ -85,9 +82,8 @@ public class UploadClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/resumable.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         request.addPayload(payload);
@@ -108,9 +104,8 @@ public class UploadClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/update.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         request.addPayload(payload);
@@ -121,6 +116,13 @@ public class UploadClient implements Debug {
         }
 
         return mApiClient.doRequest(mInstructionsActionToken, request);
+    }
+
+    private void addParams(Request request, Map<String, Object> requestParams) {
+        for (String key : requestParams.keySet()) {
+            Object value = requestParams.get(key);
+            request.addQueryParameter(key, value);
+        }
     }
 
     @Override

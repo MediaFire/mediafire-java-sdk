@@ -33,9 +33,8 @@ public class MetaClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/add_to_list.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -48,9 +47,8 @@ public class MetaClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/remove_from_list.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -63,9 +61,8 @@ public class MetaClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/delete_property.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -78,9 +75,8 @@ public class MetaClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/get.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -93,9 +89,8 @@ public class MetaClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/get_links.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -108,9 +103,8 @@ public class MetaClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/query.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -123,12 +117,18 @@ public class MetaClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/set_property.php");
 
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
+    private void addParams(Request request, Map<String, Object> requestParams) {
         for (String key : requestParams.keySet()) {
             Object value = requestParams.get(key);
             request.addQueryParameter(key, value);
         }
-
-        return apiClient.doRequest(mInstructions, request);
     }
 
     @Override

@@ -35,9 +35,8 @@ public class NotificationsClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("notifications/get_info.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -50,9 +49,8 @@ public class NotificationsClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("notifications/delete.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -65,12 +63,18 @@ public class NotificationsClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("notifications/copy.php");
 
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
+    private void addParams(Request request, Map<String, Object> requestParams) {
         for (String key : requestParams.keySet()) {
             Object value = requestParams.get(key);
             request.addQueryParameter(key, value);
         }
-
-        return apiClient.doRequest(mInstructions, request);
     }
 
     @Override

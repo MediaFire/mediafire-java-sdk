@@ -32,9 +32,8 @@ public class FileClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_info.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -47,9 +46,8 @@ public class FileClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/delete.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -62,9 +60,8 @@ public class FileClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/copy.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -77,9 +74,8 @@ public class FileClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_version.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -92,9 +88,8 @@ public class FileClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/move.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -107,9 +102,8 @@ public class FileClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/update.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -122,12 +116,18 @@ public class FileClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_links.php");
 
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
+    private void addParams(Request request, Map<String, Object> requestParams) {
         for (String key : requestParams.keySet()) {
             Object value = requestParams.get(key);
             request.addQueryParameter(key, value);
         }
-
-        return apiClient.doRequest(mInstructions, request);
     }
 
     @Override

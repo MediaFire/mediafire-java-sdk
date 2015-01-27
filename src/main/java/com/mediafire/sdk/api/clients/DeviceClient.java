@@ -32,9 +32,8 @@ public class DeviceClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("device/get_changes.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return mApiClient.doRequest(mInstructions, request);
@@ -47,12 +46,18 @@ public class DeviceClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("device/get_status.php");
 
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return mApiClient.doRequest(mInstructions, request);
+    }
+
+    private void addParams(Request request, Map<String, Object> requestParams) {
         for (String key : requestParams.keySet()) {
             Object value = requestParams.get(key);
             request.addQueryParameter(key, value);
         }
-
-        return mApiClient.doRequest(mInstructions, request);
     }
 
     @Override

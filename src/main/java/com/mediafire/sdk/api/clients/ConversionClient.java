@@ -28,9 +28,8 @@ public class ConversionClient implements Debug {
 
         Request request = makeBaseRequest();
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value == null ? "" : value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return imageClient.doRequest(mInstructions, request);
@@ -42,6 +41,13 @@ public class ConversionClient implements Debug {
 
         Request request = builder.build();
         return request;
+    }
+
+    private void addParams(Request request, Map<String, Object> requestParams) {
+        for (String key : requestParams.keySet()) {
+            Object value = requestParams.get(key);
+            request.addQueryParameter(key, value);
+        }
     }
 
     @Override

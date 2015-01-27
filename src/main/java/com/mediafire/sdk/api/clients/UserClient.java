@@ -41,9 +41,8 @@ public class UserClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("user/set_avatar.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -76,12 +75,18 @@ public class UserClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("user/set_settings.php");
 
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
+    private void addParams(Request request, Map<String, Object> requestParams) {
         for (String key : requestParams.keySet()) {
             Object value = requestParams.get(key);
             request.addQueryParameter(key, value);
         }
-
-        return apiClient.doRequest(mInstructions, request);
     }
 
     @Override

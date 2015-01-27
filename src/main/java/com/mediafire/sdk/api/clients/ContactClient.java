@@ -32,9 +32,8 @@ public class ContactClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("contact/add.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return mApiClient.doRequest(mInstructions, request);
@@ -47,9 +46,8 @@ public class ContactClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("contact/delete.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return mApiClient.doRequest(mInstructions, request);
@@ -62,12 +60,18 @@ public class ContactClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("contact/fetch.php");
 
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return mApiClient.doRequest(mInstructions, request);
+    }
+
+    private void addParams(Request request, Map<String, Object> requestParams) {
         for (String key : requestParams.keySet()) {
             Object value = requestParams.get(key);
             request.addQueryParameter(key, value);
         }
-
-        return mApiClient.doRequest(mInstructions, request);
     }
 
     @Override

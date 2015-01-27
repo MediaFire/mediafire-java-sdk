@@ -31,9 +31,8 @@ public class FolderClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/copy.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -46,9 +45,8 @@ public class FolderClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/create.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -61,9 +59,8 @@ public class FolderClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/move.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -76,9 +73,8 @@ public class FolderClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/delete.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -91,9 +87,8 @@ public class FolderClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/purge.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -106,9 +101,8 @@ public class FolderClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/update.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -121,9 +115,8 @@ public class FolderClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/get_info.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -136,9 +129,8 @@ public class FolderClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/get_content.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -151,9 +143,8 @@ public class FolderClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/get_revision.php");
 
-        for (String key : requestParams.keySet()) {
-            Object value = requestParams.get(key);
-            request.addQueryParameter(key, value);
+        if (requestParams != null) {
+            addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
@@ -166,12 +157,18 @@ public class FolderClient implements Debug {
 
         Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/search.php");
 
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
+    private void addParams(Request request, Map<String, Object> requestParams) {
         for (String key : requestParams.keySet()) {
             Object value = requestParams.get(key);
             request.addQueryParameter(key, value);
         }
-
-        return apiClient.doRequest(mInstructions, request);
     }
 
     @Override

@@ -6,11 +6,11 @@ public class GetStatusResponse extends ApiResponse {
     private String async_jobs_in_progress;
     private String device_revision;
 
-    public int getRevision() {
+    public long getRevision() {
         if (device_revision == null || device_revision.isEmpty()) {
             device_revision = "0";
         }
-        return Integer.valueOf(device_revision);
+        return Long.valueOf(device_revision);
     }
 
     public boolean isAsyncJobInProgress() {

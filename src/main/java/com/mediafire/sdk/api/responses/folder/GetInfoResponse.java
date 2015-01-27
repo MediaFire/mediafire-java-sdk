@@ -2,14 +2,26 @@ package com.mediafire.sdk.api.responses.folder;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class GetInfoResponse extends ApiResponse {
     private FolderInfo folder_info;
+    private List<FolderInfo> folder_infos;
 
     public FolderInfo getFolderInfo() {
         if (folder_info == null) {
             folder_info = new FolderInfo();
         }
         return folder_info;
+    }
+
+    public List<FolderInfo> getFolderInfos() {
+        if (folder_infos == null) {
+            folder_infos = new LinkedList<FolderInfo>();
+        }
+
+        return folder_infos;
     }
 
     public class FolderInfo {

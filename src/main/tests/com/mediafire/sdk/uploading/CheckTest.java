@@ -138,7 +138,7 @@ public class CheckTest extends TestCase {
         thread.start();
         thread.join();
 
-        assertEquals(true, sUploadManager.mResultInvalidDuringUpload);
+        assertEquals(true, sUploadManager.mGeneralError);
     }
 
     @Test
@@ -154,7 +154,7 @@ public class CheckTest extends TestCase {
         thread.start();
         thread.join();
 
-        assertEquals(true, sUploadManager.mResponseObjectNull);
+        assertEquals(true, sUploadManager.mGeneralError);
     }
 
     @Test
@@ -186,7 +186,7 @@ public class CheckTest extends TestCase {
         thread.start();
         thread.join();
 
-        assertEquals(true, sUploadManager.mFileLargerThanStorageSpaceAvailable);
+        assertEquals(true, sUploadManager.mStorageLimitExceeded);
     }
 
     @Test

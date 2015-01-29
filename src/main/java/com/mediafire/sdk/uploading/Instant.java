@@ -31,7 +31,7 @@ class Instant extends UploadRunnable {
         Result result = getUploadClient().instant(requestParams);
 
         if (!resultValid(result)) {
-            mProcessMonitor.resultInvalidDuringUpload(State.INSTANT, result, mUpload);
+            mProcessMonitor.generalCancel(mUpload, result);
             return;
         }
 
@@ -43,17 +43,17 @@ class Instant extends UploadRunnable {
         try {
             apiResponse = new Gson().fromJson(response, InstantResponse.class);
         } catch (JsonSyntaxException exception) {
-            mProcessMonitor.exceptionDuringUpload(State.INSTANT, exception, mUpload);
+            mProcessMonitor.exceptionDuringUpload(mUpload, exception);
             return;
         }
 
         if (apiResponse == null) {
-            mProcessMonitor.responseObjectNull(State.INSTANT, result, mUpload);
+            mProcessMonitor.generalCancel(mUpload, result);
             return;
         }
 
         if (apiResponse.hasError()) {
-            mProcessMonitor.apiError(State.INSTANT, mUpload, apiResponse, result);
+            mProcessMonitor.apiError(mUpload, result);
         }
 
         String quickKey = apiResponse.getQuickkey();

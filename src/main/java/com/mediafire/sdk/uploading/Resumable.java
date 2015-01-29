@@ -58,10 +58,10 @@ class Resumable extends UploadRunnable {
                     chunk = makeChunk(unitSize, chunkNumber);
                     chunkHash = Hasher.getSHA256Hash(chunk);
                 } catch (IOException exception) {
-                    mProcessMonitor.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
+                    mProcessMonitor.exceptionDuringUpload(mUpload, exception);
                     return;
-                } catch (NoSuchAlgorithmException e) {
-                    mProcessMonitor.exceptionDuringUpload(State.RESUMABLE, e, mUpload);
+                } catch (NoSuchAlgorithmException exception) {
+                    mProcessMonitor.exceptionDuringUpload(mUpload, exception);
                     return;
                 }
 
@@ -70,7 +70,7 @@ class Resumable extends UploadRunnable {
                 Result result = getUploadClient().resumable(requestParams, headerParams, chunk);
 
                 if (!resultValid(result)) {
-                    mProcessMonitor.resultInvalidDuringUpload(State.RESUMABLE, result, mUpload);
+                    mProcessMonitor.generalCancel(mUpload, result);
                     return;
                 }
 
@@ -82,17 +82,17 @@ class Resumable extends UploadRunnable {
                 try {
                     apiResponse = new Gson().fromJson(response, ResumableResponse.class);
                 } catch (JsonSyntaxException exception) {
-                    mProcessMonitor.exceptionDuringUpload(State.RESUMABLE, exception, mUpload);
+                    mProcessMonitor.exceptionDuringUpload(mUpload, exception);
                     return;
                 }
 
                 if (apiResponse == null) {
-                    mProcessMonitor.responseObjectNull(State.RESUMABLE, result, mUpload);
+                    mProcessMonitor.generalCancel(mUpload, result);
                     return;
                 }
 
                 if (apiResponse.hasError()) {
-                    mProcessMonitor.apiError(State.RESUMABLE, mUpload, apiResponse, result);
+                    mProcessMonitor.apiError(mUpload, result);
                     return;
                 }
 

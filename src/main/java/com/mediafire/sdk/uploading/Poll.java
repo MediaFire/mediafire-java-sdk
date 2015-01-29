@@ -47,7 +47,7 @@ class Poll extends UploadRunnable {
             Result result = getUploadClient().pollUpload(requestParameters);
 
             if (!resultValid(result)) {
-                mProcessMonitor.resultInvalidDuringUpload(State.POLL, result, mUpload);
+                mProcessMonitor.generalCancel(mUpload, result);
                 return;
             }
 
@@ -59,24 +59,24 @@ class Poll extends UploadRunnable {
             try {
                 apiResponse = new Gson().fromJson(response, PollResponse.class);
             } catch (JsonSyntaxException exception) {
-                mProcessMonitor.exceptionDuringUpload(State.POLL, exception, mUpload);
+                mProcessMonitor.exceptionDuringUpload(mUpload, exception);
                 return;
             }
 
             if (apiResponse == null) {
-                mProcessMonitor.responseObjectNull(State.POLL, result, mUpload);
+                mProcessMonitor.generalCancel(mUpload, result);
                 return;
             }
 
             if (apiResponse.hasError()) {
-                mProcessMonitor.apiError(State.POLL, mUpload, apiResponse, result);
+                mProcessMonitor.apiError(mUpload, result);
                 return;
             }
 
             PollResponse.DoUpload doUpload = apiResponse.getDoUpload();
 
             if (doUpload.getFileErrorCode() != 0) {
-                mProcessMonitor.apiError(State.POLL, mUpload, apiResponse, result);
+                mProcessMonitor.apiError(mUpload, result);
                 return;
             }
 
@@ -92,7 +92,7 @@ class Poll extends UploadRunnable {
             try {
                 Thread.sleep(mWaitTimeBetweenPollsMillis);
             } catch (InterruptedException exception) {
-                mProcessMonitor.exceptionDuringUpload(State.POLL, exception, mUpload);
+                mProcessMonitor.exceptionDuringUpload(mUpload, exception);
                 return;
             }
         }

@@ -36,17 +36,17 @@ class Check extends UploadRunnable {
         try {
             requestParams = makeQueryParams();
         } catch (IOException exception) {
-            mProcessMonitor.exceptionDuringUpload(State.CHECK, exception, mUpload);
+            mProcessMonitor.exceptionDuringUpload(mUpload, exception);
             return;
         } catch (NoSuchAlgorithmException exception) {
-            mProcessMonitor.exceptionDuringUpload(State.CHECK, exception, mUpload);
+            mProcessMonitor.exceptionDuringUpload(mUpload, exception);
             return;
         }
 
         Result result = getUploadClient().check(requestParams);
 
         if (!resultValid(result)) {
-            mProcessMonitor.resultInvalidDuringUpload(State.CHECK, result, mUpload);
+            mProcessMonitor.generalCancel(mUpload, result);
             return;
         }
 
@@ -58,28 +58,28 @@ class Check extends UploadRunnable {
         try {
             apiResponse = new Gson().fromJson(response, CheckResponse.class);
         } catch (JsonSyntaxException exception) {
-            mProcessMonitor.exceptionDuringUpload(State.CHECK, exception, mUpload);
+            mProcessMonitor.exceptionDuringUpload(mUpload, exception);
             return;
         }
 
         if (apiResponse == null) {
-            mProcessMonitor.responseObjectNull(State.CHECK, result, mUpload);
+            mProcessMonitor.generalCancel(mUpload, result);
             return;
         }
 
         if (apiResponse.hasError()) {
-            mProcessMonitor.apiError(State.CHECK, mUpload, apiResponse, result);
+            mProcessMonitor.apiError(mUpload, result);
             return;
         }
 
         if (apiResponse.isStorageLimitExceeded()) {
-            mProcessMonitor.storageLimitExceeded(State.CHECK, mUpload);
+            mProcessMonitor.storageLimitExceeded(mUpload);
             return;
         }
 
         if (apiResponse.getStorageLimit() - apiResponse.getUsedStorageSize() < mUpload.getFile().length()
                 && apiResponse.getStorageLimit() != 0) {
-            mProcessMonitor.fileLargerThanStorageSpaceAvailable(State.CHECK, mUpload);
+            mProcessMonitor.storageLimitExceeded(mUpload);
             return;
         }
 

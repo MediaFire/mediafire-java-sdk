@@ -36,45 +36,33 @@ public class UploadProcess implements Runnable {
         check.run();
     }
 
-    void exceptionDuringUpload(State state, Exception exception, Upload upload) { 
+    void exceptionDuringUpload(Upload upload, Exception exception) {
         if (mListener != null) {
-            mListener.uploadCancelledException(upload.getId(), upload.getInfo(), exception, state);
+            mListener.exceptionOccurred(upload, exception);
         }
     }
 
-    void resultInvalidDuringUpload(State state, Result result, Upload upload) {
+    void generalCancel(Upload upload, Result result) {
         if (mListener != null) {
-            mListener.uploadCancelledResultInvalid(upload.getId(), upload.getInfo(), result, state);
+            mListener.generalCancel(upload, result);
         }
     }
 
-    void responseObjectNull(State state, Result result, Upload upload) {
+    void storageLimitExceeded(Upload upload) {
         if (mListener != null) {
-            mListener.uploadCancelledResponseObjectInvalid(upload.getId(), upload.getInfo(), result, state);
+            mListener.storageLimitExceeded(upload);
         }
     }
 
-    void storageLimitExceeded(State state, Upload upload) {
+    void apiError(Upload upload, Result result) {
         if (mListener != null) {
-            mListener.uploadCancelledStorageLimitExceeded(upload.getId(), upload.getInfo(), state);
+            mListener.apiError(upload, result);
         }
     }
 
-    void fileLargerThanStorageSpaceAvailable(State state, Upload upload) {
+    void pollMaxAttemptsReached(Poll.PollUpload upload) {
         if (mListener != null) {
-            mListener.uploadCancelledFileLargerThanStorageSpaceAvailable(upload.getId(), upload.getInfo(), state);
-        }
-    }
-
-    void resumableUploadPortionOfApiResponseMissing(Upload upload, CheckResponse apiResponse, Result result) {
-        if (mListener != null) {
-            mListener.uploadCancelledApiResponseMissingResumableUpload(upload.getId(), upload.getInfo(), apiResponse, result);
-        }
-    }
-
-    void bitmapPortionOfApiResponseMissing(Upload upload, CheckResponse apiResponse, Result result) {
-        if (mListener != null) {
-            mListener.uploadCancelledApiResponseMissingBitmap(upload.getId(), upload.getInfo(), apiResponse, result);
+            mListener.maxPollsReached(upload);
         }
     }
 
@@ -92,14 +80,14 @@ public class UploadProcess implements Runnable {
                         doInstantUpload(upload);
                     } else {
                         if (mListener != null) {
-                            mListener.uploadFinished(upload.getId(), upload.getInfo(), checkResponse.getDuplicateQuickkey());
+                            mListener.uploadFinished(upload, checkResponse.getDuplicateQuickkey());
                         }
                     }
                     break;
                 case DO_NOT_UPLOAD:
                 default:
                     if (mListener != null) {
-                        mListener.uploadFinished(upload.getId(), upload.getInfo(), checkResponse.getDuplicateQuickkey());
+                        mListener.uploadFinished(upload, checkResponse.getDuplicateQuickkey());
                     }
                     break;
             }
@@ -118,37 +106,25 @@ public class UploadProcess implements Runnable {
 
     void pollFinished(Poll.PollUpload upload, String quickKey) {
         if (mListener != null) {
-            mListener.uploadFinished(upload.getId(), upload.getInfo(), quickKey);
+            mListener.uploadFinished(upload, quickKey);
         }
     }
 
     void pollUpdate(Poll.PollUpload upload, int status) {
         if (mListener != null) {
-            mListener.pollUpdate(upload.getId(), upload.getInfo(), status);
-        }
-    }
-
-    void pollMaxAttemptsReached(Poll.PollUpload upload) {
-        if (mListener != null) {
-            mListener.uploadCancelledPollAttempts(upload.getId(), upload.getInfo());
+            mListener.pollUpdate(upload, status);
         }
     }
 
     void instantFinished(Instant.InstantUpload upload, String quickKey) {
         if (mListener != null) {
-            mListener.uploadFinished(upload.getId(), upload.getInfo(), quickKey);
-        }
-    }
-
-    void apiError(State state, Upload upload, ApiResponse response, Result result) {
-        if (mListener != null) {
-            mListener.uploadCancelledApiError(upload.getId(), upload.getInfo(), state, response, result);
+            mListener.uploadFinished(upload, quickKey);
         }
     }
 
     void resumableProgress(Resumable.ResumableUpload upload, double percentFinished) {
         if (mListener != null) {
-            mListener.resumableUpdate(upload.getId(), upload.getInfo(), percentFinished);
+            mListener.uploadProgress(upload, percentFinished);
         }
     }
 
@@ -163,7 +139,7 @@ public class UploadProcess implements Runnable {
 
     void uploadStarted(Upload upload) {
         if (mListener != null) {
-            mListener.uploadStarted(upload.getId(), upload.getInfo());
+            mListener.uploadStarted(upload);
         }
     }
 

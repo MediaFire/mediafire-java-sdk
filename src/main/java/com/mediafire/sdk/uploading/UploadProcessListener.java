@@ -11,12 +11,12 @@ import java.util.Map;
 */
 public interface UploadProcessListener {
     public void uploadCancelledException(long id, Map<String, Object> uploadInfo, Exception exception, State state);
+    public void uploadCancelledApiError(long id, Map<String, Object> uploadInfo, State state, ApiResponse response, Result result);
     public void uploadCancelledResultInvalid(long id, Map<String, Object> uploadInfo, Result result, State state);
     public void uploadCancelledResponseObjectInvalid(long id, Map<String, Object> uploadInfo, Result result, State state);
     public void uploadCancelledStorageLimitExceeded(long id, Map<String, Object> uploadInfo, State state);
     public void uploadCancelledFileLargerThanStorageSpaceAvailable(long id, Map<String, Object> uploadInfo, State state);
     public void uploadCancelledPollAttempts(long id, Map<String, Object> uploadInfo);
-    public void uploadCancelledApiError(long id, Map<String, Object> uploadInfo, State state, ApiResponse response, Result result);
     public void uploadCancelledApiResponseMissingResumableUpload(long id, Map<String, Object> uploadInfo, CheckResponse apiResponse, Result result);
     public void uploadCancelledApiResponseMissingBitmap(long id, Map<String, Object> uploadInfo, CheckResponse apiResponse, Result result);
 

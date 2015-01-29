@@ -86,11 +86,11 @@ class Instant extends UploadRunnable {
 
 
         if (uploadFolderKey != null) {
-            requestParams.put("folder_key", null);
+            requestParams.put("folder_key", uploadFolderKey);
         }
 
         if (uploadPath != null) {
-            requestParams.put("path", null);
+            requestParams.put("path", uploadPath);
         }
 
         requestParams.put("action_on_duplicate", actionOnDuplicate);

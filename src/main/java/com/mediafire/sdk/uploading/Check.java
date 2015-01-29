@@ -111,11 +111,11 @@ class Check extends UploadRunnable {
         requestParams.put("size", size);
 
         if (uploadFolderKey != null) {
-            requestParams.put("folder_key", null);
+            requestParams.put("folder_key", uploadFolderKey);
         }
 
         if (uploadPath != null) {
-            requestParams.put("path", null);
+            requestParams.put("path", uploadPath);
         }
 
         requestParams.put("resumable", resumable);

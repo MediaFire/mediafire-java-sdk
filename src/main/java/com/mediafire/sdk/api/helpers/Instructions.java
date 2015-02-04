@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mediafire.sdk.api.Debug;
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.api.clients.UrlHelper;
 import com.mediafire.sdk.http.Request;
@@ -17,21 +16,11 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by Chris on 11/6/2014.
  */
-public abstract class Instructions implements Debug {
+public abstract class Instructions {
     private boolean mDebug = false;
 
     protected Instructions() {
         mDebug = false;
-    }
-
-    @Override
-    public void debug(boolean debug) {
-        mDebug = debug;
-    }
-
-    @Override
-    public boolean debugging() {
-        return mDebug;
     }
 
     public final void setup(Request request) {
@@ -188,11 +177,5 @@ public abstract class Instructions implements Debug {
         String signature = hashString(nonUrlEncodedString, "MD5");
 
         return signature;
-    }
-
-    private void debug(String message) {
-        if (mDebug) {
-            System.out.println(message);
-        }
     }
 }

@@ -50,32 +50,18 @@ public class NewActionToken extends UseSessionToken {
 
         boolean badRequest = false;
         if (getActionTokenResponse.hasError()) {
-            if (debugging()) {
-                System.out.println(getClass() + " - returnToken, not returning token, GetActionTokenResponse has error");
-            }
             badRequest = true;
         }
 
         if (getActionTokenResponse.getError() == 105) {
-            if (debugging()) {
-                System.out.println(getClass() + " - returnToken, not returning token, GetActionTokenResponse has error 105");
-            }
             badRequest = true;
         }
 
         if (getActionTokenResponse.getError() == 127) {
-
-            if (debugging()) {
-                System.out.println(getClass() + " - returnToken, not returning token, GetActionTokenResponse has error 127");
-            }
             badRequest = true;
         }
 
         if (badRequest) {
-
-            if (debugging()) {
-                System.out.println(getClass() + " - returnToken, not returning token, notifying ActionTokenManager tokens bad");
-            }
             mActionTokenManagerInterface.tokensBad();
             return;
         }
@@ -86,25 +72,15 @@ public class NewActionToken extends UseSessionToken {
         } else if ("upload".equals(mTokenType)) {
             UploadActionToken uploadActionToken = (UploadActionToken) createActionToken(UploadActionToken.class, getActionTokenResponse, request);
             mActionTokenManagerInterface.give(uploadActionToken);
-        } else {
-            if (debugging()) {
-                System.out.println(getClass() + " - returnToken, not returning token, type " + mTokenType + " not valid");
-            }
         }
     }
 
     private ActionToken createActionToken(Class<? extends ActionToken> clazz, GetActionTokenResponse getActionTokenResponse, Request request) {
         if (getActionTokenResponse == null) {
-            if (debugging()) {
-                System.out.println(getClass() + " - createActionToken, returning null, GetActionTokenResponse null");
-            }
             return null;
         }
 
         if (getActionTokenResponse.hasError()) {
-            if (debugging()) {
-                System.out.println(getClass() + " - createActionToken, returning null, GetActionTokenResponse has error");
-            }
             return null;
         }
 
@@ -128,10 +104,6 @@ public class NewActionToken extends UseSessionToken {
         } else if (clazz == UploadActionToken.class) {
             return new UploadActionToken(tokenString, tokenExpiry);
         } else {
-            if (debugging()) {
-                System.out.println(getClass() + " - createActionToken, returning null, class invalid: " + clazz);
-            }
-
             return null;
         }
     }

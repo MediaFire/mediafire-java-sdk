@@ -1,6 +1,5 @@
 package com.mediafire.sdk.api.clients;
 
-import com.mediafire.sdk.api.Debug;
 import com.mediafire.sdk.api.helpers.Instructions;
 import com.mediafire.sdk.api.helpers.UseActionToken;
 import com.mediafire.sdk.config.HttpHandler;

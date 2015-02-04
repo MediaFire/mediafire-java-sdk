@@ -24,40 +24,21 @@ public class UseActionToken extends Instructions {
     @Override
     public void borrowToken(Request request) {
         if (mTokenType == null) {
-            if (debugging()) {
-                System.out.println(getClass() + " - borrowToken, token type null, not borrowing token");
-            }
-
             return;
         }
 
         if ("image".equals(mTokenType)) {
-            if (debugging()) {
-                System.out.println(getClass() + " - borrowToken, borrowing image token from ITokenManager");
-            }
-
             ImageActionToken imageActionToken = mActionTokenManagerInterface.take(ImageActionToken.class);
             request.addToken(imageActionToken);
         } else if ("upload".equals(mTokenType)) {
-            if (debugging()) {
-                System.out.println(getClass() + " - borrowToken, borrowing upload token from ITokenManager");
-            }
-
             UploadActionToken uploadActionToken = mActionTokenManagerInterface.take(UploadActionToken.class);
             request.addToken(uploadActionToken);
-        } else {
-            if (debugging()) {
-                System.out.println(getClass() + " - borrowToken, not borrowing token, token type unknown: " + mTokenType);
-            }
         }
     }
 
     @Override
     public void addSignatureToRequestParameters(Request request) {
         // no signature is required when using action tokens
-        if (debugging()) {
-            System.out.println(getClass() + " - addSignatureToRequestParameters, no signature required");
-        }
     }
 
     @Override
@@ -65,33 +46,19 @@ public class UseActionToken extends Instructions {
         // there is no need to return action tokens, but if the response code is 105 (invalid token) then notify
         // ActionTokenManagerInterface
         if (response == null) {
-            if (debugging()) {
-                System.out.println(getClass() + " - returnToken, Response null, not returning token");
-            }
             return;
         }
 
         ApiResponse apiResponse = getResponseObject(response, ApiResponse.class);
 
         if (apiResponse == null) {
-            if (debugging()) {
-                System.out.println(getClass() + " - returnToken, ApiResponse null, not returning token, notifying token " +
-                        "manager that tokens are bad");
-            }
             mActionTokenManagerInterface.tokensBad();
             return;
         }
 
         if (!apiResponse.hasError()) {
-            if (debugging()) {
-                System.out.println(getClass() + " - returnToken, ApiResponse has no error, no need to return action token");
-            }
             return;
         } else {
-            if (debugging()) {
-                System.out.println(getClass() + " - returnToken, ApiResponse error, not returning token, notifying token " +
-                        "manager that tokens are bad, error #" + apiResponse.getError());
-            }
             mActionTokenManagerInterface.tokensBad();
         }
     }

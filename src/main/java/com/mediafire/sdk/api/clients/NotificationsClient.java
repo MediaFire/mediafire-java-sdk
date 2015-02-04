@@ -14,12 +14,11 @@ import java.util.Map;
 /**
  * Created by Chris on 1/19/2015.
  */
-public class NotificationsClient implements Debug {
+public class NotificationsClient {
 
     private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
     private final Instructions mInstructions;
-    private boolean mDebug;
 
     public NotificationsClient(HttpHandler httpInterface, TokenManager tokenManager) {
         mApiRequestGenerator = new ApiRequestGenerator();
@@ -29,10 +28,6 @@ public class NotificationsClient implements Debug {
     }
 
     public Result getCache(Map<String, Object> requestParams) {
-        if (debugging()) {
-            System.out.println(getClass() + " getCache, params: " + requestParams);
-        }
-
         Request request = mApiRequestGenerator.createRequestObjectFromPath("notifications/get_info.php");
 
         if (requestParams != null) {
@@ -43,10 +38,6 @@ public class NotificationsClient implements Debug {
     }
 
     public Result peekCache(Map<String, Object> requestParams) {
-        if (debugging()) {
-            System.out.println(getClass() + " peekCache, params: " + requestParams);
-        }
-
         Request request = mApiRequestGenerator.createRequestObjectFromPath("notifications/delete.php");
 
         if (requestParams != null) {
@@ -57,10 +48,6 @@ public class NotificationsClient implements Debug {
     }
 
     public Result sendMessage(Map<String, Object> requestParams) {
-        if (debugging()) {
-            System.out.println(getClass() + " sendMessage, params: " + requestParams);
-        }
-
         Request request = mApiRequestGenerator.createRequestObjectFromPath("notifications/copy.php");
 
         if (requestParams != null) {
@@ -75,16 +62,5 @@ public class NotificationsClient implements Debug {
             Object value = requestParams.get(key);
             request.addQueryParameter(key, value);
         }
-    }
-
-    @Override
-    public void debug(boolean debug) {
-        mDebug = debug;
-        mInstructions.debug(debug);
-    }
-
-    @Override
-    public boolean debugging() {
-        return mDebug;
     }
 }

@@ -6,10 +6,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
-/**
- * Created by Chris Najar on 10/18/2014.
- * UrlHelper creates different parts of a url from a Request object
- */
 public class UrlHelper {
     private final Request mRequest;
 

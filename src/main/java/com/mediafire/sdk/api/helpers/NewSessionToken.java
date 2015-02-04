@@ -27,16 +27,10 @@ public class NewSessionToken extends Instructions {
     @Override
     public void borrowToken(Request request) {
         // no token needs to be borrowed for new session tokens
-        if (debugging()) {
-            System.out.println(getClass() + " - borrowToken");
-        }
     }
 
     @Override
     public void addSignatureToRequestParameters(Request request) {
-        if (debugging()) {
-            System.out.println(getClass() + " - addSignatureToRequestParameters");
-        }
         addRequiredParametersForNewSessionToken(request);
         String signature = makeSignatureForNewSessionToken();
         request.addSignature(signature);
@@ -44,24 +38,14 @@ public class NewSessionToken extends Instructions {
 
     @Override
     public void returnToken(Response response, Request request) {
-        if (debugging()) {
-            System.out.println(getClass() + " - returnToken");
-        }
         GetSessionTokenResponse newSessionTokenResponse = getResponseObject(response, GetSessionTokenResponse.class);
         SessionToken newSessionToken = createNewSessionToken(newSessionTokenResponse);
         if (newSessionToken != null) {
             mSessionTokenManagerInterface.give(newSessionToken);
-        } else {
-            if (debugging()) {
-                System.out.println(getClass() + " - session token is null, not returning");
-            }
         }
     }
 
     private String makeSignatureForNewSessionToken() {
-        if (debugging()) {
-            System.out.println(getClass() + " - makeSignatureForNewSessionToken");
-        }
         // email + password + app id + api key
         // fb access token + app id + api key
         // tw oauth token + tw oauth token secret + app id + api key
@@ -74,10 +58,6 @@ public class NewSessionToken extends Instructions {
         String devInfoPortionOfHashTarget = mDeveloperCredentials.getApplicationId();
         if (mDeveloperCredentials.requiresSecretKey()) {
             devInfoPortionOfHashTarget += mDeveloperCredentials.getApiKey();
-        } else {
-            if (debugging()) {
-                System.out.println(getClass() + " - addRequiredParametersForNewSessionToken, does not require secret key");
-            }
         }
 
         String hashTarget = userInfoPortionOfHashTarget + devInfoPortionOfHashTarget;
@@ -90,9 +70,7 @@ public class NewSessionToken extends Instructions {
         UserCredentials.Credentials credentials = mUserCredentials.getCredentials();
 
         if (credentials == null) {
-            if (debugging()) {
-                System.out.println(getClass() + " - addRequiredParametersForNewSessionToken, credentials null, no params added");
-            }
+            return;
         } else if (credentials instanceof UserCredentials.Ekey) {
             request.addQueryParameter("ekey", ((UserCredentials.Ekey) credentials).getEkey());
             request.addQueryParameter("password", ((UserCredentials.Ekey) credentials).getPassword());
@@ -104,11 +82,6 @@ public class NewSessionToken extends Instructions {
         } else if (credentials instanceof UserCredentials.Twitter) {
             request.addQueryParameter("tw_oauth_token", ((UserCredentials.Twitter) credentials).getOauthToken());
             request.addQueryParameter("tw_oauth_token_secret", ((UserCredentials.Twitter) credentials).getTokenSecret());
-        } else {
-            if (debugging()) {
-                System.out.println(getClass() + " - addRequiredParametersForNewSessionToken, " +
-                        "credentials unknown class: " + credentials.getClass() + ", no params added");
-            }
         }
 
         request.addQueryParameter("application_id", mDeveloperCredentials.getApplicationId());
@@ -121,16 +94,10 @@ public class NewSessionToken extends Instructions {
      */
     private SessionToken createNewSessionToken(GetSessionTokenResponse getSessionTokenResponse) {
         if (getSessionTokenResponse == null) {
-            if (debugging()) {
-                System.out.println(getClass() + " - createNewSessionToken, return null - GetSessionTokenResponse null");
-            }
             return null;
         }
 
         if (getSessionTokenResponse.hasError()) {
-            if (debugging()) {
-                System.out.println(getClass() + " - createNewSessionToken, return null - GetSessionTokenResponse has error");
-            }
             return null;
         }
 
@@ -143,9 +110,6 @@ public class NewSessionToken extends Instructions {
         SessionToken.Builder builder = new SessionToken.Builder(tokenString);
         builder.secretKey(secretKey).time(time).pkey(pkey).ekey(ekey);
 
-        if (debugging()) {
-            System.out.println(getClass() + " - createNewSessionToken, return new session token");
-        }
         return builder.build();
     }
 }

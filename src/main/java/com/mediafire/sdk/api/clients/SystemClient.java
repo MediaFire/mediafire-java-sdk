@@ -8,12 +8,11 @@ import com.mediafire.sdk.config.HttpHandler;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
 
-public class SystemClient implements Debug {
+public class SystemClient {
 
     private final ApiClient apiClient;
     private final ApiRequestGenerator mApiRequestGenerator;
     private final Instructions mInstructions;
-    private boolean mDebug;
 
     public SystemClient(HttpHandler httpInterface) {
         mApiRequestGenerator = new ApiRequestGenerator();
@@ -23,22 +22,7 @@ public class SystemClient implements Debug {
     }
 
     public Result getInfo() {
-        if (debugging()) {
-            System.out.println(getClass() + " getInfo, params: " + null);
-        }
-
         Request request = mApiRequestGenerator.createRequestObjectFromPath("system/get_info.php");
         return apiClient.doRequest(mInstructions, request);
-    }
-
-    @Override
-    public void debug(boolean debug) {
-        mDebug = debug;
-        mInstructions.debug(debug);
-    }
-
-    @Override
-    public boolean debugging() {
-        return mDebug;
     }
 }

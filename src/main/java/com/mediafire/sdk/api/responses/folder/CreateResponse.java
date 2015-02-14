@@ -72,7 +72,15 @@ public class CreateResponse extends ApiResponse {
     }
 
     public boolean isPrivate() {
-        return !(privacy == null || "public".equalsIgnoreCase(privacy));
+        if (privacy == null) {
+            return false;
+        }
+
+        if ("private".equals(privacy)) {
+            return true;
+        }
+
+        return false;
     }
 
     public int getFileCount() {

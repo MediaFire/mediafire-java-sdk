@@ -60,6 +60,16 @@ public class UserClient {
         return apiClient.doRequest(mInstructions, request);
     }
 
+    public Result destroyActionToken(Map<String, Object> requestParams) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/destroy_action_token.php");
+
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
     private void addParams(Request request, Map<String, Object> requestParams) {
         for (String key : requestParams.keySet()) {
             Object value = requestParams.get(key);

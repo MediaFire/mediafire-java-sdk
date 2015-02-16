@@ -74,7 +74,12 @@ public class InstantTest extends TestCase {
         }
 
         @Override
-        public void tokensBad() {
+        public void destroyUploadToken() {
+
+        }
+
+        @Override
+        public void destroyImageToken() {
 
         }
     };

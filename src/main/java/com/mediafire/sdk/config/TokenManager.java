@@ -8,5 +8,6 @@ import com.mediafire.sdk.token.Token;
 public interface TokenManager {
     public <T extends Token> T take(Class<T> token);
     public <T extends Token> void give(T token);
-    public void tokensBad();
+    public void destroyUploadToken();
+    public void destroyImageToken();
 }

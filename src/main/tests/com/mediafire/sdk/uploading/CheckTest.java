@@ -102,7 +102,12 @@ public class CheckTest extends TestCase {
         }
 
         @Override
-        public void tokensBad() {
+        public void destroyUploadToken() {
+
+        }
+
+        @Override
+        public void destroyImageToken() {
 
         }
     };

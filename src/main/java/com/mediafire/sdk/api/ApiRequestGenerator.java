@@ -16,9 +16,9 @@ public class ApiRequestGenerator {
         Request.Builder builder = new Request.Builder();
         builder.scheme("https").fullDomain("www.mediafire.com").httpMethod("post").path(fullPath);
 
-        if (path.equalsIgnoreCase("upload/resumable.php")) {
+        if ("upload/resumable.php".equalsIgnoreCase(path)) {
             builder.postQuery(false);
-        } else if(path.equalsIgnoreCase("upload/update.php")) {
+        } else if("upload/update.php".equalsIgnoreCase(path)) {
             builder.postQuery(false);
         } else {
             builder.postQuery(true);

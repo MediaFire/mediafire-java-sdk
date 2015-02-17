@@ -26,11 +26,17 @@ class Instant extends UploadRunnable {
 
     @Override
     public void run() {
+        if (isDebugging()) {
+            System.out.println("starting upload/instant for " + mUpload.getFile());
+        }
         Map<String, Object> requestParams = makeQueryParams();
 
         Result result = getUploadClient().instant(requestParams);
 
         if (!resultValid(result)) {
+            if (isDebugging()) {
+                System.out.println("cancelling upload/instant for " + mUpload.getFile() + " due to invalid result object");
+            }
             mProcessMonitor.generalCancel(mUpload, result);
             return;
         }
@@ -43,21 +49,33 @@ class Instant extends UploadRunnable {
         try {
             apiResponse = new Gson().fromJson(response, InstantResponse.class);
         } catch (JsonSyntaxException exception) {
+            if (isDebugging()) {
+                System.out.println("cancelling upload/instant for " + mUpload.getFile() + " due to an exception: " + exception);
+            }
             mProcessMonitor.exceptionDuringUpload(mUpload, exception);
             return;
         }
 
         if (apiResponse == null) {
+            if (isDebugging()) {
+                System.out.println("cancelling upload/instant for " + mUpload.getFile() + " due to a null ApiResponse object");
+            }
             mProcessMonitor.generalCancel(mUpload, result);
             return;
         }
 
         if (apiResponse.hasError()) {
+            if (isDebugging()) {
+                System.out.println("cancelling upload/instant for " + mUpload.getFile() + " due to an ApiResponse error (" + apiResponse.getMessage() + ", error " + apiResponse.getError() + ")");
+            }
             mProcessMonitor.apiError(mUpload, result);
         }
 
         String quickKey = apiResponse.getQuickkey();
 
+        if (isDebugging()) {
+            System.out.println("upload/instant for " + mUpload.getFile() + " has finished");
+        }
         mProcessMonitor.instantFinished(mUpload, quickKey);
     }
 

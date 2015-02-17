@@ -29,6 +29,9 @@ class Check extends UploadRunnable {
     @Override
     public void run() {
         if (!(mUpload instanceof Resumable.ResumableUpload)) {
+            if (isDebugging()) {
+                System.out.println("upload/check has started for " + mUpload.getFile());
+            }
             mProcessMonitor.uploadStarted(mUpload);
         }
 
@@ -36,9 +39,15 @@ class Check extends UploadRunnable {
         try {
             requestParams = makeQueryParams();
         } catch (IOException exception) {
+            if (isDebugging()) {
+                System.out.println("cancelling upload/check for " + mUpload.getFile() + " due to an exception: " + exception);
+            }
             mProcessMonitor.exceptionDuringUpload(mUpload, exception);
             return;
         } catch (NoSuchAlgorithmException exception) {
+            if (isDebugging()) {
+                System.out.println("cancelling upload/check for " + mUpload.getFile() + " due to an exception: " + exception);
+            }
             mProcessMonitor.exceptionDuringUpload(mUpload, exception);
             return;
         }
@@ -46,6 +55,9 @@ class Check extends UploadRunnable {
         Result result = getUploadClient().check(requestParams);
 
         if (!resultValid(result)) {
+            if (isDebugging()) {
+                System.out.println("cancelling upload/check for " + mUpload.getFile() + " due to invalid result object");
+            }
             mProcessMonitor.generalCancel(mUpload, result);
             return;
         }
@@ -58,27 +70,42 @@ class Check extends UploadRunnable {
         try {
             apiResponse = new Gson().fromJson(response, CheckResponse.class);
         } catch (JsonSyntaxException exception) {
+            if (isDebugging()) {
+                System.out.println("cancelling upload/check for " + mUpload.getFile() + " due to an exception: " + exception);
+            }
             mProcessMonitor.exceptionDuringUpload(mUpload, exception);
             return;
         }
 
         if (apiResponse == null) {
+            if (isDebugging()) {
+                System.out.println("cancelling upload/check for " + mUpload.getFile() + " due to a null ApiResponse object");
+            }
             mProcessMonitor.generalCancel(mUpload, result);
             return;
         }
 
         if (apiResponse.hasError()) {
+            if (isDebugging()) {
+                System.out.println("cancelling upload/check for " + mUpload.getFile() + " due to an ApiResponse error (" + apiResponse.getMessage() + ", error " + apiResponse.getError() + ")");
+            }
             mProcessMonitor.apiError(mUpload, result);
             return;
         }
 
         if (apiResponse.isStorageLimitExceeded()) {
+            if (isDebugging()) {
+                System.out.println("storage limit exceeded while processing upload/check for " + mUpload.getFile());
+            }
             mProcessMonitor.storageLimitExceeded(mUpload);
             return;
         }
 
         if (apiResponse.getStorageLimit() - apiResponse.getUsedStorageSize() < mUpload.getFile().length()
                 && apiResponse.getStorageLimit() != 0) {
+            if (isDebugging()) {
+                System.out.println("storage limit exceeded while processing upload/check for " + mUpload.getFile());
+            }
             mProcessMonitor.storageLimitExceeded(mUpload);
             return;
         }
@@ -86,6 +113,9 @@ class Check extends UploadRunnable {
         String hash = String.valueOf(requestParams.get("hash"));
         Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, hash);
         // add check for all units ready and have poll upload key (do poll upload)
+        if (isDebugging()) {
+            System.out.println("upload/check for " + mUpload.getFile() + " has finished");
+        }
         mProcessMonitor.checkFinished(upload, apiResponse);
     }
 

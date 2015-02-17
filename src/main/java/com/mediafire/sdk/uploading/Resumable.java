@@ -33,6 +33,9 @@ class Resumable extends UploadRunnable {
 
     @Override
     public void run() {
+        if (isDebugging()) {
+            System.out.println("upload/resumable has started for " + mUpload.getFile());
+        }
         Map<String, Object> requestParams = makeQueryParams();
 
         String customFileName = mUpload.getOptions().getCustomFileName();
@@ -44,11 +47,14 @@ class Resumable extends UploadRunnable {
         int numUnits = mUpload.getNumberOfUnits();
         int unitSize = mUpload.getUnitSize();
 
-        String responsePollKey = null;
         boolean allUnitsReady = false;
 
+        String pollKey = null;
         for (int chunkNumber = 0; chunkNumber < numUnits; chunkNumber++) {
             if (!mUpload.isChunkUploaded(chunkNumber)) {
+                if (isDebugging()) {
+                    System.out.println("upload/resumable has begun uploading chunk #" + chunkNumber + " for " + mUpload.getFile());
+                }
                 int chunkSize = getChunkSize(chunkNumber, numUnits, fileSize, unitSize);
 
                 byte[] chunk;
@@ -58,9 +64,15 @@ class Resumable extends UploadRunnable {
                     chunk = makeChunk(unitSize, chunkNumber);
                     chunkHash = Hasher.getSHA256Hash(chunk);
                 } catch (IOException exception) {
+                    if (isDebugging()) {
+                        System.out.println("cancelling upload/resumable while uploaded chunk #" + chunkNumber + " for " + mUpload.getFile() + " due to an exception: " + exception);
+                    }
                     mProcessMonitor.exceptionDuringUpload(mUpload, exception);
                     return;
                 } catch (NoSuchAlgorithmException exception) {
+                    if (isDebugging()) {
+                        System.out.println("cancelling upload/resumable while uploaded chunk #" + chunkNumber + " for " + mUpload.getFile() + " due to an exception: " + exception);
+                    }
                     mProcessMonitor.exceptionDuringUpload(mUpload, exception);
                     return;
                 }
@@ -70,6 +82,9 @@ class Resumable extends UploadRunnable {
                 Result result = getUploadClient().resumable(requestParams, headerParams, chunk);
 
                 if (!resultValid(result)) {
+                    if (isDebugging()) {
+                        System.out.println("cancelling upload/resumable while uploaded chunk #" + chunkNumber + " for " + mUpload.getFile() + " due to invalid result object");
+                    }
                     mProcessMonitor.generalCancel(mUpload, result);
                     return;
                 }
@@ -82,32 +97,43 @@ class Resumable extends UploadRunnable {
                 try {
                     apiResponse = new Gson().fromJson(response, ResumableResponse.class);
                 } catch (JsonSyntaxException exception) {
+                    if (isDebugging()) {
+                        System.out.println("cancelling upload/resumable while uploaded chunk #" + chunkNumber + " for " + mUpload.getFile() + " due to an exception: " + exception);
+                    }
                     mProcessMonitor.exceptionDuringUpload(mUpload, exception);
                     return;
                 }
 
                 if (apiResponse == null) {
+                    if (isDebugging()) {
+                        System.out.println("cancelling upload/resumable while uploaded chunk #" + chunkNumber + " for " + mUpload.getFile() + " due to a null ApiResponse object");
+                    }
                     mProcessMonitor.generalCancel(mUpload, result);
                     return;
                 }
 
                 if (apiResponse.hasError()) {
+                    if (isDebugging()) {
+                        System.out.println("cancelling upload/resumable while uploaded chunk #" + chunkNumber + " for " + mUpload.getFile() + " due to an ApiResponse error (" + apiResponse.getMessage() + ", error " + apiResponse.getError() + ")");
+                    }
                     mProcessMonitor.apiError(mUpload, result);
                     return;
                 }
 
-                if (responsePollKey == null) {
-                    String pollKey = apiResponse.getDoUpload().getPollUploadKey();
-                    if (pollKey != null) {
-                        responsePollKey = pollKey;
-                    }
-                }
+                pollKey = apiResponse.getDoUpload().getPollUploadKey();
 
                 allUnitsReady = apiResponse.getResumableUpload().areAllUnitsReady();
 
                 int newCount = apiResponse.getResumableUpload().getBitmap().getCount();
                 List<Integer> newWords = apiResponse.getResumableUpload().getBitmap().getWords();
+                if (isDebugging()) {
+                    System.out.println("upload/resumable is updating the upload bitmap after uploading chunk #" + chunkNumber + " for " + mUpload.getFile());
+                }
                 mUpload.updateUploadBitmap(newCount, newWords);
+            } else {
+                if (isDebugging()) {
+                    System.out.println("upload/resumable has already uploaded chunk #" + chunkNumber + " for " + mUpload.getFile());
+                }
             }
 
             int numUploaded = 0;
@@ -119,10 +145,16 @@ class Resumable extends UploadRunnable {
 
             double percentFinished = (double) numUploaded / (double) numUnits;
             percentFinished *= 100;
+
+            if (isDebugging()) {
+                System.out.println("upload/resumable is updating upload progress for " + mUpload.getFile() + " to " + percentFinished + "%");
+            }
             mProcessMonitor.resumableProgress(mUpload, percentFinished);
         }
-
-        mProcessMonitor.resumableFinished(mUpload, responsePollKey, allUnitsReady);
+        if (isDebugging()) {
+            System.out.println("upload/resumable has finished attempting to upload all chunks for " + mUpload.getFile());
+        }
+        mProcessMonitor.resumableFinished(mUpload, pollKey, allUnitsReady);
     }
 
     @Override

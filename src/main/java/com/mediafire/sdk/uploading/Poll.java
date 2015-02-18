@@ -97,7 +97,25 @@ class Poll extends UploadRunnable {
 
             PollDoUpload doUpload = apiResponse.getDoUpload();
 
-            if (doUpload.getFileErrorCode() != 0) {
+            if (doUpload == null) {
+                if (isDebugging()) {
+                    System.out.println("cancelling upload/poll_upload for " + mUpload + " due to a null PollDoUpload object");
+                }
+                mProcessMonitor.generalCancel(mUpload, result);
+                return;
+            }
+
+            String fileErrorCodeString = doUpload.getFileErrorCode();
+            int fileErrorCode;
+            if (fileErrorCodeString == null) {
+                fileErrorCode = 0;
+            } else if (fileErrorCodeString.isEmpty()) {
+                fileErrorCode = 0;
+            } else {
+                fileErrorCode = Integer.parseInt(fileErrorCodeString);
+            }
+
+            if (fileErrorCode != 0) {
                 if (isDebugging()) {
                     System.out.println("cancelling upload/poll_upload for " + mUpload + " due to a file error code (" + doUpload.getFileErrorCode() + ") ApiResponse error (" + apiResponse.getMessage() + ", error " + apiResponse.getError() + ")");
                 }
@@ -113,9 +131,17 @@ class Poll extends UploadRunnable {
                 return;
             }
 
-            int status = doUpload.getStatusCode();
+            String statusCodeString = doUpload.getStatusCode();
+            int statusCode;
+            if (statusCodeString == null) {
+                statusCode = 0;
+            } else if (statusCodeString.isEmpty()) {
+                statusCode = 0;
+            } else {
+                statusCode = Integer.parseInt(statusCodeString);
+            }
 
-            mProcessMonitor.pollUpdate(mUpload, status);
+            mProcessMonitor.pollUpdate(mUpload, statusCode);
 
             try {
                 if (isDebugging()) {

@@ -13,7 +13,6 @@ public class PollDoUpload extends DoUpload {
     private String created;
     private String filename;
     private String hash;
-    private ResumableUpload resumable_upload;
 
     public String getStatusCode() {
         return status;
@@ -49,9 +48,5 @@ public class PollDoUpload extends DoUpload {
 
     public String getHash() {
         return hash;
-    }
-
-    public ResumableUpload getResumableUpload() {
-        return resumable_upload;
     }
 }

@@ -4,7 +4,7 @@ public class ApiResponse {
     private String action;
     private String message;
     private String result;
-    private String error;
+    private int error;
     private String current_api_version;
     private String new_key;
 
@@ -17,13 +17,7 @@ public class ApiResponse {
     }
 
     public final int getError() {
-        int intValueOfError;
-        if (error == null) {
-            intValueOfError = 0;
-        } else {
-            intValueOfError = Integer.valueOf(error);
-        }
-        return intValueOfError;
+        return error;
     }
 
     public final ResponseCode getErrorCode() {
@@ -39,7 +33,7 @@ public class ApiResponse {
     }
 
     public final boolean hasError() {
-        return error != null;
+        return error != 0;
     }
 
     public boolean needNewKey() {

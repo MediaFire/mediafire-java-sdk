@@ -234,6 +234,20 @@ public class Request {
         addQueryParameter("signature", signature);
     }
 
+    @Override
+    public String toString() {
+        return "[path:" + mPath + "]" +
+                "[method:" + mHttpMethod + "]" +
+                "[domain:" + mDomain + "]" +
+                "[scheme:" + mScheme + "]" +
+                "[post_query:" + mPostQuery + "]" +
+                "[query:" + mQueryParameters + "]" +
+                "[headers:" + mHeaders + "]" +
+                "[payload_size:" + (mPayload == null ? null : mPayload.length) + "]" +
+                "[token:" + mToken + "]" +
+                "[signature:" + mSignature + "]";
+    }
+
     /**
      * Builder used to create a request
      */

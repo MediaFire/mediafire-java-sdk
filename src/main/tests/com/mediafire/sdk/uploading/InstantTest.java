@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 public class InstantTest extends TestCase {
     private static final String TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nisi nisl, pretium in rhoncus id, mattis ac ligula. Curabitur leo nisi, molestie sed ullamcorper vitae, mattis at lectus. Cras efficitur libero sed risus laoreet pellentesque. Nam suscipit quam ex, interdum imperdiet justo pharetra a. Vivamus laoreet ex massa, iaculis placerat est efficitur quis. Nullam nec nulla vitae lorem suscipit vehicula. In tincidunt vitae lacus a finibus. In a tempor magna, vel ultrices massa.";
@@ -110,9 +108,9 @@ public class InstantTest extends TestCase {
 
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
-        Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, "hash_result_invalid");
+        mUpload.setHash("hash_result_invalid");
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Instant instant = new Instant(upload, sHttp, sTokenManager, sUploadManager);
+        Instant instant = new Instant(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(instant);
         thread.start();
@@ -128,9 +126,9 @@ public class InstantTest extends TestCase {
 
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
-        Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, "hash_response_object_null");
+        mUpload.setHash("hash_response_object_null");
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Instant instant = new Instant(upload, sHttp, sTokenManager, sUploadManager);
+        Instant instant = new Instant(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(instant);
         thread.start();
@@ -146,9 +144,9 @@ public class InstantTest extends TestCase {
 
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
-        Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, "hash");
+        mUpload.setHash("hash");
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Instant instant = new Instant(upload, sHttp, sTokenManager, sUploadManager);
+        Instant instant = new Instant(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(instant);
         thread.start();
@@ -164,9 +162,9 @@ public class InstantTest extends TestCase {
 
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
-        Instant.InstantUpload upload = new Instant.InstantUpload(mUpload, "hash");
+        mUpload.setHash("hash");
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Instant instant = new Instant(upload, sHttp, sTokenManager, sUploadManager);
+        Instant instant = new Instant(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(instant);
         thread.start();

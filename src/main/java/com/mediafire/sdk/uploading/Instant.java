@@ -5,7 +5,9 @@ import com.google.gson.JsonSyntaxException;
 import com.mediafire.sdk.api.responses.upload.InstantResponse;
 import com.mediafire.sdk.config.HttpHandler;
 import com.mediafire.sdk.config.TokenManager;
+import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
+import com.mediafire.sdk.token.Token;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -15,10 +17,10 @@ import java.util.Map;
  */
 class Instant extends UploadRunnable {
 
-    private InstantUpload mUpload;
+    private Upload mUpload;
     private UploadProcess mProcessMonitor;
 
-    public Instant(InstantUpload upload, HttpHandler http, TokenManager tokenManager, UploadProcess processMonitor) {
+    public Instant(Upload upload, HttpHandler http, TokenManager tokenManager, UploadProcess processMonitor) {
         super(http, tokenManager);
         mUpload = upload;
         mProcessMonitor = processMonitor;
@@ -27,7 +29,7 @@ class Instant extends UploadRunnable {
     @Override
     public void run() {
         if (isDebugging()) {
-            System.out.println("starting upload/instant for " + mUpload.getFile());
+            System.out.println("starting upload/instant for " + mUpload);
         }
         Map<String, Object> requestParams = makeQueryParams();
 
@@ -35,10 +37,15 @@ class Instant extends UploadRunnable {
 
         if (!resultValid(result)) {
             if (isDebugging()) {
-                System.out.println("cancelling upload/instant for " + mUpload.getFile() + " due to invalid result object");
+                System.out.println("cancelling upload/instant for " + mUpload + " due to invalid result object");
             }
             mProcessMonitor.generalCancel(mUpload, result);
             return;
+        }
+
+        if (isDebugging()) {
+            System.out.println("upload/instant request: " + result.getRequest());
+            System.out.println("upload/instant response: " + result.getResponse());
         }
 
         byte[] responseBytes = result.getResponse().getBytes();
@@ -50,7 +57,7 @@ class Instant extends UploadRunnable {
             apiResponse = new Gson().fromJson(response, InstantResponse.class);
         } catch (JsonSyntaxException exception) {
             if (isDebugging()) {
-                System.out.println("cancelling upload/instant for " + mUpload.getFile() + " due to an exception: " + exception);
+                System.out.println("cancelling upload/instant for " + mUpload + " due to an exception: " + exception);
             }
             mProcessMonitor.exceptionDuringUpload(mUpload, exception);
             return;
@@ -58,7 +65,7 @@ class Instant extends UploadRunnable {
 
         if (apiResponse == null) {
             if (isDebugging()) {
-                System.out.println("cancelling upload/instant for " + mUpload.getFile() + " due to a null ApiResponse object");
+                System.out.println("cancelling upload/instant for " + mUpload + " due to a null ApiResponse object");
             }
             mProcessMonitor.generalCancel(mUpload, result);
             return;
@@ -66,17 +73,18 @@ class Instant extends UploadRunnable {
 
         if (apiResponse.hasError()) {
             if (isDebugging()) {
-                System.out.println("cancelling upload/instant for " + mUpload.getFile() + " due to an ApiResponse error (" + apiResponse.getMessage() + ", error " + apiResponse.getError() + ")");
+                System.out.println("cancelling upload/instant for " + mUpload + " due to an ApiResponse error (" + apiResponse.getMessage() + ", error " + apiResponse.getError() + ")");
             }
             mProcessMonitor.apiError(mUpload, result);
         }
 
         String quickKey = apiResponse.getQuickkey();
+        mUpload.setNewQuickKey(quickKey);
 
         if (isDebugging()) {
-            System.out.println("upload/instant for " + mUpload.getFile() + " has finished");
+            System.out.println("upload/instant for " + mUpload + " has finished");
         }
-        mProcessMonitor.instantFinished(mUpload, quickKey);
+        mProcessMonitor.instantFinished(mUpload);
     }
 
     @Override
@@ -117,17 +125,4 @@ class Instant extends UploadRunnable {
         return requestParams;
     }
 
-    static class InstantUpload extends Upload {
-
-        private String mHash;
-
-        public InstantUpload(Upload upload, String hash) {
-            super(upload.getId(), upload.getFile(), upload.getOptions(), upload.getInfo());
-            mHash = hash;
-        }
-
-        public String getHash() {
-            return mHash;
-        }
-    }
 }

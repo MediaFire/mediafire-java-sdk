@@ -14,15 +14,12 @@ import java.util.Map;
 
 public class UploadClient {
 
-    private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient mApiClient;
     private final Instructions mInstructionsActionToken;
     private final Instructions mInstructionsNoToken;
     private final Instructions mInstructionsSessionToken;
 
     public UploadClient(HttpHandler httpInterface, TokenManager tokenManager) {
-        mApiRequestGenerator = new ApiRequestGenerator();
-
         mInstructionsNoToken = new NoToken();
         mInstructionsActionToken = new UseActionToken("upload", tokenManager);
         mInstructionsSessionToken = new UseSessionToken(tokenManager);
@@ -30,8 +27,7 @@ public class UploadClient {
     }
 
     public Result check(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/check.php");
-
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/check.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -41,7 +37,7 @@ public class UploadClient {
     }
 
     public Result instant(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/instant.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/instant.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -51,7 +47,7 @@ public class UploadClient {
     }
 
     public Result pollUpload(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/poll_upload.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/poll_upload.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -61,7 +57,7 @@ public class UploadClient {
     }
 
     public Result resumable(Map<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/resumable.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/resumable.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -78,7 +74,7 @@ public class UploadClient {
     }
 
     public Result update(Map<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("upload/update.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/update.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);

@@ -16,7 +16,6 @@ import com.mediafire.sdk.http.Result;
  */
 public class TokenClient {
 
-    private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient mApiClient;
     private final Instructions mSessionTokenInstructions;
     private final Instructions mImageTokenInstructions;
@@ -26,7 +25,6 @@ public class TokenClient {
                        UserCredentials userCredentials,
                        DeveloperCredentials developerCredentials,
                        TokenManager tokenManager) {
-        mApiRequestGenerator = new ApiRequestGenerator();
         mApiClient = new ApiClient(httpInterface);
         mSessionTokenInstructions = new NewSessionToken(userCredentials, developerCredentials, tokenManager);
         mImageTokenInstructions = new NewActionToken("image", tokenManager);
@@ -34,14 +32,14 @@ public class TokenClient {
     }
 
     public Result getSessionTokenV2() {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_session_token.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("user/get_session_token.php");
         request.addQueryParameter("token_version", "2");
 
         return mApiClient.doRequest(mSessionTokenInstructions, request);
     }
 
     public Result getUploadActionToken(int lifespan) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_action_token.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("user/get_action_token.php");
         request.addQueryParameter("lifespan", lifespan);
         request.addQueryParameter("type", "upload");
 
@@ -49,7 +47,7 @@ public class TokenClient {
     }
 
     public Result getImageActionToken(int lifespan) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_action_token.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("user/get_action_token.php");
         request.addQueryParameter("lifespan", lifespan);
         request.addQueryParameter("type", "image");
 

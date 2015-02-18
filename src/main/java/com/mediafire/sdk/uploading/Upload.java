@@ -2,6 +2,8 @@ package com.mediafire.sdk.uploading;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -11,6 +13,19 @@ public class Upload {
     private final long mId;
     private final File mFile;
     private final Options mOptions;
+    private String mHash;
+    private String mPollKey;
+    private boolean mAllUnitsReady;
+    private int mNumUnits;
+    private int mUnitSize;
+    private List<Boolean> mUploadUnits;
+    private boolean mHashInMediaFire;
+    private boolean mHashInAccount;
+    private boolean mHashInFolder;
+    private boolean mFileNameInFolder;
+    private boolean mFileNameInFolderWithDifferentHash;
+    private String mDuplicateQuickKey;
+    private String mNewQuickKey;
     private final HashMap<String, Object> mInfo;
 
     Upload(long id, File file, Options options, HashMap<String, Object> info) {
@@ -39,6 +54,8 @@ public class Upload {
         this(id, new File(path), null);
     }
 
+    // GETTERS
+
     public File getFile() {
         return mFile;
     }
@@ -51,12 +68,192 @@ public class Upload {
         return mId;
     }
 
+    public HashMap<String, Object> getInfo() {
+        return mInfo;
+    }
+
+    public String getHash() {
+        return mHash;
+    }
+
+    public String getPollKey() {
+        return mPollKey;
+    }
+
+    public int getNumberOfUnits() {
+        return mNumUnits;
+    }
+
+    public int getUnitSize() {
+        return mUnitSize;
+    }
+
+    public boolean isChunkUploaded(int chunkId) {
+        if (mUploadUnits.isEmpty()) {
+            return false;
+        }
+        return mUploadUnits.get(chunkId);
+    }
+
+    public boolean areAllUnitsReady() {
+        return mAllUnitsReady;
+    }
+
+    // SETTERS
+
+    public void setHash(String hash) {
+        mHash = hash;
+    }
+
+    public void setPollKey(String key) {
+        mPollKey = key;
+    }
+
     public void addInfo(String key, Object value) {
         mInfo.put(key, value);
     }
 
-    public HashMap<String, Object> getInfo() {
-        return mInfo;
+    public void setNumberOfUnits(int numberOfUnits) {
+        mNumUnits = numberOfUnits;
+    }
+
+    public void setUnitSize(int unitSize) {
+        mUnitSize = unitSize;
+    }
+
+    public void updateUploadBitmap(int count, List<Integer> words) {
+        List<Boolean> uploadUnits = new LinkedList<Boolean>();
+
+        if (words == null || words.isEmpty()) {
+            mUploadUnits = uploadUnits;
+            return;
+        }
+
+        //loop count times
+        for (int i = 0; i < count; i++) {
+            //convert words to binary string
+            String word = Integer.toBinaryString(words.get(i));
+
+            //ensure number is 16 bit by adding 0 until there are 16 bits
+            while (word.length() < 16) {
+                word = "0" + word;
+            }
+
+            //add boolean to collection depending on bit value
+            for (int j = 0; j < word.length(); j++) {
+                uploadUnits.add(i * 16 + j, word.charAt(15 - j) == '1');
+            }
+        }
+
+        mUploadUnits = uploadUnits;
+    }
+
+    public void setAllUnitsReady(boolean allUnitsReady) {
+        mAllUnitsReady = allUnitsReady;
+    }
+
+    public void setHashInMediaFire(boolean mHashInMediaFire) {
+        this.mHashInMediaFire = mHashInMediaFire;
+    }
+
+    public void setHashInAccount(boolean mHashInAccount) {
+        this.mHashInAccount = mHashInAccount;
+    }
+
+    public void setHashInFolder(boolean mHashInFolder) {
+        this.mHashInFolder = mHashInFolder;
+    }
+
+    public void setFileNameInFolder(boolean mFileNameInFolder) {
+        this.mFileNameInFolder = mFileNameInFolder;
+    }
+
+    public void setFileNameInFolderWithDifferentHash(boolean mFileNameInFolderWithDifferentHash) {
+        this.mFileNameInFolderWithDifferentHash = mFileNameInFolderWithDifferentHash;
+    }
+
+    public void setDuplicateQuickKey(String mDuplicateQuickKey) {
+        this.mDuplicateQuickKey = mDuplicateQuickKey;
+    }
+
+    public void setNewQuickKey(String newQuickKey) {
+        mNewQuickKey = newQuickKey;
+    }
+
+    // GETTERS
+
+    public boolean isHashInMediaFire() {
+        return mHashInMediaFire;
+    }
+
+    public boolean isHashInAccount() {
+        return mHashInAccount;
+    }
+
+    public boolean isHashInFolder() {
+        return mHashInFolder;
+    }
+
+    public boolean isFileNameInFolder() {
+        return mFileNameInFolder;
+    }
+
+    public boolean isFileNameInFolderWithDifferentHash() {
+        return mFileNameInFolderWithDifferentHash;
+    }
+
+    public String getDuplicateQuickKey() {
+        return mDuplicateQuickKey;
+    }
+
+    public String getNewQuickKey() {
+        return mNewQuickKey;
+    }
+
+    private List<Boolean> decodeBitmap(int count, List<Integer> words) {
+        List<Boolean> uploadUnits = new LinkedList<Boolean>();
+
+        if (words == null || words.isEmpty()) {
+            return uploadUnits;
+        }
+
+        //loop count times
+        for (int i = 0; i < count; i++) {
+            //convert words to binary string
+            String word = Integer.toBinaryString(words.get(i));
+
+            //ensure number is 16 bit by adding 0 until there are 16 bits
+            while (word.length() < 16) {
+                word = "0" + word;
+            }
+
+            //add boolean to collection depending on bit value
+            for (int j = 0; j < word.length(); j++) {
+                uploadUnits.add(i * 16 + j, word.charAt(15 - j) == '1');
+            }
+        }
+
+        return uploadUnits;
+    }
+
+    @Override
+    public String toString() {
+        return "[id:" + mId + "]" +
+                "[file:" + mFile + "]" +
+                "[options:" + mOptions + "]" +
+                "[hash:" + mHash + "]" +
+                "[poll_key:" + mPollKey + "]" +
+                "[all_units_ready:" + mAllUnitsReady + "]" +
+                "[number_of_units:" + mNumUnits + "]" +
+                "[unit_size:" + mUnitSize + "]" +
+                "[hash exists:" + mHashInMediaFire + "]" +
+                "[in_account:" + mHashInAccount + "]" +
+                "[in_folder:" + mHashInFolder + "]" +
+                "[file_exists:" + mFileNameInFolder + "]" +
+                "[different_hash:" + mFileNameInFolderWithDifferentHash + "]" +
+                "[duplicate_quick_key:" + mDuplicateQuickKey + "]" +
+                "[new_quick_key:" + mNewQuickKey + "]" +
+                "[user_info:" + mInfo + "]";
     }
 
     /**
@@ -89,6 +286,14 @@ public class Upload {
 
         public ActionOnInAccount getActionOnInAccount() {
             return mActionOnInAccount;
+        }
+
+        @Override
+        public String toString() {
+            return "[upload_folder_key:" + mUploadFolderKey + "]" +
+                    "[upload_path:" + mUploadPath + "]" +
+                    "[custom_file_name:" + mCustomFileName + "]" +
+                    "[action_on_in_account:" + mActionOnInAccount + "]";
         }
 
         public static class Builder {

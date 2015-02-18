@@ -3,12 +3,12 @@ package com.mediafire.sdk.api.responses.upload;
 import com.mediafire.sdk.api.responses.ApiResponse;
 
 public class ResumableResponse extends ApiResponse {
-    private DoUpload doupload;
+    private ResumableDoUpload doupload;
     private ResumableUpload resumable_upload;
 
-    public DoUpload getDoUpload() {
+    public ResumableDoUpload getDoUpload() {
         if (doupload == null) {
-            return new DoUpload();
+            return new ResumableDoUpload();
         }
         return doupload;
     }

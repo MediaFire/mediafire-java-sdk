@@ -21,4 +21,7 @@ public abstract class Token {
     public final String getTokenString() {
         return mTokenString;
     }
+
+    @Override
+    public abstract String toString();
 }

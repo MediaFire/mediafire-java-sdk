@@ -11,21 +11,17 @@ import com.mediafire.sdk.http.Result;
 import java.util.Map;
 
 public class MetaClient {
-    private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
     private final Instructions mInstructions;
 
     public MetaClient(HttpHandler httpInterface, TokenManager tokenManager) {
-        // init host object
-        mApiRequestGenerator = new ApiRequestGenerator();
-
         mInstructions = new UseSessionToken(tokenManager);
         apiClient = new ApiClient(httpInterface);
     }
 
 
     public Result addToList(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/add_to_list.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("meta/add_to_list.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -35,7 +31,7 @@ public class MetaClient {
     }
 
     public Result removeFromList(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/remove_from_list.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("meta/remove_from_list.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -45,7 +41,7 @@ public class MetaClient {
     }
 
     public Result delete(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/delete_property.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("meta/delete_property.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -55,7 +51,7 @@ public class MetaClient {
     }
 
     public Result getProperty(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/get.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("meta/get.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -65,7 +61,7 @@ public class MetaClient {
     }
 
     public Result getLinks(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/get_links.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("meta/get_links.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -75,7 +71,7 @@ public class MetaClient {
     }
 
     public Result query(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/query.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("meta/query.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -85,7 +81,7 @@ public class MetaClient {
     }
 
     public Result setProperty(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("meta/set_property.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("meta/set_property.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);

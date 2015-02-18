@@ -42,4 +42,11 @@ public class Response {
     public Map<String, List<String>> getHeaderFields() {
         return mHeaderFields;
     }
+
+    @Override
+    public String toString() {
+        return "[status:" + mStatus + "]" +
+                "[response:" + (mBodyBytes == null ? null : new String(mBodyBytes)) + "]" +
+                "[headers:" + mHeaderFields + "]";
+    }
 }

@@ -5,41 +5,29 @@ import com.mediafire.sdk.api.responses.ApiResponse;
 public class InstantResponse extends ApiResponse {
     private String quickkey;
     private String filename;
-    private String device_revision;
+    private long device_revision;
     private Revision newrevision;
     private Revision newfolderrevision;
 
     public class Revision {
-        private String revision;
-        private String epoch;
+        private long revision;
+        private long epoch;
 
-        public String getRevision() {
-            if (revision == null) {
-                return "";
-            }
+        public long getRevision() {
             return revision;
         }
 
         public long getEpoch() {
-            if (epoch == null) {
-                return 0;
-            }
-            return Long.parseLong(epoch);
+            return epoch;
         }
     }
 
     public String getQuickkey() {
-        if (quickkey == null) {
-            return "";
-        }
         return quickkey;
     }
 
-    public int getDeviceRevision() {
-        if (device_revision == null || device_revision.isEmpty()) {
-            return 0;
-        }
-        return Integer.parseInt(device_revision);
+    public long getDeviceRevision() {
+        return device_revision;
     }
 
     public Revision getNewRevision() {
@@ -57,9 +45,6 @@ public class InstantResponse extends ApiResponse {
     }
 
     public String getFileName() {
-        if (filename == null) {
-            return "";
-        }
         return filename;
     }
 }

@@ -14,20 +14,16 @@ import java.util.Map;
  * Created by Chris on 1/19/2015.
  */
 public class NotificationsClient {
-
-    private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
     private final Instructions mInstructions;
 
     public NotificationsClient(HttpHandler httpInterface, TokenManager tokenManager) {
-        mApiRequestGenerator = new ApiRequestGenerator();
-
         mInstructions = new UseSessionToken(tokenManager);
         apiClient = new ApiClient(httpInterface);
     }
 
     public Result getCache(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("notifications/get_info.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/get_info.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -37,7 +33,7 @@ public class NotificationsClient {
     }
 
     public Result peekCache(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("notifications/delete.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/delete.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -47,7 +43,7 @@ public class NotificationsClient {
     }
 
     public Result sendMessage(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("notifications/copy.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/copy.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);

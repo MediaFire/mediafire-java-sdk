@@ -11,20 +11,16 @@ import com.mediafire.sdk.http.Result;
 import java.util.Map;
 
 public class FileClient {
-
-    private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
     private final Instructions mInstructions;
 
     public FileClient(HttpHandler httpInterface, TokenManager tokenManager) {
-        mApiRequestGenerator = new ApiRequestGenerator();
-
         mInstructions = new UseSessionToken(tokenManager);
         apiClient = new ApiClient(httpInterface);
     }
 
     public Result getInfo(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_info.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/get_info.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -34,7 +30,7 @@ public class FileClient {
     }
 
     public Result delete(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/delete.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/delete.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -44,7 +40,7 @@ public class FileClient {
     }
 
     public Result copy(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/copy.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/copy.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -54,7 +50,7 @@ public class FileClient {
     }
 
     public Result getVersion(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_version.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/get_version.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -64,7 +60,7 @@ public class FileClient {
     }
 
     public Result move(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/move.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/move.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -74,7 +70,7 @@ public class FileClient {
     }
 
     public Result update(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/update.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/update.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -84,7 +80,7 @@ public class FileClient {
     }
 
     public Result getLinks(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("file/get_links.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/get_links.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);

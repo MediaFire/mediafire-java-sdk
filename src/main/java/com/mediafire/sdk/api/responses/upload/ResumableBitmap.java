@@ -7,14 +7,11 @@ import java.util.List;
 * Created by Chris on 12/23/2014.
 */
 public class ResumableBitmap {
-    private String count;
+    private int count;
     private List<String> words;
 
     public int getCount() {
-        if (count == null || count.isEmpty()) {
-            return 0;
-        }
-        return Integer.parseInt(count);
+        return count;
     }
 
     public List<Integer> getWords() {

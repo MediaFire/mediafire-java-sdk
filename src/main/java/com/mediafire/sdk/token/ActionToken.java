@@ -23,4 +23,11 @@ public abstract class ActionToken extends Token {
     public final long getExpiration() {
         return mExpiration;
     }
+
+    @Override
+    public String toString() {
+        return "[type:" + getClass().getSimpleName() + "]" +
+                "[token:" + getTokenString() + "]" +
+                "[expiration:" + getExpiration() + "]";
+    }
 }

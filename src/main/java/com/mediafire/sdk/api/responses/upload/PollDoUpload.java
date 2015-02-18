@@ -8,8 +8,8 @@ public class PollDoUpload extends DoUpload {
     private String description;
     private int fileerror;
     private String quickkey;
-    private long size;
-    private long revision;
+    private String size;
+    private String revision;
     private String created;
     private String filename;
     private String hash;
@@ -31,11 +31,11 @@ public class PollDoUpload extends DoUpload {
         return quickkey;
     }
 
-    public long getSize() {
+    public String getSize() {
         return size;
     }
 
-    public long getRevision() {
+    public String getRevision() {
         return revision;
     }
 

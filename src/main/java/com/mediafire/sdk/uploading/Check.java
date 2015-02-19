@@ -139,6 +139,9 @@ class Check extends UploadRunnable {
 
         ResumableUpload resumableUpload = apiResponse.getResumableUpload();
         if (resumableUpload != null) {
+            if (isDebugging()) {
+                System.out.println("resumable upload was available from upload/check, upload info: " + mUpload);
+            }
             String allUnitsReady = resumableUpload.getAllUnitsReady();
             int numUnits = resumableUpload.getNumberOfUnits();
             int unitSize = resumableUpload.getUnitSize();
@@ -149,10 +152,21 @@ class Check extends UploadRunnable {
 
             ResumableBitmap bitmap = resumableUpload.getBitmap();
             if (bitmap != null) {
+                if (isDebugging()) {
+                    System.out.println("resumable bitmap was available from upload/check, upload info: " + mUpload);
+                }
                 int count = bitmap.getCount();
                 List<Integer> words = bitmap.getWords();
 
                 mUpload.updateUploadBitmap(count, words);
+            } else {
+                if (isDebugging()) {
+                    System.out.println("resumable bitmap was not available from upload/check, upload info: " + mUpload);
+                }
+            }
+        } else {
+            if (isDebugging()) {
+                System.out.println("resumable upload was not available from upload/check, upload info: " + mUpload);
             }
         }
 

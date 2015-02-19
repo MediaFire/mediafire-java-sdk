@@ -34,11 +34,7 @@ public class UploadProcess implements Runnable {
         if (mDebug) {
             System.out.println("UploadProcess run() called for " + mUpload);
         }
-        Check check = new Check(mUpload, mHttp, mTokenManager, this);
-        if (mDebug) {
-            check.debug(true);
-        }
-        check.run();
+        doCheckUpload(mUpload);
     }
 
     void exceptionDuringUpload(Upload upload, Exception exception) {
@@ -89,9 +85,12 @@ public class UploadProcess implements Runnable {
 
     void checkFinished(Upload upload) {
         if (mDebug) {
-            System.out.println("checkFinished() for " + mUpload);
+            System.out.println("upload/check finished for " + mUpload);
         }
         if (upload.isHashInAccount()) {
+            if (mDebug) {
+                System.out.println("upload/check and hash is in user account for " + mUpload);
+            }
             Upload.Options.ActionOnInAccount actionOnInAccount = upload.getOptions().getActionOnInAccount();
             switch (actionOnInAccount) {
                 case UPLOAD_ALWAYS:
@@ -114,12 +113,22 @@ public class UploadProcess implements Runnable {
                     break;
             }
             return;
+        } else {
+            if (mDebug) {
+                System.out.println("upload/check finished and hash was not in user account for " + mUpload);
+            }
         }
 
         if (upload.isHashInMediaFire()) {
+            if (mDebug) {
+                System.out.println("upload/check finished and hash exists on mediafire for " + mUpload);
+            }
             // hash exists
             doInstantUpload(upload);
         } else {
+            if (mDebug) {
+                System.out.println("upload/check finished but hash does not exist for " + mUpload);
+            }
             // hash doesn't exist
             doResumableUpload(upload);
         }
@@ -165,10 +174,18 @@ public class UploadProcess implements Runnable {
         if (mDebug) {
             System.out.println("resumable finished for " + mUpload);
         }
-        if (upload.areAllUnitsReady()) {
+        if (upload.areAllUnitsReady() && upload.getPollKey() != null && !upload.getPollKey().isEmpty()) {
+            if (mDebug) {
+                System.out.println("all units are ready and the poll key is available");
+            }
             doPollUpload(upload, upload.getPollKey());
         } else {
-            doCheckUpload(upload);
+            if (mDebug) {
+                System.out.println("all units are not ready or the poll key is unavailable");
+            }
+            if (mListener != null) {
+                generalCancel(mUpload, null);
+            }
         }
     }
 
@@ -182,6 +199,9 @@ public class UploadProcess implements Runnable {
     }
 
     private void doCheckUpload(Upload upload) {
+        if (mDebug) {
+            System.out.println("do upload/check for " + mUpload);
+        }
         Check check = new Check(upload, mHttp, mTokenManager, this);
         if (mDebug) {
             check.debug(true);
@@ -190,6 +210,9 @@ public class UploadProcess implements Runnable {
     }
 
     private void doPollUpload(Upload upload, String responsePollKey) {
+        if (mDebug) {
+            System.out.println("do upload/poll_upload for " + mUpload);
+        }
         upload.setPollKey(responsePollKey);
         Poll poll = new Poll(upload, mHttp, mTokenManager, this, Poll.DEFAULT_SLEEP_TIME, Poll.DEFAULT_MAX_POLLS);
         if (mDebug) {
@@ -199,6 +222,9 @@ public class UploadProcess implements Runnable {
     }
 
     private void doInstantUpload(Upload upload) {
+        if (mDebug) {
+            System.out.println("do upload/instant for " + mUpload);
+        }
         Instant instant = new Instant(upload, mHttp, mTokenManager, this);
         if (mDebug) {
             instant.debug(true);
@@ -207,6 +233,9 @@ public class UploadProcess implements Runnable {
     }
 
     private void doResumableUpload(Upload upload) {
+        if (mDebug) {
+            System.out.println("do upload/resumable for " + mUpload);
+        }
         Resumable resumable = new Resumable(upload, mHttp, mTokenManager, this);
         if (mDebug) {
             resumable.debug(true);

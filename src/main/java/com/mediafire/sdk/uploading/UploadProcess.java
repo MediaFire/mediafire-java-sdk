@@ -97,7 +97,7 @@ public class UploadProcess implements Runnable {
                     doInstantUpload(upload);
                     break;
                 case UPLOAD_IF_NOT_IN_FOLDER:
-                    if (upload.isHashInFolder()) {
+                    if (!upload.isHashInFolder()) {
                         doInstantUpload(upload);
                     } else {
                         if (mListener != null) {

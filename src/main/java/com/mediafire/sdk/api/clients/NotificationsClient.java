@@ -23,7 +23,7 @@ public class NotificationsClient {
     }
 
     public Result getCache(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/get_info.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/get_cache.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -33,7 +33,7 @@ public class NotificationsClient {
     }
 
     public Result peekCache(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/delete.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/peek_cache.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -43,7 +43,7 @@ public class NotificationsClient {
     }
 
     public Result sendMessage(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/copy.php");
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/send_message.php");
 
         if (requestParams != null) {
             addParams(request, requestParams);

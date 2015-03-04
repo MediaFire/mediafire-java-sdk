@@ -7,9 +7,7 @@ import com.mediafire.sdk.api.responses.upload.ResumableBitmap;
 import com.mediafire.sdk.api.responses.upload.ResumableUpload;
 import com.mediafire.sdk.config.HttpHandler;
 import com.mediafire.sdk.config.TokenManager;
-import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
-import com.mediafire.sdk.token.Token;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;

@@ -5,9 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import com.mediafire.sdk.api.responses.upload.InstantResponse;
 import com.mediafire.sdk.config.HttpHandler;
 import com.mediafire.sdk.config.TokenManager;
-import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Result;
-import com.mediafire.sdk.token.Token;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

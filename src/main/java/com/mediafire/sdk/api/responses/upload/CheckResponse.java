@@ -2,9 +2,6 @@ package com.mediafire.sdk.api.responses.upload;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CheckResponse extends ApiResponse {
     private String hash_exists;
     private String in_account;

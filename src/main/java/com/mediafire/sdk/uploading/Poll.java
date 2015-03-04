@@ -2,7 +2,6 @@ package com.mediafire.sdk.uploading;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.TypeAdapter;
 import com.mediafire.sdk.api.responses.upload.PollDoUpload;
 import com.mediafire.sdk.api.responses.upload.PollResponse;
 import com.mediafire.sdk.config.HttpHandler;

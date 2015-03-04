@@ -2,7 +2,6 @@ package com.mediafire.sdk.api.responses.contact;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class FetchResponse extends ApiResponse {

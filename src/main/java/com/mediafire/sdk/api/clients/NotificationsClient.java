@@ -22,8 +22,22 @@ public class NotificationsClient {
         apiClient = new ApiClient(httpInterface);
     }
 
+    public Result getCache(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/get_cache.php", apiVersion);
+
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
     public Result getCache(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/get_cache.php");
+        return getCache(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result peekCache(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/peek_cache.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -33,7 +47,11 @@ public class NotificationsClient {
     }
 
     public Result peekCache(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/peek_cache.php");
+        return peekCache(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result sendMessage(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/send_message.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -43,13 +61,21 @@ public class NotificationsClient {
     }
 
     public Result sendMessage(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/send_message.php");
+        return sendMessage(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result sendNotification(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("notifications/send_notification.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
+    }
+
+    public Result sendNotification(Map<String, Object> requestParams) {
+        return sendNotification(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
     }
 
     private void addParams(Request request, Map<String, Object> requestParams) {

@@ -19,8 +19,22 @@ public class FileClient {
         apiClient = new ApiClient(httpInterface);
     }
 
+    public Result getInfo(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/get_info.php", apiVersion);
+
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
     public Result getInfo(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/get_info.php");
+        return getInfo(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result delete(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/delete.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -30,7 +44,11 @@ public class FileClient {
     }
 
     public Result delete(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/delete.php");
+        return delete(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result copy(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/copy.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -40,7 +58,11 @@ public class FileClient {
     }
 
     public Result copy(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/copy.php");
+        return copy(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getVersion(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/get_version.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -50,7 +72,11 @@ public class FileClient {
     }
 
     public Result getVersion(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/get_version.php");
+        return getVersion(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result move(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/move.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -60,7 +86,11 @@ public class FileClient {
     }
 
     public Result move(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/move.php");
+        return move(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result update(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/update.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -70,7 +100,11 @@ public class FileClient {
     }
 
     public Result update(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/update.php");
+        return update(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getLinks(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/get_links.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -80,13 +114,7 @@ public class FileClient {
     }
 
     public Result getLinks(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("file/get_links.php");
-
-        if (requestParams != null) {
-            addParams(request, requestParams);
-        }
-
-        return apiClient.doRequest(mInstructions, request);
+        return getLinks(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
     }
 
     private void addParams(Request request, Map<String, Object> requestParams) {

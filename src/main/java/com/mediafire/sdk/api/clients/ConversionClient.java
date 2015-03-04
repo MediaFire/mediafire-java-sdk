@@ -12,7 +12,6 @@ import java.util.Map;
 public class ConversionClient {
     private final ApiClient imageClient;
     private final Instructions mInstructions;
-    private boolean mDebug;
 
     public ConversionClient(HttpHandler httpInterface, TokenManager tokenManager) {
         mInstructions = new UseActionToken("image", tokenManager);

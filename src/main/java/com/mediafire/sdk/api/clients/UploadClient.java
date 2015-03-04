@@ -26,8 +26,22 @@ public class UploadClient {
         mApiClient = new ApiClient(httpInterface);
     }
 
+    public Result check(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/check.php", apiVersion);
+
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return mApiClient.doRequest(mInstructionsSessionToken, request);
+    }
+
     public Result check(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/check.php");
+        return check(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result instant(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/instant.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -37,17 +51,11 @@ public class UploadClient {
     }
 
     public Result instant(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/instant.php");
-
-        if (requestParams != null) {
-            addParams(request, requestParams);
-        }
-
-        return mApiClient.doRequest(mInstructionsSessionToken, request);
+        return instant(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
     }
 
-    public Result pollUpload(Map<String, Object> requestParams) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/poll_upload.php");
+    public Result pollUpload(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/poll_upload.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -56,8 +64,33 @@ public class UploadClient {
         return mApiClient.doRequest(mInstructionsNoToken, request);
     }
 
+    public Result pollUpload(Map<String, Object> requestParams) {
+        return pollUpload(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result resumable(Map<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/resumable.php", apiVersion);
+
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        request.addPayload(payload);
+
+        for (String key : headerParameters.keySet()) {
+            Object value = headerParameters.get(key);
+            request.addHeader(key, value);
+        }
+
+        return mApiClient.doRequest(mInstructionsActionToken, request);
+    }
+
     public Result resumable(Map<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/resumable.php");
+        return resumable(requestParams, headerParameters, payload, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result update(Map<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/update.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -74,20 +107,7 @@ public class UploadClient {
     }
 
     public Result update(Map<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload) {
-        Request request = ApiRequestGenerator.createRequestObjectFromPath("upload/update.php");
-
-        if (requestParams != null) {
-            addParams(request, requestParams);
-        }
-
-        request.addPayload(payload);
-
-        for (String key : headerParameters.keySet()) {
-            Object value = headerParameters.get(key);
-            request.addHeader(key, value);
-        }
-
-        return mApiClient.doRequest(mInstructionsActionToken, request);
+        return update(requestParams, headerParameters, payload, ApiRequestGenerator.LATEST_STABLE_VERSION);
     }
 
     private void addParams(Request request, Map<String, Object> requestParams) {

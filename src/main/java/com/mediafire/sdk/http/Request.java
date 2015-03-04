@@ -1,6 +1,6 @@
 package com.mediafire.sdk.http;
 
-import com.mediafire.sdk.api.clients.UrlHelper;
+import com.mediafire.sdk.api.helpers.RequestHelper;
 import com.mediafire.sdk.token.Token;
 
 import java.net.MalformedURLException;
@@ -184,7 +184,7 @@ public class Request {
         byte[] payload;
 
         if (mPostQuery) {
-            String queryString = new UrlHelper(this).getQueryString(true, true);
+            String queryString = new RequestHelper(this).getQueryString(true, true);
             payload = queryString.getBytes();
             return payload;
         }

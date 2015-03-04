@@ -1,4 +1,4 @@
-package com.mediafire.sdk.api.clients;
+package com.mediafire.sdk.api.helpers;
 
 import com.mediafire.sdk.http.Request;
 
@@ -6,14 +6,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
-public class UrlHelper {
+public class RequestHelper {
     private final Request mRequest;
 
     /**
      * UrlHelper Constructor
      * @param request the Request to for the url (parts) from
      */
-    public UrlHelper(Request request) {
+    public RequestHelper(Request request) {
         mRequest = request;
     }
 

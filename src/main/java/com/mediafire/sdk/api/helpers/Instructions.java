@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mediafire.sdk.api.responses.ApiResponse;
-import com.mediafire.sdk.api.clients.UrlHelper;
 import com.mediafire.sdk.http.Request;
 import com.mediafire.sdk.http.Response;
 import com.mediafire.sdk.token.SessionToken;
@@ -17,11 +16,8 @@ import java.security.NoSuchAlgorithmException;
  * Created by Chris on 11/6/2014.
  */
 public abstract class Instructions {
-    private boolean mDebug = false;
 
-    protected Instructions() {
-        mDebug = false;
-    }
+    protected Instructions() { }
 
     public final void setup(Request request) {
         borrowToken(request);
@@ -160,9 +156,9 @@ public abstract class Instructions {
         int secretKeyMod256 = Integer.valueOf(sessionToken.getSecretKey()) % 256;
         String time = sessionToken.getTime();
 
-        UrlHelper urlHelper = new UrlHelper(request);
+        RequestHelper requestHelper = new RequestHelper(request);
 
-        String nonUrlEncodedQueryString = urlHelper.getQueryString(false);
+        String nonUrlEncodedQueryString = requestHelper.getQueryString(false);
 
         String baseUri;
         if (request.getPath() == null) {

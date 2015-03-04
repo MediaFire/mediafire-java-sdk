@@ -18,7 +18,7 @@ public class RequestHelper {
     }
 
     public String getUrlForRequest() {
-        if (mRequest.getHttpMethod().equalsIgnoreCase("get")) {
+        if ("get".equalsIgnoreCase(mRequest.getHttpMethod())) {
             return getUrlForGETRequest();
         }
 

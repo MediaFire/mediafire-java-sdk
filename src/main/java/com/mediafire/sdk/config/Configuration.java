@@ -1,5 +1,7 @@
 package com.mediafire.sdk.config;
 
+import com.mediafire.sdk.api.clients.*;
+
 /**
  * Configuration contains a set of interface objects used to handle api requests
  */
@@ -8,6 +10,16 @@ public class Configuration {
     private final UserCredentials mUserCredentials;
     private final DeveloperCredentials mDeveloperCredentials;
     private final TokenManager mITokenManager;
+    private final ContactClient mContactClient;
+    private final DeviceClient mDeviceClient;
+    private final FileClient mFileClient;
+    private final FolderClient mFolderClient;
+    private final NotificationsClient mNotificationsClient;
+    private final SystemClient mSystemClient;
+    private final TokenClient mTokenClient;
+    private final UploadClient mUploadClient;
+    private final UserClient mUserClient;
+    private final ConversionClient mConversionClient;
 
     public Configuration(DeveloperCredentials devCred,
                           UserCredentials userCred,
@@ -17,6 +29,16 @@ public class Configuration {
         mUserCredentials = userCred;
         mHttpWorker = httpInterface;
         mITokenManager = tokenManager;
+        mContactClient = new ContactClient(httpInterface, tokenManager);
+        mDeviceClient = new DeviceClient(httpInterface, tokenManager);
+        mFileClient = new FileClient(httpInterface, tokenManager);
+        mFolderClient = new FolderClient(httpInterface, tokenManager);
+        mNotificationsClient = new NotificationsClient(httpInterface, tokenManager);
+        mSystemClient = new SystemClient(httpInterface);
+        mTokenClient = new TokenClient(httpInterface, userCred, devCred, tokenManager);
+        mUploadClient = new UploadClient(httpInterface, tokenManager);
+        mUserClient = new UserClient(httpInterface, tokenManager);
+        mConversionClient = new ConversionClient(httpInterface, tokenManager);
     }
 
     /**
@@ -49,5 +71,45 @@ public class Configuration {
      */
     public TokenManager getTokenManager() {
         return mITokenManager;
+    }
+
+    public ContactClient makeContactApiRequest() {
+        return mContactClient;
+    }
+
+    public DeviceClient makeDeviceApiRequest() {
+        return mDeviceClient;
+    }
+
+    public FileClient makeFileApiRequest() {
+        return mFileClient;
+    }
+
+    public FolderClient makeFolderApiRequest() {
+        return mFolderClient;
+    }
+
+    public NotificationsClient makeNotificationsApiRequest() {
+        return mNotificationsClient;
+    }
+    
+    public SystemClient makeSystemApiRequest() {
+        return mSystemClient;
+    }
+    
+    public TokenClient makeTokenApiRequest() {
+        return mTokenClient;
+    }
+    
+    public UploadClient makeUploadApiRequest() {
+        return mUploadClient;
+    }
+    
+    public UserClient makeUserApiRequest() {
+        return mUserClient;
+    }
+
+    public ConversionClient makeConversionRequest() {
+        return mConversionClient;
     }
 }

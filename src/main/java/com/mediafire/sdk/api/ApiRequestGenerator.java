@@ -3,7 +3,7 @@ package com.mediafire.sdk.api;
 import com.mediafire.sdk.http.Request;
 
 public class ApiRequestGenerator {
-    public static final String LATEST_VERSION = "1.2";
+    public static final String LATEST_STABLE_VERSION = "1.2";
     public static Request createRequestObjectFromPath(String path, String version) {
         String fullPath = "api/";
 
@@ -30,6 +30,6 @@ public class ApiRequestGenerator {
     }
 
     public static Request createRequestObjectFromPath(String path) {
-        return createRequestObjectFromPath(path, LATEST_VERSION);
+        return createRequestObjectFromPath(path, LATEST_STABLE_VERSION);
     }
 }

@@ -6,10 +6,15 @@ import com.mediafire.sdk.api.clients.*;
  * Configuration contains a set of interface objects used to handle api requests
  */
 public class Configuration {
+    // custom domain
+    public static final String DEFAULT_DOMAIN = "www.mediafire.com";
+    private static String sFullyQualifiedDomain;
+    // core sdk interfaces
     private final HttpHandler mHttpWorker;
     private final UserCredentials mUserCredentials;
     private final DeveloperCredentials mDeveloperCredentials;
     private final TokenManager mITokenManager;
+    // client objects created so user does not have to create these
     private final ContactClient mContactClient;
     private final DeviceClient mDeviceClient;
     private final FileClient mFileClient;
@@ -21,10 +26,8 @@ public class Configuration {
     private final UserClient mUserClient;
     private final ConversionClient mConversionClient;
 
-    public Configuration(DeveloperCredentials devCred,
-                          UserCredentials userCred,
-                          HttpHandler httpInterface,
-                          TokenManager tokenManager) {
+    public Configuration(DeveloperCredentials devCred, UserCredentials userCred, HttpHandler httpInterface,
+                          TokenManager tokenManager, String fullyQualifiedDomain) {
         mDeveloperCredentials = devCred;
         mUserCredentials = userCred;
         mHttpWorker = httpInterface;
@@ -39,6 +42,22 @@ public class Configuration {
         mUploadClient = new UploadClient(httpInterface, tokenManager);
         mUserClient = new UserClient(httpInterface, tokenManager);
         mConversionClient = new ConversionClient(httpInterface, tokenManager);
+        if (fullyQualifiedDomain == null) {
+            sFullyQualifiedDomain = DEFAULT_DOMAIN;
+        } else {
+            sFullyQualifiedDomain = fullyQualifiedDomain;
+        }
+    }
+
+    public Configuration(DeveloperCredentials devCred,
+                         UserCredentials userCred,
+                         HttpHandler httpInterface,
+                         TokenManager tokenManager) {
+        this(devCred, userCred, httpInterface, tokenManager, null);
+    }
+
+    public static String getFullyQualifiedDomain() {
+        return sFullyQualifiedDomain;
     }
 
     /**

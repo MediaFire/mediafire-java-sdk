@@ -1,5 +1,6 @@
 package com.mediafire.sdk.api;
 
+import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.http.Request;
 
 public class ApiRequestGenerator {
@@ -14,7 +15,7 @@ public class ApiRequestGenerator {
         fullPath += path;
 
         Request.Builder builder = new Request.Builder();
-        builder.scheme("https").fullDomain("www.mediafire.com").httpMethod("post").path(fullPath);
+        builder.scheme("https").fullDomain(Configuration.getFullyQualifiedDomain()).httpMethod("post").path(fullPath);
 
         if ("upload/resumable.php".equalsIgnoreCase(path)) {
             builder.postQuery(false);

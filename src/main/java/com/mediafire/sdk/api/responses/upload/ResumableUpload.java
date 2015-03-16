@@ -8,6 +8,7 @@ public class ResumableUpload {
     private int number_of_units;
     private int unit_size;
     private ResumableBitmap bitmap;
+    private String upload_key;
 
     public String getAllUnitsReady() {
         return all_units_ready;
@@ -23,5 +24,9 @@ public class ResumableUpload {
 
     public ResumableBitmap getBitmap() {
         return bitmap;
+    }
+
+    public String getUploadKey() {
+        return upload_key;
     }
 }

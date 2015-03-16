@@ -143,10 +143,12 @@ class Check extends UploadRunnable {
             String allUnitsReady = resumableUpload.getAllUnitsReady();
             int numUnits = resumableUpload.getNumberOfUnits();
             int unitSize = resumableUpload.getUnitSize();
+            String pollKey = resumableUpload.getUploadKey();
 
             mUpload.setAllUnitsReady(allUnitsReady != null && "yes".equals(allUnitsReady));
             mUpload.setNumberOfUnits(numUnits);
             mUpload.setUnitSize(unitSize);
+            mUpload.setPollKey(pollKey);
 
             ResumableBitmap bitmap = resumableUpload.getBitmap();
             if (bitmap != null) {

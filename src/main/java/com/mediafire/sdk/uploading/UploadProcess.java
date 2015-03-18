@@ -13,6 +13,9 @@ public class UploadProcess implements Runnable {
     private final TokenManager mTokenManager;
     private final Upload mUpload;
     private boolean mDebug;
+    private int mMaxPolls;
+    private long mPollFrequency;
+    private int mPollStatusToFinish;
 
 
     public UploadProcess(HttpHandler http, TokenManager tokenManager, Upload upload) {
@@ -23,6 +26,18 @@ public class UploadProcess implements Runnable {
 
     public void setUploadProcessListener(UploadProcessListener uploadListener) {
         mListener = uploadListener;
+    }
+
+    public void setMaxPolls(int maxPolls) {
+        mMaxPolls = maxPolls;
+    }
+
+    public void setPollFrequency(long pollFrequency) {
+        mPollFrequency = pollFrequency;
+    }
+
+    public void setPollStatusToFinish(int status) {
+        mPollStatusToFinish = status;
     }
 
     public void debug(boolean debug) {
@@ -214,7 +229,10 @@ public class UploadProcess implements Runnable {
             System.out.println("do upload/poll_upload for " + mUpload);
         }
         upload.setPollKey(responsePollKey);
-        Poll poll = new Poll(upload, mHttp, mTokenManager, this, Poll.DEFAULT_SLEEP_TIME, Poll.DEFAULT_MAX_POLLS);
+        Poll poll = new Poll(upload, mHttp, mTokenManager, this);
+        poll.setMaxPolls(mMaxPolls);
+        poll.setPollFrequency(mPollFrequency);
+        poll.setPollStatusToFinish(mPollStatusToFinish);
         if (mDebug) {
             poll.debug(true);
         }

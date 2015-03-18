@@ -15,26 +15,36 @@ import java.util.Map;
  * Created by Chris on 12/22/2014.
  */
 class Poll extends UploadRunnable {
-    public static final int DEFAULT_SLEEP_TIME = 2000;
+    public static final int DEFAULT_FREQUENCY = 2000;
     public static final int DEFAULT_MAX_POLLS = 60;
+    public static final int DEFAULT_POLL_STATUS = 99;
 
     private final Upload mUpload;
     private UploadProcess mProcessMonitor;
-    private long mWaitTimeBetweenPollsMillis = DEFAULT_SLEEP_TIME;
+    private long mPollFrequency = DEFAULT_FREQUENCY;
     private int mMaxPolls = DEFAULT_MAX_POLLS;
+    private int mPollStatusToFinish = DEFAULT_POLL_STATUS;
 
-    public Poll(Upload upload, HttpHandler mHttp, TokenManager mTokenManager, UploadProcess processMonitor,
-                long waitTimeBetweenPollsMillis, int maxPolls) {
+    public Poll(Upload upload, HttpHandler mHttp, TokenManager mTokenManager, UploadProcess processMonitor) {
         super(mHttp, mTokenManager);
         mUpload = upload;
         mProcessMonitor = processMonitor;
-        if (waitTimeBetweenPollsMillis > 0 && waitTimeBetweenPollsMillis <= 10000) {
-            mWaitTimeBetweenPollsMillis = waitTimeBetweenPollsMillis;
-        }
+    }
 
+    public void setPollFrequency(long waitTimeBetweenPollsMillis) {
+        if (waitTimeBetweenPollsMillis > 0 && waitTimeBetweenPollsMillis <= 10000) {
+            mPollFrequency = waitTimeBetweenPollsMillis;
+        }
+    }
+
+    public void setMaxPolls(int maxPolls) {
         if (maxPolls > 0 && maxPolls <= 60) {
             mMaxPolls = maxPolls;
         }
+    }
+
+    public void setPollStatusToFinish(int status) {
+        mPollStatusToFinish = status;
     }
 
     @Override
@@ -140,13 +150,18 @@ class Poll extends UploadRunnable {
                 statusCode = Integer.parseInt(statusCodeString);
             }
 
+            if (statusCode >= mPollStatusToFinish) {
+                mProcessMonitor.pollFinished(mUpload, doUpload.getQuickKey());
+                return;
+            }
+
             mProcessMonitor.pollUpdate(mUpload, statusCode);
 
             try {
                 if (isDebugging()) {
-                    System.out.println("pausing upload/poll_upload for " + mUpload + " before next poll for " + mWaitTimeBetweenPollsMillis + "ms");
+                    System.out.println("pausing upload/poll_upload for " + mUpload + " before next poll for " + mPollFrequency + "ms");
                 }
-                Thread.sleep(mWaitTimeBetweenPollsMillis);
+                Thread.sleep(mPollFrequency);
             } catch (InterruptedException exception) {
                 if (isDebugging()) {
                     System.out.println("cancelling upload/poll_upload for " + mUpload + " due to an exception: " + exception);

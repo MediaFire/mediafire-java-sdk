@@ -52,14 +52,22 @@ public class UseActionToken extends Instructions {
         ApiResponse apiResponse = getResponseObject(response, ApiResponse.class);
 
         if (apiResponse == null) {
-            mActionTokenManagerInterface.tokensBad();
+            if ("image".equals(mTokenType)) {
+                mActionTokenManagerInterface.destroyImageToken();
+            } else if ("upload".equals(mTokenType)) {
+                mActionTokenManagerInterface.destroyUploadToken();
+            }
             return;
         }
 
         if (!apiResponse.hasError()) {
             return;
         } else {
-            mActionTokenManagerInterface.tokensBad();
+            if ("image".equals(mTokenType)) {
+                mActionTokenManagerInterface.destroyImageToken();
+            } else if ("upload".equals(mTokenType)) {
+                mActionTokenManagerInterface.destroyUploadToken();
+            }
         }
     }
 }

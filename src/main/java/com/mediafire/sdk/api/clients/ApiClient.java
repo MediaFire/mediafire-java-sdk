@@ -63,7 +63,7 @@ public class ApiClient extends BaseClient {
         public void addHeaders() {
             mRequest.addHeader("Accept-Charset", CHARSET);
 
-            if (!mRequest.getHttpMethod().equalsIgnoreCase("post")) {
+            if (!"post".equalsIgnoreCase(mRequest.getHttpMethod())) {
                 return;
             }
 

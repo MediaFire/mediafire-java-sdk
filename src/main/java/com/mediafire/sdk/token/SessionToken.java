@@ -68,6 +68,12 @@ public class SessionToken extends Token {
         mSecretKey = String.valueOf(newKey);
     }
 
+    @Override
+    public String toString() {
+        return "[type:" + getClass().getSimpleName() + "]" +
+                "[token:" + getTokenString() + "]";
+    }
+
     public static class Builder {
         private final String mTokenString;
         private String mTime;

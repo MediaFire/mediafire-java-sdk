@@ -1,6 +1,7 @@
 package com.mediafire.sdk.uploading;
 
 import com.mediafire.sdk.api.responses.upload.CheckResponse;
+import com.mediafire.sdk.api.responses.upload.ResumableResponse;
 import com.mediafire.sdk.config.HttpHandler;
 import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Result;
@@ -28,7 +29,7 @@ public class UploadProcessTestImpl extends UploadProcess {
     }
 
     @Override
-    void resumableFinished(Resumable.ResumableUpload upload, String responsePollKey, boolean allUnitsReady) {
+    void resumableFinished(Upload upload) {
         mResumableFinished = true;
     }
 
@@ -38,32 +39,32 @@ public class UploadProcessTestImpl extends UploadProcess {
     }
 
     @Override
-    void checkFinished(Instant.InstantUpload upload, CheckResponse checkResponse) {
+    void checkFinished(Upload upload) {
         mCheckFinished = true;
     }
 
     @Override
-    void pollFinished(Poll.PollUpload upload, String quickKey) {
+    void pollFinished(Upload upload, String quickKey) {
         mPollFinished = true;
     }
 
     @Override
-    void pollUpdate(Poll.PollUpload upload, int status) {
+    void pollUpdate(Upload upload, int status) {
         mPollUpdate = true;
     }
 
     @Override
-    void pollMaxAttemptsReached(Poll.PollUpload upload) {
+    void pollMaxAttemptsReached(Upload upload) {
         mPollMaxAttemptsReached = true;
     }
 
     @Override
-    void instantFinished(Instant.InstantUpload upload, String quickKey) {
+    void instantFinished(Upload upload) {
         mInstantFinished = true;
     }
 
     @Override
-    void resumableProgress(Resumable.ResumableUpload upload, double percentFinished) {
+    void resumableProgress(Upload upload, double percentFinished) {
         mResumableProgress = true;
     }
 

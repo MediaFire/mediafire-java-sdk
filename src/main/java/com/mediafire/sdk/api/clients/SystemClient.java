@@ -10,18 +10,19 @@ import com.mediafire.sdk.http.Result;
 public class SystemClient {
 
     private final ApiClient apiClient;
-    private final ApiRequestGenerator mApiRequestGenerator;
     private final Instructions mInstructions;
 
     public SystemClient(HttpHandler httpInterface) {
-        mApiRequestGenerator = new ApiRequestGenerator();
-
         mInstructions = new NoToken();
         apiClient = new ApiClient(httpInterface);
     }
 
-    public Result getInfo() {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("system/get_info.php");
+    public Result getInfo(String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("system/get_info.php", apiVersion);
         return apiClient.doRequest(mInstructions, request);
+    }
+
+    public Result getInfo() {
+        return getInfo(ApiRequestGenerator.LATEST_STABLE_VERSION);
     }
 }

@@ -9,12 +9,12 @@ import java.util.List;
  * Created by Chris on 1/19/2015.
  */
 public class GetCacheResponse extends ApiResponse {
-    private List<Notification> notifications;
+    private List<MediaFireNotification> notifications;
     private String num_older;
 
-    public List<Notification> getNotifications() {
+    public List<MediaFireNotification> getNotifications() {
         if (notifications == null) {
-            notifications = new ArrayList<Notification>();
+            notifications = new ArrayList<MediaFireNotification>();
         }
         return notifications;
     }
@@ -26,31 +26,4 @@ public class GetCacheResponse extends ApiResponse {
         return Integer.parseInt(num_older);
     }
 
-    public class Notification {
-        private String actor;
-        private String timestamp;
-        private String resource;
-        private String viewable;
-        private String message;
-
-        public String getActor() {
-            return actor;
-        }
-
-        public String getTimestamp() {
-            return timestamp;
-        }
-
-        public String getResource() {
-            return resource;
-        }
-
-        public String getViewable() {
-            return viewable;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-    }
 }

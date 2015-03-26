@@ -23,13 +23,17 @@ public class UserClient {
         apiClient = new ApiClient(httpInterface);
     }
 
-    public Result getAvatar() {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_avatar.php");
+    public Result getAvatar(String apiVersion) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_avatar.php", apiVersion);
         return apiClient.doRequest(mInstructions, request);
     }
+    
+    public Result getAvatar() {
+        return getAvatar(ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
 
-    public Result setAvatar(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/set_avatar.php");
+    public Result setAvatar(Map<String, Object> requestParams, String apiVersion) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/set_avatar.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -37,27 +41,57 @@ public class UserClient {
 
         return apiClient.doRequest(mInstructions, request);
     }
+    
+    public Result setAvatar(Map<String, Object> requestParams) {
+        return setAvatar(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
 
+    public Result getInfo(String apiVersion) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_info.php", apiVersion);
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+    
     public Result getInfo() {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_info.php");
+        return getInfo(ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getSettings(String apiVersion) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_settings.php", apiVersion);
 
         return apiClient.doRequest(mInstructions, request);
     }
 
     public Result getSettings() {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_settings.php");
-
-        return apiClient.doRequest(mInstructions, request);
+        return getSettings(ApiRequestGenerator.LATEST_STABLE_VERSION);
     }
-
-    public Result setSettings(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/set_settings.php");
+    
+    public Result setSettings(Map<String, Object> requestParams, String apiVersion) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/set_settings.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
         }
 
         return apiClient.doRequest(mInstructions, request);
+    }
+    
+    public Result setSettings(Map<String, Object> requestParams) {
+        return setSettings(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result destroyActionToken(Map<String, Object> requestParams, String apiVersion) {
+        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/destroy_action_token.php", apiVersion);
+
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+    
+    public Result destroyActionToken(Map<String, Object> requestParams) {
+        return destroyActionToken(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
     }
 
     private void addParams(Request request, Map<String, Object> requestParams) {

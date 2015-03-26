@@ -1,23 +1,21 @@
 package com.mediafire.sdk.uploading;
 
-import com.mediafire.sdk.api.responses.ApiResponse;
-import com.mediafire.sdk.api.responses.upload.CheckResponse;
-import com.mediafire.sdk.api.responses.upload.ResumableUpload;
 import com.mediafire.sdk.config.HttpHandler;
 import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Result;
-
-import java.util.List;
 
 /**
  * Created by Chris on 1/15/2015.
  */
 public class UploadProcess implements Runnable {
-
     private UploadProcessListener mListener;
     private final HttpHandler mHttp;
     private final TokenManager mTokenManager;
     private final Upload mUpload;
+    private boolean mDebug;
+    private int mMaxPolls;
+    private long mPollFrequency;
+    private int mPollStatusToFinish;
 
 
     public UploadProcess(HttpHandler http, TokenManager tokenManager, Upload upload) {
@@ -30,144 +28,236 @@ public class UploadProcess implements Runnable {
         mListener = uploadListener;
     }
 
+    public void setMaxPolls(int maxPolls) {
+        mMaxPolls = maxPolls;
+    }
+
+    public void setPollFrequency(long pollFrequency) {
+        mPollFrequency = pollFrequency;
+    }
+
+    public void setPollStatusToFinish(int status) {
+        mPollStatusToFinish = status;
+    }
+
+    public void debug(boolean debug) {
+        mDebug = debug;
+    }
+
     @Override
     public void run() {
-        Check check = new Check(mUpload, mHttp, mTokenManager, this);
-        check.run();
+        if (mDebug) {
+            System.out.println("UploadProcess run() called for " + mUpload);
+        }
+        doCheckUpload(mUpload);
     }
 
     void exceptionDuringUpload(Upload upload, Exception exception) {
+        if (mDebug) {
+            System.out.println("exception during upload for " + mUpload + ". Exception: " + exception);
+            exception.printStackTrace();
+        }
         if (mListener != null) {
             mListener.exceptionOccurred(upload, exception);
         }
     }
 
     void generalCancel(Upload upload, Result result) {
+        if (mDebug) {
+            System.out.println("cancelled upload for " + mUpload);
+        }
         if (mListener != null) {
             mListener.generalCancel(upload, result);
         }
     }
 
     void storageLimitExceeded(Upload upload) {
+        if (mDebug) {
+            System.out.println("storage limit exceeded during upload for " + mUpload);
+        }
         if (mListener != null) {
             mListener.storageLimitExceeded(upload);
         }
     }
 
     void apiError(Upload upload, Result result) {
+        if (mDebug) {
+            System.out.println("api error during upload for " + mUpload);
+        }
         if (mListener != null) {
             mListener.apiError(upload, result);
         }
     }
 
-    void pollMaxAttemptsReached(Poll.PollUpload upload) {
+    void pollMaxAttemptsReached(Upload upload) {
+        if (mDebug) {
+            System.out.println("max poll attempts reached during upload for " + mUpload);
+        }
         if (mListener != null) {
             mListener.maxPollsReached(upload);
         }
     }
 
-    void checkFinished(Instant.InstantUpload upload, CheckResponse checkResponse) {
-        // does the hash exist in the account?
-        if (checkResponse.doesHashExistInAccount()) {
-            boolean inFolder = checkResponse.isInFolder();
+    void checkFinished(Upload upload) {
+        if (mDebug) {
+            System.out.println("upload/check finished for " + mUpload);
+        }
+        if (upload.isHashInAccount()) {
+            if (mDebug) {
+                System.out.println("upload/check and hash is in user account for " + mUpload);
+            }
             Upload.Options.ActionOnInAccount actionOnInAccount = upload.getOptions().getActionOnInAccount();
             switch (actionOnInAccount) {
                 case UPLOAD_ALWAYS:
                     doInstantUpload(upload);
                     break;
                 case UPLOAD_IF_NOT_IN_FOLDER:
-                    if (!inFolder) {
+                    if (!upload.isHashInFolder()) {
                         doInstantUpload(upload);
                     } else {
                         if (mListener != null) {
-                            mListener.uploadFinished(upload, checkResponse.getDuplicateQuickkey());
+                            mListener.uploadFinished(upload, upload.getDuplicateQuickKey());
                         }
                     }
                     break;
                 case DO_NOT_UPLOAD:
                 default:
                     if (mListener != null) {
-                        mListener.uploadFinished(upload, checkResponse.getDuplicateQuickkey());
+                        mListener.uploadFinished(upload, upload.getDuplicateQuickKey());
                     }
                     break;
             }
             return;
+        } else {
+            if (mDebug) {
+                System.out.println("upload/check finished and hash was not in user account for " + mUpload);
+            }
         }
 
-        // does the hash exist at all? (not in user account)
-        if (checkResponse.doesHashExist()) {
+        if (upload.isHashInMediaFire()) {
+            if (mDebug) {
+                System.out.println("upload/check finished and hash exists on mediafire for " + mUpload);
+            }
             // hash exists
             doInstantUpload(upload);
         } else {
+            if (mDebug) {
+                System.out.println("upload/check finished but hash does not exist for " + mUpload);
+            }
             // hash doesn't exist
-            doResumableUpload(upload, checkResponse);
+            doResumableUpload(upload);
         }
     }
 
-    void pollFinished(Poll.PollUpload upload, String quickKey) {
+    void pollFinished(Upload upload, String quickKey) {
+        if (mDebug) {
+            System.out.println("poll finished for " + mUpload);
+        }
         if (mListener != null) {
             mListener.uploadFinished(upload, quickKey);
         }
     }
 
-    void pollUpdate(Poll.PollUpload upload, int status) {
+    void pollUpdate(Upload upload, int status) {
+        if (mDebug) {
+            System.out.println("poll update for " + mUpload);
+        }
         if (mListener != null) {
             mListener.pollUpdate(upload, status);
         }
     }
 
-    void instantFinished(Instant.InstantUpload upload, String quickKey) {
+    void instantFinished(Upload upload) {
+        if (mDebug) {
+            System.out.println("instant finished for " + mUpload);
+        }
         if (mListener != null) {
-            mListener.uploadFinished(upload, quickKey);
+            mListener.uploadFinished(upload, upload.getNewQuickKey());
         }
     }
 
-    void resumableProgress(Resumable.ResumableUpload upload, double percentFinished) {
+    void resumableProgress(Upload upload, double percentFinished) {
+        if (mDebug) {
+            System.out.println("resumable progress for " + mUpload);
+        }
         if (mListener != null) {
             mListener.uploadProgress(upload, percentFinished);
         }
     }
 
-    void resumableFinished(Resumable.ResumableUpload upload, String responsePollKey, boolean allUnitsReady) {
-        // poll if poll key exists and all units ready
-        if (responsePollKey != null && allUnitsReady) {
-            doPollUpload(upload, responsePollKey);
+    void resumableFinished(Upload upload) {
+        if (mDebug) {
+            System.out.println("resumable finished for " + mUpload);
+        }
+        if (upload.areAllUnitsReady() && upload.getPollKey() != null && !upload.getPollKey().isEmpty()) {
+            if (mDebug) {
+                System.out.println("all units are ready and the poll key is available");
+            }
+            doPollUpload(upload, upload.getPollKey());
         } else {
-            doCheckUpload(upload);
+            if (mDebug) {
+                System.out.println("all units are not ready or the poll key is unavailable");
+            }
+            if (mListener != null) {
+                generalCancel(mUpload, null);
+            }
         }
     }
 
     void uploadStarted(Upload upload) {
+        if (mDebug) {
+            System.out.println("upload started for " + mUpload);
+        }
         if (mListener != null) {
             mListener.uploadStarted(upload);
         }
     }
 
-    private void doCheckUpload(Resumable.ResumableUpload upload) {
+    private void doCheckUpload(Upload upload) {
+        if (mDebug) {
+            System.out.println("do upload/check for " + mUpload);
+        }
         Check check = new Check(upload, mHttp, mTokenManager, this);
+        if (mDebug) {
+            check.debug(true);
+        }
         check.run();
     }
 
-    private void doPollUpload(Resumable.ResumableUpload upload, String responsePollKey) {
-        Poll.PollUpload pollUpload = new Poll.PollUpload(upload, responsePollKey);
-        Poll poll = new Poll(pollUpload, mHttp, mTokenManager, this, Poll.DEFAULT_SLEEP_TIME, Poll.DEFAULT_MAX_POLLS);
+    private void doPollUpload(Upload upload, String responsePollKey) {
+        if (mDebug) {
+            System.out.println("do upload/poll_upload for " + mUpload);
+        }
+        upload.setPollKey(responsePollKey);
+        Poll poll = new Poll(upload, mHttp, mTokenManager, this);
+        poll.setMaxPolls(mMaxPolls);
+        poll.setPollFrequency(mPollFrequency);
+        poll.setPollStatusToFinish(mPollStatusToFinish);
+        if (mDebug) {
+            poll.debug(true);
+        }
         poll.run();
     }
 
-    private void doInstantUpload(Instant.InstantUpload upload) {
+    private void doInstantUpload(Upload upload) {
+        if (mDebug) {
+            System.out.println("do upload/instant for " + mUpload);
+        }
         Instant instant = new Instant(upload, mHttp, mTokenManager, this);
+        if (mDebug) {
+            instant.debug(true);
+        }
         instant.run();
     }
 
-    private void doResumableUpload(Instant.InstantUpload upload, CheckResponse checkResponse) {
-        ResumableUpload resumableUploadObj = checkResponse.getResumableUpload();
-        int numUnits = resumableUploadObj.getNumberOfUnits();
-        int unitSize = resumableUploadObj.getUnitSize();
-        int count = resumableUploadObj.getBitmap().getCount();
-        List<Integer> words = resumableUploadObj.getBitmap().getWords();
-
-        Resumable.ResumableUpload resumableUpload = new Resumable.ResumableUpload(upload, upload.getHash(), numUnits, unitSize, count, words);
-        Resumable resumable = new Resumable(resumableUpload, mHttp, mTokenManager, this);
+    private void doResumableUpload(Upload upload) {
+        if (mDebug) {
+            System.out.println("do upload/resumable for " + mUpload);
+        }
+        Resumable resumable = new Resumable(upload, mHttp, mTokenManager, this);
+        if (mDebug) {
+            resumable.debug(true);
+        }
         resumable.run();
     }
 }

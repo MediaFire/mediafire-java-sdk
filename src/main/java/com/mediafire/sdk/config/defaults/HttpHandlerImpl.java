@@ -18,8 +18,8 @@ import java.util.Map;
  * DefaultHttpWorker is a default implementation of the HttpWorkerInterface
  * A custom implementation is recommended
  */
-public class HttpWorker implements HttpHandler {
-    private static final String TAG = HttpWorker.class.getCanonicalName();
+public class HttpHandlerImpl implements HttpHandler {
+    private static final String TAG = HttpHandlerImpl.class.getCanonicalName();
     private static final int CONNECTION_TIMEOUT_MILLISECONDS = 5000;
     private static final int READ_TIMEOUT_MILLISECONDS = 45000;
     private boolean mDebug = false;

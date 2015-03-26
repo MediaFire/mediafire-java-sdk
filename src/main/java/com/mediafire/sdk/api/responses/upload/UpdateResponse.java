@@ -6,9 +6,9 @@ import com.mediafire.sdk.api.responses.ApiResponse;
  * Created by Chris on 1/19/2015.
  */
 public class UpdateResponse extends ApiResponse {
-    private DoUpload doupload;
+    private ResumableDoUpload doupload;
 
-    public DoUpload getDoUpload() {
+    public ResumableDoUpload getDoUpload() {
         return doupload;
     }
 }

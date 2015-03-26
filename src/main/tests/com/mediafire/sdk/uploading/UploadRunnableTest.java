@@ -75,8 +75,8 @@ public class UploadRunnableTest extends TestCase {
     @Test
     public void testPollQueryKey() throws Exception {
         Upload upload = new Upload(1, "QueryParamsTest.txt");
-        Poll.PollUpload pollUpload = new Poll.PollUpload(upload, "polling_key");
-        Poll poll = new Poll(pollUpload, null, null, null, 1, 20);
+        upload.setPollKey("polling_key");
+        Poll poll = new Poll(upload, null, null, null);
 
         Map<String, Object> query = poll.makeQueryParams();
         assertTrue(query.containsKey("key") && query.get("key").equals("polling_key"));
@@ -85,8 +85,8 @@ public class UploadRunnableTest extends TestCase {
     @Test
     public void testPollQueryResponseFormat() throws Exception {
         Upload upload = new Upload(1, "QueryParamsTest.txt");
-        Poll.PollUpload pollUpload = new Poll.PollUpload(upload, "polling_key");
-        Poll poll = new Poll(pollUpload, null, null, null, 1, 20);
+        upload.setPollKey("polling_key");
+        Poll poll = new Poll(upload, null, null, null);
 
         Map<String, Object> query = poll.makeQueryParams();
         assertTrue(query.containsKey("response_format") && query.get("response_format").equals("json"));
@@ -95,8 +95,8 @@ public class UploadRunnableTest extends TestCase {
     @Test
     public void testInstantQueryResponseFormat() throws Exception {
         Upload upload = new Upload(1, "QueryParamsTest.txt");
-        Instant.InstantUpload instantUpload = new Instant.InstantUpload(upload, "some_hash");
-        Instant instant = new Instant(instantUpload, null, null, null);
+        upload.setHash("some_hash");
+        Instant instant = new Instant(upload, null, null, null);
 
         Map<String, Object> query = instant.makeQueryParams();
         assertTrue(query.containsKey("response_format") && query.get("response_format").equals("json"));
@@ -106,8 +106,8 @@ public class UploadRunnableTest extends TestCase {
     @Test
     public void testInstantQueryActionOnDuplicate() throws Exception {
         Upload upload = new Upload(1, "QueryParamsTest.txt");
-        Instant.InstantUpload instantUpload = new Instant.InstantUpload(upload, "some_hash");
-        Instant instant = new Instant(instantUpload, null, null, null);
+        upload.setHash("some_hash");
+        Instant instant = new Instant(upload, null, null, null);
 
         Map<String, Object> query = instant.makeQueryParams();
         assertTrue(query.containsKey("action_on_duplicate") && query.get("action_on_duplicate").equals("keep"));
@@ -116,8 +116,8 @@ public class UploadRunnableTest extends TestCase {
     @Test
     public void testInstantQueryFileName() throws Exception {
         Upload upload = new Upload(1, "QueryParamsTest.txt");
-        Instant.InstantUpload instantUpload = new Instant.InstantUpload(upload, "some_hash");
-        Instant instant = new Instant(instantUpload, null, null, null);
+        upload.setHash("some_hash");
+        Instant instant = new Instant(upload, null, null, null);
 
         Map<String, Object> query = instant.makeQueryParams();
         assertTrue(query.containsKey("filename") && query.get("filename").equals("QueryParamsTest.txt"));
@@ -126,8 +126,8 @@ public class UploadRunnableTest extends TestCase {
     @Test
     public void testInstantQuerySize() throws Exception {
         Upload upload = new Upload(1, "QueryParamsTest.txt");
-        Instant.InstantUpload instantUpload = new Instant.InstantUpload(upload, "some_hash");
-        Instant instant = new Instant(instantUpload, null, null, null);
+        upload.setHash("some_hash");
+        Instant instant = new Instant(upload, null, null, null);
 
         Map<String, Object> query = instant.makeQueryParams();
         assertTrue(query.containsKey("size") && query.get("size").equals(485L));
@@ -136,8 +136,8 @@ public class UploadRunnableTest extends TestCase {
     @Test
     public void testInstantQueryHash() throws Exception {
         Upload upload = new Upload(1, "QueryParamsTest.txt");
-        Instant.InstantUpload instantUpload = new Instant.InstantUpload(upload, "some_hash");
-        Instant instant = new Instant(instantUpload, null, null, null);
+        upload.setHash("some_hash");
+        Instant instant = new Instant(upload, null, null, null);
 
         Map<String, Object> query = instant.makeQueryParams();
         assertTrue(query.containsKey("hash") && query.get("hash").equals("some_hash"));
@@ -146,8 +146,11 @@ public class UploadRunnableTest extends TestCase {
     @Test
     public void testResumableQueryResponseFormat() throws Exception {
         Upload upload = new Upload(1, "QueryParamsTest.txt");
-        Resumable.ResumableUpload resumableUpload = new Resumable.ResumableUpload(upload, "some_hash", 1, 1, 1, null);
-        Resumable resumable = new Resumable(resumableUpload, null, null, null);
+        upload.setHash("some_hash");
+        upload.setNumberOfUnits(1);
+        upload.setUnitSize(1);
+        upload.updateUploadBitmap(1, null);
+        Resumable resumable = new Resumable(upload, null, null, null);
 
         Map<String, Object> query = resumable.makeQueryParams();
         assertTrue(query.containsKey("response_format") && query.get("response_format").equals("json"));
@@ -156,8 +159,11 @@ public class UploadRunnableTest extends TestCase {
     @Test
     public void testResumableQueryActionOnDuplicate() throws Exception {
         Upload upload = new Upload(1, "QueryParamsTest.txt");
-        Resumable.ResumableUpload resumableUpload = new Resumable.ResumableUpload(upload, "some_hash", 1, 1, 1, null);
-        Resumable resumable = new Resumable(resumableUpload, null, null, null);
+        upload.setHash("some_hash");
+        upload.setNumberOfUnits(1);
+        upload.setUnitSize(1);
+        upload.updateUploadBitmap(1, null);
+        Resumable resumable = new Resumable(upload, null, null, null);
 
         Map<String, Object> query = resumable.makeQueryParams();
         assertTrue(query.containsKey("action_on_duplicate") && query.get("action_on_duplicate").equals("keep"));

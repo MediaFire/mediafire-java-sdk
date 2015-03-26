@@ -44,7 +44,11 @@ public class NewActionToken extends UseSessionToken {
         GetActionTokenResponse getActionTokenResponse = getResponseObject(response, GetActionTokenResponse.class);
 
         if (getActionTokenResponse == null) {
-            mActionTokenManagerInterface.tokensBad();
+            if ("image".equals(mTokenType)) {
+                mActionTokenManagerInterface.destroyImageToken();
+            } else if ("upload".equals(mTokenType)) {
+                mActionTokenManagerInterface.destroyUploadToken();
+            }
             return;
         }
 
@@ -62,7 +66,11 @@ public class NewActionToken extends UseSessionToken {
         }
 
         if (badRequest) {
-            mActionTokenManagerInterface.tokensBad();
+            if ("image".equals(mTokenType)) {
+                mActionTokenManagerInterface.destroyImageToken();
+            } else if ("upload".equals(mTokenType)) {
+                mActionTokenManagerInterface.destroyUploadToken();
+            }
             return;
         }
 

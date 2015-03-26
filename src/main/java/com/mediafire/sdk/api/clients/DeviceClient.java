@@ -12,19 +12,31 @@ import java.util.Map;
 
 public class DeviceClient {
     
-    private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient mApiClient;
     private final Instructions mInstructions;
 
     public DeviceClient(HttpHandler httpInterface, TokenManager tokenManager) {
-        mApiRequestGenerator = new ApiRequestGenerator();
 
         mInstructions = new UseSessionToken(tokenManager);
         mApiClient = new ApiClient(httpInterface);
     }
 
+    public Result getChanges(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/get_changes.php", apiVersion);
+
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return mApiClient.doRequest(mInstructions, request);
+    }
+    
     public Result getChanges(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/get_changes.php");
+        return getChanges(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getStatus(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/get_status.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -32,9 +44,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result getStatus(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/get_status.php");
+        return getStatus(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result emptyTrash(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/empty_trash.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -42,9 +58,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result emptyTrash(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/empty_trash.php");
+        return emptyTrash(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result followResource(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/follow_resource.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -52,9 +72,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result followResource(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/follow_resource.php");
+        return followResource(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getForeignChanges(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/get_foreign_changes.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -62,9 +86,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result getForeignChanges(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/get_foreign_changes.php");
+        return getForeignChanges(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getForeignResources(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/get_foreign_resources.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -72,9 +100,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result getForeignResources(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/get_foreign_resources.php");
+        return getForeignResources(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getPatch(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/get_patch.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -82,9 +114,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result getPatch(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/get_patch.php");
+        return getPatch(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getResourceShares(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/get_resource_shares.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -92,9 +128,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result getResourceShares(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/get_resource_shares.php");
+        return getResourceShares(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getTrash(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/get_trash.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -102,9 +142,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result getTrash(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/get_trash.php");
+        return getTrash(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getUpdates(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/get_updates.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -112,9 +156,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result getUpdates(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/get_updates.php");
+        return getUpdates(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getUserShares(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/get_user_shares.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -122,9 +170,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result getUserShares(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/get_user_shares.php");
+        return getUserShares(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result requestForeignResource(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/request_foreign_resource.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -132,9 +184,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result requestForeignResource(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/request_foreign_resource.php");
+        return requestForeignResource(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result shareResources(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/share_resources.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -142,9 +198,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result shareResources(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/share_resources.php");
+        return shareResources(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result setForeignResourceSync(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/set_foreign_resource_sync.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -152,9 +212,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result setForeignResourceSync(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/set_foreign_resource_sync.php");
+        return setForeignResourceSync(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result toggleForeignResourceSync(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/toggle_foreign_resource_sync.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -162,9 +226,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result toggleForeignResourceSync(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/toggle_foreign_resource_sync.php");
+        return toggleForeignResourceSync(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result unfollowResource(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/unfollow_resource.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -172,9 +240,13 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result unfollowResource(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/unfollow_resource.php");
+        return unfollowResource(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result unshareResources(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("device/unshare_resources.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -182,15 +254,9 @@ public class DeviceClient {
 
         return mApiClient.doRequest(mInstructions, request);
     }
-
+    
     public Result unshareResources(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("device/unshare_resources.php");
-
-        if (requestParams != null) {
-            addParams(request, requestParams);
-        }
-
-        return mApiClient.doRequest(mInstructions, request);
+        return unshareResources(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
     }
 
     private void addParams(Request request, Map<String, Object> requestParams) {

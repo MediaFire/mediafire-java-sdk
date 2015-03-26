@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 public class PollTest extends TestCase {
     private static final String TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nisi nisl, pretium in rhoncus id, mattis ac ligula. Curabitur leo nisi, molestie sed ullamcorper vitae, mattis at lectus. Cras efficitur libero sed risus laoreet pellentesque. Nam suscipit quam ex, interdum imperdiet justo pharetra a. Vivamus laoreet ex massa, iaculis placerat est efficitur quis. Nullam nec nulla vitae lorem suscipit vehicula. In tincidunt vitae lacus a finibus. In a tempor magna, vel ultrices massa.";
@@ -229,7 +227,12 @@ public class PollTest extends TestCase {
         }
 
         @Override
-        public void tokensBad() {
+        public void destroyUploadToken() {
+
+        }
+
+        @Override
+        public void destroyImageToken() {
 
         }
     };
@@ -260,9 +263,11 @@ public class PollTest extends TestCase {
 
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        mUpload.setPollKey("poll_key");
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
+        Poll poll = new Poll(mUpload, sHttp, sTokenManager, sUploadManager);
+        poll.setPollFrequency(1);
+        poll.setMaxPolls(60);
 
         Thread thread = new Thread(poll);
         thread.start();
@@ -278,9 +283,11 @@ public class PollTest extends TestCase {
 
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        mUpload.setPollKey("poll_key");
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
+        Poll poll = new Poll(mUpload, sHttp, sTokenManager, sUploadManager);
+        poll.setPollFrequency(1);
+        poll.setMaxPolls(60);
 
         Thread thread = new Thread(poll);
         thread.start();
@@ -296,9 +303,11 @@ public class PollTest extends TestCase {
 
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        mUpload.setPollKey("poll_key");
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
+        Poll poll = new Poll(mUpload, sHttp, sTokenManager, sUploadManager);
+        poll.setPollFrequency(1);
+        poll.setMaxPolls(60);
 
         Thread thread = new Thread(poll);
         thread.start();
@@ -314,9 +323,11 @@ public class PollTest extends TestCase {
 
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        mUpload.setPollKey("poll_key");
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
+        Poll poll = new Poll(mUpload, sHttp, sTokenManager, sUploadManager);
+        poll.setPollFrequency(1);
+        poll.setMaxPolls(60);
 
         Thread thread = new Thread(poll);
         thread.start();
@@ -332,9 +343,11 @@ public class PollTest extends TestCase {
 
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        mUpload.setPollKey("poll_key");
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
+        Poll poll = new Poll(mUpload, sHttp, sTokenManager, sUploadManager);
+        poll.setPollFrequency(1);
+        poll.setMaxPolls(60);
 
         Thread thread = new Thread(poll);
         thread.start();
@@ -350,9 +363,11 @@ public class PollTest extends TestCase {
 
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        mUpload.setPollKey("poll_key");
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
+        Poll poll = new Poll(mUpload, sHttp, sTokenManager, sUploadManager);
+        poll.setPollFrequency(1);
+        poll.setMaxPolls(60);
 
         Thread thread = new Thread(poll);
         thread.start();
@@ -368,9 +383,11 @@ public class PollTest extends TestCase {
 
         Upload.Options options = new Upload.Options.Builder().build();
         mUpload = new Upload(mId, file, options);
-        Poll.PollUpload upload = new Poll.PollUpload(mUpload, "poll_key");
+        mUpload.setPollKey("poll_key");
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Poll poll = new Poll(upload, sHttp, sTokenManager, sUploadManager, 1, 60);
+        Poll poll = new Poll(mUpload, sHttp, sTokenManager, sUploadManager);
+        poll.setPollFrequency(1);
+        poll.setMaxPolls(60);
 
         Thread thread = new Thread(poll);
         thread.start();

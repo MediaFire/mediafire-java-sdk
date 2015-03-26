@@ -2,7 +2,10 @@ package com.mediafire.sdk.uploading;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.mediafire.sdk.api.responses.upload.ResumableDoUpload;
+import com.mediafire.sdk.api.responses.upload.ResumableBitmap;
 import com.mediafire.sdk.api.responses.upload.ResumableResponse;
+import com.mediafire.sdk.api.responses.upload.ResumableUpload;
 import com.mediafire.sdk.config.HttpHandler;
 import com.mediafire.sdk.config.TokenManager;
 import com.mediafire.sdk.http.Result;
@@ -13,7 +16,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,10 +24,10 @@ import java.util.Map;
  */
 class Resumable extends UploadRunnable {
 
-    private ResumableUpload mUpload;
+    private Upload mUpload;
     private UploadProcess mProcessMonitor;
 
-    public Resumable(ResumableUpload upload, HttpHandler http, TokenManager tokenManager, UploadProcess processMonitor) {
+    public Resumable(Upload upload, HttpHandler http, TokenManager tokenManager, UploadProcess processMonitor) {
         super(http, tokenManager);
         mUpload = upload;
         mProcessMonitor = processMonitor;
@@ -33,6 +35,9 @@ class Resumable extends UploadRunnable {
 
     @Override
     public void run() {
+        if (isDebugging()) {
+            System.out.println("upload/resumable has started for " + mUpload);
+        }
         Map<String, Object> requestParams = makeQueryParams();
 
         String customFileName = mUpload.getOptions().getCustomFileName();
@@ -44,11 +49,12 @@ class Resumable extends UploadRunnable {
         int numUnits = mUpload.getNumberOfUnits();
         int unitSize = mUpload.getUnitSize();
 
-        String responsePollKey = null;
-        boolean allUnitsReady = false;
-
+        ResumableResponse apiResponse = null;
         for (int chunkNumber = 0; chunkNumber < numUnits; chunkNumber++) {
             if (!mUpload.isChunkUploaded(chunkNumber)) {
+                if (isDebugging()) {
+                    System.out.println("upload/resumable has begun uploading chunk #" + chunkNumber + " for " + mUpload);
+                }
                 int chunkSize = getChunkSize(chunkNumber, numUnits, fileSize, unitSize);
 
                 byte[] chunk;
@@ -58,9 +64,15 @@ class Resumable extends UploadRunnable {
                     chunk = makeChunk(unitSize, chunkNumber);
                     chunkHash = Hasher.getSHA256Hash(chunk);
                 } catch (IOException exception) {
+                    if (isDebugging()) {
+                        System.out.println("cancelling upload/resumable while uploaded chunk #" + chunkNumber + " for " + mUpload + " due to an exception: " + exception);
+                    }
                     mProcessMonitor.exceptionDuringUpload(mUpload, exception);
                     return;
                 } catch (NoSuchAlgorithmException exception) {
+                    if (isDebugging()) {
+                        System.out.println("cancelling upload/resumable while uploaded chunk #" + chunkNumber + " for " + mUpload + " due to an exception: " + exception);
+                    }
                     mProcessMonitor.exceptionDuringUpload(mUpload, exception);
                     return;
                 }
@@ -70,44 +82,76 @@ class Resumable extends UploadRunnable {
                 Result result = getUploadClient().resumable(requestParams, headerParams, chunk);
 
                 if (!resultValid(result)) {
+                    if (isDebugging()) {
+                        System.out.println("cancelling upload/resumable while uploaded chunk #" + chunkNumber + " for " + mUpload + " due to invalid result object");
+                    }
                     mProcessMonitor.generalCancel(mUpload, result);
                     return;
+                }
+
+                if (isDebugging()) {
+                    System.out.println("upload/resumable request: " + result.getRequest());
+                    System.out.println("upload/resumable response: " + result.getResponse());
                 }
 
                 byte[] responseBytes = result.getResponse().getBytes();
                 String fullResponse = new String(responseBytes);
                 String response = getResponseStringForGson(fullResponse);
 
-                ResumableResponse apiResponse;
                 try {
                     apiResponse = new Gson().fromJson(response, ResumableResponse.class);
                 } catch (JsonSyntaxException exception) {
+                    if (isDebugging()) {
+                        System.out.println("cancelling upload/resumable while uploaded chunk #" + chunkNumber + " for " + mUpload + " due to an exception: " + exception);
+                    }
                     mProcessMonitor.exceptionDuringUpload(mUpload, exception);
                     return;
                 }
 
                 if (apiResponse == null) {
+                    if (isDebugging()) {
+                        System.out.println("cancelling upload/resumable while uploaded chunk #" + chunkNumber + " for " + mUpload + " due to a null ApiResponse object");
+                    }
                     mProcessMonitor.generalCancel(mUpload, result);
                     return;
                 }
 
                 if (apiResponse.hasError()) {
+                    if (isDebugging()) {
+                        System.out.println("cancelling upload/resumable while uploaded chunk #" + chunkNumber + " for " + mUpload + " due to an ApiResponse error (" + apiResponse.getMessage() + ", error " + apiResponse.getError() + ")");
+                    }
                     mProcessMonitor.apiError(mUpload, result);
                     return;
                 }
 
-                if (responsePollKey == null) {
-                    String pollKey = apiResponse.getDoUpload().getPollUploadKey();
-                    if (pollKey != null) {
-                        responsePollKey = pollKey;
+                ResumableUpload resumableUpload = apiResponse.getResumableUpload();
+                if (resumableUpload != null) {
+                    String allUnitsReady = resumableUpload.getAllUnitsReady();
+                    int numberOfUnits = resumableUpload.getNumberOfUnits();
+                    int size = resumableUpload.getUnitSize();
+
+                    mUpload.setAllUnitsReady(allUnitsReady != null && "yes".equals(allUnitsReady));
+                    mUpload.setNumberOfUnits(numberOfUnits);
+                    mUpload.setUnitSize(size);
+
+                    ResumableBitmap bitmap = resumableUpload.getBitmap();
+                    if (bitmap != null) {
+                        int count = bitmap.getCount();
+                        List<Integer> words = bitmap.getWords();
+
+                        mUpload.updateUploadBitmap(count, words);
                     }
                 }
 
-                allUnitsReady = apiResponse.getResumableUpload().areAllUnitsReady();
-
-                int newCount = apiResponse.getResumableUpload().getBitmap().getCount();
-                List<Integer> newWords = apiResponse.getResumableUpload().getBitmap().getWords();
-                mUpload.updateUploadBitmap(newCount, newWords);
+                ResumableDoUpload resumableDoUpload = apiResponse.getDoUpload();
+                if (resumableDoUpload != null) {
+                    String key = resumableDoUpload.getKey();
+                    mUpload.setPollKey(key);
+                }
+            } else {
+                if (isDebugging()) {
+                    System.out.println("upload/resumable has already uploaded chunk #" + chunkNumber + " for " + mUpload);
+                }
             }
 
             int numUploaded = 0;
@@ -119,10 +163,16 @@ class Resumable extends UploadRunnable {
 
             double percentFinished = (double) numUploaded / (double) numUnits;
             percentFinished *= 100;
+
+            if (isDebugging()) {
+                System.out.println("upload/resumable is updating upload progress for " + mUpload + " to " + percentFinished + "%");
+            }
             mProcessMonitor.resumableProgress(mUpload, percentFinished);
         }
-
-        mProcessMonitor.resumableFinished(mUpload, responsePollKey, allUnitsReady);
+        if (isDebugging()) {
+            System.out.println("upload/resumable has finished attempting to upload all chunks for " + mUpload);
+        }
+        mProcessMonitor.resumableFinished(mUpload);
     }
 
     @Override
@@ -251,65 +301,6 @@ class Resumable extends UploadRunnable {
         headerParams.put("x-filename", filename);
 
         return headerParams;
-    }
-
-    static class ResumableUpload extends Instant.InstantUpload {
-
-        private int mNumUnits;
-        private int mUnitSize;
-        private List<Boolean> mUploadUnits;
-
-        public ResumableUpload(Upload upload, String hash, int numUnits, int unitSize, int count, List<Integer> words) {
-            super(upload, hash);
-            mNumUnits = numUnits;
-            mUnitSize = unitSize;
-            mUploadUnits = decodeBitmap(count, words);
-        }
-
-        private List<Boolean> decodeBitmap(int count, List<Integer> words) {
-            List<Boolean> uploadUnits = new LinkedList<Boolean>();
-
-            if (words == null || words.isEmpty()) {
-                return uploadUnits;
-            }
-
-            //loop count times
-            for (int i = 0; i < count; i++) {
-                //convert words to binary string
-                String word = Integer.toBinaryString(words.get(i));
-
-                //ensure number is 16 bit by adding 0 until there are 16 bits
-                while (word.length() < 16) {
-                    word = "0" + word;
-                }
-
-                //add boolean to collection depending on bit value
-                for (int j = 0; j < word.length(); j++) {
-                    uploadUnits.add(i * 16 + j, word.charAt(15 - j) == '1');
-                }
-            }
-
-            return uploadUnits;
-        }
-
-        public boolean isChunkUploaded(int chunkId) {
-            if (mUploadUnits.isEmpty()) {
-                return false;
-            }
-            return mUploadUnits.get(chunkId);
-        }
-
-        public int getNumberOfUnits() {
-            return mNumUnits;
-        }
-
-        public int getUnitSize() {
-            return mUnitSize;
-        }
-
-        public void updateUploadBitmap(int newCount, List<Integer> newWords) {
-            mUploadUnits = decodeBitmap(newCount, newWords);
-        }
     }
 
 }

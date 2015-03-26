@@ -11,19 +11,31 @@ import com.mediafire.sdk.http.Result;
 import java.util.Map;
 
 public class FolderClient {
-    private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient apiClient;
     private final Instructions mInstructions;
 
     public FolderClient(HttpHandler httpInterface, TokenManager tokenManager) {
-        mApiRequestGenerator = new ApiRequestGenerator();
 
         mInstructions = new UseSessionToken(tokenManager);
         apiClient = new ApiClient(httpInterface);
     }
 
+    public Result copy(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("folder/copy.php", apiVersion);
+
+        if (requestParams != null) {
+            addParams(request, requestParams);
+        }
+
+        return apiClient.doRequest(mInstructions, request);
+    }
+
     public Result copy(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/copy.php");
+        return copy(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result create(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("folder/create.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -33,7 +45,11 @@ public class FolderClient {
     }
 
     public Result create(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/create.php");
+        return create(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result move(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("folder/move.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -43,7 +59,11 @@ public class FolderClient {
     }
 
     public Result move(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/move.php");
+        return move(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result delete(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("folder/delete.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -53,7 +73,11 @@ public class FolderClient {
     }
 
     public Result delete(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/delete.php");
+        return delete(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result purge(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("folder/purge.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -63,7 +87,11 @@ public class FolderClient {
     }
 
     public Result purge(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/purge.php");
+        return purge(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result update(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("folder/update.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -73,7 +101,11 @@ public class FolderClient {
     }
 
     public Result update(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/update.php");
+        return update(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getInfo(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("folder/get_info.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -83,7 +115,11 @@ public class FolderClient {
     }
 
     public Result getInfo(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/get_info.php");
+        return getInfo(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getContent(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("folder/get_content.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -93,7 +129,11 @@ public class FolderClient {
     }
 
     public Result getContent(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/get_content.php");
+        return getContent(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result getRevision(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("folder/get_revision.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -103,7 +143,11 @@ public class FolderClient {
     }
 
     public Result getRevision(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/get_revision.php");
+        return getRevision(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
+
+    public Result search(Map<String, Object> requestParams, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("folder/search.php", apiVersion);
 
         if (requestParams != null) {
             addParams(request, requestParams);
@@ -113,13 +157,7 @@ public class FolderClient {
     }
 
     public Result search(Map<String, Object> requestParams) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("folder/search.php");
-
-        if (requestParams != null) {
-            addParams(request, requestParams);
-        }
-
-        return apiClient.doRequest(mInstructions, request);
+        return search(requestParams, ApiRequestGenerator.LATEST_STABLE_VERSION);
     }
 
     private void addParams(Request request, Map<String, Object> requestParams) {

@@ -5,32 +5,28 @@ package com.mediafire.sdk.api.responses.upload;
 */
 public class ResumableUpload {
     private String all_units_ready;
-    private String number_of_units;
-    private String unit_size;
+    private int number_of_units;
+    private int unit_size;
     private ResumableBitmap bitmap;
+    private String upload_key;
 
-    public boolean areAllUnitsReady() {
-        return "yes".equals(all_units_ready);
+    public String getAllUnitsReady() {
+        return all_units_ready;
     }
 
     public int getNumberOfUnits() {
-        if (number_of_units == null || number_of_units.isEmpty()) {
-            return 0;
-        }
-        return Integer.parseInt(number_of_units);
+        return number_of_units;
     }
 
     public int getUnitSize() {
-        if (unit_size == null || unit_size.isEmpty()) {
-            return 0;
-        }
-        return Integer.parseInt(unit_size);
+        return unit_size;
     }
 
     public ResumableBitmap getBitmap() {
-        if (bitmap == null) {
-            return new ResumableBitmap();
-        }
         return bitmap;
+    }
+
+    public String getUploadKey() {
+        return upload_key;
     }
 }

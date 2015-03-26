@@ -1,9 +1,10 @@
 package com.mediafire.sdk.api;
 
+import com.mediafire.sdk.config.Configuration;
 import com.mediafire.sdk.http.Request;
 
 public class ApiRequestGenerator {
-    public static final String LATEST_VERSION = "1.2";
+    public static final String LATEST_STABLE_VERSION = "1.2";
     public static Request createRequestObjectFromPath(String path, String version) {
         String fullPath = "api/";
 
@@ -14,11 +15,11 @@ public class ApiRequestGenerator {
         fullPath += path;
 
         Request.Builder builder = new Request.Builder();
-        builder.scheme("https").fullDomain("www.mediafire.com").httpMethod("post").path(fullPath);
+        builder.scheme("https").fullDomain(Configuration.getFullyQualifiedDomain()).httpMethod("post").path(fullPath);
 
-        if (path.equalsIgnoreCase("upload/resumable.php")) {
+        if ("upload/resumable.php".equalsIgnoreCase(path)) {
             builder.postQuery(false);
-        } else if(path.equalsIgnoreCase("upload/update.php")) {
+        } else if("upload/update.php".equalsIgnoreCase(path)) {
             builder.postQuery(false);
         } else {
             builder.postQuery(true);
@@ -30,6 +31,6 @@ public class ApiRequestGenerator {
     }
 
     public static Request createRequestObjectFromPath(String path) {
-        return createRequestObjectFromPath(path, LATEST_VERSION);
+        return createRequestObjectFromPath(path, LATEST_STABLE_VERSION);
     }
 }

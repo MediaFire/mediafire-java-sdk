@@ -10,8 +10,6 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 public class ResumableTest extends TestCase {
 
@@ -180,7 +178,12 @@ public class ResumableTest extends TestCase {
         }
 
         @Override
-        public void tokensBad() {
+        public void destroyUploadToken() {
+
+        }
+
+        @Override
+        public void destroyImageToken() {
 
         }
     };
@@ -213,9 +216,12 @@ public class ResumableTest extends TestCase {
         mUpload = new Upload(RESULT_INVALID, file, options);
 
         List<Integer> words = new LinkedList<Integer>();
-        Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 1, 1, 1, words);
+        mUpload.setHash("hash");
+        mUpload.setNumberOfUnits(1);
+        mUpload.setUnitSize(1);
+        mUpload.updateUploadBitmap(1, words);
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
+        Resumable check = new Resumable(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
         thread.start();
@@ -232,9 +238,12 @@ public class ResumableTest extends TestCase {
         mUpload = new Upload(API_RESPONSE_NULL, file, options);
 
         List<Integer> words = new LinkedList<Integer>();
-        Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 1, 1, 1, words);
+        mUpload.setHash("hash");
+        mUpload.setNumberOfUnits(1);
+        mUpload.setUnitSize(1);
+        mUpload.updateUploadBitmap(1, words);
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
+        Resumable check = new Resumable(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
         thread.start();
@@ -251,9 +260,12 @@ public class ResumableTest extends TestCase {
         mUpload = new Upload(API_ERROR, file, options);
 
         List<Integer> words = new LinkedList<Integer>();
-        Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 1, 1, 1, words);
+        mUpload.setHash("hash");
+        mUpload.setNumberOfUnits(1);
+        mUpload.setUnitSize(1);
+        mUpload.updateUploadBitmap(1, words);
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
+        Resumable check = new Resumable(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
         thread.start();
@@ -270,9 +282,12 @@ public class ResumableTest extends TestCase {
         mUpload = new Upload(PROGRESS_SINGLE_CHUNK, file, options);
 
         List<Integer> words = new LinkedList<Integer>();
-        Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 1, 1, 1, words);
+        mUpload.setHash("hash");
+        mUpload.setNumberOfUnits(1);
+        mUpload.setUnitSize(1);
+        mUpload.updateUploadBitmap(1, words);
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
+        Resumable check = new Resumable(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
         thread.start();
@@ -289,9 +304,12 @@ public class ResumableTest extends TestCase {
         mUpload = new Upload(PROGRESS_MULTI_CHUNK, file, options);
 
         List<Integer> words = new LinkedList<Integer>();
-        Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 10, 1, 1, words);
+        mUpload.setHash("hash");
+        mUpload.setNumberOfUnits(1);
+        mUpload.setUnitSize(1);
+        mUpload.updateUploadBitmap(1, words);
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
+        Resumable check = new Resumable(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
         thread.start();
@@ -308,9 +326,12 @@ public class ResumableTest extends TestCase {
         mUpload = new Upload(FINISHED_SINGLE_CHUNK, file, options);
 
         List<Integer> words = new LinkedList<Integer>();
-        Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 10, 1, 1, words);
+        mUpload.setHash("hash");
+        mUpload.setNumberOfUnits(1);
+        mUpload.setUnitSize(1);
+        mUpload.updateUploadBitmap(1, words);
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
+        Resumable check = new Resumable(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
         thread.start();
@@ -327,9 +348,12 @@ public class ResumableTest extends TestCase {
         mUpload = new Upload(FINISHED_MULTI_CHUNK, file, options);
 
         List<Integer> words = new LinkedList<Integer>();
-        Resumable.ResumableUpload upload = new Resumable.ResumableUpload(mUpload, "hash", 1, 1, 1, words);
+        mUpload.setHash("hash");
+        mUpload.setNumberOfUnits(1);
+        mUpload.setUnitSize(1);
+        mUpload.updateUploadBitmap(1, words);
         UploadProcessTestImpl sUploadManager = new UploadProcessTestImpl(sHttp, sTokenManager, mUpload);
-        Resumable check = new Resumable(upload, sHttp, sTokenManager, sUploadManager);
+        Resumable check = new Resumable(mUpload, sHttp, sTokenManager, sUploadManager);
 
         Thread thread = new Thread(check);
         thread.start();

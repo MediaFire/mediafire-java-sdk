@@ -16,7 +16,6 @@ import com.mediafire.sdk.http.Result;
  */
 public class TokenClient {
 
-    private final ApiRequestGenerator mApiRequestGenerator;
     private final ApiClient mApiClient;
     private final Instructions mSessionTokenInstructions;
     private final Instructions mImageTokenInstructions;
@@ -26,33 +25,44 @@ public class TokenClient {
                        UserCredentials userCredentials,
                        DeveloperCredentials developerCredentials,
                        TokenManager tokenManager) {
-        mApiRequestGenerator = new ApiRequestGenerator();
         mApiClient = new ApiClient(httpInterface);
         mSessionTokenInstructions = new NewSessionToken(userCredentials, developerCredentials, tokenManager);
         mImageTokenInstructions = new NewActionToken("image", tokenManager);
         mUploadTokenInstructions = new NewActionToken("upload", tokenManager);
     }
 
-    public Result getSessionTokenV2() {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_session_token.php");
+    public Result getSessionTokenV2(String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("user/get_session_token.php", apiVersion);
         request.addQueryParameter("token_version", "2");
 
         return mApiClient.doRequest(mSessionTokenInstructions, request);
     }
+    
+    public Result getSessionTokenV2() {
+        return getSessionTokenV2(ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
 
-    public Result getUploadActionToken(int lifespan) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_action_token.php");
+    public Result getUploadActionToken(int lifespan, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("user/get_action_token.php", apiVersion);
         request.addQueryParameter("lifespan", lifespan);
         request.addQueryParameter("type", "upload");
 
         return mApiClient.doRequest(mUploadTokenInstructions, request);
     }
+    
+    public Result getUploadActionToken(int lifespan) {
+        return getUploadActionToken(lifespan, ApiRequestGenerator.LATEST_STABLE_VERSION);
+    }
 
-    public Result getImageActionToken(int lifespan) {
-        Request request = mApiRequestGenerator.createRequestObjectFromPath("user/get_action_token.php");
+    public Result getImageActionToken(int lifespan, String apiVersion) {
+        Request request = ApiRequestGenerator.createRequestObjectFromPath("user/get_action_token.php", apiVersion);
         request.addQueryParameter("lifespan", lifespan);
         request.addQueryParameter("type", "image");
 
         return mApiClient.doRequest(mImageTokenInstructions, request);
+    }
+    
+    public Result getImageActionToken(int lifespan) {
+        return getImageActionToken(lifespan, ApiRequestGenerator.LATEST_STABLE_VERSION);
     }
 }

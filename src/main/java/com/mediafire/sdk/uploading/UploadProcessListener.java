@@ -2,8 +2,6 @@ package com.mediafire.sdk.uploading;
 
 import com.mediafire.sdk.http.Result;
 
-import java.util.Map;
-
 /**
 * Created by Chris on 12/22/2014.
 */

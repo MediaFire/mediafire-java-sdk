@@ -17,6 +17,7 @@ import java.util.Map;
 abstract class UploadRunnable implements Runnable {
 
     private final UploadClient mUploadClient;
+    private boolean mDebug;
 
     public UploadRunnable(HttpHandler http, TokenManager tokenManager) {
         mUploadClient = new UploadClient(http, tokenManager);
@@ -75,4 +76,12 @@ abstract class UploadRunnable implements Runnable {
 
     @Override
     public abstract void run();
+
+    public void debug(boolean debug) {
+        mDebug = debug;
+    }
+
+    public boolean isDebugging() {
+        return mDebug;
+    }
 }

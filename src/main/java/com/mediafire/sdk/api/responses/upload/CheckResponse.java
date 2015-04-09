@@ -9,18 +9,24 @@ public class CheckResponse extends ApiResponse {
     private String file_exists;
     private String different_hash;
     private String duplicate_quickkey;
-    private long available_space;
-    private long used_storage_size;
-    private long storage_limit;
+    private String available_space;
+    private String used_storage_size;
+    private String storage_limit;
     private String storage_limit_exceeded;
     private ResumableUpload resumable_upload;
 
     public long getUsedStorageSize() {
-        return used_storage_size;
+        if (used_storage_size == null || used_storage_size.isEmpty()) {
+            return 0;
+        }
+        return Long.parseLong(used_storage_size);
     }
 
     public long getStorageLimit() {
-        return storage_limit;
+        if (storage_limit == null || used_storage_size.isEmpty()) {
+            return 0;
+        }
+        return Long.parseLong(storage_limit);
     }
 
 
@@ -57,7 +63,10 @@ public class CheckResponse extends ApiResponse {
     }
 
     public long getAvailableSpace() {
-        return available_space;
+        if (available_space == null || available_space.isEmpty()) {
+            return 0;
+        }
+        return Long.parseLong(available_space);
     }
 
 }

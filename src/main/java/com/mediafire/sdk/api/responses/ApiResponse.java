@@ -1,6 +1,6 @@
 package com.mediafire.sdk.api.responses;
 
-public class ApiResponse {
+public abstract class ApiResponse {
     private String action;
     private String message;
     private String result;
@@ -20,10 +20,6 @@ public class ApiResponse {
         return error;
     }
 
-    public final ResponseCode getErrorCode() {
-        return ResponseCode.fromInt(getError());
-    }
-
     public final String getResult() {
         return result;
     }
@@ -39,5 +35,4 @@ public class ApiResponse {
     public boolean needNewKey() {
         return new_key != null && "yes".equals(new_key);
     }
-
 }

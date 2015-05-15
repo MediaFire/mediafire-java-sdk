@@ -1,33 +1,31 @@
 package com.mediafire.sdk.token;
 
-/**
- * ActionToken is a Token that contains an expiration
- */
-public abstract class ActionToken extends Token {
-    private final long mExpiration;
+public class ActionToken {
+    private final String tokenString;
+    private final long expirationMillis;
 
-    /**
-     * ActionToken Constructor
-     * @param tokenString String for the token
-     * @param expirationMillis long expiration time for the token
-     */
-    protected ActionToken(String tokenString, long expirationMillis) {
-        super(tokenString);
-        mExpiration = System.currentTimeMillis() + expirationMillis;
+    public ActionToken(String tokenString, long expirationMillis) {
+        this.tokenString = tokenString;
+        this.expirationMillis = expirationMillis;
     }
 
     /**
      * Gets the expiration time of the token
      * @return long expiration
      */
-    public final long getExpiration() {
-        return mExpiration;
+    public long getExpiration() {
+        return expirationMillis;
     }
 
-    @Override
-    public String toString() {
-        return "[type:" + getClass().getSimpleName() + "]" +
-                "[token:" + getTokenString() + "]" +
-                "[expiration:" + getExpiration() + "]";
+    public boolean isExpired() {
+        return expirationMillis > System.currentTimeMillis();
+    }
+
+    public boolean isExpiringWithinMillis(long millis) {
+        return expirationMillis - millis > System.currentTimeMillis();
+    }
+
+    public String getToken() {
+        return tokenString;
     }
 }

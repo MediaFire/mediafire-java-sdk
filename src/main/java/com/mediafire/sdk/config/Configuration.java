@@ -1,134 +1,79 @@
 package com.mediafire.sdk.config;
 
-import com.mediafire.sdk.api.clients.*;
+import com.mediafire.sdk.token.ActionToken;
+import com.mediafire.sdk.token.SessionToken;
 
 /**
- * Configuration contains a set of interface objects used to handle api requests
+ * Created by Chris on 5/14/2015.
  */
 public class Configuration {
-    // custom domain
-    public static final String DEFAULT_DOMAIN = "www.mediafire.com";
-    private static String sFullyQualifiedDomain;
-    // core sdk interfaces
-    private final HttpHandler mHttpWorker;
-    private final UserCredentials mUserCredentials;
-    private final DeveloperCredentials mDeveloperCredentials;
-    private final TokenManager mITokenManager;
-    // client objects created so user does not have to create these
-    private final ContactClient mContactClient;
-    private final DeviceClient mDeviceClient;
-    private final FileClient mFileClient;
-    private final FolderClient mFolderClient;
-    private final NotificationsClient mNotificationsClient;
-    private final SystemClient mSystemClient;
-    private final TokenClient mTokenClient;
-    private final UploadClient mUploadClient;
-    private final UserClient mUserClient;
-    private final ConversionClient mConversionClient;
+    private static final long TWO_MINUTES = 1000 * 60 * 2;
+    private static final long TEN_MINUTES = 1000 * 60 * 10;
 
-    public Configuration(DeveloperCredentials devCred, UserCredentials userCred, HttpHandler httpInterface,
-                          TokenManager tokenManager, String fullyQualifiedDomain) {
-        mDeveloperCredentials = devCred;
-        mUserCredentials = userCred;
-        mHttpWorker = httpInterface;
-        mITokenManager = tokenManager;
-        mContactClient = new ContactClient(httpInterface, tokenManager);
-        mDeviceClient = new DeviceClient(httpInterface, tokenManager);
-        mFileClient = new FileClient(httpInterface, tokenManager);
-        mFolderClient = new FolderClient(httpInterface, tokenManager);
-        mNotificationsClient = new NotificationsClient(httpInterface, tokenManager);
-        mSystemClient = new SystemClient(httpInterface);
-        mTokenClient = new TokenClient(httpInterface, userCred, devCred, tokenManager);
-        mUploadClient = new UploadClient(httpInterface, tokenManager);
-        mUserClient = new UserClient(httpInterface, tokenManager);
-        mConversionClient = new ConversionClient(httpInterface, tokenManager);
-        if (fullyQualifiedDomain == null) {
-            sFullyQualifiedDomain = DEFAULT_DOMAIN;
-        } else {
-            sFullyQualifiedDomain = fullyQualifiedDomain;
-        }
+    private MFCredentials credentials;
+    private MFHttpRequester httpRequester;
+    private MFSessionRequester sessionRequester;
+    private MFActionRequester actionRequester;
+    private String alternateDomain;
+
+    public Configuration() { }
+
+    public MFCredentials getCredentials() {
+        return credentials;
     }
 
-    public Configuration(DeveloperCredentials devCred,
-                         UserCredentials userCred,
-                         HttpHandler httpInterface,
-                         TokenManager tokenManager) {
-        this(devCred, userCred, httpInterface, tokenManager, null);
+    public MFHttpRequester getHttpRequester() {
+        return httpRequester;
     }
 
-    public static String getFullyQualifiedDomain() {
-        return sFullyQualifiedDomain;
+    public MFSessionRequester getSessionRequester() {
+        return sessionRequester;
     }
 
-    /**
-     * Gets the HttpWorker associated with this class
-     * @return HttpWorkerInterface
-     */
-    public HttpHandler getHttpWorker() {
-        return mHttpWorker;
+    public MFActionRequester getActionRequester() {
+        return actionRequester;
     }
 
-    /**
-     * Gets the user credentials associated with this class
-     * @return CredentialsInterface
-     */
-    public UserCredentials getUserCredentials() {
-        return mUserCredentials;
+    public String getAlternateDomain() {
+        return alternateDomain;
     }
 
-    /**
-     * Gets the developer credentials associated with this class
-     * @return CredentialsInterface
-     */
-    public DeveloperCredentials getDeveloperCredentials() {
-        return mDeveloperCredentials;
+    public void setCredentials(MFCredentials mediaFireCredentials) {
+        this.credentials = mediaFireCredentials;
     }
 
-    /**
-     * Gets the session token manager associated with this class
-     * @return SessionTokenManagerInterface
-     */
-    public TokenManager getTokenManager() {
-        return mITokenManager;
+    public void setHttpRequester(MFHttpRequester mediaFireHttpRequester) {
+        this.httpRequester = mediaFireHttpRequester;
     }
 
-    public ContactClient makeContactApiRequest() {
-        return mContactClient;
+    public void setSessionRequester(MFSessionRequester mediaFireSessionRequester) {
+        this.sessionRequester = mediaFireSessionRequester;
     }
 
-    public DeviceClient makeDeviceApiRequest() {
-        return mDeviceClient;
+    public void setActionRequester(MFActionRequester mediaFireActionRequester) {
+        this.actionRequester = mediaFireActionRequester;
     }
 
-    public FileClient makeFileApiRequest() {
-        return mFileClient;
+    public void setAlternateDomain(String alternateDomain) {
+        this.alternateDomain = alternateDomain;
     }
 
-    public FolderClient makeFolderApiRequest() {
-        return mFolderClient;
-    }
+    public static Configuration getDefault() {
+        // store for session tokens
+        MFStore<SessionToken> sessionStore = new DefaultSessionStore();
+        MFStore<ActionToken> imageStore = new DefaultActionStore(TWO_MINUTES);
+        MFStore<ActionToken> uploadStore = new DefaultActionStore(TEN_MINUTES);
 
-    public NotificationsClient makeNotificationsApiRequest() {
-        return mNotificationsClient;
-    }
-    
-    public SystemClient makeSystemApiRequest() {
-        return mSystemClient;
-    }
-    
-    public TokenClient makeTokenApiRequest() {
-        return mTokenClient;
-    }
-    
-    public UploadClient makeUploadApiRequest() {
-        return mUploadClient;
-    }
-    
-    public UserClient makeUserApiRequest() {
-        return mUserClient;
-    }
+        MFCredentials credentials = new DefaultCredentials();
+        MFHttpRequester httpRequester = new DefaultHttpRequester(5000, 45000);
+        MFSessionRequester sessionRequester = new DefaultSessionRequester(credentials, httpRequester, sessionStore);
+        MFActionRequester actionRequester = new DefaultActionRequester(httpRequester, sessionRequester, imageStore, uploadStore);
 
-    public ConversionClient makeConversionRequest() {
-        return mConversionClient;
+        Configuration configuration = new Configuration();
+        configuration.setCredentials(credentials);
+        configuration.setHttpRequester(httpRequester);
+        configuration.setSessionRequester(sessionRequester);
+        configuration.setActionRequester(actionRequester);
+        return configuration;
     }
 }

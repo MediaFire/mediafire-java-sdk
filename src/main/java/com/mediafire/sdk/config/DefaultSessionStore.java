@@ -11,7 +11,7 @@ public class DefaultSessionStore implements MFStore<SessionToken> {
 
     @Override
     public boolean available() {
-        return sessionTokens.isEmpty();
+        return !sessionTokens.isEmpty();
     }
 
     @Override

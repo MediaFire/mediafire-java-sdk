@@ -4,7 +4,7 @@ import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.api.responses.UserGetSessionTokenResponse;
-import com.mediafire.sdk.requests.ApiRequest;
+import com.mediafire.sdk.requests.ApiPostRequest;
 import com.mediafire.sdk.requests.HttpApiResponse;
 import com.mediafire.sdk.requests.PostRequest;
 import com.mediafire.sdk.token.SessionToken;
@@ -15,44 +15,50 @@ import java.util.Map;
 
 public class DefaultSessionRequester implements MFSessionRequester {
 
-    private MFCredentials credentials;
+    private final MFCredentials credentials;
     private final MFHttpRequester http;
     private final MFStore<SessionToken> sessionStore;
     private boolean sessionStarted;
     private final Object sessionLock = new Object();
-    private String apiKey;
-    private String appId;
+    private final String apiKey;
+    private final String appId;
 
-    public DefaultSessionRequester(MFCredentials credentials, MFHttpRequester http, MFStore<SessionToken> sessionStore) {
+    public DefaultSessionRequester(MFCredentials credentials, String appId, String apiKey, MFHttpRequester http, MFStore<SessionToken> sessionStore) {
         this.credentials = credentials;
+        this.apiKey = apiKey;
+        this.appId = appId;
         this.http = http;
         this.sessionStore = sessionStore;
     }
 
+    public DefaultSessionRequester(MFCredentials credentials, String appId, MFHttpRequester http, MFStore<SessionToken> sessionStore) {
+        this(credentials, appId, null, http, sessionStore);
+    }
+
     @Override
-    public void startSessionWithEmail(String apiKey, String appId, String email, String password, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException {
+    public void startSessionWithEmail(String email, String password, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException {
         synchronized (sessionLock) {
             // create api request
-            ApiRequest apiRequest = ApiRequest.newSessionRequestWithEmail(apiKey, appId, email, password);
+            ApiPostRequest apiPostRequest = ApiPostRequest.newSessionRequestWithEmail(apiKey, appId, email, password);
             // make request using http to get a response
-            makeNewSessionRequest(apiRequest, sessionCallbacks);
+            makeNewSessionRequest(apiPostRequest, sessionCallbacks);
         }
     }
 
     @Override
-    public void startSessionWithEkey(String apiKey, String appId, String ekey, String password, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException {
+    public void startSessionWithEkey(String ekey, String password, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException {
         // create api request
-        ApiRequest apiRequest = ApiRequest.newSessionRequestWithEkey(apiKey, appId, ekey, password);
+        ApiPostRequest apiPostRequest = ApiPostRequest.newSessionRequestWithEkey(apiKey, appId, ekey, password);
         // make request using http to get a response
-        makeNewSessionRequest(apiRequest, sessionCallbacks);
+        makeNewSessionRequest(apiPostRequest, sessionCallbacks);
     }
 
     @Override
-    public void startSessionWithFacebook(String apiKey, String appId, String facebookAccessToken, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException {
+    public void startSessionWithFacebook(String facebookAccessToken, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException {
         // create api request
-        ApiRequest apiRequest = ApiRequest.newSessionRequestWithFacebook(apiKey, appId, facebookAccessToken);
+        ApiPostRequest apiPostRequest = ApiPostRequest.newSessionRequestWithFacebook(apiKey, appId, facebookAccessToken);
         // make request using http to get a response
-        makeNewSessionRequest(apiRequest, sessionCallbacks);
+        makeNewSessionRequest(apiPostRequest, sessionCallbacks);
     }
 
     @Override
@@ -67,7 +73,7 @@ public class DefaultSessionRequester implements MFSessionRequester {
     }
 
     @Override
-    public <T extends ApiResponse> T doApiRequest(ApiRequest apiRequest, Class<T> classOfT) throws MFException, MFApiException {
+    public <T extends ApiResponse> T doApiRequest(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException {
         if (!sessionStarted) {
             throw new MFException("cannot call doApiRequest() if session has not been started");
         }
@@ -82,7 +88,8 @@ public class DefaultSessionRequester implements MFSessionRequester {
 
         }
 
-        HttpApiResponse httpResponse = http.doApiRequest(PostRequest.fromApiRequest(apiRequest));
+        PostRequest postRequest = new PostRequest(apiPostRequest);
+        HttpApiResponse httpResponse = http.doApiRequest(postRequest);
         ResponseUtil.validateHttpResponse(httpResponse);
 
         // return token
@@ -90,6 +97,11 @@ public class DefaultSessionRequester implements MFSessionRequester {
             sessionStore.put(sessionToken);
         }
         return ResponseUtil.makeApiResponseFromHttpResponse(httpResponse, classOfT);
+    }
+
+    @Override
+    public boolean hasSession() {
+        return sessionStore.available();
     }
 
     private void doNewSessionRequestWithCredentials() throws MFException, MFApiException {
@@ -102,32 +114,33 @@ public class DefaultSessionRequester implements MFSessionRequester {
         if (credentials.containsKey("email")) {
             String email = credentials.get("email");
             String password = credentials.get("password");
-            ApiRequest apiRequest = ApiRequest.newSessionRequestWithEmail(apiKey, appId, email, password);
-            makeNewSessionRequest(apiRequest, null);
+            ApiPostRequest apiPostRequest = ApiPostRequest.newSessionRequestWithEmail(apiKey, appId, email, password);
+            makeNewSessionRequest(apiPostRequest, null);
         } else if (credentials.containsKey("ekey")) {
             String ekey = credentials.get("ekey");
             String password = credentials.get("password");
-            ApiRequest apiRequest = ApiRequest.newSessionRequestWithEkey(apiKey, appId, ekey, password);
-            makeNewSessionRequest(apiRequest, null);
+            ApiPostRequest apiPostRequest = ApiPostRequest.newSessionRequestWithEkey(apiKey, appId, ekey, password);
+            makeNewSessionRequest(apiPostRequest, null);
         } else if (credentials.containsKey("fb_access_token")) {
             String facebook = credentials.get("fb_access_token");
-            ApiRequest apiRequest = ApiRequest.newSessionRequestWithFacebook(apiKey, appId, facebook);
-            makeNewSessionRequest(apiRequest, null);
+            ApiPostRequest apiPostRequest = ApiPostRequest.newSessionRequestWithFacebook(apiKey, appId, facebook);
+            makeNewSessionRequest(apiPostRequest, null);
         } else {
             this.credentials.invalidate();
             throw new MFException("invalid credentials stored");
         }
     }
 
-    private <T extends ApiResponse> T doNewSessionRequest(ApiRequest apiRequest, Class<T> classOfT) throws MFException {
-        HttpApiResponse httpResponse = http.doApiRequest(PostRequest.fromApiRequest(apiRequest));
+    private <T extends ApiResponse> T doNewSessionRequest(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException {
+        PostRequest postRequest = new PostRequest(apiPostRequest);
+        HttpApiResponse httpResponse = http.doApiRequest(postRequest);
         ResponseUtil.validateHttpResponse(httpResponse);
         return ResponseUtil.makeApiResponseFromHttpResponse(httpResponse, classOfT);
     }
 
-    private void makeNewSessionRequest(ApiRequest apiRequest, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException {
+    private void makeNewSessionRequest(ApiPostRequest apiPostRequest, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException {
         try {
-            UserGetSessionTokenResponse apiResponse = doNewSessionRequest(apiRequest, UserGetSessionTokenResponse.class);
+            UserGetSessionTokenResponse apiResponse = doNewSessionRequest(apiPostRequest, UserGetSessionTokenResponse.class);
             // handle the api response by notifying callback and (if successful) set session to started
             handleApiResponse(apiResponse, sessionCallbacks);
         } catch (MFException e) {

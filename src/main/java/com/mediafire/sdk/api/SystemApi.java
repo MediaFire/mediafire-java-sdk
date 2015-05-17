@@ -4,7 +4,7 @@ import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.MediaFire;
 import com.mediafire.sdk.api.responses.SystemGetInfoResponse;
-import com.mediafire.sdk.requests.ApiRequest;
+import com.mediafire.sdk.requests.ApiPostRequest;
 
 import java.util.Map;
 
@@ -15,7 +15,7 @@ public class SystemApi {
     }
 
     public static SystemGetInfoResponse getInfo(MediaFire mediaFire, Map<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
-        ApiRequest apiRequest = new ApiRequest("/api/" + apiVersion + "/system/get_info.php", requestParams);
-        return mediaFire.doApiRequest(apiRequest, SystemGetInfoResponse.class);
+        ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/system/get_info.php", requestParams);
+        return mediaFire.doApiRequest(apiPostRequest, SystemGetInfoResponse.class);
     }
 }

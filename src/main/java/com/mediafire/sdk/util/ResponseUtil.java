@@ -1,5 +1,9 @@
 package com.mediafire.sdk.util;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.requests.HttpApiResponse;
@@ -23,6 +27,23 @@ public class ResponseUtil {
     }
 
     public static <T extends ApiResponse> T makeApiResponseFromHttpResponse(HttpApiResponse httpResponse, Class<T> classOfT) {
-        return null;
+        byte[] responseBytes = httpResponse.getBytes();
+        String responseString = new String(responseBytes);
+        return new Gson().fromJson(getResponseStringForGson(responseString), classOfT);
+    }
+
+    public static String getResponseStringForGson(String response) {
+        if (response == null || response.isEmpty()) {
+            return null;
+        }
+
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(response);
+        if (element.isJsonObject()) {
+            JsonObject jsonResponse = element.getAsJsonObject().get("response").getAsJsonObject();
+            return jsonResponse.toString();
+        } else {
+            return null;
+        }
     }
 }

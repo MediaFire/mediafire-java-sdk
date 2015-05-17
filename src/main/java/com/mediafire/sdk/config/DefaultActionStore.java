@@ -8,8 +8,8 @@ public class DefaultActionStore implements MFStore<ActionToken> {
     private final Object lock = new Object();
     private final long threshold;
 
-    public DefaultActionStore(long threshold) {
-        this.threshold = threshold;
+    public DefaultActionStore(int thresholdMinutes) {
+        this.threshold = 1000 * 60 * thresholdMinutes;
     }
 
     @Override

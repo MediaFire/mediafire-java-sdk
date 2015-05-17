@@ -2,9 +2,9 @@ package com.mediafire.sdk;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.config.*;
-import com.mediafire.sdk.requests.ApiRequest;
+import com.mediafire.sdk.requests.ApiPostRequest;
 import com.mediafire.sdk.requests.ImageRequest;
-import com.mediafire.sdk.requests.UploadRequest;
+import com.mediafire.sdk.requests.UploadPostRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,37 +15,30 @@ import java.util.Map;
  * Configuration contains a set of interface objects used to handle api requests
  */
 public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
-    private static final Configuration DEFAULT_CONFIG = Configuration.getDefault();
     private String alternateDomain;
     private final String appId;
     private final String apiKey;
     private final MFCredentials credentials;
     private final MFSessionRequester sessionRequester;
-    private final MFHttpRequester httpRequester;
     private final MFActionRequester actionRequester;
     private boolean sessionStarted;
 
 
-    public MediaFire(String appId, String apiKey, Configuration configuration) {
-        this.appId = appId;
-        this.apiKey = apiKey;
+    public MediaFire(Configuration configuration) {
+        this.appId = configuration.getAppId();
+        this.apiKey = configuration.getApiKey();
         this.credentials = configuration.getCredentials();
-        this.httpRequester = configuration.getHttpRequester();
         this.sessionRequester = configuration.getSessionRequester();
         this.actionRequester = configuration.getActionRequester();
         this.alternateDomain = configuration.getAlternateDomain();
     }
 
-    public MediaFire(String appId, Configuration configuration) {
-        this(appId, null, configuration);
-    }
-
     public MediaFire(String appId, String apiKey) {
-        this(appId, apiKey, DEFAULT_CONFIG);
+        this(Configuration.getDefault(appId, apiKey));
     }
 
     public MediaFire(String appId) {
-        this(appId, DEFAULT_CONFIG);
+        this(Configuration.getDefault(appId));
     }
 
     public void endSession() {
@@ -60,45 +53,45 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
     }
 
     public void startSessionWithEmail(String email, String password, MFSessionRequester.OnStartSessionCallback sessionCallback) throws MFApiException {
-        Map<String, Object> credentials = new HashMap<String, Object>();
+        Map<String, String> credentials = new HashMap<String, String>();
         credentials.put("email", email);
         credentials.put("password", password);
         this.credentials.setCredentials(credentials);
         List<MFSessionRequester.OnStartSessionCallback> sessionCallbacks = new ArrayList<MFSessionRequester.OnStartSessionCallback>();
         sessionCallbacks.add(sessionCallback);
         sessionCallbacks.add(this);
-        sessionRequester.startSessionWithEmail(apiKey, appId, email, password, sessionCallbacks);
+        sessionRequester.startSessionWithEmail(email, password, sessionCallbacks);
     }
 
-    public void startSessionWithEkey(String ekey, String password, MFSessionRequester.OnStartSessionCallback sessionCallback) throws MFApiException {        Map<String, Object> credentials = new HashMap<String, Object>();
+    public void startSessionWithEkey(String ekey, String password, MFSessionRequester.OnStartSessionCallback sessionCallback) throws MFApiException {
+        Map<String, String> credentials = new HashMap<String, String>();
         credentials.put("ekey", ekey);
         credentials.put("password", password);
         this.credentials.setCredentials(credentials);
         List<MFSessionRequester.OnStartSessionCallback> sessionCallbacks = new ArrayList<MFSessionRequester.OnStartSessionCallback>();
         sessionCallbacks.add(sessionCallback);
         sessionCallbacks.add(this);
-        sessionRequester.startSessionWithEkey(apiKey, appId, ekey, password, sessionCallbacks);
+        sessionRequester.startSessionWithEkey(ekey, password, sessionCallbacks);
     }
 
     public void startSessionWithFacebook(String facebookAccessToken, MFSessionRequester.OnStartSessionCallback sessionCallback) throws MFApiException {
-        Map<String, Object> credentials = new HashMap<String, Object>();
+        Map<String, String> credentials = new HashMap<String, String>();
         credentials.put("fb_access_token", facebookAccessToken);
         this.credentials.setCredentials(credentials);
         List<MFSessionRequester.OnStartSessionCallback> sessionCallbacks = new ArrayList<MFSessionRequester.OnStartSessionCallback>();
         sessionCallbacks.add(sessionCallback);
         sessionCallbacks.add(this);
-        sessionRequester.startSessionWithFacebook(apiKey, appId, facebookAccessToken, sessionCallbacks);
+        sessionRequester.startSessionWithFacebook(facebookAccessToken, sessionCallbacks);
     }
 
-    public <T extends ApiResponse> T doApiRequest(ApiRequest apiRequest, Class<T> classOfT) throws MFException, MFApiException {
+    public <T extends ApiResponse> T doApiRequest(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException {
         if (!sessionStarted) {
             throw new MFException("cannot call doRequest() if session has not been started");
         }
-
-        return sessionRequester.doApiRequest(apiRequest, classOfT);
+        return sessionRequester.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public <T extends ApiResponse> T doUploadRequest(UploadRequest uploadRequest, Class<T> classOfT) throws MFException {
+    public <T extends ApiResponse> T doUploadRequest(UploadPostRequest uploadRequest, Class<T> classOfT) throws MFException, MFApiException {
         if (!sessionStarted) {
             throw new MFException("cannot call doUploadRequest() if session has not been started");
         }

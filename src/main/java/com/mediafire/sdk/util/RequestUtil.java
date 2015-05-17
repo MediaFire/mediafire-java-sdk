@@ -2,8 +2,8 @@ package com.mediafire.sdk.util;
 
 import com.mediafire.sdk.MFRuntimeException;
 import com.mediafire.sdk.requests.ImageRequest;
-import com.mediafire.sdk.requests.ApiRequest;
-import com.mediafire.sdk.requests.UploadRequest;
+import com.mediafire.sdk.requests.ApiPostRequest;
+import com.mediafire.sdk.requests.UploadPostRequest;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -18,20 +18,16 @@ public class RequestUtil {
         // no instantiation, utility class
     }
 
-    public static Map<String, String> makeHeadersFromApiRequest(ApiRequest apiRequest) {
+    public static Map<String, String> makeHeadersFromApiRequest(ApiPostRequest apiPostRequest) {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Accept-Charset", "UTF-8");
-        headers.put("Content-Length", String.valueOf(makeQueryStringFromMap(apiRequest.getQueryMap(), true).getBytes().length));
+        headers.put("Content-Length", String.valueOf(makeQueryStringFromMap(apiPostRequest.getQueryMap(), true).getBytes().length));
         headers.put("Content-Type", "application/x-www-form-urlencoded;charset=" + UTF8);
         return headers;
     }
 
-    public static Map<String, String> makeHeadersFromUploadRequest(UploadRequest uploadRequest) {
-        return null;
-    }
-
-    public static byte[] makeQueryPayloadFromApiRequest(ApiRequest apiRequest) {
-        return new byte[0];
+    public static byte[] makeQueryPayloadFromApiRequest(ApiPostRequest apiPostRequest) {
+        return makeQueryStringFromMap(apiPostRequest.getQueryMap(), true).getBytes();
     }
 
     public static String makeQueryStringFromMap(Map<String, Object> query, boolean encoded) {
@@ -47,11 +43,11 @@ public class RequestUtil {
         }
     }
 
-    public static String makeUrlFromApiRequest(ApiRequest apiRequest) {
-        return apiRequest.getScheme() + "://" + apiRequest.getDomain() + apiRequest.getPath();
+    public static String makeUrlFromApiRequest(ApiPostRequest apiPostRequest) {
+        return apiPostRequest.getScheme() + "://" + apiPostRequest.getDomain() + apiPostRequest.getPath();
     }
 
-    public static String makeUrlFromUploadRequest(UploadRequest uploadRequest) {
+    public static String makeUrlFromUploadRequest(UploadPostRequest uploadRequest) {
         return makeUrlFromApiRequest(uploadRequest) + "?" + makeQueryStringFromMap(uploadRequest.getQueryMap(), true);
     }
 

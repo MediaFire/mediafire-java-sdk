@@ -1,11 +1,10 @@
 package com.mediafire.sdk.util;
 
-import com.mediafire.sdk.requests.ApiRequest;
+import com.mediafire.sdk.requests.ApiPostRequest;
 import com.mediafire.sdk.requests.ImageRequest;
-import com.mediafire.sdk.requests.UploadRequest;
+import com.mediafire.sdk.requests.UploadPostRequest;
 import junit.framework.TestCase;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,14 +18,8 @@ public class RequestUtilTest extends TestCase {
 
     private static final byte[] UPLOAD_PAYLOAD = "payload".getBytes();
 
-    private static final Map<String, String> UPLOAD_HEADERS = new HashMap<String, String>();
-
-    static {
-        UPLOAD_HEADERS.put("test", "test");
-    }
-
-    private static final ApiRequest API_REQUEST = new ApiRequest("scheme", "domain", "/path", QUERY);
-    private static final UploadRequest UPLOAD_REQUEST = new UploadRequest("scheme", "domain", "/path", QUERY, UPLOAD_PAYLOAD, UPLOAD_HEADERS);
+    private static final ApiPostRequest API_REQUEST = new ApiPostRequest("scheme", "domain", "/path", QUERY);
+    private static final UploadPostRequest UPLOAD_REQUEST = new UploadPostRequest("scheme", "domain", "/path", QUERY, UPLOAD_PAYLOAD);
     private static final ImageRequest IMAGE_REQUEST = new ImageRequest("fd56", "h686zgn6bx3nj7r", "6", false);
 
     private static final String API_REQUEST_URL = "scheme://domain/path";
@@ -52,7 +45,6 @@ public class RequestUtilTest extends TestCase {
 
     public void testMakeHeadersFromApiRequestContainsKeyAcceptCharset() throws Exception {
         Map<String, String> headers = RequestUtil.makeHeadersFromApiRequest(API_REQUEST);
-
         assertTrue(headers.containsKey("Accept-Charset"));
     }
 
@@ -63,13 +55,11 @@ public class RequestUtilTest extends TestCase {
 
     public void testMakeHeadersFromApiRequestContainsKeyContentType() throws Exception {
         Map<String, String> headers = RequestUtil.makeHeadersFromApiRequest(API_REQUEST);
-
         assertTrue(headers.containsKey("Content-Type"));
     }
 
     public void testMakeHeadersFromApiRequestContainsValueAcceptCharset() throws Exception {
         Map<String, String> headers = RequestUtil.makeHeadersFromApiRequest(API_REQUEST);
-
         assertTrue("UTF-8".equals(headers.get("Accept-Charset")));
     }
 
@@ -100,12 +90,12 @@ public class RequestUtilTest extends TestCase {
     }
 
     public void testMakeUrlFromImageRequest() throws Exception {
-        assertEquals(IMAGE_REQUEST_URL, RequestUtil.makeUrlFromImageRequest(IMAGE_REQUEST));
+//        assertEquals(IMAGE_REQUEST_URL, RequestUtil.makeUrlFromImageRequest(IMAGE_REQUEST));
+        fail("image request not implemented yet");
     }
 
     public void testMakeHeadersFromUploadRequestContainsKeyAcceptCharset() throws Exception {
         Map<String, String> headers = RequestUtil.makeHeadersFromApiRequest(API_REQUEST);
-
         assertTrue(headers.containsKey("Accept-Charset"));
     }
 

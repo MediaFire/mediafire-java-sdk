@@ -9,6 +9,7 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -28,10 +29,17 @@ public class DefaultHttpRequester implements MFHttpRequester {
     public HttpApiResponse doApiRequest(PostRequest postRequest) throws MFException {
         try {
             String urlString = postRequest.getUrl();
-            Map<String, String> headers = postRequest.getHeaders();
+            Map<String, Object> headers = postRequest.getHeaders();
             byte[] payload = postRequest.getPayload();
 
-            HttpsURLConnection connection = (HttpsURLConnection) new URL(urlString).openConnection();
+            HttpURLConnection connection;
+            if ("http".equals(postRequest.getScheme())) {
+                connection = (HttpURLConnection) new URL(urlString).openConnection();
+            } else if ("https".equals(postRequest.getScheme())) {
+                connection = (HttpsURLConnection) new URL(urlString).openConnection();
+            } else {
+                throw new MFException("scheme must be http or https");
+            }
 
             // set up connection parameters
             connection.setConnectTimeout(connectionTimeout);
@@ -41,7 +49,7 @@ public class DefaultHttpRequester implements MFHttpRequester {
 
             for (String key : headers.keySet()) {
                 if (headers.get(key) != null) {
-                    connection.addRequestProperty(key, headers.get(key));
+                    connection.addRequestProperty(key, String.valueOf(headers.get(key)));
                 }
             }
 

@@ -1,5 +1,6 @@
 package com.mediafire.sdk.requests;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,5 +33,37 @@ public class HttpApiResponse {
 
     public Map<String, List<String>> getHeaderFields() {
         return mHeaderFields;
+    }
+
+    @Override
+    public String toString() {
+        return "HttpApiResponse{" +
+                "mStatus=" + mStatus +
+                ", mBodyBytes=" + Arrays.toString(mBodyBytes) +
+                ", mHeaderFields=" + mHeaderFields +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        HttpApiResponse that = (HttpApiResponse) o;
+
+        if (mStatus != that.mStatus) return false;
+        if (!Arrays.equals(mBodyBytes, that.mBodyBytes)) return false;
+        if (mHeaderFields != null ? !mHeaderFields.equals(that.mHeaderFields) : that.mHeaderFields != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mStatus;
+        result = 31 * result + (mBodyBytes != null ? Arrays.hashCode(mBodyBytes) : 0);
+        result = 31 * result + (mHeaderFields != null ? mHeaderFields.hashCode() : 0);
+        return result;
     }
 }

@@ -4,13 +4,17 @@ import java.util.Map;
 
 public interface MFCredentials {
 
-    public void setCredentials(Map<String, Object> credentials);
+    public String PARAM_EMAIL = "email";
+    public String PARAM_PASSWORD = "password";
+    public String PARAM_EKEY = "ekey";
+
+    public void setCredentials(Map<String, String> credentials);
 
     public Map<String, String> getCredentials();
 
     public void invalidate();
 
-    public void setValid();
+    public boolean setValid();
 
     public boolean isValid();
 }

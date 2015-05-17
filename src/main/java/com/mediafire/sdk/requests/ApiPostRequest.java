@@ -14,16 +14,16 @@ public class ApiPostRequest {
     private final String scheme;
     private final String domain;
     private final String path;
-    private final Map<String, Object> query;
+    private final LinkedHashMap<String, Object> query;
 
-    public ApiPostRequest(String scheme, String domain, String path, Map<String, Object> query) {
+    public ApiPostRequest(String scheme, String domain, String path, LinkedHashMap<String, Object> query) {
         this.scheme = scheme;
         this.domain = domain;
         this.path = path;
         this.query = query;
     }
 
-    public ApiPostRequest(String path, Map<String, Object> query) {
+    public ApiPostRequest(String path, LinkedHashMap<String, Object> query) {
         this(DEFAULT_SCHEME, DEFAULT_DOMAIN, path, query);
     }
 
@@ -39,39 +39,39 @@ public class ApiPostRequest {
         return scheme;
     }
 
-    public Map<String, Object> getQueryMap() {
+    public LinkedHashMap<String, Object> getQueryMap() {
         return query;
     }
 
     public static ApiPostRequest newSessionRequestWithEmail(String apiKey, String appId, String email, String password) {
-        Map<String, Object> query = getBaseParamsForNewSessionRequest(appId);
+        LinkedHashMap<String, Object> query = getBaseParamsForNewSessionRequest(appId);
         query.put("email", email);
         query.put("password", password);
         return getApiRequestFromUserCredentials(apiKey, appId, query, email + password);
     }
 
     public static ApiPostRequest newSessionRequestWithEkey(String apiKey, String appId, String ekey, String password) {
-        Map<String, Object> query = getBaseParamsForNewSessionRequest(appId);
+        LinkedHashMap<String, Object> query = getBaseParamsForNewSessionRequest(appId);
         query.put("ekey", ekey);
         query.put("password", password);
         return getApiRequestFromUserCredentials(apiKey, appId, query, ekey + password);
     }
 
     public static ApiPostRequest newSessionRequestWithFacebook(String apiKey, String appId, String facebookAccessToken) {
-        Map<String, Object> query = getBaseParamsForNewSessionRequest(appId);
+        LinkedHashMap<String, Object> query = getBaseParamsForNewSessionRequest(appId);
         query.put("fb_access_token", facebookAccessToken);
         return getApiRequestFromUserCredentials(apiKey, appId, query, facebookAccessToken);
     }
 
-    private static Map<String, Object> getBaseParamsForNewSessionRequest(String appId) {
-        Map<String, Object> query = new LinkedHashMap<String, Object>();
+    private static LinkedHashMap<String, Object> getBaseParamsForNewSessionRequest(String appId) {
+        LinkedHashMap<String, Object> query = new LinkedHashMap<String, Object>();
         query.put("application_id", appId);
         query.put("token_version", 2);
         query.put("response_format", "json");
         return query;
     }
 
-    private static ApiPostRequest getApiRequestFromUserCredentials(String apiKey, String appId, Map<String, Object> query, String userPortion) {
+    private static ApiPostRequest getApiRequestFromUserCredentials(String apiKey, String appId, LinkedHashMap<String, Object> query, String userPortion) {
         if (apiKey != null) {
             query.put("signature", HashUtil.sha1(userPortion + appId + apiKey));
         } else {

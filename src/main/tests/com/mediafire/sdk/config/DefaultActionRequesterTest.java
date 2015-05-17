@@ -1,18 +1,8 @@
 package com.mediafire.sdk.config;
 
-import com.mediafire.sdk.MFApiException;
-import com.mediafire.sdk.MFException;
-import com.mediafire.sdk.api.responses.UploadResumableResponse;
-import com.mediafire.sdk.api.responses.UserGetInfoResponse;
-import com.mediafire.sdk.requests.ApiPostRequest;
-import com.mediafire.sdk.requests.UploadPostRequest;
 import com.mediafire.sdk.token.ActionToken;
 import com.mediafire.sdk.token.SessionToken;
 import junit.framework.TestCase;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 public class DefaultActionRequesterTest extends TestCase {
 

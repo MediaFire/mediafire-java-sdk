@@ -6,11 +6,12 @@ import com.mediafire.sdk.requests.PostRequest;
 import junit.framework.TestCase;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DefaultHttpRequesterTest extends TestCase {
 
-    private static final Map<String, Object> QUERY = new HashMap<String, Object>();
+    private static final LinkedHashMap<String, Object> QUERY = new LinkedHashMap<String, Object>();
     static {
         QUERY.put("response_format", "json");
     }

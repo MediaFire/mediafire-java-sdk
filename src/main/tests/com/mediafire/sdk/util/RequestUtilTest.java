@@ -1,8 +1,10 @@
 package com.mediafire.sdk.util;
 
 import com.mediafire.sdk.requests.ApiPostRequest;
+import com.mediafire.sdk.requests.GetRequest;
 import com.mediafire.sdk.requests.ImageRequest;
 import com.mediafire.sdk.requests.UploadPostRequest;
+import com.mediafire.sdk.token.ActionToken;
 import junit.framework.TestCase;
 
 import java.util.LinkedHashMap;
@@ -10,7 +12,7 @@ import java.util.Map;
 
 public class RequestUtilTest extends TestCase {
 
-    private static final Map<String, Object> QUERY = new LinkedHashMap<String, Object>();
+    private static final LinkedHashMap<String, Object> QUERY = new LinkedHashMap<String, Object>();
     static {
         QUERY.put("response_format", "json");
         QUERY.put("other_key", "encoded---- ;?/:#&=+$, %<>~% ----encoded");
@@ -20,16 +22,15 @@ public class RequestUtilTest extends TestCase {
 
     private static final ApiPostRequest API_REQUEST = new ApiPostRequest("scheme", "domain", "/path", QUERY);
     private static final UploadPostRequest UPLOAD_REQUEST = new UploadPostRequest("scheme", "domain", "/path", QUERY, UPLOAD_PAYLOAD);
-    private static final ImageRequest IMAGE_REQUEST = new ImageRequest("fd56", "h686zgn6bx3nj7r", "6", false);
+    private static final ImageRequest IMAGE_REQUEST = new ImageRequest("fd56", "h686zgn6bx3nj7r", '6', false);
 
     private static final String API_REQUEST_URL = "scheme://domain/path";
     private static final String UPLOAD_REQUEST_URL = "scheme://domain/path?response_format=json&other_key=encoded----+%3B%3F%2F%3A%23%26%3D%2B%24%2C+%25%3C%3E%7E%25+----encoded";
-    private static final String IMAGE_REQUEST_URL = "";
+    private static final String IMAGE_REQUEST_URL = "https://www.mediafire.com/conversion_server.php?fd56&quickkey=h686zgn6bx3nj7r&doc_type=i&size_id=6&session_token=abcd1234";
 
     private static final String UNENCODED_QUERY = "response_format=json&other_key=encoded---- ;?/:#&=+$, %<>~% ----encoded";
     private static final String ENCODED_QUERY = "response_format=json&other_key=encoded----+%3B%3F%2F%3A%23%26%3D%2B%24%2C+%25%3C%3E%7E%25+----encoded";
-
-
+    private static final ActionToken DUMMY_ACTION_TOKEN = new ActionToken("abcd1234", 1000);
 
 
     private long startTime;
@@ -90,8 +91,7 @@ public class RequestUtilTest extends TestCase {
     }
 
     public void testMakeUrlFromImageRequest() throws Exception {
-//        assertEquals(IMAGE_REQUEST_URL, RequestUtil.makeUrlFromImageRequest(IMAGE_REQUEST));
-        fail("image request not implemented yet");
+        assertEquals(IMAGE_REQUEST_URL, new GetRequest(IMAGE_REQUEST, DUMMY_ACTION_TOKEN).getUrl());
     }
 
     public void testMakeHeadersFromUploadRequestContainsKeyAcceptCharset() throws Exception {

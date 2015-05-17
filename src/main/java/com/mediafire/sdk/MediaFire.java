@@ -99,7 +99,7 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         return actionRequester.doUploadRequest(uploadRequest, classOfT);
     }
 
-    public <T extends ApiResponse> T doImageRequest(ImageRequest imageRequest, Class<T> classOfT) throws MFException {
+    public <T extends ApiResponse> T doImageRequest(ImageRequest imageRequest, Class<T> classOfT) throws MFException, MFApiException {
         if (!sessionStarted) {
             throw new MFException("cannot call doImageRequest() if session has not been started");
         }

@@ -3,12 +3,13 @@ package com.mediafire.sdk.requests;
 import com.mediafire.sdk.util.RequestUtil;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class PostRequest extends ApiPostRequest {
     private static final String CHARSET = "UTF-8";
     private final String url;
-    private final Map<String, Object> headers = new HashMap<String, Object>();
+    private final LinkedHashMap<String, Object> headers = new LinkedHashMap<String, Object>();
     private final byte[] payload;
 
 

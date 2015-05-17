@@ -51,15 +51,15 @@ public class RequestUtil {
         return makeUrlFromApiRequest(uploadRequest) + "?" + makeQueryStringFromMap(uploadRequest.getQueryMap(), true);
     }
 
-    public static String makeUrlFromImageRequest(ImageRequest imageRequest) {
-        return null;
-    }
-
     private static String constructQueryKVPair(String key, Object value, boolean encoded) throws UnsupportedEncodingException {
         if (encoded) {
             return "&" + key + "=" + URLEncoder.encode(String.valueOf(value), UTF8);
         } else {
             return "&" + key + "=" + value;
         }
+    }
+
+    public static String makeSignatureForApiRequest(ApiPostRequest apiPostRequest) {
+        return null;
     }
 }

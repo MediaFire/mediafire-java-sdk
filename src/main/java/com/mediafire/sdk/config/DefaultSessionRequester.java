@@ -8,6 +8,7 @@ import com.mediafire.sdk.requests.ApiPostRequest;
 import com.mediafire.sdk.requests.HttpApiResponse;
 import com.mediafire.sdk.requests.PostRequest;
 import com.mediafire.sdk.token.SessionToken;
+import com.mediafire.sdk.util.RequestUtil;
 import com.mediafire.sdk.util.ResponseUtil;
 
 import java.util.List;
@@ -88,13 +89,16 @@ public class DefaultSessionRequester implements MFSessionRequester {
 
         }
 
+        apiPostRequest.getQueryMap().put("session_token", sessionToken.getToken());
+        apiPostRequest.getQueryMap().put("signature", RequestUtil.makeSignatureForApiRequest(apiPostRequest));
         PostRequest postRequest = new PostRequest(apiPostRequest);
         HttpApiResponse httpResponse = http.doApiRequest(postRequest);
         ResponseUtil.validateHttpResponse(httpResponse);
 
         // return token
         synchronized (sessionStore) {
-            sessionStore.put(sessionToken);
+            SessionToken updatedSessionToken = SessionToken.updateSessionToken(sessionToken);
+            sessionStore.put(updatedSessionToken);
         }
         return ResponseUtil.makeApiResponseFromHttpResponse(httpResponse, classOfT);
     }

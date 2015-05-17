@@ -8,6 +8,7 @@ import com.mediafire.sdk.token.SessionToken;
 import junit.framework.TestCase;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DefaultSessionRequesterTest extends TestCase {
@@ -63,7 +64,7 @@ public class DefaultSessionRequesterTest extends TestCase {
 
     public void testDoApiRequestWhenSessionNotStartedThrowsException() {
         boolean mfExceptionThrown = false;
-        Map<String, Object> query = new HashMap<String, Object>();
+        LinkedHashMap<String, Object> query = new LinkedHashMap<String, Object>();
         query.put("response_format", "json");
         ApiPostRequest apiPostRequest = new ApiPostRequest("https", "www.mediafire.com", "/api/1.4/system/get_info.php", query);
         try {
@@ -84,7 +85,7 @@ public class DefaultSessionRequesterTest extends TestCase {
             fail("api exception should not have been thrown");
         }
 
-        Map<String, Object> query = new HashMap<String, Object>();
+        LinkedHashMap<String, Object> query = new LinkedHashMap<String, Object>();
         query.put("response_format", "json");
         ApiPostRequest apiPostRequest = new ApiPostRequest("https", "www.mediafire.com", "/api/1.4/system/get_info.php", query);
         try {

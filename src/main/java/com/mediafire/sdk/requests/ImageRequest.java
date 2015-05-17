@@ -7,14 +7,18 @@ public class ImageRequest {
 
     private final String hash;
     private final String quickKey;
-    private final String sizeId;
+    private final char sizeId;
     private final boolean conversionOnly;
 
-    public ImageRequest(String hash, String quickKey, String sizeId, boolean conversionOnly) {
+    public ImageRequest(String hash, String quickKey, char sizeId, boolean conversionOnly) {
         this.hash = hash;
         this.quickKey = quickKey;
         this.sizeId = sizeId;
         this.conversionOnly = conversionOnly;
+    }
+
+    public ImageRequest(String hash, String quickKey, char sizeId) {
+        this(hash, quickKey, sizeId, false);
     }
 
     public String getHash() {
@@ -25,7 +29,7 @@ public class ImageRequest {
         return quickKey;
     }
 
-    public String getSizeId() {
+    public char getSizeId() {
         return sizeId;
     }
 

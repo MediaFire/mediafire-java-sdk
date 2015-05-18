@@ -9,12 +9,8 @@ import com.mediafire.sdk.token.ActionToken;
 import com.mediafire.sdk.util.ResponseUtil;
 
 import java.util.LinkedHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DefaultActionRequester implements MFActionRequester {
-    private static final Logger logger = Logger.getLogger(DefaultActionRequester.class.getSimpleName());
-
     private static final int REQUESTED_IMAGE_TOKEN_LIFESPAN_MINUTES = 10;
     private final MFHttpRequester http;
     private final MFSessionRequester sessionRequester;
@@ -46,9 +42,7 @@ public class DefaultActionRequester implements MFActionRequester {
     @Override
     public HttpApiResponse doConversionRequest(ImageRequest imageRequest) throws MFException, MFApiException {
         if (!sessionStarted) {
-            MFException exception = new MFException("cannot call doConversionRequest() if session isn't started");
-            logger.log(Level.FINE, "doConversionRequest()", exception);
-            throw exception;
+            throw new MFException("cannot call doConversionRequest() if session isn't started");
         }
 
         ActionToken imageToken;

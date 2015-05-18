@@ -17,9 +17,8 @@ import java.util.logging.Logger;
  * Configuration contains a set of interface objects used to handle api requests
  */
 public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
-    public static final Logger LOGGER = Logger.getLogger("MediaFire");
 
-    private String alternateDomain;
+    private final String alternateDomain;
     private final MFCredentials credentials;
     private final MFSessionRequester sessionRequester;
     private final MFActionRequester actionRequester;
@@ -46,30 +45,6 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         sessionRequester.endSession();
         actionRequester.endSession();
         credentials.invalidate();
-    }
-
-    public void addLoggerHandler(Handler handler) {
-        LOGGER.addHandler(handler);
-    }
-
-    public void removeLoggerHandler(Handler handler) {
-        LOGGER.addHandler(handler);
-    }
-
-    public void setLoggerLevel(Level level) {
-        LOGGER.setLevel(level);
-    }
-
-    public void setLoggerFilter(Filter filter) {
-        LOGGER.setFilter(filter);
-    }
-
-    public void setLoggerParent(Logger parent) {
-        LOGGER.setParent(parent);
-    }
-
-    public void setLoggerUseParentHandlers(boolean useParentHandlers) {
-        LOGGER.setUseParentHandlers(useParentHandlers);
     }
 
     public boolean isSessionStarted() {

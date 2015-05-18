@@ -86,6 +86,7 @@ public class DefaultSessionRequester implements MFSessionRequester {
     @Override
     public void sessionStarted() {
         sessionStarted = true;
+        credentials.setValid();
         getNewTokens(MIN_TOKENS);
     }
 

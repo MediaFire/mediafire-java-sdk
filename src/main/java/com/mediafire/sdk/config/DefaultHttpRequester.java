@@ -76,7 +76,7 @@ public class DefaultHttpRequester implements MFHttpRequester {
     }
 
     @Override
-    public HttpApiResponse doApiRequest(GetRequest getRequest) {
+    public HttpApiResponse doApiRequest(GetRequest getRequest) throws MFException {
         try {
             String urlString = getRequest.getUrl();
             Map<String, Object> headers = getRequest.getHeaders();
@@ -104,10 +104,10 @@ public class DefaultHttpRequester implements MFHttpRequester {
             Map<String, List<String>> headerFields = connection.getHeaderFields();
             return new HttpApiResponse(responseCode, response, headerFields);
         } catch (MalformedURLException e) {
-            throw new MFRuntimeException("Malformed Url in HttpRequester", e);
+            throw new MFException("Malformed Url in HttpRequester", e);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new MFRuntimeException("Exception in HttpRequester", e);
+            throw new MFException("IOException in HttpRequester", e);
         }
     }
 

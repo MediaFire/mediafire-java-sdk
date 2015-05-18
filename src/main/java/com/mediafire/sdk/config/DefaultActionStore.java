@@ -52,4 +52,9 @@ public class DefaultActionStore implements MFStore<ActionToken> {
             this.token = null;
         }
     }
+
+    @Override
+    public int getAvailableCount() {
+        return available() ? 1 : 0;
+    }
 }

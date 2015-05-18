@@ -5,4 +5,5 @@ public interface MFStore<T> {
     public T get();
     public void put(T t);
     public void clear();
+    public int getAvailableCount();
 }

@@ -41,6 +41,8 @@ public class DefaultSessionRequesterTest extends TestCase {
             fail("exception not thrown on bad credentials");
         } catch (MFApiException e) {
             assertTrue(e.getMessage(), "The Credentials you entered are invalid".equals(e.getMessage()));
+        } catch (MFException e) {
+            fail("MFException should not be thrown: " + e);
         }
     }
 
@@ -82,7 +84,9 @@ public class DefaultSessionRequesterTest extends TestCase {
         try {
             sessionRequester.startSessionWithEmail("badtestemail@badtestemail.com", "badtestemail", null);
         } catch (MFApiException e) {
-            fail("api exception should not have been thrown");
+            fail("api exception should not have been thrown: " + e);
+        } catch (MFException e) {
+            fail("api exception should not have been thrown: " + e);
         }
 
         LinkedHashMap<String, Object> query = new LinkedHashMap<String, Object>();
@@ -98,7 +102,7 @@ public class DefaultSessionRequesterTest extends TestCase {
         } catch (MFException e) {
             fail("MFException should not have been thrown: " + e.getMessage());
         } catch (MFApiException e) {
-            fail("api exception shouldn't be thrown, MFException should be thrown");
+            fail("MFApiException should be thrown: " + e);
         }
     }
 }

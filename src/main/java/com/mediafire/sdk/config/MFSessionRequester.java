@@ -8,9 +8,9 @@ import com.mediafire.sdk.requests.ApiPostRequest;
 import java.util.List;
 
 public interface MFSessionRequester {
-    void startSessionWithEmail(String email, String password, List<OnStartSessionCallback> sessionCallback) throws MFApiException;
-    void startSessionWithEkey(String ekey, String password, List<OnStartSessionCallback> sessionCallback) throws MFApiException;
-    void startSessionWithFacebook(String facebookAccessToken, List<OnStartSessionCallback> sessionCallback) throws MFApiException;
+    void startSessionWithEmail(String email, String password, List<OnStartSessionCallback> sessionCallback) throws MFApiException, MFException;
+    void startSessionWithEkey(String ekey, String password, List<OnStartSessionCallback> sessionCallback) throws MFApiException, MFException;
+    void startSessionWithFacebook(String facebookAccessToken, List<OnStartSessionCallback> sessionCallback) throws MFApiException, MFException;
 
     void endSession();
     void sessionStarted();

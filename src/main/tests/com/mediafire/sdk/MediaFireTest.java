@@ -84,6 +84,8 @@ public class MediaFireTest extends TestCase {
             assertTrue(mediaFire.isSessionStarted());
         } catch (MFApiException e) {
             fail("should not throw api exception: " + e.getMessage());
+        } catch (MFException e) {
+            fail("should not throw mf exception: " + e.getMessage());
         }
     }
 
@@ -109,6 +111,8 @@ public class MediaFireTest extends TestCase {
 
         } catch (MFApiException e) {
             fail("should not throw api exception: " + e.getMessage());
+        } catch (MFException e) {
+            fail("should not throw mf exception: " + e.getMessage());
         }
 
     }

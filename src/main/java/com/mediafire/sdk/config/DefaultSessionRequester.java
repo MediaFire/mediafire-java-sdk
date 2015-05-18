@@ -16,6 +16,8 @@ import java.util.Map;
 
 public class DefaultSessionRequester implements MFSessionRequester {
 
+    private static final int MIN_TOKENS = 2;
+    private static final int MAX_TOKENS = 10;
     private final MFCredentials credentials;
     private final MFHttpRequester http;
     private final MFStore<SessionToken> sessionStore;
@@ -37,7 +39,10 @@ public class DefaultSessionRequester implements MFSessionRequester {
     }
 
     @Override
-    public void startSessionWithEmail(String email, String password, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException {
+    public void startSessionWithEmail(String email, String password, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException, MFException {
+        if (sessionStarted) {
+            throw new MFException("Session already started");
+        }
         synchronized (sessionLock) {
             // create api request
             ApiPostRequest apiPostRequest = ApiPostRequest.newSessionRequestWithEmail(apiKey, appId, email, password);
@@ -47,19 +52,29 @@ public class DefaultSessionRequester implements MFSessionRequester {
     }
 
     @Override
-    public void startSessionWithEkey(String ekey, String password, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException {
-        // create api request
-        ApiPostRequest apiPostRequest = ApiPostRequest.newSessionRequestWithEkey(apiKey, appId, ekey, password);
-        // make request using http to get a response
-        makeNewSessionRequest(apiPostRequest, sessionCallbacks);
+    public void startSessionWithEkey(String ekey, String password, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException, MFException {
+        if (sessionStarted) {
+            throw new MFException("Session already started");
+        }
+        synchronized (sessionLock) {
+            // create api request
+            ApiPostRequest apiPostRequest = ApiPostRequest.newSessionRequestWithEkey(apiKey, appId, ekey, password);
+            // make request using http to get a response
+            makeNewSessionRequest(apiPostRequest, sessionCallbacks);
+        }
     }
 
     @Override
-    public void startSessionWithFacebook(String facebookAccessToken, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException {
-        // create api request
-        ApiPostRequest apiPostRequest = ApiPostRequest.newSessionRequestWithFacebook(apiKey, appId, facebookAccessToken);
-        // make request using http to get a response
-        makeNewSessionRequest(apiPostRequest, sessionCallbacks);
+    public void startSessionWithFacebook(String facebookAccessToken, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException, MFException {
+        if (sessionStarted) {
+            throw new MFException("Session already started");
+        }
+        synchronized (sessionLock) {
+            // create api request
+            ApiPostRequest apiPostRequest = ApiPostRequest.newSessionRequestWithFacebook(apiKey, appId, facebookAccessToken);
+            // make request using http to get a response
+            makeNewSessionRequest(apiPostRequest, sessionCallbacks);
+        }
     }
 
     @Override
@@ -71,6 +86,21 @@ public class DefaultSessionRequester implements MFSessionRequester {
     @Override
     public void sessionStarted() {
         sessionStarted = true;
+        for (int i = 0; i < MIN_TOKENS; i++) {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        DefaultSessionRequester.this.doNewSessionRequestWithCredentials();
+                    } catch (MFException e) {
+                        e.printStackTrace();
+                    } catch (MFApiException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
+        }
     }
 
     @Override

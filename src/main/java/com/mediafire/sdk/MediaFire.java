@@ -51,7 +51,7 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         return sessionStarted;
     }
 
-    public void startSessionWithEmail(String email, String password, MFSessionRequester.OnStartSessionCallback sessionCallback) throws MFApiException {
+    public void startSessionWithEmail(String email, String password, MFSessionRequester.OnStartSessionCallback sessionCallback) throws MFApiException, MFException {
         Map<String, String> credentials = new HashMap<String, String>();
         credentials.put("email", email);
         credentials.put("password", password);
@@ -64,7 +64,7 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         sessionRequester.startSessionWithEmail(email, password, sessionCallbacks);
     }
 
-    public void startSessionWithEkey(String ekey, String password, MFSessionRequester.OnStartSessionCallback sessionCallback) throws MFApiException {
+    public void startSessionWithEkey(String ekey, String password, MFSessionRequester.OnStartSessionCallback sessionCallback) throws MFApiException, MFException {
         Map<String, String> credentials = new HashMap<String, String>();
         credentials.put("ekey", ekey);
         credentials.put("password", password);
@@ -77,7 +77,7 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         sessionRequester.startSessionWithEkey(ekey, password, sessionCallbacks);
     }
 
-    public void startSessionWithFacebook(String facebookAccessToken, MFSessionRequester.OnStartSessionCallback sessionCallback) throws MFApiException {
+    public void startSessionWithFacebook(String facebookAccessToken, MFSessionRequester.OnStartSessionCallback sessionCallback) throws MFApiException, MFException {
         Map<String, String> credentials = new HashMap<String, String>();
         credentials.put("fb_access_token", facebookAccessToken);
         this.credentials.setCredentials(credentials);

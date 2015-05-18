@@ -28,4 +28,9 @@ public class DefaultSessionStore implements MFStore<SessionToken> {
     public void clear() {
         sessionTokens.clear();
     }
+
+    @Override
+    public int getAvailableCount() {
+        return sessionTokens.size();
+    }
 }

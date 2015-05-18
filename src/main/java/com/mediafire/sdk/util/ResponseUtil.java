@@ -1,9 +1,6 @@
 package com.mediafire.sdk.util;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.requests.HttpApiResponse;
@@ -26,10 +23,14 @@ public class ResponseUtil {
         }
     }
 
-    public static <T extends ApiResponse> T makeApiResponseFromHttpResponse(HttpApiResponse httpResponse, Class<T> classOfT) {
-        byte[] responseBytes = httpResponse.getBytes();
-        String responseString = new String(responseBytes);
-        return new Gson().fromJson(getResponseStringForGson(responseString), classOfT);
+    public static <T extends ApiResponse> T makeApiResponseFromHttpResponse(HttpApiResponse httpResponse, Class<T> classOfT) throws MFException {
+        try {
+            byte[] responseBytes = httpResponse.getBytes();
+            String responseString = new String(responseBytes);
+            return new Gson().fromJson(getResponseStringForGson(responseString), classOfT);
+        } catch (JsonSyntaxException e) {
+            throw new MFException("The json was malformed and could not be read", e);
+        }
     }
 
     public static String getResponseStringForGson(String response) {

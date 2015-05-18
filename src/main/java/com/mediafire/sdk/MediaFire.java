@@ -1,17 +1,16 @@
 package com.mediafire.sdk;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
-import com.mediafire.sdk.config.*;
+import com.mediafire.sdk.config.Configuration;
+import com.mediafire.sdk.config.MFActionRequester;
+import com.mediafire.sdk.config.MFCredentials;
+import com.mediafire.sdk.config.MFSessionRequester;
 import com.mediafire.sdk.requests.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Filter;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Configuration contains a set of interface objects used to handle api requests

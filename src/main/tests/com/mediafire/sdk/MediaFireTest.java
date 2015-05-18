@@ -114,6 +114,5 @@ public class MediaFireTest extends TestCase {
         } catch (MFException e) {
             fail("should not throw mf exception: " + e.getMessage());
         }
-
     }
 }

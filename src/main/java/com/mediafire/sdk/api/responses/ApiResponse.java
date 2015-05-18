@@ -1,6 +1,6 @@
 package com.mediafire.sdk.api.responses;
 
-public abstract class ApiResponse {
+public class ApiResponse {
     private String action;
     private String message;
     private String result;

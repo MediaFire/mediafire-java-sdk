@@ -86,21 +86,7 @@ public class DefaultSessionRequester implements MFSessionRequester {
     @Override
     public void sessionStarted() {
         sessionStarted = true;
-        for (int i = 0; i < MIN_TOKENS; i++) {
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        DefaultSessionRequester.this.doNewSessionRequestWithCredentials();
-                    } catch (MFException e) {
-                        e.printStackTrace();
-                    } catch (MFApiException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            thread.start();
-        }
+        getNewTokens(MIN_TOKENS);
     }
 
     @Override
@@ -113,10 +99,12 @@ public class DefaultSessionRequester implements MFSessionRequester {
         //borrow token if available
         synchronized (sessionStore) {
             if (!sessionStore.available()) {
+                if (sessionStore.getAvailableCount() < MIN_TOKENS) {
+                    getNewTokens(MIN_TOKENS);
+                }
                 doNewSessionRequestWithCredentials();
             }
             sessionToken = sessionStore.get();
-
         }
 
         apiPostRequest.getQueryMap().put("session_token", sessionToken.getToken());
@@ -127,8 +115,10 @@ public class DefaultSessionRequester implements MFSessionRequester {
 
         // return token
         synchronized (sessionStore) {
-            SessionToken updatedSessionToken = SessionToken.updateSessionToken(sessionToken);
-            sessionStore.put(updatedSessionToken);
+            if (sessionStore.getAvailableCount() < MAX_TOKENS) {
+                SessionToken updatedSessionToken = SessionToken.updateSessionToken(sessionToken);
+                sessionStore.put(updatedSessionToken);
+            }
         }
         return ResponseUtil.makeApiResponseFromHttpResponse(httpResponse, classOfT);
     }
@@ -212,6 +202,24 @@ public class DefaultSessionRequester implements MFSessionRequester {
 
         for (OnStartSessionCallback sessionCallback : sessionCallbacks) {
             sessionCallback.onSessionStarted();
+        }
+    }
+
+    private void getNewTokens(int numberOfNewTokensToGet) {
+        for (int i = 0; i < numberOfNewTokensToGet; i++) {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        doNewSessionRequestWithCredentials();
+                    } catch (MFException e) {
+                        e.printStackTrace();
+                    } catch (MFApiException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
         }
     }
 

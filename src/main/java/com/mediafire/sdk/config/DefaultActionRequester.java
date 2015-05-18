@@ -9,9 +9,12 @@ import com.mediafire.sdk.token.ActionToken;
 import com.mediafire.sdk.util.ResponseUtil;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DefaultActionRequester implements MFActionRequester {
+    private static final Logger logger = Logger.getLogger(DefaultActionRequester.class.getSimpleName());
+
     private static final int REQUESTED_IMAGE_TOKEN_LIFESPAN_MINUTES = 10;
     private final MFHttpRequester http;
     private final MFSessionRequester sessionRequester;
@@ -41,9 +44,11 @@ public class DefaultActionRequester implements MFActionRequester {
     }
 
     @Override
-    public <T extends ApiResponse> T doImageRequest(ImageRequest imageRequest, Class<T> classOfT) throws MFException, MFApiException {
+    public HttpApiResponse doConversionRequest(ImageRequest imageRequest) throws MFException, MFApiException {
         if (!sessionStarted) {
-            throw new MFException("cannot call doImageRequest() if session isn't started");
+            MFException exception = new MFException("cannot call doConversionRequest() if session isn't started");
+            logger.log(Level.FINE, "doConversionRequest()", exception);
+            throw exception;
         }
 
         ActionToken imageToken;
@@ -63,13 +68,39 @@ public class DefaultActionRequester implements MFActionRequester {
         synchronized (imageStore) {
             imageStore.put(imageToken);
         }
-        return ResponseUtil.makeApiResponseFromHttpResponse(httpResponse, classOfT);
+        return httpResponse;
+    }
+
+    @Override
+    public HttpApiResponse doConversionRequest(DocumentRequest documentRequest) throws MFException, MFApiException {
+        if (!sessionStarted) {
+            throw new MFException("cannot call doConversionRequest() if session isn't started");
+        }
+
+        ActionToken imageToken;
+        //borrow token if available
+        synchronized (imageStore) {
+            if (!imageStore.available()) {
+                getNewImageTokenFromSessionRequester();
+            }
+            imageToken = imageStore.get();
+        }
+
+        GetRequest getRequest = new GetRequest(documentRequest, imageToken);
+        HttpApiResponse httpResponse = http.doApiRequest(getRequest);
+        ResponseUtil.validateHttpResponse(httpResponse);
+
+        // return token
+        synchronized (imageStore) {
+            imageStore.put(imageToken);
+        }
+        return httpResponse;
     }
 
     @Override
     public <T extends ApiResponse> T doUploadRequest(UploadPostRequest uploadRequest, Class<T> classOfT) throws MFException, MFApiException {
         if (!sessionStarted) {
-            throw new MFException("cannot call doImageRequest() if session isn't started");
+            throw new MFException("cannot call doConversionRequest() if session isn't started");
         }
 
         ActionToken uploadToken;
@@ -104,10 +135,7 @@ public class DefaultActionRequester implements MFActionRequester {
     }
 
     private void makeNewUploadTokenRequest(ApiPostRequest apiPostRequest) throws MFApiException, MFException {
-        PostRequest postRequest = new PostRequest(apiPostRequest);
-        HttpApiResponse httpResponse = http.doApiRequest(postRequest);
-        ResponseUtil.validateHttpResponse(httpResponse);
-        UserGetActionTokenResponse apiResponse = ResponseUtil.makeApiResponseFromHttpResponse(httpResponse, UserGetActionTokenResponse.class);
+        UserGetActionTokenResponse apiResponse = sessionRequester.doApiRequest(apiPostRequest, UserGetActionTokenResponse.class);
         // handle the api response by notifying callback and (if successful) set session to started
         handleUploadTokenResponse(apiResponse);
     }
@@ -134,11 +162,7 @@ public class DefaultActionRequester implements MFActionRequester {
     }
 
     private void makeNewImageTokenRequest(ApiPostRequest apiPostRequest) throws MFException, MFApiException {
-        PostRequest postRequest = new PostRequest(apiPostRequest);
-        HttpApiResponse httpResponse = http.doApiRequest(postRequest);
-        ResponseUtil.validateHttpResponse(httpResponse);
-        UserGetActionTokenResponse apiResponse = ResponseUtil.makeApiResponseFromHttpResponse(httpResponse, UserGetActionTokenResponse.class);
-        // handle the api response by notifying callback and (if successful) set session to started
+        UserGetActionTokenResponse apiResponse = sessionRequester.doApiRequest(apiPostRequest, UserGetActionTokenResponse.class);
         handleImageTokenResponse(apiResponse);
     }
 

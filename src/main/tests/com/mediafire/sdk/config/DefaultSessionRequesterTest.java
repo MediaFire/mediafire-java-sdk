@@ -96,7 +96,7 @@ public class DefaultSessionRequesterTest extends TestCase {
 
             assertTrue("Success".equals(response.getResult()));
         } catch (MFException e) {
-            fail("MFException should not have been thrown");
+            fail("MFException should not have been thrown: " + e.getMessage());
         } catch (MFApiException e) {
             fail("api exception shouldn't be thrown, MFException should be thrown");
         }

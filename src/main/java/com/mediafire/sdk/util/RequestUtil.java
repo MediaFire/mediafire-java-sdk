@@ -1,7 +1,6 @@
 package com.mediafire.sdk.util;
 
 import com.mediafire.sdk.MFRuntimeException;
-import com.mediafire.sdk.requests.ImageRequest;
 import com.mediafire.sdk.requests.ApiPostRequest;
 import com.mediafire.sdk.requests.UploadPostRequest;
 

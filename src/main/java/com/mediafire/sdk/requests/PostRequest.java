@@ -2,7 +2,6 @@ package com.mediafire.sdk.requests;
 
 import com.mediafire.sdk.util.RequestUtil;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

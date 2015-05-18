@@ -65,6 +65,7 @@ public class DefaultHttpRequester implements MFHttpRequester {
             }
             byte[] response = readStream(inputStream);
             Map<String, List<String>> headerFields = connection.getHeaderFields();
+
             return new HttpApiResponse(responseCode, response, headerFields);
         } catch (MalformedURLException e) {
             throw new MFRuntimeException("Malformed Url in HttpRequester", e);

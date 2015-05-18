@@ -2,22 +2,24 @@ package com.mediafire.sdk;
 
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.config.*;
-import com.mediafire.sdk.requests.ApiPostRequest;
-import com.mediafire.sdk.requests.ImageRequest;
-import com.mediafire.sdk.requests.UploadPostRequest;
+import com.mediafire.sdk.requests.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Filter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Configuration contains a set of interface objects used to handle api requests
  */
 public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
+    public static final Logger LOGGER = Logger.getLogger("MediaFire");
+
     private String alternateDomain;
-    private final String appId;
-    private final String apiKey;
     private final MFCredentials credentials;
     private final MFSessionRequester sessionRequester;
     private final MFActionRequester actionRequester;
@@ -25,8 +27,6 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
 
 
     public MediaFire(Configuration configuration) {
-        this.appId = configuration.getAppId();
-        this.apiKey = configuration.getApiKey();
         this.credentials = configuration.getCredentials();
         this.sessionRequester = configuration.getSessionRequester();
         this.actionRequester = configuration.getActionRequester();
@@ -48,6 +48,30 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         credentials.invalidate();
     }
 
+    public void addLoggerHandler(Handler handler) {
+        LOGGER.addHandler(handler);
+    }
+
+    public void removeLoggerHandler(Handler handler) {
+        LOGGER.addHandler(handler);
+    }
+
+    public void setLoggerLevel(Level level) {
+        LOGGER.setLevel(level);
+    }
+
+    public void setLoggerFilter(Filter filter) {
+        LOGGER.setFilter(filter);
+    }
+
+    public void setLoggerParent(Logger parent) {
+        LOGGER.setParent(parent);
+    }
+
+    public void setLoggerUseParentHandlers(boolean useParentHandlers) {
+        LOGGER.setUseParentHandlers(useParentHandlers);
+    }
+
     public boolean isSessionStarted() {
         return sessionStarted;
     }
@@ -58,7 +82,9 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         credentials.put("password", password);
         this.credentials.setCredentials(credentials);
         List<MFSessionRequester.OnStartSessionCallback> sessionCallbacks = new ArrayList<MFSessionRequester.OnStartSessionCallback>();
-        sessionCallbacks.add(sessionCallback);
+        if (sessionCallback != null) {
+            sessionCallbacks.add(sessionCallback);
+        }
         sessionCallbacks.add(this);
         sessionRequester.startSessionWithEmail(email, password, sessionCallbacks);
     }
@@ -69,7 +95,9 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         credentials.put("password", password);
         this.credentials.setCredentials(credentials);
         List<MFSessionRequester.OnStartSessionCallback> sessionCallbacks = new ArrayList<MFSessionRequester.OnStartSessionCallback>();
-        sessionCallbacks.add(sessionCallback);
+        if (sessionCallback != null) {
+            sessionCallbacks.add(sessionCallback);
+        }
         sessionCallbacks.add(this);
         sessionRequester.startSessionWithEkey(ekey, password, sessionCallbacks);
     }
@@ -79,7 +107,9 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         credentials.put("fb_access_token", facebookAccessToken);
         this.credentials.setCredentials(credentials);
         List<MFSessionRequester.OnStartSessionCallback> sessionCallbacks = new ArrayList<MFSessionRequester.OnStartSessionCallback>();
-        sessionCallbacks.add(sessionCallback);
+        if (sessionCallback != null) {
+            sessionCallbacks.add(sessionCallback);
+        }
         sessionCallbacks.add(this);
         sessionRequester.startSessionWithFacebook(facebookAccessToken, sessionCallbacks);
     }
@@ -88,7 +118,14 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         if (!sessionStarted) {
             throw new MFException("cannot call doRequest() if session has not been started");
         }
-        return sessionRequester.doApiRequest(apiPostRequest, classOfT);
+
+        if (alternateDomain == null || alternateDomain.isEmpty()) {
+            return sessionRequester.doApiRequest(apiPostRequest, classOfT);
+        } else {
+            ApiPostRequest apiPostRequestWithAlternateDomain =
+                    new ApiPostRequest(apiPostRequest.getScheme(), alternateDomain, apiPostRequest.getPath(), apiPostRequest.getQueryMap());
+            return sessionRequester.doApiRequest(apiPostRequestWithAlternateDomain, classOfT);
+        }
     }
 
     public <T extends ApiResponse> T doUploadRequest(UploadPostRequest uploadRequest, Class<T> classOfT) throws MFException, MFApiException {
@@ -99,17 +136,27 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         return actionRequester.doUploadRequest(uploadRequest, classOfT);
     }
 
-    public <T extends ApiResponse> T doImageRequest(ImageRequest imageRequest, Class<T> classOfT) throws MFException, MFApiException {
+    public HttpApiResponse doImageRequest(ImageRequest imageRequest) throws MFException, MFApiException {
         if (!sessionStarted) {
-            throw new MFException("cannot call doImageRequest() if session has not been started");
+            throw new MFException("cannot call doConversionRequest() if session has not been started");
         }
 
-        return actionRequester.doImageRequest(imageRequest, classOfT);
+        return actionRequester.doConversionRequest(imageRequest);
+    }
+
+    public HttpApiResponse doDocumentRequest(DocumentRequest documentRequest) throws MFException, MFApiException {
+        if (!sessionStarted) {
+            throw new MFException("cannot call doConversionRequest() if session has not been started");
+        }
+
+        return actionRequester.doConversionRequest(documentRequest);
     }
 
     @Override
     public void onSessionStarted() {
         sessionStarted = true;
+        actionRequester.sessionStarted();
+        sessionRequester.sessionStarted();
         credentials.setValid();
     }
 

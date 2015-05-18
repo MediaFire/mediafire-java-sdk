@@ -1,7 +1,5 @@
 package com.mediafire.sdk;
 
-import java.security.NoSuchAlgorithmException;
-
 /**
  * Created by Chris on 5/15/2015.
  */

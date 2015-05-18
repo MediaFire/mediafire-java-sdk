@@ -3,14 +3,10 @@ package com.mediafire.sdk.api;
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.MediaFire;
-import com.mediafire.sdk.api.responses.NotificationsGetCacheResponse;
-import com.mediafire.sdk.api.responses.NotificationsPeekCacheResponse;
-import com.mediafire.sdk.api.responses.NotificationsSendMessageResponse;
-import com.mediafire.sdk.api.responses.NotificationsSendNotificationResponse;
+import com.mediafire.sdk.api.responses.*;
 import com.mediafire.sdk.requests.ApiPostRequest;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Created by Chris on 1/19/2015.
@@ -21,23 +17,23 @@ public class NotificationsApi {
         // no instantiation, utility class only
     }
 
-    public static NotificationsGetCacheResponse getCache(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T  getCache(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/notifications/get_cache.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, NotificationsGetCacheResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static NotificationsPeekCacheResponse peekCache(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T  peekCache(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/notifications/peek_cache.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, NotificationsPeekCacheResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static NotificationsSendMessageResponse sendMessage(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T  sendMessage(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/notifications/send_message.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, NotificationsSendMessageResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static NotificationsSendNotificationResponse sendNotification(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T  sendNotification(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/notifications/send_notification.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, NotificationsSendNotificationResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 }

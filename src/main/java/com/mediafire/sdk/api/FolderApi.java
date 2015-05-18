@@ -7,7 +7,6 @@ import com.mediafire.sdk.api.responses.*;
 import com.mediafire.sdk.requests.ApiPostRequest;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class FolderApi {
 
@@ -15,53 +14,53 @@ public class FolderApi {
         // no instantiation, utility class
     }
 
-    public static FolderCopyResponse copy(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T copy(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/folder/copy.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, FolderCopyResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static FolderCreateResponse create(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T create(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/folder/create.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, FolderCreateResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static FolderMoveResponse move(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T move(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/folder/move.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, FolderMoveResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static FolderDeleteResponse delete(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T delete(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/folder/delete.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, FolderDeleteResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static FolderPurgeResponse purge(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T purge(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/folder/purge.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, FolderPurgeResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static FolderUpdateResponse update(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T update(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/folder/update.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, FolderUpdateResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static FolderGetInfoResponse getInfo(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T getInfo(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/folder/get_info.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, FolderGetInfoResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static FolderGetContentsResponse getContent(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T getContent(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/folder/get_content.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, FolderGetContentsResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static FolderGetRevisionResponse getRevision(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T getRevision(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/folder/get_revision.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, FolderGetRevisionResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static FolderSearchResponse search(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T search(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/folder/search.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, FolderSearchResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 }

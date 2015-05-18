@@ -15,32 +15,32 @@ public class UploadApi {
         // no instantiation, utility class
     }
 
-    public static UploadCheckResponse check(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T check(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/check.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, UploadCheckResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static UploadInstantResponse instant(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T instant(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/instant.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, UploadInstantResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
-    public static UploadPollUploadResponse pollUpload(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T pollUpload(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/poll_upload.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, UploadPollUploadResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static UploadResumableResponse resumable(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T resumable(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/resumable.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, UploadResumableResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static UploadUpdateResponse update(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T update(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/update.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, UploadUpdateResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static UploadUpdateResponse simple(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T simple(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/simple.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, UploadUpdateResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 }

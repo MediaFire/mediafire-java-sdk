@@ -7,7 +7,6 @@ import com.mediafire.sdk.api.responses.*;
 import com.mediafire.sdk.requests.ApiPostRequest;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class ContactApi {
 
@@ -15,38 +14,38 @@ public class ContactApi {
         // no instantiation, utility class
     }
 
-    public static ContactAddResponse add(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T add(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/contact/add.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, ContactAddResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static ContactDeleteResponse delete(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T delete(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/contact/delete.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, ContactDeleteResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static ContactFetchResponse fetch(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T fetch(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/contact/fetch.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, ContactFetchResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static ContactGetAvatarResponse getAvatar(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T getAvatar(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/contact/get_avatar.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, ContactGetAvatarResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static ContactGetSourcesResponse getSources(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T getSources(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/contact/get_sources.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, ContactGetSourcesResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public UserSetAvatarResponse setAvatar(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T setAvatar(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/contact/set_avatar.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, UserSetAvatarResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static ContactSummaryResponse summary(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T summary(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/contact/summary.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, ContactSummaryResponse.class);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 }

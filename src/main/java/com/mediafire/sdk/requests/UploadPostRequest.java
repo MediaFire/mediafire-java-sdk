@@ -1,7 +1,6 @@
 package com.mediafire.sdk.requests;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class UploadPostRequest extends ApiPostRequest {
     private final byte[] payload;

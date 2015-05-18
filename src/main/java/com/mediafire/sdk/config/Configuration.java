@@ -82,12 +82,12 @@ public class Configuration {
 
         MFCredentials credentials = new DefaultCredentials();
         MFHttpRequester httpRequester = new DefaultHttpRequester(5000, 45000);
-        MFSessionRequester sessionRequester = new DefaultSessionRequester(credentials, apiKey, appId, httpRequester, sessionStore);
+        MFSessionRequester sessionRequester = new DefaultSessionRequester(credentials, appId, apiKey, httpRequester, sessionStore);
         MFActionRequester actionRequester = new DefaultActionRequester(httpRequester, sessionRequester, imageStore, uploadStore);
 
         Configuration configuration = new Configuration();
-        configuration.setApiKey(apiKey);
         configuration.setAppId(appId);
+        configuration.setApiKey(apiKey);
         configuration.setCredentials(credentials);
         configuration.setHttpRequester(httpRequester);
         configuration.setSessionRequester(sessionRequester);

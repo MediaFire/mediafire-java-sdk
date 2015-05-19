@@ -9,7 +9,7 @@ public class UploadInstantResponse extends ApiResponse {
     private Revision newrevision;
     private Revision newfolderrevision;
 
-    public String getQuickkey() {
+    public String getQuickKey() {
         return quickkey;
     }
 

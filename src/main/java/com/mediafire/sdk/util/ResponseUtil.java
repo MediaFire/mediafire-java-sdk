@@ -1,6 +1,7 @@
 package com.mediafire.sdk.util;
 
 import com.google.gson.*;
+import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.requests.HttpApiResponse;
@@ -41,7 +42,7 @@ public class ResponseUtil {
         }
     }
 
-    public static <T extends ApiResponse> T makeApiResponseFromHttpResponse(HttpApiResponse httpResponse, Class<T> classOfT) throws MFException {
+    public static <T extends ApiResponse> T makeApiResponseFromHttpResponse(HttpApiResponse httpResponse, Class<T> classOfT) throws MFException, MFApiException {
         if (httpResponse == null) {
             throw new MFException("HttpApiResponse was null");
         }
@@ -53,7 +54,13 @@ public class ResponseUtil {
         try {
             byte[] responseBytes = httpResponse.getBytes();
             String responseString = new String(responseBytes);
-            return new Gson().fromJson(getResponseStringForGson(responseString), classOfT);
+            T apiResponse = new Gson().fromJson(getResponseStringForGson(responseString), classOfT);
+
+            if (apiResponse.hasError()) {
+                throw new MFApiException(apiResponse.getError(), apiResponse.getMessage());
+            }
+
+            return apiResponse;
         } catch (JsonSyntaxException e) {
             throw new MFException("The json was malformed and could not be read", e);
         }

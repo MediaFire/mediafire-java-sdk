@@ -167,7 +167,7 @@ public class DefaultSessionRequester implements MFSessionRequester {
         }
     }
 
-    private <T extends ApiResponse> T doNewSessionRequest(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException {
+    private <T extends ApiResponse> T doNewSessionRequest(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException {
         PostRequest postRequest = new PostRequest(apiPostRequest);
         HttpApiResponse httpResponse = http.doApiRequest(postRequest);
         ResponseUtil.validateHttpResponse(httpResponse);

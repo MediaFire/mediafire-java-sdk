@@ -115,7 +115,7 @@ public class DefaultActionRequester implements MFActionRequester {
         }
 
         uploadRequest.addSessionToken(uploadToken.getToken());
-        PostRequest postRequest = new PostRequest(uploadRequest);
+        PostRequest postRequest = new PostRequest(uploadRequest, uploadRequest.getPayload());
         HttpApiResponse httpResponse = http.doApiRequest(postRequest);
         ResponseUtil.validateHttpResponse(httpResponse);
 

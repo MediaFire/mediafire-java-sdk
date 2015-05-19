@@ -132,6 +132,8 @@ public class ResponseUtilTest extends TestCase {
             fail("exception should have been thrown");
         } catch (MFException e) {
             assertTrue(e.getMessage(), true);
+        } catch (MFApiException e) {
+            fail("exception should not have been thrown: " + e);
         }
     }
 
@@ -143,6 +145,8 @@ public class ResponseUtilTest extends TestCase {
             fail("exception should have been thrown");
         } catch (MFException e) {
             assertTrue(e.getMessage(), true);
+        } catch (MFApiException e) {
+            fail("exception should not have been thrown: " + e);
         }
     }
 }

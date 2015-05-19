@@ -4,9 +4,9 @@ package com.mediafire.sdk.api.responses.data_models;
 * Created by Chris on 2/17/2015.
 */
 public class PollDoUpload extends DoUpload {
-    private String status;
+    private int status;
     private String description;
-    private String fileerror;
+    private int fileerror;
     private String quickkey;
     private String size;
     private String revision;
@@ -14,7 +14,7 @@ public class PollDoUpload extends DoUpload {
     private String filename;
     private String hash;
 
-    public String getStatusCode() {
+    public int getStatusCode() {
         return status;
     }
 
@@ -22,7 +22,7 @@ public class PollDoUpload extends DoUpload {
         return description;
     }
 
-    public String getFileErrorCode() {
+    public int getFileErrorCode() {
         return fileerror;
     }
 

@@ -6,7 +6,7 @@ package com.mediafire.sdk.api.responses.data_models;
 public class DoUpload {
     private int result;
 
-    public final int getResult() {
+    public final int getResultCode() {
         return result;
     }
 }

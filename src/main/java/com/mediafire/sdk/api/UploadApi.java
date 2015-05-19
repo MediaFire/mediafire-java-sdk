@@ -5,6 +5,7 @@ import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.MediaFire;
 import com.mediafire.sdk.api.responses.*;
 import com.mediafire.sdk.requests.ApiPostRequest;
+import com.mediafire.sdk.requests.UploadPostRequest;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,18 +30,23 @@ public class UploadApi {
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static <T extends ApiResponse> T resumable(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
-        ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/resumable.php", requestParams);
+    public static <T extends ApiResponse> T webUpload(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+        ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/add_web_upload.php", requestParams);
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
+    }
+
+    public static <T extends ApiResponse> T resumable(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+        UploadPostRequest uploadPostRequest = new UploadPostRequest("/api/" + apiVersion + "/upload/resumable.php", requestParams, headerParameters, payload);
+        return mediaFire.doUploadRequest(uploadPostRequest, classOfT);
     }
 
     public static <T extends ApiResponse> T update(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
-        ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/update.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, classOfT);
+        UploadPostRequest uploadPostRequest = new UploadPostRequest("/api/" + apiVersion + "/upload/update.php", requestParams, headerParameters, payload);
+        return mediaFire.doUploadRequest(uploadPostRequest, classOfT);
     }
 
     public static <T extends ApiResponse> T simple(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, Map<String, Object> headerParameters, byte[] payload, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
-        ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/simple.php", requestParams);
-        return mediaFire.doApiRequest(apiPostRequest, classOfT);
+        UploadPostRequest uploadPostRequest = new UploadPostRequest("/api/" + apiVersion + "/upload/simple.php", requestParams, headerParameters, payload);
+        return mediaFire.doUploadRequest(uploadPostRequest, classOfT);
     }
 }

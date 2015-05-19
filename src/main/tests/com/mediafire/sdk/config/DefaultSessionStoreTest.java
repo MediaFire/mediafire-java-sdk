@@ -9,17 +9,9 @@ public class DefaultSessionStoreTest extends TestCase {
     private final String TOKEN_STRING = "37f332f68db77bd9d7edd4969571ad671cf9dd3b";
     private final SessionToken SESSION_TOKEN = new SessionToken.Builder(TOKEN_STRING).build();
 
-    private long startTime;
-
     public void setUp() throws Exception {
         super.setUp();
-        startTime = System.currentTimeMillis();
         store = new DefaultSessionStore();
-    }
-
-    public void tearDown() throws Exception {
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        System.out.println(getName() + " execution time: " + elapsedTime + "ms");
     }
 
     public void testAvailableOnInstantiation() throws Exception {

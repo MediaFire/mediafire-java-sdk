@@ -93,13 +93,11 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
             throw new MFException("cannot call doRequest() if session has not been started");
         }
 
-        apiPostRequest.getQueryMap().put("response_format", "json");
-
         if (alternateDomain == null || alternateDomain.isEmpty()) {
             return sessionRequester.doApiRequest(apiPostRequest, classOfT);
         } else {
             ApiPostRequest apiPostRequestWithAlternateDomain =
-                    new ApiPostRequest(apiPostRequest.getScheme(), alternateDomain, apiPostRequest.getPath(), apiPostRequest.getQueryMap());
+                    new ApiPostRequest(apiPostRequest, alternateDomain);
             return sessionRequester.doApiRequest(apiPostRequestWithAlternateDomain, classOfT);
         }
     }
@@ -108,8 +106,6 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         if (!sessionStarted) {
             throw new MFException("cannot call doUploadRequest() if session has not been started");
         }
-
-        uploadRequest.getQueryMap().put("response_format", "json");
 
         return actionRequester.doUploadRequest(uploadRequest, classOfT);
     }

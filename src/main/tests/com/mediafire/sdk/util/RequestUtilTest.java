@@ -12,6 +12,11 @@ import java.util.Map;
 
 public class RequestUtilTest extends TestCase {
 
+    private static final Map<String, Object> HEADERS = new LinkedHashMap<String, Object>();
+    static {
+        HEADERS.put("some_header", "something");
+    }
+
     private static final LinkedHashMap<String, Object> QUERY = new LinkedHashMap<String, Object>();
     static {
         QUERY.put("response_format", "json");
@@ -21,7 +26,7 @@ public class RequestUtilTest extends TestCase {
     private static final byte[] UPLOAD_PAYLOAD = "payload".getBytes();
 
     private static final ApiPostRequest API_REQUEST = new ApiPostRequest("scheme", "domain", "/path", QUERY);
-    private static final UploadPostRequest UPLOAD_REQUEST = new UploadPostRequest("scheme", "domain", "/path", QUERY, UPLOAD_PAYLOAD);
+    private static final UploadPostRequest UPLOAD_REQUEST = new UploadPostRequest("scheme", "domain", "/path", QUERY, HEADERS, UPLOAD_PAYLOAD);
     private static final ImageRequest IMAGE_REQUEST = new ImageRequest("fd56", "h686zgn6bx3nj7r", '6', false);
 
     private static final String API_REQUEST_URL = "scheme://domain/path";
@@ -32,16 +37,8 @@ public class RequestUtilTest extends TestCase {
     private static final String ENCODED_QUERY = "response_format=json&other_key=encoded----+%3B%3F%2F%3A%23%26%3D%2B%24%2C+%25%3C%3E%7E%25+----encoded";
     private static final ActionToken DUMMY_ACTION_TOKEN = new ActionToken("abcd1234", 1000);
 
-
-    private long startTime;
     public void setUp() throws Exception {
         super.setUp();
-        startTime = System.currentTimeMillis();
-    }
-
-    public void tearDown() throws Exception {
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        System.out.println(getName() + " execution time: " + elapsedTime + "ms");
     }
 
     public void testMakeHeadersFromApiRequestContainsKeyAcceptCharset() throws Exception {
@@ -113,5 +110,14 @@ public class RequestUtilTest extends TestCase {
     public void testMakeHeadersFromUploadRequestContainsValueContentLength() throws Exception {
         Map<String, String> headers = RequestUtil.makeHeadersFromApiRequest(API_REQUEST);
         assertTrue(String.valueOf(ENCODED_QUERY.getBytes().length).equals(headers.get("Content-Length")));
+    }
+
+    public void testSignatureCalculation() {
+        LinkedHashMap<String, Object> query = new LinkedHashMap<String, Object>();
+        query.put("session_token", "48e6312cf575eaabdeb9e0712b5005edc9ce0d086f6c36a027dd6eb51e627ff6c85e181191ffbf56eee0fa3734a75fcc31dd22bd914efbd414e37061ab5a53681745778019458878");
+        query.put("response_format", "json");
+        ApiPostRequest apiPostRequest = new ApiPostRequest("/api/1.4/user/get_info.php", query);
+        String signature = RequestUtil.makeSignatureForApiRequest(1735586625, "1431991058.7072", apiPostRequest);
+        assertEquals("49d837ce846c1667f21d687dbc23a654", signature);
     }
 }

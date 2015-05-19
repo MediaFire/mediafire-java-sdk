@@ -13,7 +13,7 @@ public class PostRequest extends ApiPostRequest {
 
 
     public PostRequest(ApiPostRequest apiPostRequest) {
-        super(apiPostRequest.getScheme(), apiPostRequest.getDomain(), apiPostRequest.getPath(), apiPostRequest.getQueryMap());
+        super(apiPostRequest);
         this.url = RequestUtil.makeUrlFromApiRequest(apiPostRequest);
         this.payload = RequestUtil.makeQueryPayloadFromApiRequest(apiPostRequest);
         this.headers.put("Content-Type", "application/x-www-form-urlencoded;charset=" + CHARSET);
@@ -22,9 +22,10 @@ public class PostRequest extends ApiPostRequest {
     }
 
     public PostRequest(UploadPostRequest uploadRequest, byte[] payload) {
-        super(uploadRequest.getScheme(), uploadRequest.getDomain(), uploadRequest.getPath(), uploadRequest.getQueryMap());
+        super(uploadRequest);
         this.url = RequestUtil.makeUrlFromUploadRequest(uploadRequest);
-        this.payload = payload;
+        this.payload = uploadRequest.getPayload();
+        this.headers.putAll(uploadRequest.getHeaders());
         this.headers.put("Content-Type", "application/octet-stream");
         this.headers.put("Content-Length", payload.length);
         this.headers.put("Accept-Charset", "UTF-8");

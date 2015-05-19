@@ -27,6 +27,20 @@ public class ResponseUtil {
         }
     }
 
+    public static void validateConversionHttpResponse(HttpApiResponse httpResponse) throws MFException {
+        if (httpResponse == null) {
+            throw new MFException("HttpApiResponse was null");
+        }
+
+        if (httpResponse.getHeaderFields() == null || httpResponse.getHeaderFields().isEmpty()) {
+            throw new MFException("Server gave back null response headers");
+        }
+
+        if (httpResponse.getStatus() < 100) {
+            throw new MFException("Server gave back invalid response status: " + httpResponse.getStatus());
+        }
+    }
+
     public static <T extends ApiResponse> T makeApiResponseFromHttpResponse(HttpApiResponse httpResponse, Class<T> classOfT) throws MFException {
         if (httpResponse == null) {
             throw new MFException("HttpApiResponse was null");

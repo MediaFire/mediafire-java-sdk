@@ -7,7 +7,6 @@ import java.util.Map;
 
 public class DefaultCredentialsTest extends TestCase {
 
-    private long startTime;
     private MFCredentials credentials;
     private static final Map<String, String> TEST_CREDENTIALS = new HashMap<String, String>();
     static {
@@ -17,13 +16,7 @@ public class DefaultCredentialsTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        startTime = System.currentTimeMillis();
         credentials = new DefaultCredentials();
-    }
-
-    public void tearDown() throws Exception {
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        System.out.println(getName() + " execution time: " + elapsedTime + "ms");
     }
 
     public void testSetCredentials() throws Exception {

@@ -5,6 +5,7 @@ import com.mediafire.sdk.requests.ApiPostRequest;
 import com.mediafire.sdk.requests.UploadPostRequest;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,13 +21,13 @@ public class RequestUtil {
     public static Map<String, String> makeHeadersFromApiRequest(ApiPostRequest apiPostRequest) {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Accept-Charset", "UTF-8");
-        headers.put("Content-Length", String.valueOf(makeQueryStringFromMap(apiPostRequest.getQueryMap(), true).getBytes().length));
+        headers.put("Content-Length", String.valueOf(apiPostRequest.getQueryString(true).getBytes().length));
         headers.put("Content-Type", "application/x-www-form-urlencoded;charset=" + UTF8);
         return headers;
     }
 
     public static byte[] makeQueryPayloadFromApiRequest(ApiPostRequest apiPostRequest) {
-        return makeQueryStringFromMap(apiPostRequest.getQueryMap(), true).getBytes();
+        return apiPostRequest.getQueryString(true).getBytes();
     }
 
     public static String makeQueryStringFromMap(Map<String, Object> query, boolean encoded) {
@@ -47,7 +48,7 @@ public class RequestUtil {
     }
 
     public static String makeUrlFromUploadRequest(UploadPostRequest uploadRequest) {
-        return makeUrlFromApiRequest(uploadRequest) + "?" + makeQueryStringFromMap(uploadRequest.getQueryMap(), true);
+        return makeUrlFromApiRequest(uploadRequest) + "?" + uploadRequest.getQueryString(true);
     }
 
     private static String constructQueryKVPair(String key, Object value, boolean encoded) throws UnsupportedEncodingException {
@@ -58,7 +59,12 @@ public class RequestUtil {
         }
     }
 
-    public static String makeSignatureForApiRequest(ApiPostRequest apiPostRequest) {
-        return null;
+    public static String makeSignatureForApiRequest(long secretKey, String time, ApiPostRequest apiPostRequest) {
+        long secretKeyMod256 = secretKey % 256;
+
+        String path = apiPostRequest.getPath();
+        String queryMap = apiPostRequest.getQueryString(false);
+        String hashTarget = secretKeyMod256 + time + path + "?" + queryMap;
+        return HashUtil.md5(hashTarget);
     }
 }

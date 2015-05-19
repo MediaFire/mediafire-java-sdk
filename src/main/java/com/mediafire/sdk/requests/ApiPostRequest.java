@@ -1,6 +1,7 @@
 package com.mediafire.sdk.requests;
 
 import com.mediafire.sdk.util.HashUtil;
+import com.mediafire.sdk.util.RequestUtil;
 
 import java.util.*;
 
@@ -14,17 +15,30 @@ public class ApiPostRequest {
     private final String scheme;
     private final String domain;
     private final String path;
-    private final LinkedHashMap<String, Object> query;
+    private final LinkedHashMap<String, Object> query = new LinkedHashMap<String, Object>();
 
     public ApiPostRequest(String scheme, String domain, String path, LinkedHashMap<String, Object> query) {
         this.scheme = scheme;
         this.domain = domain;
         this.path = path;
-        this.query = query;
+        this.query.putAll(query);
+        if (!this.query.containsKey("response_format")) {
+            this.query.put("response_format", "json");
+        } else if (!"json".equals(this.query.get("response_format"))) {
+            this.query.put("response_format", "json");
+        }
     }
 
     public ApiPostRequest(String path, LinkedHashMap<String, Object> query) {
         this(DEFAULT_SCHEME, DEFAULT_DOMAIN, path, query);
+    }
+
+    public ApiPostRequest(ApiPostRequest request) {
+        this(request.scheme, request.domain, request.path, request.query);
+    }
+
+    public ApiPostRequest(ApiPostRequest request, String alternateDomain) {
+        this(request.scheme, alternateDomain, request.path, request.query);
     }
 
     public String getPath() {
@@ -39,8 +53,16 @@ public class ApiPostRequest {
         return scheme;
     }
 
-    public LinkedHashMap<String, Object> getQueryMap() {
-        return query;
+    public void addSessionToken(String token) {
+        query.put("session_token", token);
+    }
+
+    public void addSignature(String signature) {
+        query.put("signature", signature);
+    }
+
+    public String getQueryString(boolean encodeValues) {
+        return RequestUtil.makeQueryStringFromMap(query, encodeValues);
     }
 
     public static ApiPostRequest newSessionRequestWithEmail(String apiKey, String appId, String email, String password) {

@@ -106,10 +106,14 @@ public class DefaultSessionRequester implements MFSessionRequester {
                 doNewSessionRequestWithCredentials();
             }
             sessionToken = sessionStore.get();
+
+            if (sessionToken == null) {
+                throw new MFException("could not get session token from store");
+            }
         }
 
-        apiPostRequest.getQueryMap().put("session_token", sessionToken.getToken());
-        apiPostRequest.getQueryMap().put("signature", RequestUtil.makeSignatureForApiRequest(apiPostRequest));
+        apiPostRequest.addSessionToken(sessionToken.getToken());
+        apiPostRequest.addSignature(RequestUtil.makeSignatureForApiRequest(sessionToken.getSecretKey(), sessionToken.getTime(), apiPostRequest));
         PostRequest postRequest = new PostRequest(apiPostRequest);
         HttpApiResponse httpResponse = http.doApiRequest(postRequest);
         ResponseUtil.validateHttpResponse(httpResponse);
@@ -117,8 +121,13 @@ public class DefaultSessionRequester implements MFSessionRequester {
         // return token
         synchronized (sessionStore) {
             if (sessionStore.getAvailableCount() < MAX_TOKENS) {
-                SessionToken updatedSessionToken = SessionToken.updateSessionToken(sessionToken);
-                sessionStore.put(updatedSessionToken);
+                ApiResponse apiResponse = ResponseUtil.makeApiResponseFromHttpResponse(httpResponse, classOfT);
+                if (!apiResponse.hasError() && apiResponse.needNewKey()) {
+                    SessionToken updatedSessionToken = SessionToken.updateSessionToken(sessionToken);
+                    sessionStore.put(updatedSessionToken);
+                } else if (!apiResponse.hasError()) {
+                    sessionStore.put(sessionToken);
+                }
             }
         }
         return ResponseUtil.makeApiResponseFromHttpResponse(httpResponse, classOfT);

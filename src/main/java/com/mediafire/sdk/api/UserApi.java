@@ -49,8 +49,18 @@ public class UserApi {
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static <T extends ApiResponse> T getUploadActionToken(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T getActionToken(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/user/get_action_token.php", requestParams);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
+    }
+
+    public static <T extends ApiResponse> T fetchTermsOfService(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+        ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/user/fetch_tos.php", requestParams);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
+    }
+
+    public static <T extends ApiResponse> T getLimits(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+        ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/user/get_limits.php", requestParams);
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 }

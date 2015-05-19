@@ -20,18 +20,11 @@ public class DefaultHttpRequesterTest extends TestCase {
     private static final PostRequest HTTP_POST_REQUEST = new PostRequest(HTTP_API_REQUEST);
     private static final PostRequest HTTPS_POST_REQUEST = new PostRequest(HTTPS_API_REQUEST);
 
-    private long startTime;
     private DefaultHttpRequester requester;
 
     public void setUp() throws Exception {
         super.setUp();
-        startTime = System.currentTimeMillis();
         requester = new DefaultHttpRequester(5000, 5000);
-    }
-
-    public void tearDown() throws Exception {
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        System.out.println(getName() + " execution time: " + elapsedTime + "ms");
     }
 
     public void testHttpResponseStatus200SystemGetVersion() throws Exception {

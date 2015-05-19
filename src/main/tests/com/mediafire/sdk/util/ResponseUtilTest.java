@@ -3,10 +3,11 @@ package com.mediafire.sdk.util;
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.MediaFire;
-import com.mediafire.sdk.api.ContactApi;
 import com.mediafire.sdk.api.UserApi;
 import com.mediafire.sdk.api.responses.ApiResponse;
+import com.mediafire.sdk.api.responses.UserGetAvatarResponse;
 import com.mediafire.sdk.api.responses.UserGetInfoResponse;
+import com.mediafire.sdk.api.responses.UserGetSettingsResponse;
 import com.mediafire.sdk.requests.HttpApiResponse;
 import junit.framework.TestCase;
 
@@ -50,15 +51,8 @@ public class ResponseUtilTest extends TestCase {
     private static final HttpApiResponse INVALID_RESPONSE_5 = new HttpApiResponse(INVALID_RESPONSE_CODE_1, VALID_RESPONSE_BYTES, INVALID_RESPONSE_HEADERS_2);
     private static final HttpApiResponse INVALID_RESPONSE_6 = new HttpApiResponse(INVALID_RESPONSE_CODE_2, VALID_RESPONSE_BYTES, INVALID_RESPONSE_HEADERS_2);
 
-    private long startTime;
     public void setUp() throws Exception {
         super.setUp();
-        startTime = System.currentTimeMillis();
-    }
-
-    public void tearDown() throws Exception {
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        System.out.println(getName() + " execution time: " + elapsedTime + "ms");
     }
 
     public void testValidateHttpResponse() throws Exception {
@@ -143,37 +137,12 @@ public class ResponseUtilTest extends TestCase {
 
     public void testMalformedHttpApiResponsePassedToResponseUtil() {
         try {
-            byte[] bytes = "{\"response\":{\"action\":\"user\\/get_info\",\"message\":\"Session Token is missing\",\"error\":\"104\",\"result\":\"Error\",\"current_api_version\":\"1.3\"}}".getBytes();
-            System.out.println(new String(bytes));
+            byte[] bytes = "{\"response\":{\"action\":\"fake\\/api\",\"message\":\"Session Token is missing\",\"error\":\"104\",\"result\":\"Error\",\"current_api_version\":\"1.3\"}}\0".getBytes();
             HttpApiResponse httpApiResponse = new HttpApiResponse(400, bytes, null);
             ApiResponse response = ResponseUtil.makeApiResponseFromHttpResponse(httpApiResponse, ApiResponse.class);
             fail("exception should have been thrown");
         } catch (MFException e) {
             assertTrue(e.getMessage(), true);
         }
-    }
-
-    public void testHttpApiResponses() {
-        MediaFire mediaFire = new MediaFire("40767");
-        try {
-            mediaFire.startSessionWithEmail("badtestemail@badtestemail.com", "badtestemail", null);
-        } catch (MFApiException e) {
-            fail("exception thrown: " + e);
-        } catch (MFException e) {
-            fail("exception thrown: " + e);
-        }
-
-        LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-        params.put("response_format", "json");
-        UserGetInfoResponse response = null;
-        try {
-            response = UserApi.getInfo(mediaFire, params, "1.4", UserGetInfoResponse.class);
-        } catch (MFException e) {
-            fail("exception thrown: " + e);
-        } catch (MFApiException e) {
-            fail("exception thrown: " + e);
-        }
-
-
     }
 }

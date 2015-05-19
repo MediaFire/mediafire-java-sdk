@@ -2,24 +2,19 @@ package com.mediafire.sdk;
 
 import com.mediafire.sdk.api.FolderApi;
 import com.mediafire.sdk.api.responses.FolderCreateResponse;
+import com.mediafire.sdk.requests.HttpApiResponse;
+import com.mediafire.sdk.requests.ImageRequest;
 import junit.framework.TestCase;
 
 import java.util.LinkedHashMap;
 
 public class MediaFireTest extends TestCase {
 
-    private long startTime;
     private MediaFire mediaFire;
 
     public void setUp() throws Exception {
         super.setUp();
-        startTime = System.currentTimeMillis();
         mediaFire = new MediaFire("40767");
-    }
-
-    public void tearDown() throws Exception {
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        System.out.println(getName() + " execution time: " + elapsedTime + "ms");
     }
 
     public void testMediaFireInstantiationNoSession() {
@@ -113,6 +108,29 @@ public class MediaFireTest extends TestCase {
             fail("should not throw api exception: " + e.getMessage());
         } catch (MFException e) {
             fail("should not throw mf exception: " + e.getMessage());
+        }
+    }
+
+    public void testDoImageRequest() {
+        try {
+            mediaFire.startSessionWithEmail("badtestemail@badtestemail.com", "badtestemail", null);
+            if (!mediaFire.isSessionStarted()) {
+                fail("session should be started");
+            }
+        } catch (MFApiException e) {
+            fail("exception should not have been thrown: " + e);
+        } catch (MFException e) {
+            fail("exception should not have been thrown: " + e);
+        }
+
+        ImageRequest imageRequest = new ImageRequest("aaaa", "dtcb1m3ldm7i1wc", '4', true);
+        try {
+            HttpApiResponse response = mediaFire.doImageRequest(imageRequest);
+            assertTrue(response.getStatus() == 200);
+        } catch (MFException e) {
+            fail("exception should not have been thrown: " + e);
+        } catch (MFApiException e) {
+            fail("exception should not have been thrown: " + e);
         }
     }
 }

@@ -56,7 +56,7 @@ public class DefaultActionRequester implements MFActionRequester {
 
         GetRequest getRequest = new GetRequest(imageRequest, imageToken);
         HttpApiResponse httpResponse = http.doApiRequest(getRequest);
-        ResponseUtil.validateHttpResponse(httpResponse);
+        ResponseUtil.validateConversionHttpResponse(httpResponse);
 
         // return token
         synchronized (imageStore) {
@@ -78,11 +78,15 @@ public class DefaultActionRequester implements MFActionRequester {
                 getNewImageTokenFromSessionRequester();
             }
             imageToken = imageStore.get();
+
+            if (imageToken == null) {
+                throw new MFException("could not get image action token from store");
+            }
         }
 
         GetRequest getRequest = new GetRequest(documentRequest, imageToken);
         HttpApiResponse httpResponse = http.doApiRequest(getRequest);
-        ResponseUtil.validateHttpResponse(httpResponse);
+        ResponseUtil.validateConversionHttpResponse(httpResponse);
 
         // return token
         synchronized (imageStore) {
@@ -104,9 +108,13 @@ public class DefaultActionRequester implements MFActionRequester {
                 getNewUploadTokenFromSessionRequester();
             }
             uploadToken = uploadStore.get();
+
+            if (uploadToken == null) {
+                throw new MFException("could not get upload action token from store");
+            }
         }
 
-        uploadRequest.getQueryMap().put("session_token", uploadToken.getToken());
+        uploadRequest.addSessionToken(uploadToken.getToken());
         PostRequest postRequest = new PostRequest(uploadRequest);
         HttpApiResponse httpResponse = http.doApiRequest(postRequest);
         ResponseUtil.validateHttpResponse(httpResponse);
@@ -167,6 +175,6 @@ public class DefaultActionRequester implements MFActionRequester {
         }
         // store token
         ActionToken sessionToken = ActionToken.makeActionTokenFromApiResponse(apiResponse, 1000 * 60 * REQUESTED_IMAGE_TOKEN_LIFESPAN_MINUTES + System.currentTimeMillis());
-        uploadStore.put(sessionToken);
+        imageStore.put(sessionToken);
     }
 }

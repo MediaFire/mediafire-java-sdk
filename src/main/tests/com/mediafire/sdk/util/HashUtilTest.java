@@ -20,15 +20,8 @@ public class HashUtilTest extends TestCase {
     private final String SHA1_HASH_STRING_C = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
     private final String SHA256_HASH_STRING_C = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
 
-    private long startTime;
     public void setUp() throws Exception {
         super.setUp();
-        startTime = System.currentTimeMillis();
-    }
-
-    public void tearDown() throws Exception {
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        System.out.println(getName() + " execution time: " + elapsedTime + "ms");
     }
 
     public void testMd5StringA() throws Exception {

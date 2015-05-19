@@ -127,7 +127,7 @@ public class DefaultSessionRequester implements MFSessionRequester {
                 if (!apiResponse.hasError() && apiResponse.needNewKey() && sessionToken != null) {
                     SessionToken updatedSessionToken = SessionToken.updateSessionToken(sessionToken);
                     sessionStore.put(updatedSessionToken);
-                } else if (!apiResponse.hasError()) {
+                } else if (!apiResponse.hasError() && sessionToken != null) {
                     sessionStore.put(sessionToken);
                 }
             }

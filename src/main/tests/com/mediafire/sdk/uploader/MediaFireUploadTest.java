@@ -60,23 +60,22 @@ public class MediaFireUploadTest extends TestCase implements MediaFireUploadHand
         try {
             file = File.createTempFile(prefix, suffix);
             Random random = new Random();
-            byte dataToWrite[] = new byte[2000000];
+            byte dataToWrite[] = new byte[100000];
             random.nextBytes(dataToWrite);
-            FileOutputStream out = new FileOutputStream("the-file-name");
+            FileOutputStream out = new FileOutputStream(file);
             out.write(dataToWrite);
             out.close();
         } catch (IOException e) {
             fail("Exception should not have been thrown: " + e);
         }
+
+        System.out.println(getName() + " file: " + file + ", size: " + file.length());
         MediaFireUpload upload = new MediaFireUpload(mediaFire, 98, file, file.getName(), MediaFireUpload.ActionOnInAccount.UPLOAD_ALWAYS, MediaFireUploadTest.this, 1);
         Thread thread = new Thread(upload);
         thread.start();
         try {
             thread.join();
             boolean deleted = file.delete();
-            if (!deleted) {
-                System.out.println(file);
-            }
         } catch (InterruptedException e) {
             fail("Exception should not have been thrown: " + e);
         }
@@ -101,21 +100,19 @@ public class MediaFireUploadTest extends TestCase implements MediaFireUploadHand
             Random random = new Random();
             byte dataToWrite[] = new byte[20000000];
             random.nextBytes(dataToWrite);
-            FileOutputStream out = new FileOutputStream("the-file-name");
+            FileOutputStream out = new FileOutputStream(file);
             out.write(dataToWrite);
             out.close();
         } catch (IOException e) {
             fail("Exception should not have been thrown: " + e);
         }
+        System.out.println(getName() + " file: " + file + ", size: " + file.length());
         MediaFireUpload upload = new MediaFireUpload(mediaFire, 98, file, file.getName(), MediaFireUpload.ActionOnInAccount.UPLOAD_ALWAYS, MediaFireUploadTest.this, 1);
         Thread thread = new Thread(upload);
         thread.start();
         try {
             thread.join();
             boolean deleted = file.delete();
-            if (!deleted) {
-                System.out.println(file);
-            }
         } catch (InterruptedException e) {
             fail("Exception should not have been thrown: " + e);
         }

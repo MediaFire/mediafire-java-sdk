@@ -5,13 +5,11 @@ import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.MediaFire;
 import com.mediafire.sdk.api.UploadApi;
 import com.mediafire.sdk.api.responses.*;
-import com.mediafire.sdk.api.responses.data_models.PollDoUpload;
-import com.mediafire.sdk.api.responses.data_models.ResumableBitmap;
-import com.mediafire.sdk.api.responses.data_models.ResumableUpload;
-import com.mediafire.sdk.api.responses.data_models.WebUploads;
+import com.mediafire.sdk.api.responses.data_models.*;
 import com.mediafire.sdk.util.HashUtil;
 
 import java.io.*;
+import java.io.File;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -39,6 +37,7 @@ public class MediaFireUpload implements Runnable {
     private static final String JSON = "json";
 
     private static final String HEADER_CONTENT_TYPE = "Content-Type";
+    private static final String HEADER_CONTENT_LENGTH = "Content-Length";
     private static final String HEADER_X_FILENAME = "x-filename";
     private static final String HEADER_X_FILESIZE = "x-filesize";
     private static final String HEADER_X_FILEHASH = "x-filehash";
@@ -56,7 +55,7 @@ public class MediaFireUpload implements Runnable {
     private String url;
     private final MediaFireUploadHandler handler;
     private String fileHash;
-    private List<Boolean> uploadUnits;
+    private List<Boolean> uploadUnits = new LinkedList<Boolean>();
     // optional values that can be set
     private final String filename;
     private String folderKey;
@@ -129,6 +128,7 @@ public class MediaFireUpload implements Runnable {
         params.put(PARAM_RESUMABLE, "yes");
         params.put(PARAM_SIZE, this.file.length());
         params.put(PARAM_HASH, getFileHash());
+        params.put(PARAM_FILENAME, this.filename);
         if (this.folderKey != null && !this.folderKey.isEmpty()) {
             params.put(PARAM_FOLDER_KEY, this.folderKey);
         }
@@ -227,12 +227,12 @@ public class MediaFireUpload implements Runnable {
             headers.put(HEADER_X_UNIT_SIZE, chunkSize);
             headers.put(HEADER_X_UNIT_HASH, chunkHash);
             UploadResumableResponse response = UploadApi.resumable(this.mediaFire, params, headers, chunk, "1.4", UploadResumableResponse.class);
-
+            ResumableDoUpload doUpload = response.getDoUpload();
             ResumableUpload newResumableUpload = response.getResumableUpload();
             String allUnitsReady = newResumableUpload.getAllUnitsReady();
 
-            if (allUnitsReady != null && "yes".equals(allUnitsReady)) {
-                String uploadKey = newResumableUpload.getUploadKey();
+            if (allUnitsReady != null && "yes".equals(allUnitsReady) && doUpload != null) {
+                String uploadKey = doUpload.getKey();
                 pollUpload(uploadKey);
                 return;
             }
@@ -361,6 +361,7 @@ public class MediaFireUpload implements Runnable {
         headers.put(HEADER_X_FILENAME, filename);
         headers.put(HEADER_X_FILESIZE, file.length());
         headers.put(HEADER_CONTENT_TYPE, CONTENT_TYPE_OCTET_STREAM);
+        headers.put(HEADER_CONTENT_LENGTH, file.length());
 
         byte[] payload = getFileBytes(file);
         UploadSimpleResponse response = UploadApi.simple(this.mediaFire, params, headers, payload, "1.4", UploadSimpleResponse.class);

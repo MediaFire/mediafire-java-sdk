@@ -6,7 +6,7 @@ package com.mediafire.sdk.api.responses.data_models;
 public class PollDoUpload extends DoUpload {
     private int status;
     private String description;
-    private int fileerror;
+    private String fileerror;
     private String quickkey;
     private String size;
     private String revision;
@@ -23,7 +23,7 @@ public class PollDoUpload extends DoUpload {
     }
 
     public int getFileErrorCode() {
-        return fileerror;
+        return fileerror == null || fileerror.isEmpty() ? 0 : Integer.parseInt(fileerror);
     }
 
     public String getQuickKey() {

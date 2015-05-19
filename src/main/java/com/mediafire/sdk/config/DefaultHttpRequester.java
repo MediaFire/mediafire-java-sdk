@@ -33,7 +33,8 @@ public class DefaultHttpRequester implements MFHttpRequester {
             Map<String, Object> headers = postRequest.getHeaders();
             byte[] payload = postRequest.getPayload();
 
-            System.out.println("request: " + urlString + "?" + new String(payload));
+            System.out.println("request: " + urlString + "?" + (payload.length > 1000 ? "" : new String(payload)));
+            System.out.println("headers: " + headers);
 
             HttpURLConnection connection;
             if ("http".equals(postRequest.getScheme())) {

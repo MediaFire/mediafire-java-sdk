@@ -15,7 +15,7 @@ public class SystemApi {
     }
 
     public static <T extends ApiResponse> T getInfo(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
-        ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/system/get_info.php", requestParams);
+        ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/system/get_info.php", requestParams, false);
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 }

@@ -26,12 +26,17 @@ public class UploadApi {
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
     public static <T extends ApiResponse> T pollUpload(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
-        ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/poll_upload.php", requestParams);
+        ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/poll_upload.php", requestParams, false);
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 
-    public static <T extends ApiResponse> T webUpload(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T addWebUpload(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/add_web_upload.php", requestParams);
+        return mediaFire.doApiRequest(apiPostRequest, classOfT);
+    }
+
+    public static <T extends ApiResponse> T getWebUploads(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+        ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/upload/get_web_uploads.php", requestParams);
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
 

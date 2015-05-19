@@ -33,6 +33,8 @@ public class DefaultHttpRequester implements MFHttpRequester {
             Map<String, Object> headers = postRequest.getHeaders();
             byte[] payload = postRequest.getPayload();
 
+            System.out.println("request: " + urlString + "?" + new String(payload));
+
             HttpURLConnection connection;
             if ("http".equals(postRequest.getScheme())) {
                 connection = (HttpURLConnection) new URL(urlString).openConnection();
@@ -64,6 +66,7 @@ public class DefaultHttpRequester implements MFHttpRequester {
                 inputStream = connection.getInputStream();
             }
             byte[] response = readStream(inputStream);
+            System.out.println("response: " + new String(response));
             Map<String, List<String>> headerFields = connection.getHeaderFields();
             return new HttpApiResponse(responseCode, response, headerFields);
         } catch (MalformedURLException e) {

@@ -15,9 +15,10 @@ public class ApiPostRequest {
     private final String scheme;
     private final String domain;
     private final String path;
+    private final boolean requiresToken;
     private final LinkedHashMap<String, Object> query = new LinkedHashMap<String, Object>();
 
-    public ApiPostRequest(String scheme, String domain, String path, LinkedHashMap<String, Object> query) {
+    public ApiPostRequest(String scheme, String domain, String path, LinkedHashMap<String, Object> query, boolean requiresToken) {
         this.scheme = scheme;
         this.domain = domain;
         this.path = path;
@@ -27,6 +28,15 @@ public class ApiPostRequest {
         } else if (!"json".equals(this.query.get("response_format"))) {
             this.query.put("response_format", "json");
         }
+        this.requiresToken = requiresToken;
+    }
+
+    public ApiPostRequest(String scheme, String domain, String path, LinkedHashMap<String, Object> query) {
+        this(scheme, domain, path, query, true);
+    }
+
+    public ApiPostRequest(String path, LinkedHashMap<String, Object> query, boolean requiresToken) {
+        this(DEFAULT_SCHEME, DEFAULT_DOMAIN, path, query, requiresToken);
     }
 
     public ApiPostRequest(String path, LinkedHashMap<String, Object> query) {
@@ -51,6 +61,10 @@ public class ApiPostRequest {
 
     public String getScheme() {
         return scheme;
+    }
+
+    public boolean requiresToken() {
+        return requiresToken;
     }
 
     public void addSessionToken(String token) {

@@ -96,24 +96,26 @@ public class DefaultSessionRequester implements MFSessionRequester {
             throw new MFException("cannot call doApiRequest() if session has not been started");
         }
 
-        SessionToken sessionToken;
-        //borrow token if available
-        synchronized (sessionStore) {
-            if (!sessionStore.available()) {
-                if (sessionStore.getAvailableCount() < MIN_TOKENS) {
-                    getNewTokens(MIN_TOKENS);
+        SessionToken sessionToken = null;
+        if (apiPostRequest.requiresToken()) {
+            //borrow token if available
+            synchronized (sessionStore) {
+                if (!sessionStore.available()) {
+                    if (sessionStore.getAvailableCount() < MIN_TOKENS) {
+                        getNewTokens(MIN_TOKENS);
+                    }
+                    doNewSessionRequestWithCredentials();
                 }
-                doNewSessionRequestWithCredentials();
-            }
-            sessionToken = sessionStore.get();
+                sessionToken = sessionStore.get();
 
-            if (sessionToken == null) {
-                throw new MFException("could not get session token from store");
+                if (sessionToken == null) {
+                    throw new MFException("could not get session token from store");
+                }
             }
+            apiPostRequest.addSessionToken(sessionToken.getToken());
+            apiPostRequest.addSignature(RequestUtil.makeSignatureForApiRequest(sessionToken.getSecretKey(), sessionToken.getTime(), apiPostRequest));
         }
 
-        apiPostRequest.addSessionToken(sessionToken.getToken());
-        apiPostRequest.addSignature(RequestUtil.makeSignatureForApiRequest(sessionToken.getSecretKey(), sessionToken.getTime(), apiPostRequest));
         PostRequest postRequest = new PostRequest(apiPostRequest);
         HttpApiResponse httpResponse = http.doApiRequest(postRequest);
         ResponseUtil.validateHttpResponse(httpResponse);
@@ -122,7 +124,7 @@ public class DefaultSessionRequester implements MFSessionRequester {
         synchronized (sessionStore) {
             if (sessionStore.getAvailableCount() < MAX_TOKENS) {
                 ApiResponse apiResponse = ResponseUtil.makeApiResponseFromHttpResponse(httpResponse, classOfT);
-                if (!apiResponse.hasError() && apiResponse.needNewKey()) {
+                if (!apiResponse.hasError() && apiResponse.needNewKey() && sessionToken != null) {
                     SessionToken updatedSessionToken = SessionToken.updateSessionToken(sessionToken);
                     sessionStore.put(updatedSessionToken);
                 } else if (!apiResponse.hasError()) {

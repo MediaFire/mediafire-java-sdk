@@ -23,7 +23,6 @@ public class UploadCheckResponse extends ApiResponse {
         return storage_limit;
     }
 
-
     public String getHashExists() {
         return hash_exists;
     }

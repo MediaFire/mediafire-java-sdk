@@ -1,7 +1,7 @@
 package com.mediafire.sdk;
 
 /**
- * Created by Chris on 5/15/2015.
+ * Thrown for most problems caused by API requests (wraps original thrown Exception).
  */
 public class MFException extends Exception {
     private static final long serialVersionUID = 9042001401553400722L;

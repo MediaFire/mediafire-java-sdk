@@ -4,7 +4,8 @@ import com.mediafire.sdk.token.ActionToken;
 import com.mediafire.sdk.token.SessionToken;
 
 /**
- * Created by Chris on 5/14/2015.
+ * This class contains a set of interface objects which are then used to instantiate the MediaFire object.
+ * The simplest implementation can call Configuration.getDefault()
  */
 public class Configuration {
 
@@ -13,67 +14,131 @@ public class Configuration {
     private MFSessionRequester sessionRequester;
     private MFActionRequester actionRequester;
     private String alternateDomain;
-    private String apiKey;
-    private String appId;
+    private final String apiKey;
+    private final String appId;
 
-    public Configuration() { }
+    public Configuration(String appId, String apiKey) {
+        this.appId = appId;
+        this.apiKey = apiKey;
+    }
 
+    public Configuration(String appId) {
+        this(appId, null);
+    }
+
+    /**
+     * returns the MFCredentials in this configuration
+     *
+     * @return MFCredentials
+     */
     public MFCredentials getCredentials() {
         return credentials;
     }
 
+    /**
+     * returns the MFHttpRequester in this configuration
+     * @return MFHttpRequester
+     */
     public MFHttpRequester getHttpRequester() {
         return httpRequester;
     }
 
+    /**
+     * returns the MFSessionRequester in this configuration
+     * @return MFSessionRequester
+     */
     public MFSessionRequester getSessionRequester() {
         return sessionRequester;
     }
 
+    /**
+     * returns the MFActionRequester in this configuration
+     *
+     * @return MFActionRequester
+     */
     public MFActionRequester getActionRequester() {
         return actionRequester;
     }
 
+    /**
+     * returns the alternate domain to be used in this configuration
+     *
+     * @return String
+     */
     public String getAlternateDomain() {
         return alternateDomain;
     }
 
+    /**
+     * gets the current api key in this configuration
+     *
+     * @return String
+     */
     public String getApiKey() {
         return apiKey;
     }
 
+    /**
+     * gets the current app id in this configuration
+     *
+     * @return String
+     */
     public String getAppId() {
         return appId;
     }
 
+    /**
+     *  sets the MFCredentials for this configuration
+     *
+     * @param mediaFireCredentials MFCredentials
+     */
     public void setCredentials(MFCredentials mediaFireCredentials) {
         this.credentials = mediaFireCredentials;
     }
 
+    /**
+     * sets the HttpRequester for this configuration
+     *
+     * @param mediaFireHttpRequester MFHttpRequester
+     */
     public void setHttpRequester(MFHttpRequester mediaFireHttpRequester) {
         this.httpRequester = mediaFireHttpRequester;
     }
 
+    /**
+     * sets the MFSessionRequester for this configuration
+     *
+     * @param mediaFireSessionRequester MFSessionRequester
+     */
     public void setSessionRequester(MFSessionRequester mediaFireSessionRequester) {
         this.sessionRequester = mediaFireSessionRequester;
     }
 
+    /**
+     * sets the MFActionRequester for this configuration
+     *
+     * @param mediaFireActionRequester MFActionRequester
+     */
     public void setActionRequester(MFActionRequester mediaFireActionRequester) {
         this.actionRequester = mediaFireActionRequester;
     }
 
+    /**
+     * sets an alternate domain to use other than www.mediafire.com
+     *
+     * @param alternateDomain String
+     */
     public void setAlternateDomain(String alternateDomain) {
         this.alternateDomain = alternateDomain;
     }
 
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
-
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
+    /**
+     * returns a Configuration object using default interface implementations
+     *
+     * @param appId the application id
+     * @param apiKey the api key (can be null)
+     * @return a Configuration object.
+     */
     public static Configuration getDefault(String appId, String apiKey) {
         // store for session tokens
         MFStore<SessionToken> sessionStore = new DefaultSessionStore();
@@ -85,9 +150,7 @@ public class Configuration {
         MFSessionRequester sessionRequester = new DefaultSessionRequester(credentials, appId, apiKey, httpRequester, sessionStore);
         MFActionRequester actionRequester = new DefaultActionRequester(httpRequester, sessionRequester, imageStore, uploadStore);
 
-        Configuration configuration = new Configuration();
-        configuration.setAppId(appId);
-        configuration.setApiKey(apiKey);
+        Configuration configuration = new Configuration(appId, apiKey);
         configuration.setCredentials(credentials);
         configuration.setHttpRequester(httpRequester);
         configuration.setSessionRequester(sessionRequester);
@@ -95,6 +158,12 @@ public class Configuration {
         return configuration;
     }
 
+    /**
+     * returns a Configuration object using default interface implementations
+     *
+     * @param appId the application id
+     * @return a Configuration object.
+     */
     public static Configuration getDefault(String appId) {
         return getDefault(appId, null);
     }

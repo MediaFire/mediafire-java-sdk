@@ -1,7 +1,7 @@
 package com.mediafire.sdk.requests;
 
 /**
- * Created by Chris on 5/15/2015.
+ * Request used to fetch an image from mediafire
  */
 public class ImageRequest {
 

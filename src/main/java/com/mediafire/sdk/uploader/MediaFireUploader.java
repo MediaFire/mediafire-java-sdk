@@ -8,22 +8,23 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * Created by Chris on 5/18/2015.
  */
 public class MediaFireUploader implements MediaFireUploadHandler {
-    private final MediaFire mediaFire;
-    private final MediaFireUploadStore mediaFireUploadStore;
-    private final int pollStatusToFinish;
-    private final LinkedBlockingDeque<MediaFireUpload> uploadDeque = new LinkedBlockingDeque<MediaFireUpload>();
-    private final ArrayList<MediaFireUploadHandler> handlers = new ArrayList<MediaFireUploadHandler>();
+    private final MediaFireUploadExecutor executor;
+    private final LinkedBlockingDeque<Runnable> queue;
 
-    public MediaFireUploader(MediaFire mediaFire, MediaFireUploadStore mediaFireUploadStore, int pollStatusToFinish) {
-        this.mediaFire = mediaFire;
-        this.mediaFireUploadStore = mediaFireUploadStore;
-        this.pollStatusToFinish = pollStatusToFinish;
+    private final ArrayList<MediaFireUploadHandler> handlers = new ArrayList<MediaFireUploadHandler>();
+    private boolean coreThreadsStarted = false;
+
+
+    public MediaFireUploader(int concurrentUploads) {
+        this.queue = new LinkedBlockingDeque<Runnable>();
+        this.executor = new MediaFireUploadExecutor(concurrentUploads, 10, 10, TimeUnit.SECONDS, queue);
     }
 
     public void addHandler(MediaFireUploadHandler handler) {
@@ -34,17 +35,32 @@ public class MediaFireUploader implements MediaFireUploadHandler {
         handlers.remove(handler);
     }
 
-    public void startUploading() {
-
+    public int getQueueSize() {
+        return queue.size();
     }
 
-    public void pauseUploading() {
-
+    public void schedule(MediaFireUpload runnable) {
+        queue.offer(runnable);
     }
 
-    public long addToQueue(File file, MediaFireUpload.ActionOnInAccount actionOnInAccount, HashMap<String, Object> info) {
-        long id =  mediaFireUploadStore.insert(file, actionOnInAccount, info);
-        return id;
+    public void pause() {
+        executor.pause();
+    }
+
+    public void resume() {
+        if (!coreThreadsStarted) {
+            coreThreadsStarted = true;
+            executor.prestartAllCoreThreads();
+        }
+        executor.resume();
+    }
+
+    public void clear() {
+        queue.clear();
+    }
+
+    public boolean isEmpty() {
+        return queue.isEmpty();
     }
 
     @Override

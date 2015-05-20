@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * returns this object from MFHttpRequester
+ */
 public class HttpApiResponse {
     private final int mStatus;
     private final byte[] mBodyBytes;

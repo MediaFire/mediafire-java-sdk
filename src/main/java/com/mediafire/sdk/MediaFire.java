@@ -12,9 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Configuration contains a set of interface objects used to handle api requests
- */
 public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
 
     private final String alternateDomain;

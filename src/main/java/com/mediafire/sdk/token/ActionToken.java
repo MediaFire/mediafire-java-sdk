@@ -2,6 +2,9 @@ package com.mediafire.sdk.token;
 
 import com.mediafire.sdk.api.responses.UserGetActionTokenResponse;
 
+/**
+ * an ActionToken used to make certain types of API calls
+ */
 public class ActionToken {
     private final String tokenString;
     private final long expirationMillis;

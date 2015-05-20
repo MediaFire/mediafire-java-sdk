@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Chris on 5/17/2015.
+ * GetRequest is used to make api requests via GET
  */
 public class GetRequest {
     private static final String BASE_URL = "https://www.mediafire.com/conversion_server.php?";

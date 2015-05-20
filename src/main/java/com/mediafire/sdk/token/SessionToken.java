@@ -2,6 +2,9 @@ package com.mediafire.sdk.token;
 
 import com.mediafire.sdk.api.responses.UserGetSessionTokenResponse;
 
+/**
+ * a SessionToken used to make API calls (v2)
+ */
 public class SessionToken {
     private final String time;
     private final String pToken;

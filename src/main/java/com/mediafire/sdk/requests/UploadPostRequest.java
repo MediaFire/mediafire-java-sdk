@@ -3,6 +3,9 @@ package com.mediafire.sdk.requests;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Upload request via POST
+ */
 public class UploadPostRequest extends ApiPostRequest {
     private final Map<String, Object> headerParameters;
     private final byte[] payload;

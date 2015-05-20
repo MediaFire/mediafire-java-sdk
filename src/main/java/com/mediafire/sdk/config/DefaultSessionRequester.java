@@ -17,7 +17,7 @@ import java.util.Map;
 public class DefaultSessionRequester implements MFSessionRequester {
 
     private static final int MIN_TOKENS = 2;
-    private static final int MAX_TOKENS = 10;
+    private static final int MAX_TOKENS = 6;
     private final MFCredentials credentials;
     private final MFHttpRequester http;
     private final MFStore<SessionToken> sessionStore;

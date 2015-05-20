@@ -6,7 +6,7 @@ import com.mediafire.sdk.util.RequestUtil;
 import java.util.*;
 
 /**
- * Request is an object used to perform an Api Request
+ * ApiPostRequest is used to make api requests via POST
  */
 public class ApiPostRequest {
     private static final String DEFAULT_SCHEME = "https";

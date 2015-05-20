@@ -5,6 +5,9 @@ import com.mediafire.sdk.util.RequestUtil;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * a POST request used by MFHttpRequester
+ */
 public class PostRequest extends ApiPostRequest {
     private static final String CHARSET = "UTF-8";
     private final String url;

@@ -89,6 +89,10 @@ public class MediaFireUpload implements Runnable {
         this.folderPath = folderPath;
     }
 
+    public long getId() {
+        return this.id;
+    }
+
     @Override
     public void run() {
         try {
@@ -509,5 +513,46 @@ public class MediaFireUpload implements Runnable {
 
     public enum ActionOnInAccount {
         UPLOAD_IF_NOT_IN_FOLDER, DO_NOT_UPLOAD, UPLOAD_ALWAYS,
+    }
+
+    @Override
+    public String toString() {
+        return "MediaFireUpload{" +
+                "id=" + id +
+                ", file=" + file +
+                ", url='" + url + '\'' +
+                ", fileHash='" + fileHash + '\'' +
+                ", filename='" + filename + '\'' +
+                ", folderKey='" + folderKey + '\'' +
+                ", folderPath='" + folderPath + '\'' +
+                ", actionOnInAccount=" + actionOnInAccount +
+                ", statusToFinish=" + statusToFinish +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MediaFireUpload that = (MediaFireUpload) o;
+
+        if (this.id != that.id) return false;
+        if (this.actionOnInAccount != that.actionOnInAccount) return false;
+        if (this.file != null ? !file.equals(that.file) : that.file != null) return false;
+        if (this.fileHash != null ? !fileHash.equals(that.fileHash) : that.fileHash != null) return false;
+        if (this.url != null ? !url.equals(that.url) : that.url != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = file != null ? file.hashCode() : 0;
+        result = 31 * result + (actionOnInAccount != null ? actionOnInAccount.hashCode() : 0);
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        result = 31 * result + (fileHash != null ? fileHash.hashCode() : 0);
+        result = 31 * result + (int) (id ^ (id >>> 32));
+        return result;
     }
 }

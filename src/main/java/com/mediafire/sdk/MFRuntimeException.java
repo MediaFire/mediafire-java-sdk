@@ -1,7 +1,7 @@
 package com.mediafire.sdk;
 
 /**
- * Created by Chris on 5/15/2015.
+ * thrown in extreme cases such as NoSuchAlgorithmException which needs to be addressed by fixing the cause.
  */
 public class MFRuntimeException extends RuntimeException {
     private static final long serialVersionUID = 6113319998777232529L;

@@ -1,7 +1,7 @@
 package com.mediafire.sdk.requests;
 
 /**
- * Created by Chris on 5/17/2015.
+ * Request used to fetch a document from mediafire
  */
 public class DocumentRequest {
 

@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * object used to start a mediafire session and make api requests.
+ */
 public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
 
     private final String alternateDomain;

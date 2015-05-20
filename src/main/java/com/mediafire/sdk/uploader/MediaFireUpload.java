@@ -14,7 +14,7 @@ import java.net.URLEncoder;
 import java.util.*;
 
 /**
- * Created by Chris on 5/18/2015.
+ * Runnable which handles Web Uploads, Simple Uploads, and Resumable Uploads
  */
 public class MediaFireUpload implements Runnable {
     private static final int TIME_BETWEEN_POLLS_MILLIS = 1000 * 5;

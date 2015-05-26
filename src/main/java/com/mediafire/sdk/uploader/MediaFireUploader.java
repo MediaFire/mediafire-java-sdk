@@ -2,6 +2,7 @@ package com.mediafire.sdk.uploader;
 
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
+import com.mediafire.sdk.MFSessionNotStartedException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -118,6 +119,13 @@ public class MediaFireUploader implements MediaFireUploadHandler {
 
     @Override
     public void uploadFailed(long id, MFApiException e) {
+        for (MediaFireUploadHandler handler : handlers) {
+            handler.uploadFailed(id, e);
+        }
+    }
+
+    @Override
+    public void uploadFailed(long id, MFSessionNotStartedException e) {
         for (MediaFireUploadHandler handler : handlers) {
             handler.uploadFailed(id, e);
         }

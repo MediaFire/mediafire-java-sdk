@@ -2,12 +2,7 @@ package com.mediafire.sdk.util;
 
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
-import com.mediafire.sdk.MediaFire;
-import com.mediafire.sdk.api.UserApi;
 import com.mediafire.sdk.api.responses.ApiResponse;
-import com.mediafire.sdk.api.responses.UserGetAvatarResponse;
-import com.mediafire.sdk.api.responses.UserGetInfoResponse;
-import com.mediafire.sdk.api.responses.UserGetSettingsResponse;
 import com.mediafire.sdk.requests.HttpApiResponse;
 import junit.framework.TestCase;
 

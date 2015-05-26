@@ -2,6 +2,7 @@ package com.mediafire.sdk.config;
 
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
+import com.mediafire.sdk.MFSessionNotStartedException;
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.requests.DocumentRequest;
 import com.mediafire.sdk.requests.HttpApiResponse;
@@ -27,20 +28,20 @@ public interface MFActionRequester {
      *
      * @param imageRequest the ImageRequest to make
      * @return an HttpApiResponse
-     * @throws MFException if an exception occurred while making the request
+     * @throws com.mediafire.sdk.MFException if an exception occurred while making the request
      * @throws MFApiException if an api exception occurred
      */
-    public HttpApiResponse doConversionRequest(ImageRequest imageRequest) throws MFException, MFApiException;
+    public HttpApiResponse doConversionRequest(ImageRequest imageRequest) throws MFException, MFApiException, MFSessionNotStartedException;
 
     /**
      * makes a document conversion request
      *
      * @param documentRequest the DocumentRequest to make
      * @return an HttpApiResponse
-     * @throws MFException if an exception occurred while making the request
+     * @throws com.mediafire.sdk.MFException if an exception occurred while making the request
      * @throws MFApiException if an api exception occurred
      */
-    public HttpApiResponse doConversionRequest(DocumentRequest documentRequest) throws MFException, MFApiException;
+    public HttpApiResponse doConversionRequest(DocumentRequest documentRequest) throws MFException, MFApiException, MFSessionNotStartedException;
 
     /**
      * makes an upload request using an action token
@@ -48,16 +49,16 @@ public interface MFActionRequester {
      * @param uploadRequest the UploadPostRequest to make
      * @param classOfT the .class file passed which will be used to parse the api JSON response using Gson (must extend ApiResponse)
      * @return the response stored in the {@param classOfT object}
-     * @throws MFException if an exception occurred while making the request
+     * @throws com.mediafire.sdk.MFException if an exception occurred while making the request
      * @throws MFApiException if an api exception occurred
      */
-    public <T extends ApiResponse> T doUploadRequest(UploadPostRequest uploadRequest, Class<T> classOfT) throws MFException, MFApiException;
+    public <T extends ApiResponse> T doUploadRequest(UploadPostRequest uploadRequest, Class<T> classOfT) throws MFException, MFApiException, MFSessionNotStartedException;
 
     /**
      * attempts to use an image token from the action requester
      * @return an ActionToken
      */
-    public ActionToken borrowImageToken() throws MFException, MFApiException;
+    public ActionToken borrowImageToken() throws MFException, MFApiException, MFSessionNotStartedException;
 
     /**
      * sets the Handler for logging

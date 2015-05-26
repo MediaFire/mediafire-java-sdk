@@ -2,6 +2,7 @@ package com.mediafire.sdk.config;
 
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
+import com.mediafire.sdk.MFSessionNotStartedException;
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.api.responses.UserGetActionTokenResponse;
 import com.mediafire.sdk.requests.*;
@@ -45,11 +46,11 @@ public class DefaultActionRequester implements MFActionRequester {
     }
 
     @Override
-    public HttpApiResponse doConversionRequest(ImageRequest imageRequest) throws MFException, MFApiException {
+    public HttpApiResponse doConversionRequest(ImageRequest imageRequest) throws MFException, MFApiException, MFSessionNotStartedException {
         logger.info("doConversionRequest()");
         if (!sessionStarted) {
             logger.severe("doConversionRequest() called when session was not started");
-            throw new MFException("cannot call doConversionRequest() if session isn't started");
+            throw new MFSessionNotStartedException();
         }
 
         ActionToken imageToken;
@@ -73,11 +74,11 @@ public class DefaultActionRequester implements MFActionRequester {
     }
 
     @Override
-    public HttpApiResponse doConversionRequest(DocumentRequest documentRequest) throws MFException, MFApiException {
+    public HttpApiResponse doConversionRequest(DocumentRequest documentRequest) throws MFException, MFApiException, MFSessionNotStartedException {
         logger.info("doConversionRequest()");
         if (!sessionStarted) {
             logger.severe("doConversionRequest() called when session was not started");
-            throw new MFException("cannot call doConversionRequest() if session isn't started");
+            throw new MFSessionNotStartedException();
         }
 
         ActionToken imageToken;
@@ -105,11 +106,11 @@ public class DefaultActionRequester implements MFActionRequester {
     }
 
     @Override
-    public <T extends ApiResponse> T doUploadRequest(UploadPostRequest uploadRequest, Class<T> classOfT) throws MFException, MFApiException {
+    public <T extends ApiResponse> T doUploadRequest(UploadPostRequest uploadRequest, Class<T> classOfT) throws MFException, MFApiException, MFSessionNotStartedException {
         logger.info("doUploadRequest()");
         if (!sessionStarted) {
             logger.severe("doUploadRequest() called when session was not started");
-            throw new MFException("cannot call doUploadRequest() if session isn't started");
+            throw new MFSessionNotStartedException();
         }
 
         ActionToken uploadToken;
@@ -141,11 +142,11 @@ public class DefaultActionRequester implements MFActionRequester {
     }
 
     @Override
-    public ActionToken borrowImageToken() throws MFException, MFApiException {
+    public ActionToken borrowImageToken() throws MFException, MFApiException, MFSessionNotStartedException {
         logger.info("borrowImageToken()");
         if (!sessionStarted) {
             logger.severe("borrowImageToken() called when session was not started");
-            throw new MFException("cannot call borrowImageToken() if session isn't started");
+            throw new MFSessionNotStartedException();
         }
 
         ActionToken imageToken;

@@ -2,6 +2,7 @@ package com.mediafire.sdk.api;
 
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
+import com.mediafire.sdk.MFSessionNotStartedException;
 import com.mediafire.sdk.MediaFire;
 import com.mediafire.sdk.api.responses.*;
 import com.mediafire.sdk.requests.ApiPostRequest;
@@ -27,10 +28,10 @@ public class FileApi {
      * @param apiVersion version of the api to call e.g. 1.0, 1.1, 1.2
      * @param classOfT the .class file passed which will be used to parse the api JSON response using Gson (must extend ApiResponse)
      * @return an instance of {@param classOfT}
-     * @throws MFException if an exception occurred
-     * @throws MFApiException if there was an api error
+     * @throws com.mediafire.sdk.MFException if an exception occurred
+     * @throws MFApiException, MFSessionNotStartedException if there was an api error
      */
-    public static <T extends ApiResponse> T getInfo(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T getInfo(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException, MFSessionNotStartedException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/file/get_info.php", requestParams);
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
@@ -44,10 +45,10 @@ public class FileApi {
      * @param apiVersion version of the api to call e.g. 1.0, 1.1, 1.2
      * @param classOfT the .class file passed which will be used to parse the api JSON response using Gson (must extend ApiResponse)
      * @return an instance of {@param classOfT}
-     * @throws MFException if an exception occurred
-     * @throws MFApiException if there was an api error
+     * @throws com.mediafire.sdk.MFException if an exception occurred
+     * @throws MFApiException, MFSessionNotStartedException if there was an api error
      */
-    public static <T extends ApiResponse> T delete(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T delete(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException, MFSessionNotStartedException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/file/delete.php", requestParams);
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
@@ -62,10 +63,10 @@ public class FileApi {
      * @param apiVersion version of the api to call e.g. 1.0, 1.1, 1.2
      * @param classOfT the .class file passed which will be used to parse the api JSON response using Gson (must extend ApiResponse)
      * @return an instance of {@param classOfT}
-     * @throws MFException if an exception occurred
-     * @throws MFApiException if there was an api error
+     * @throws com.mediafire.sdk.MFException if an exception occurred
+     * @throws MFApiException, MFSessionNotStartedException if there was an api error
      */
-    public static <T extends ApiResponse> T copy(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T copy(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException, MFSessionNotStartedException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/file/copy.php", requestParams);
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
@@ -78,10 +79,10 @@ public class FileApi {
      * @param apiVersion version of the api to call e.g. 1.0, 1.1, 1.2
      * @param classOfT the .class file passed which will be used to parse the api JSON response using Gson (must extend ApiResponse)
      * @return an instance of {@param classOfT}
-     * @throws MFException if an exception occurred
-     * @throws MFApiException if there was an api error
+     * @throws com.mediafire.sdk.MFException if an exception occurred
+     * @throws MFApiException, MFSessionNotStartedException if there was an api error
      */
-    public static <T extends ApiResponse> T getVersion(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T getVersion(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException, MFSessionNotStartedException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/file/get_version.php", requestParams);
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
@@ -94,10 +95,10 @@ public class FileApi {
      * @param apiVersion version of the api to call e.g. 1.0, 1.1, 1.2
      * @param classOfT the .class file passed which will be used to parse the api JSON response using Gson (must extend ApiResponse)
      * @return an instance of {@param classOfT}
-     * @throws MFException if an exception occurred
-     * @throws MFApiException if there was an api error
+     * @throws com.mediafire.sdk.MFException if an exception occurred
+     * @throws MFApiException, MFSessionNotStartedException if there was an api error
      */
-    public static <T extends ApiResponse> T move(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T move(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException, MFSessionNotStartedException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/file/move.php", requestParams);
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
@@ -110,10 +111,10 @@ public class FileApi {
      * @param apiVersion version of the api to call e.g. 1.0, 1.1, 1.2
      * @param classOfT the .class file passed which will be used to parse the api JSON response using Gson (must extend ApiResponse)
      * @return an instance of {@param classOfT}
-     * @throws MFException if an exception occurred
-     * @throws MFApiException if there was an api error
+     * @throws com.mediafire.sdk.MFException if an exception occurred
+     * @throws MFApiException, MFSessionNotStartedException if there was an api error
      */
-    public static <T extends ApiResponse> T update(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T update(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException, MFSessionNotStartedException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/file/update.php", requestParams);
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }
@@ -127,10 +128,10 @@ public class FileApi {
      * @param apiVersion version of the api to call e.g. 1.0, 1.1, 1.2
      * @param classOfT the .class file passed which will be used to parse the api JSON response using Gson (must extend ApiResponse)
      * @return an instance of {@param classOfT}
-     * @throws MFException if an exception occurred
-     * @throws MFApiException if there was an api error
+     * @throws com.mediafire.sdk.MFException if an exception occurred
+     * @throws MFApiException, MFSessionNotStartedException if there was an api error
      */
-    public static <T extends ApiResponse> T getLinks(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException {
+    public static <T extends ApiResponse> T getLinks(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException, MFSessionNotStartedException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/file/get_links.php", requestParams);
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }

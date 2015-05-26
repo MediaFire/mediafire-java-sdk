@@ -12,11 +12,6 @@ public class MFApiException extends Exception {
         this.errorCode = errorCode;
     }
 
-    public MFApiException(int errorCode, String message, Throwable cause) {
-        super(message, cause);
-        this.errorCode = errorCode;
-    }
-
     public int getErrorCode() {
         return errorCode;
     }

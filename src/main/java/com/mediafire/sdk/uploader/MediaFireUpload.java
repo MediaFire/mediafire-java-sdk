@@ -2,6 +2,7 @@ package com.mediafire.sdk.uploader;
 
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
+import com.mediafire.sdk.MFSessionNotStartedException;
 import com.mediafire.sdk.MediaFire;
 import com.mediafire.sdk.api.UploadApi;
 import com.mediafire.sdk.api.responses.*;
@@ -123,10 +124,14 @@ public class MediaFireUpload implements Runnable {
             if (this.handler != null) {
                 this.handler.uploadFailed(this.id, e);
             }
+        } catch (MFSessionNotStartedException e) {
+            if (this.handler != null) {
+                this.handler.uploadFailed(this.id, e);
+            }
         }
     }
 
-    private void checkUpload() throws IOException, MFException, MFApiException, InterruptedException {
+    private void checkUpload() throws IOException, MFException, MFApiException, InterruptedException, MFSessionNotStartedException {
         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_RESPONSE_FORMAT, JSON);
         params.put(PARAM_RESUMABLE, "yes");
@@ -176,7 +181,7 @@ public class MediaFireUpload implements Runnable {
         }
     }
 
-    private void instantUpload() throws MFException, MFApiException, IOException {
+    private void instantUpload() throws MFException, MFApiException, IOException, MFSessionNotStartedException {
         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_RESPONSE_FORMAT, JSON);
         params.put(PARAM_SIZE, this.file.length());
@@ -196,7 +201,7 @@ public class MediaFireUpload implements Runnable {
         uploadFinished(quickKey, fileName);
     }
 
-    private void resumableUpload(ResumableUpload resumableUpload) throws MFException, MFApiException, IOException, InterruptedException {
+    private void resumableUpload(ResumableUpload resumableUpload) throws MFException, MFApiException, IOException, InterruptedException, MFSessionNotStartedException {
         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_RESPONSE_FORMAT, JSON);
         if (this.folderKey != null && !this.folderKey.isEmpty()) {
@@ -262,7 +267,7 @@ public class MediaFireUpload implements Runnable {
         }
     }
 
-    private void pollUpload(String uploadKey) throws MFException, MFApiException, InterruptedException {
+    private void pollUpload(String uploadKey) throws MFException, MFApiException, InterruptedException, MFSessionNotStartedException {
         final LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_RESPONSE_FORMAT, JSON);
         params.put(PARAM_KEY, uploadKey);
@@ -306,7 +311,7 @@ public class MediaFireUpload implements Runnable {
         } while (pollCount <= MAX_POLLS);
     }
 
-    private void getWebUploads(String uploadKey) throws MFException, MFApiException, InterruptedException {
+    private void getWebUploads(String uploadKey) throws MFException, MFApiException, InterruptedException, MFSessionNotStartedException {
         final LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_RESPONSE_FORMAT, JSON);
         params.put(PARAM_UPLOAD_KEY, uploadKey);
@@ -350,7 +355,7 @@ public class MediaFireUpload implements Runnable {
         } while (pollCount <= MAX_POLLS);
     }
 
-    private void simpleUpload() throws MFException, MFApiException, IOException, InterruptedException {
+    private void simpleUpload() throws MFException, MFApiException, IOException, InterruptedException, MFSessionNotStartedException {
         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_RESPONSE_FORMAT, JSON);
         if (this.folderKey != null && !this.folderKey.isEmpty()) {
@@ -373,7 +378,7 @@ public class MediaFireUpload implements Runnable {
         pollUpload(uploadKey);
     }
 
-    private void addWebUpload() throws MFException, MFApiException, InterruptedException, UnsupportedEncodingException {
+    private void addWebUpload() throws MFException, MFApiException, InterruptedException, UnsupportedEncodingException, MFSessionNotStartedException {
         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_RESPONSE_FORMAT, JSON);
         params.put(PARAM_URL, this.url);

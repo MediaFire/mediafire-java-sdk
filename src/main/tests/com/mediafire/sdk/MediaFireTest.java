@@ -26,9 +26,11 @@ public class MediaFireTest extends TestCase {
         try {
             mediaFire.doApiRequest(null, null);
         } catch (MFException e) {
-            mfExceptionThrown = true;
+            fail("should not be able to make request: " + e.getMessage());
         } catch (MFApiException e) {
             fail("should not be able to make request: " + e.getMessage());
+        } catch (MFSessionNotStartedException e) {
+            mfExceptionThrown = true;
         }
 
         assertTrue(mfExceptionThrown);
@@ -39,9 +41,11 @@ public class MediaFireTest extends TestCase {
         try {
             mediaFire.doUploadRequest(null, null);
         } catch (MFException e) {
-            mfExceptionThrown = true;
+            fail("should not be able to make request: " + e.getMessage());
         } catch (MFApiException e) {
             fail("should not be able to make request: " + e.getMessage());
+        } catch (MFSessionNotStartedException e) {
+            mfExceptionThrown = true;
         }
 
         assertTrue(mfExceptionThrown);
@@ -52,9 +56,11 @@ public class MediaFireTest extends TestCase {
         try {
             mediaFire.doImageRequest(null);
         } catch (MFException e) {
-            mfExceptionThrown = true;
+            fail("should not be able to make request: " + e.getMessage());
         } catch (MFApiException e) {
             fail("should not be able to make request: " + e.getMessage());
+        } catch (MFSessionNotStartedException e) {
+            mfExceptionThrown = true;
         }
 
         assertTrue(mfExceptionThrown);
@@ -65,9 +71,11 @@ public class MediaFireTest extends TestCase {
         try {
             mediaFire.doDocumentRequest(null);
         } catch (MFException e) {
-            mfExceptionThrown = true;
+            fail("should not be able to make request: " + e.getMessage());
         } catch (MFApiException e) {
-            fail(e.getMessage());
+            fail("should not be able to make request: " + e.getMessage());
+        } catch (MFSessionNotStartedException e) {
+            mfExceptionThrown = true;
         }
 
         assertTrue(mfExceptionThrown);
@@ -102,6 +110,8 @@ public class MediaFireTest extends TestCase {
                 assertTrue("folder key created: " + folderKey, folderKey != null);
             } catch (MFException e) {
                 fail("should not throw mf exception: " + e.getMessage());
+            } catch (MFSessionNotStartedException e) {
+                fail("should not throw mf exception: " + e.getMessage());
             }
 
         } catch (MFApiException e) {
@@ -123,13 +133,40 @@ public class MediaFireTest extends TestCase {
             fail("exception should not have been thrown: " + e);
         }
 
-        ImageRequest imageRequest = new ImageRequest("aaaa", "dtcb1m3ldm7i1wc", '4', true);
+        ImageRequest imageRequest = new ImageRequest("aaaa", "tka3a7tzytezo42", '4', false);
         try {
             HttpApiResponse response = mediaFire.doImageRequest(imageRequest);
             assertTrue(response.getStatus() == 200);
         } catch (MFException e) {
             fail("exception should not have been thrown: " + e);
         } catch (MFApiException e) {
+            fail("exception should not have been thrown: " + e);
+        } catch (MFSessionNotStartedException e) {
+            fail("exception should not have been thrown: " + e);
+        }
+    }
+
+    public void testDoImageRequestConversionOnly() {
+        try {
+            mediaFire.startSessionWithEmail("badtestemail@badtestemail.com", "badtestemail", null);
+            if (!mediaFire.isSessionStarted()) {
+                fail("session should be started");
+            }
+        } catch (MFApiException e) {
+            fail("exception should not have been thrown: " + e);
+        } catch (MFException e) {
+            fail("exception should not have been thrown: " + e);
+        }
+
+        ImageRequest imageRequest = new ImageRequest("aaaa", "tka3a7tzytezo42", '4', true);
+        try {
+            HttpApiResponse response = mediaFire.doImageRequest(imageRequest);
+            assertTrue(response.getStatus() == 202 || response.getStatus() == 200);
+        } catch (MFException e) {
+            fail("exception should not have been thrown: " + e);
+        } catch (MFApiException e) {
+            fail("exception should not have been thrown: " + e);
+        } catch (MFSessionNotStartedException e) {
             fail("exception should not have been thrown: " + e);
         }
     }

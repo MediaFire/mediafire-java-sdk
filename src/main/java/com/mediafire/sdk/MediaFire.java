@@ -106,11 +106,11 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         sessionRequester.startSessionWithFacebook(facebookAccessToken, sessionCallbacks);
     }
 
-    public <T extends ApiResponse> T doApiRequest(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException {
+    public <T extends ApiResponse> T doApiRequest(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException, MFSessionNotStartedException {
         logger.info("doApiRequest()");
         if (!sessionStarted) {
             logger.severe("doApiRequest() called without session being started");
-            throw new MFException("cannot call doRequest() if session has not been started");
+            throw new MFSessionNotStartedException();
         }
 
         if (alternateDomain == null || alternateDomain.isEmpty()) {
@@ -135,41 +135,41 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
         }
     }
 
-    public <T extends ApiResponse> T doUploadRequest(UploadPostRequest uploadRequest, Class<T> classOfT) throws MFException, MFApiException {
+    public <T extends ApiResponse> T doUploadRequest(UploadPostRequest uploadRequest, Class<T> classOfT) throws MFException, MFApiException, MFSessionNotStartedException {
         logger.info("isSessionStarted()");
         if (!sessionStarted) {
             logger.severe("doUploadRequest() called without session being started");
-            throw new MFException("cannot call doUploadRequest() if session has not been started");
+            throw new MFSessionNotStartedException();
         }
 
         return actionRequester.doUploadRequest(uploadRequest, classOfT);
     }
 
-    public HttpApiResponse doImageRequest(ImageRequest imageRequest) throws MFException, MFApiException {
+    public HttpApiResponse doImageRequest(ImageRequest imageRequest) throws MFException, MFApiException, MFSessionNotStartedException {
         logger.info("isSessionStarted()");
         if (!sessionStarted) {
             logger.severe("doImageRequest() called without session being started");
-            throw new MFException("cannot call doConversionRequest() if session has not been started");
+            throw new MFSessionNotStartedException();
         }
 
         return actionRequester.doConversionRequest(imageRequest);
     }
 
-    public HttpApiResponse doDocumentRequest(DocumentRequest documentRequest) throws MFException, MFApiException {
+    public HttpApiResponse doDocumentRequest(DocumentRequest documentRequest) throws MFException, MFApiException, MFSessionNotStartedException {
         logger.info("isSessionStarted()");
         if (!sessionStarted) {
             logger.severe("doDocumentRequest() called without session being started");
-            throw new MFException("cannot call doConversionRequest() if session has not been started");
+            throw new MFSessionNotStartedException();
         }
 
         return actionRequester.doConversionRequest(documentRequest);
     }
 
-    public ActionToken borrowImageToken() throws MFException, MFApiException {
+    public ActionToken borrowImageToken() throws MFException, MFApiException, MFSessionNotStartedException {
         logger.info("borrowImageToken()");
         if (!sessionStarted) {
             logger.severe("borrowImageToken() called without session being started");
-            throw new MFException("cannot call borrowActionToken() if session has not been started");
+            throw new MFSessionNotStartedException();
         }
 
         return actionRequester.borrowImageToken();

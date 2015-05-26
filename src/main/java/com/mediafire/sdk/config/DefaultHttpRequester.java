@@ -1,6 +1,7 @@
 package com.mediafire.sdk.config;
 
 import com.mediafire.sdk.MFException;
+import com.mediafire.sdk.MFRuntimeException;
 import com.mediafire.sdk.requests.GetRequest;
 import com.mediafire.sdk.requests.HttpApiResponse;
 import com.mediafire.sdk.requests.PostRequest;
@@ -47,7 +48,7 @@ public class DefaultHttpRequester implements MFHttpRequester {
             } else if ("https".equals(postRequest.getScheme())) {
                 connection = (HttpsURLConnection) new URL(urlString).openConnection();
             } else {
-                throw new MFException("scheme must be http or https");
+                throw new MFRuntimeException("scheme must be http or https", new IllegalArgumentException());
             }
 
             // set up connection parameters
@@ -94,7 +95,7 @@ public class DefaultHttpRequester implements MFHttpRequester {
 
             logger.info("request url: " + urlString);
             logger.info("request headers: " + headers);
-            
+
             HttpURLConnection connection = (HttpsURLConnection) new URL(urlString).openConnection();
 
             // set up connection parameters

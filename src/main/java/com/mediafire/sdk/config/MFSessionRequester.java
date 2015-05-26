@@ -15,7 +15,7 @@ public interface MFSessionRequester {
      * @param email email address
      * @param password password
      * @param sessionCallback callback
-     * @throws MFException if an exception occurred
+     * @throws com.mediafire.sdk.MFException if an exception occurred
      * @throws MFApiException if an api exception occurred
      */
     void startSessionWithEmail(String email, String password, List<OnStartSessionCallback> sessionCallback) throws MFApiException, MFException;
@@ -26,7 +26,7 @@ public interface MFSessionRequester {
      * @param ekey email address
      * @param password password
      * @param sessionCallback callback
-     * @throws MFException if an exception occurred
+     * @throws com.mediafire.sdk.MFException if an exception occurred
      * @throws MFApiException if an api exception occurred
      */
     void startSessionWithEkey(String ekey, String password, List<OnStartSessionCallback> sessionCallback) throws MFApiException, MFException;
@@ -36,7 +36,7 @@ public interface MFSessionRequester {
      *
      * @param facebookAccessToken a facebook access token
      * @param sessionCallback callback
-     * @throws MFException if an exception occurred
+     * @throws com.mediafire.sdk.MFException if an exception occurred
      * @throws MFApiException if an api exception occurred
      */
     void startSessionWithFacebook(String facebookAccessToken, List<OnStartSessionCallback> sessionCallback) throws MFApiException, MFException;
@@ -57,7 +57,7 @@ public interface MFSessionRequester {
      * @param apiPostRequest the ApiPostRequest to make
      * @param classOfT the .class file passed which will be used to parse the api JSON response using Gson (must extend ApiResponse)
      * @return the response stored in the {@param classOfT object}
-     * @throws MFException if an exception occurred while making the request
+     * @throws com.mediafire.sdk.MFException if an exception occurred while making the request
      * @throws MFApiException if an api exception occurred
      */
     public <T extends ApiResponse> T doApiRequest(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException;
@@ -74,7 +74,7 @@ public interface MFSessionRequester {
      * @param apiPostRequest the ApiPostRequest to make
      * @param classOfT the .class file passed which will be used to parse the api JSON response using Gson (must extend ApiResponse)
      * @return the response stored in the {@param classOfT object}
-     * @throws MFException if an exception occurred while making the request
+     * @throws com.mediafire.sdk.MFException if an exception occurred while making the request
      * @throws MFApiException if an api exception occurred
      */
     public <T extends ApiResponse> T doApiRequestWithoutSession(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException;

@@ -2,6 +2,7 @@ package com.mediafire.sdk.config;
 
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
+import com.mediafire.sdk.MFSessionNotStartedException;
 import com.mediafire.sdk.MediaFire;
 import com.mediafire.sdk.api.UserApi;
 import com.mediafire.sdk.api.responses.ApiResponse;
@@ -120,6 +121,8 @@ public class DefaultSessionRequesterTest extends TestCase {
             fail("exception thrown: " + e);
         } catch (MFApiException e) {
             fail("exception thrown: " + e);
+        } catch (MFSessionNotStartedException e) {
+            fail("exception thrown: " + e);
         }
 
         assertTrue(response.getError() == 0);
@@ -234,6 +237,8 @@ public class DefaultSessionRequesterTest extends TestCase {
             } catch (MFException e) {
                 e.printStackTrace();
             } catch (MFApiException e) {
+                e.printStackTrace();
+            } catch (MFSessionNotStartedException e) {
                 e.printStackTrace();
             }
         }

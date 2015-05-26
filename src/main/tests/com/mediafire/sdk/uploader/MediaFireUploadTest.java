@@ -2,6 +2,7 @@ package com.mediafire.sdk.uploader;
 
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
+import com.mediafire.sdk.MFSessionNotStartedException;
 import com.mediafire.sdk.MediaFire;
 import junit.framework.TestCase;
 
@@ -129,6 +130,11 @@ public class MediaFireUploadTest extends TestCase implements MediaFireUploadHand
     public void uploadFailed(long id, MFApiException e) {
         System.out.println("uploadFailed() id: " + id + ", exception: " + e);
 
+    }
+
+    @Override
+    public void uploadFailed(long id, MFSessionNotStartedException e) {
+        System.out.println("uploadFailed() id: " + id + ", exception: " + e);
     }
 
     @Override

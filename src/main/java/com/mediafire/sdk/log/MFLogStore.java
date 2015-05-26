@@ -7,12 +7,6 @@ import java.util.List;
  */
 public interface MFLogStore<T extends MFLog> {
     /**
-     * gets all T from store as a LinkedList
-     * @return LinkedList
-     */
-    public List<T> getAll();
-
-    /**
      * deletes all T from store
      * @return number of deleted items
      */
@@ -30,10 +24,4 @@ public interface MFLogStore<T extends MFLog> {
      * @return the index or id of T that was added
      */
     public long addLog(T t);
-
-    /**
-     * adds a list of T to the store
-     * @param ts
-     */
-    public void addLogs(List<T> ts);
 }

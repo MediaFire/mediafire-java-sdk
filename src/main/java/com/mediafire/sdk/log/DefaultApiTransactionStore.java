@@ -11,13 +11,6 @@ public class DefaultApiTransactionStore implements MFLogStore<ApiTransaction> {
     private final Object lock = new Object();
 
     @Override
-    public LinkedList<ApiTransaction> getAll() {
-        synchronized (lock) {
-            return apiTransactions;
-        }
-    }
-
-    @Override
     public long deleteAll() {
         synchronized (lock) {
             int size = apiTransactions.size();
@@ -46,10 +39,15 @@ public class DefaultApiTransactionStore implements MFLogStore<ApiTransaction> {
         }
     }
 
-    @Override
     public void addLogs(List<ApiTransaction> apiTransactions) {
         synchronized (lock) {
             apiTransactions.addAll(apiTransactions);
+        }
+    }
+
+    public LinkedList<ApiTransaction> getAll() {
+        synchronized (lock) {
+            return apiTransactions;
         }
     }
 }

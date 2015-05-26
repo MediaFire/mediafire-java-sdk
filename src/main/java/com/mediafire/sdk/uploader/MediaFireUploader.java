@@ -2,13 +2,9 @@ package com.mediafire.sdk.uploader;
 
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
-import com.mediafire.sdk.MediaFire;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.*;
 
 /**

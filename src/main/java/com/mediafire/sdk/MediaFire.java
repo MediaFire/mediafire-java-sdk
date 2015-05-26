@@ -6,11 +6,14 @@ import com.mediafire.sdk.config.MFActionRequester;
 import com.mediafire.sdk.config.MFCredentials;
 import com.mediafire.sdk.config.MFSessionRequester;
 import com.mediafire.sdk.requests.*;
+import com.mediafire.sdk.token.ActionToken;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 /**
  * object used to start a mediafire session and make api requests.
@@ -21,25 +24,36 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
     private final MFCredentials credentials;
     private final MFSessionRequester sessionRequester;
     private final MFActionRequester actionRequester;
+    private final Logger logger;
     private boolean sessionStarted;
 
 
     public MediaFire(Configuration configuration) {
+        Handler loggerHandler = configuration.getLoggerHandler();
+        this.logger = Logger.getLogger("com.mediafire.sdk.MediaFire");
         this.credentials = configuration.getCredentials();
         this.sessionRequester = configuration.getSessionRequester();
         this.actionRequester = configuration.getActionRequester();
         this.alternateDomain = configuration.getAlternateDomain();
+
+        if (loggerHandler != null) {
+            this.credentials.addLoggerHandler(loggerHandler);
+            this.sessionRequester.addLoggerHandler(loggerHandler);
+            this.actionRequester.addLoggerHandler(loggerHandler);
+            this.logger.addHandler(loggerHandler);
+        }
     }
 
     public MediaFire(String appId, String apiKey) {
-        this(Configuration.getDefault(appId, apiKey));
+        this(Configuration.createConfiguration(appId, apiKey));
     }
 
     public MediaFire(String appId) {
-        this(Configuration.getDefault(appId));
+        this(Configuration.createConfiguration(appId));
     }
 
     public void endSession() {
+        logger.info("endSession()");
         sessionStarted = false;
         sessionRequester.endSession();
         actionRequester.endSession();
@@ -47,10 +61,12 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
     }
 
     public boolean isSessionStarted() {
+        logger.info("isSessionStarted()");
         return sessionStarted;
     }
 
     public void startSessionWithEmail(String email, String password, MFSessionRequester.OnStartSessionCallback sessionCallback) throws MFApiException, MFException {
+        logger.info("startSessionWithEmail()");
         Map<String, String> credentials = new HashMap<String, String>();
         credentials.put("email", email);
         credentials.put("password", password);
@@ -64,6 +80,7 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
     }
 
     public void startSessionWithEkey(String ekey, String password, MFSessionRequester.OnStartSessionCallback sessionCallback) throws MFApiException, MFException {
+        logger.info("startSessionWithEkey()");
         Map<String, String> credentials = new HashMap<String, String>();
         credentials.put("ekey", ekey);
         credentials.put("password", password);
@@ -77,6 +94,7 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
     }
 
     public void startSessionWithFacebook(String facebookAccessToken, MFSessionRequester.OnStartSessionCallback sessionCallback) throws MFApiException, MFException {
+        logger.info("startSessionWithFacebook()");
         Map<String, String> credentials = new HashMap<String, String>();
         credentials.put("fb_access_token", facebookAccessToken);
         this.credentials.setCredentials(credentials);
@@ -89,21 +107,38 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
     }
 
     public <T extends ApiResponse> T doApiRequest(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException {
+        logger.info("doApiRequest()");
         if (!sessionStarted) {
+            logger.severe("doApiRequest() called without session being started");
             throw new MFException("cannot call doRequest() if session has not been started");
         }
 
         if (alternateDomain == null || alternateDomain.isEmpty()) {
             return sessionRequester.doApiRequest(apiPostRequest, classOfT);
         } else {
+            logger.info("doApiRequest() making request with alternate domain: " + alternateDomain);
             ApiPostRequest apiPostRequestWithAlternateDomain =
                     new ApiPostRequest(apiPostRequest, alternateDomain);
             return sessionRequester.doApiRequest(apiPostRequestWithAlternateDomain, classOfT);
         }
     }
 
+    public <T extends ApiResponse> T doApiRequestWithoutSession(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException {
+        logger.info("doApiRequestWithoutSession()");
+        if (alternateDomain == null || alternateDomain.isEmpty()) {
+            return sessionRequester.doApiRequestWithoutSession(apiPostRequest, classOfT);
+        } else {
+            logger.info("doApiRequestWithoutSession() making request with alternate domain: " + alternateDomain);
+            ApiPostRequest apiPostRequestWithAlternateDomain =
+                    new ApiPostRequest(apiPostRequest, alternateDomain);
+            return sessionRequester.doApiRequestWithoutSession(apiPostRequestWithAlternateDomain, classOfT);
+        }
+    }
+
     public <T extends ApiResponse> T doUploadRequest(UploadPostRequest uploadRequest, Class<T> classOfT) throws MFException, MFApiException {
+        logger.info("isSessionStarted()");
         if (!sessionStarted) {
+            logger.severe("doUploadRequest() called without session being started");
             throw new MFException("cannot call doUploadRequest() if session has not been started");
         }
 
@@ -111,7 +146,9 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
     }
 
     public HttpApiResponse doImageRequest(ImageRequest imageRequest) throws MFException, MFApiException {
+        logger.info("isSessionStarted()");
         if (!sessionStarted) {
+            logger.severe("doImageRequest() called without session being started");
             throw new MFException("cannot call doConversionRequest() if session has not been started");
         }
 
@@ -119,15 +156,28 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
     }
 
     public HttpApiResponse doDocumentRequest(DocumentRequest documentRequest) throws MFException, MFApiException {
+        logger.info("isSessionStarted()");
         if (!sessionStarted) {
+            logger.severe("doDocumentRequest() called without session being started");
             throw new MFException("cannot call doConversionRequest() if session has not been started");
         }
 
         return actionRequester.doConversionRequest(documentRequest);
     }
 
+    public ActionToken borrowImageToken() throws MFException, MFApiException {
+        logger.info("borrowImageToken()");
+        if (!sessionStarted) {
+            logger.severe("borrowImageToken() called without session being started");
+            throw new MFException("cannot call borrowActionToken() if session has not been started");
+        }
+
+        return actionRequester.borrowImageToken();
+    }
+
     @Override
     public void onSessionStarted() {
+        logger.info("onSessionStarted()");
         sessionStarted = true;
         actionRequester.sessionStarted();
         sessionRequester.sessionStarted();
@@ -136,6 +186,7 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
 
     @Override
     public void onSessionFailed(int code, String message) {
+        logger.info("onSessionFailed()");
         endSession();
     }
 }

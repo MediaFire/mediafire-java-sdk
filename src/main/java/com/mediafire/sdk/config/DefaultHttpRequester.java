@@ -1,7 +1,6 @@
 package com.mediafire.sdk.config;
 
 import com.mediafire.sdk.MFException;
-import com.mediafire.sdk.MFRuntimeException;
 import com.mediafire.sdk.requests.GetRequest;
 import com.mediafire.sdk.requests.HttpApiResponse;
 import com.mediafire.sdk.requests.PostRequest;
@@ -15,27 +14,33 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 public class DefaultHttpRequester implements MFHttpRequester {
 
     private final int connectionTimeout;
     private final int readTimeout;
+    private final Logger logger;
 
     public DefaultHttpRequester(int connectionTimeout, int readTimeout) {
         this.connectionTimeout = connectionTimeout;
         this.readTimeout = readTimeout;
+        this.logger = Logger.getLogger("com.mediafire.sdk.config.DefaultHttpRequester");
     }
 
     @Override
     public HttpApiResponse doApiRequest(PostRequest postRequest) throws MFException {
+        logger.info("doApiRequest()");
         try {
             String urlString = postRequest.getUrl();
             Map<String, Object> headers = postRequest.getHeaders();
             byte[] payload = postRequest.getPayload();
 
-            System.out.println("request: " + urlString + "?" + (payload.length > 1000 ? "" : new String(payload)));
-            System.out.println("headers: " + headers);
-
+            logger.info("request url: " + urlString);
+            logger.info("request headers: " + headers);
+            logger.info("request payload: " + (payload.length < 1000 ? new String(payload) : payload.length));
+            
             HttpURLConnection connection;
             if ("http".equals(postRequest.getScheme())) {
                 connection = (HttpURLConnection) new URL(urlString).openConnection();
@@ -67,13 +72,16 @@ public class DefaultHttpRequester implements MFHttpRequester {
                 inputStream = connection.getInputStream();
             }
             byte[] response = readStream(inputStream);
-            System.out.println("response: " + new String(response));
             Map<String, List<String>> headerFields = connection.getHeaderFields();
+
+            logger.info("server response: " + new String(response));
+            logger.info("response headers: " + headerFields);
             return new HttpApiResponse(responseCode, response, headerFields);
         } catch (MalformedURLException e) {
+            logger.severe("exception: " + e);
             throw new MFException("Malformed Url in HttpRequester", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe("exception:" + e);
             throw new MFException("Exception in HttpRequester", e);
         }
     }
@@ -84,6 +92,9 @@ public class DefaultHttpRequester implements MFHttpRequester {
             String urlString = getRequest.getUrl();
             Map<String, Object> headers = getRequest.getHeaders();
 
+            logger.info("request url: " + urlString);
+            logger.info("request headers: " + headers);
+            
             HttpURLConnection connection = (HttpsURLConnection) new URL(urlString).openConnection();
 
             // set up connection parameters
@@ -105,13 +116,22 @@ public class DefaultHttpRequester implements MFHttpRequester {
             }
             byte[] response = readStream(inputStream);
             Map<String, List<String>> headerFields = connection.getHeaderFields();
+
+            logger.info("server response: " + new String(response));
+            logger.info("response headers: " + headerFields);
             return new HttpApiResponse(responseCode, response, headerFields);
         } catch (MalformedURLException e) {
+            logger.severe("exception: " + e);
             throw new MFException("Malformed Url in HttpRequester", e);
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new MFException("IOException in HttpRequester", e);
+            logger.severe("exception:" + e);
+            throw new MFException("Exception in HttpRequester", e);
         }
+    }
+
+    @Override
+    public void setLoggerHandler(Handler loggerHandler) {
+        logger.addHandler(loggerHandler);
     }
 
     private byte[] readStream(InputStream inputStream) throws IOException {

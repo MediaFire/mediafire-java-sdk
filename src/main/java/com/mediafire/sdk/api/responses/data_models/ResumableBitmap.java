@@ -15,7 +15,7 @@ public class ResumableBitmap {
     }
 
     public List<Integer> getWords() {
-        if (words == null || words.size() == 0) {
+        if (words == null || words.isEmpty()) {
             return new ArrayList<Integer>();
         }
         return convert(words);

@@ -8,7 +8,7 @@ public class DocumentRequest {
     private final String hash;
     private final String quickKey;
     private final String page;
-    private OptionalParameters parameters;
+    private final OptionalParameters parameters;
 
     public DocumentRequest(String hash, String quickKey, String page, OptionalParameters parameters) {
         this.hash = hash;

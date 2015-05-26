@@ -54,12 +54,8 @@ public class HttpApiResponse {
 
         HttpApiResponse that = (HttpApiResponse) o;
 
-        if (mStatus != that.mStatus) return false;
-        if (!Arrays.equals(mBodyBytes, that.mBodyBytes)) return false;
-        if (mHeaderFields != null ? !mHeaderFields.equals(that.mHeaderFields) : that.mHeaderFields != null)
-            return false;
+        return mStatus == that.mStatus && Arrays.equals(mBodyBytes, that.mBodyBytes) && !(mHeaderFields != null ? !mHeaderFields.equals(that.mHeaderFields) : that.mHeaderFields != null);
 
-        return true;
     }
 
     @Override

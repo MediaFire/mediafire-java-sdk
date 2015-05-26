@@ -41,7 +41,7 @@ public interface MediaFireUploadHandler {
     /**
      * called when a chunk of an upload has finished and the total progress has changed
      * @param id id of upload
-     * @param percentFinished
+     * @param percentFinished the approximate progress of the upload
      */
     public void uploadProgress(long id, double percentFinished);
 

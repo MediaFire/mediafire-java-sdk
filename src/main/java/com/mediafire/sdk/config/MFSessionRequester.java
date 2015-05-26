@@ -6,6 +6,7 @@ import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.requests.ApiPostRequest;
 
 import java.util.List;
+import java.util.logging.Handler;
 
 public interface MFSessionRequester {
     /**
@@ -51,7 +52,7 @@ public interface MFSessionRequester {
     void sessionStarted();
 
     /**
-     * makes an Api POST request using an action token
+     * makes an Api POST request using a session token
      *
      * @param apiPostRequest the ApiPostRequest to make
      * @param classOfT the .class file passed which will be used to parse the api JSON response using Gson (must extend ApiResponse)
@@ -66,6 +67,31 @@ public interface MFSessionRequester {
      * @return true if sessions are available
      */
     public boolean hasSession();
+
+    /**
+     * makes an Api POST request without using a session token
+     *
+     * @param apiPostRequest the ApiPostRequest to make
+     * @param classOfT the .class file passed which will be used to parse the api JSON response using Gson (must extend ApiResponse)
+     * @return the response stored in the {@param classOfT object}
+     * @throws MFException if an exception occurred while making the request
+     * @throws MFApiException if an api exception occurred
+     */
+    public <T extends ApiResponse> T doApiRequestWithoutSession(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException;
+
+
+    /**
+     * sets the Handler for logging
+     *
+     * @param loggerHandler a Handler
+     */
+    public void addLoggerHandler(Handler loggerHandler);
+
+    /**
+     * changes the credentials interface used
+     * @param credentials MFCredentials
+     */
+    public void setCredentials(MFCredentials credentials);
 
     /**
      * interface used for notification of starting session

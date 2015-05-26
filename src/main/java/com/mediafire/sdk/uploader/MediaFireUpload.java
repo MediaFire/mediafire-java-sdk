@@ -502,10 +502,9 @@ public class MediaFireUpload implements Runnable {
     }
 
     private static byte[] getFileBytes(File file) throws IOException {
-        FileInputStream fileInputStream = null;
         byte[] fileBytes = new byte[(int) file.length()];
         //convert file into array of bytes
-        fileInputStream = new FileInputStream(file);
+        FileInputStream fileInputStream = new FileInputStream(file);
         fileInputStream.read(fileBytes);
         fileInputStream.close();
         return fileBytes;
@@ -537,13 +536,11 @@ public class MediaFireUpload implements Runnable {
 
         MediaFireUpload that = (MediaFireUpload) o;
 
-        if (this.id != that.id) return false;
-        if (this.actionOnInAccount != that.actionOnInAccount) return false;
-        if (this.file != null ? !file.equals(that.file) : that.file != null) return false;
-        if (this.fileHash != null ? !fileHash.equals(that.fileHash) : that.fileHash != null) return false;
-        if (this.url != null ? !url.equals(that.url) : that.url != null) return false;
+        return this.id == that.id && this.actionOnInAccount == that.actionOnInAccount
+                && !(this.file != null ? !file.equals(that.file) : that.file != null)
+                && !(this.fileHash != null ? !fileHash.equals(that.fileHash) : that.fileHash != null)
+                && !(this.url != null ? !url.equals(that.url) : that.url != null);
 
-        return true;
     }
 
     @Override

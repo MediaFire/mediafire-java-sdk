@@ -1,12 +1,9 @@
 package com.mediafire.sdk.api.responses.data_models;
 
-import com.mediafire.sdk.api.responses.UserGetInfoResponse;
-
 /**
 * Created by Chris on 5/14/2015.
 */
 public class UserInfo {
-    private UserGetInfoResponse userGetInfoResponse;
     private String first_name;
     private String last_name;
     private String display_name;
@@ -24,11 +21,6 @@ public class UserInfo {
     private String ekey;
     private FacebookInfo facebook;
     private TwitterInfo twitter;
-
-    public UserInfo(UserGetInfoResponse userGetInfoResponse) {
-        this.userGetInfoResponse = userGetInfoResponse;
-    }
-
 
     public FacebookInfo getFacebookInfo() {
         if (facebook == null) {

@@ -5,7 +5,6 @@ import com.mediafire.sdk.requests.ApiPostRequest;
 import com.mediafire.sdk.requests.UploadPostRequest;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;

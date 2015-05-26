@@ -87,7 +87,7 @@ public class MediaFireUploaderTest extends TestCase {
         MediaFireUploader uploader = new MediaFireUploader(3);
 
         List<File> fileList = new ArrayList<File>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5; i++) {
             String prefix = "foobar" + i;
             String suffix = ".tmp";
             File file = null;
@@ -144,7 +144,7 @@ public class MediaFireUploaderTest extends TestCase {
         MediaFireUploader uploader = new MediaFireUploader(3);
 
         List<File> fileList = new ArrayList<File>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5; i++) {
             String prefix = "foobar" + i;
             String suffix = ".tmp";
             File file = null;
@@ -209,7 +209,7 @@ public class MediaFireUploaderTest extends TestCase {
         }
 
         List<File> simpleUploads = new ArrayList<File>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5; i++) {
             String prefix = "foobar" + i;
             String suffix = ".tmp";
             File file = null;
@@ -234,7 +234,7 @@ public class MediaFireUploaderTest extends TestCase {
         }
 
         List<File> resumableUploads = new ArrayList<File>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5; i++) {
             String prefix = "foobar" + i;
             String suffix = ".tmp";
             File file = null;

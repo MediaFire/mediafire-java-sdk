@@ -88,14 +88,13 @@ public class SessionToken {
 
         SessionToken that = (SessionToken) o;
 
-        if (sKey != that.sKey) return false;
-        if (eKey != null ? !eKey.equals(that.eKey) : that.eKey != null) return false;
-        if (pKey != null ? !pKey.equals(that.pKey) : that.pKey != null) return false;
-        if (pToken != null ? !pToken.equals(that.pToken) : that.pToken != null) return false;
-        if (time != null ? !time.equals(that.time) : that.time != null) return false;
-        if (token != null ? !token.equals(that.token) : that.token != null) return false;
+        return sKey == that.sKey
+                && !(eKey != null ? !eKey.equals(that.eKey) : that.eKey != null)
+                && !(pKey != null ? !pKey.equals(that.pKey) : that.pKey != null)
+                && !(pToken != null ? !pToken.equals(that.pToken) : that.pToken != null)
+                && !(time != null ? !time.equals(that.time) : that.time != null)
+                && !(token != null ? !token.equals(that.token) : that.token != null);
 
-        return true;
     }
 
     @Override

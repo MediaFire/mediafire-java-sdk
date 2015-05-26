@@ -3,6 +3,8 @@ package com.mediafire.sdk.config;
 import com.mediafire.sdk.token.ActionToken;
 import com.mediafire.sdk.token.SessionToken;
 
+import java.util.logging.Handler;
+
 /**
  * This class contains a set of interface objects which are then used to instantiate the MediaFire object.
  * The simplest implementation can call Configuration.getDefault()
@@ -16,6 +18,7 @@ public class Configuration {
     private String alternateDomain;
     private final String apiKey;
     private final String appId;
+    private Handler logger;
 
     public Configuration(String appId, String apiKey) {
         this.appId = appId;
@@ -88,12 +91,21 @@ public class Configuration {
     }
 
     /**
+     * gets the logger used in this configuration
+     * @return Logger
+     */
+    public Handler getLoggerHandler() {
+        return logger;
+    }
+
+    /**
      *  sets the MFCredentials for this configuration
      *
      * @param mediaFireCredentials MFCredentials
      */
     public void setCredentials(MFCredentials mediaFireCredentials) {
         this.credentials = mediaFireCredentials;
+        this.sessionRequester.setCredentials(this.credentials);
     }
 
     /**
@@ -133,28 +145,37 @@ public class Configuration {
     }
 
     /**
+     * sets a logger handler for this configuration
+     * @param logger Handler
+     */
+    public void setLoggerHandler(Handler logger) {
+        this.logger = logger;
+    }
+
+    /**
      * returns a Configuration object using default interface implementations
      *
      * @param appId the application id
      * @param apiKey the api key (can be null)
      * @return a Configuration object.
      */
-    public static Configuration getDefault(String appId, String apiKey) {
+    public static Configuration createConfiguration(String appId, String apiKey) {
         // store for session tokens
         MFStore<SessionToken> sessionStore = new DefaultSessionStore();
-        MFStore<ActionToken> imageStore = new DefaultActionStore(2);
-        MFStore<ActionToken> uploadStore = new DefaultActionStore(60);
+        MFStore<ActionToken> imageStore = new DefaultActionStore(1);
+        MFStore<ActionToken> uploadStore = new DefaultActionStore(10);
 
         MFCredentials credentials = new DefaultCredentials();
         MFHttpRequester httpRequester = new DefaultHttpRequester(5000, 45000);
         MFSessionRequester sessionRequester = new DefaultSessionRequester(credentials, appId, apiKey, httpRequester, sessionStore);
+        sessionRequester.setCredentials(credentials);
         MFActionRequester actionRequester = new DefaultActionRequester(httpRequester, sessionRequester, imageStore, uploadStore);
 
         Configuration configuration = new Configuration(appId, apiKey);
-        configuration.setCredentials(credentials);
         configuration.setHttpRequester(httpRequester);
         configuration.setSessionRequester(sessionRequester);
         configuration.setActionRequester(actionRequester);
+        configuration.setCredentials(credentials);
         return configuration;
     }
 
@@ -164,7 +185,7 @@ public class Configuration {
      * @param appId the application id
      * @return a Configuration object.
      */
-    public static Configuration getDefault(String appId) {
-        return getDefault(appId, null);
+    public static Configuration createConfiguration(String appId) {
+        return createConfiguration(appId, null);
     }
 }

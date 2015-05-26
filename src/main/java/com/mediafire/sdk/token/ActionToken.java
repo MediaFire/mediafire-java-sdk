@@ -23,11 +23,11 @@ public class ActionToken {
     }
 
     public boolean isExpired() {
-        return expirationMillis > System.currentTimeMillis();
+        return System.currentTimeMillis() > expirationMillis;
     }
 
     public boolean isExpiringWithinMillis(long millis) {
-        return expirationMillis - millis > System.currentTimeMillis();
+        return System.currentTimeMillis() > expirationMillis - millis;
     }
 
     public String getToken() {
@@ -53,10 +53,8 @@ public class ActionToken {
 
         ActionToken that = (ActionToken) o;
 
-        if (expirationMillis != that.expirationMillis) return false;
-        if (tokenString != null ? !tokenString.equals(that.tokenString) : that.tokenString != null) return false;
+        return expirationMillis == that.expirationMillis && !(tokenString != null ? !tokenString.equals(that.tokenString) : that.tokenString != null);
 
-        return true;
     }
 
     @Override

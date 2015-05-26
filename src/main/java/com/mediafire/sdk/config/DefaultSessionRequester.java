@@ -13,18 +13,21 @@ import com.mediafire.sdk.util.ResponseUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 public class DefaultSessionRequester implements MFSessionRequester {
 
     private static final int MIN_TOKENS = 2;
     private static final int MAX_TOKENS = 6;
-    private final MFCredentials credentials;
+    private MFCredentials credentials;
     private final MFHttpRequester http;
     private final MFStore<SessionToken> sessionStore;
     private boolean sessionStarted;
     private final Object sessionLock = new Object();
     private final String apiKey;
     private final String appId;
+    private final Logger logger;
 
     public DefaultSessionRequester(MFCredentials credentials, String appId, String apiKey, MFHttpRequester http, MFStore<SessionToken> sessionStore) {
         this.credentials = credentials;
@@ -32,6 +35,7 @@ public class DefaultSessionRequester implements MFSessionRequester {
         this.appId = appId;
         this.http = http;
         this.sessionStore = sessionStore;
+        this.logger = Logger.getLogger("com.mediafire.sdk.config.DefaultSessionRequester");
     }
 
     public DefaultSessionRequester(MFCredentials credentials, String appId, MFHttpRequester http, MFStore<SessionToken> sessionStore) {
@@ -40,8 +44,14 @@ public class DefaultSessionRequester implements MFSessionRequester {
 
     @Override
     public void startSessionWithEmail(String email, String password, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException, MFException {
+        logger.info("startSessionWithEmail()");
         if (sessionStarted) {
-            throw new MFException("Session already started");
+            if (sessionCallbacks != null) {
+                for (OnStartSessionCallback callback : sessionCallbacks) {
+                    callback.onSessionStarted();
+                }
+            }
+            return;
         }
         synchronized (sessionLock) {
             // create api request
@@ -53,8 +63,14 @@ public class DefaultSessionRequester implements MFSessionRequester {
 
     @Override
     public void startSessionWithEkey(String ekey, String password, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException, MFException {
+        logger.info("startSessionWithEkey()");
         if (sessionStarted) {
-            throw new MFException("Session already started");
+            if (sessionCallbacks != null) {
+                for (OnStartSessionCallback callback : sessionCallbacks) {
+                    callback.onSessionStarted();
+                }
+            }
+            return;
         }
         synchronized (sessionLock) {
             // create api request
@@ -66,8 +82,14 @@ public class DefaultSessionRequester implements MFSessionRequester {
 
     @Override
     public void startSessionWithFacebook(String facebookAccessToken, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException, MFException {
+        logger.info("startSessionWithFacebook()");
         if (sessionStarted) {
-            throw new MFException("Session already started");
+            if (sessionCallbacks != null) {
+                for (OnStartSessionCallback callback : sessionCallbacks) {
+                    callback.onSessionStarted();
+                }
+            }
+            return;
         }
         synchronized (sessionLock) {
             // create api request
@@ -79,12 +101,14 @@ public class DefaultSessionRequester implements MFSessionRequester {
 
     @Override
     public void endSession() {
+        logger.info("endSession()");
         sessionStarted = false;
         sessionStore.clear();
     }
 
     @Override
     public void sessionStarted() {
+        logger.info("sessionStarted()");
         sessionStarted = true;
         credentials.setValid();
         getNewTokens(MIN_TOKENS);
@@ -92,15 +116,19 @@ public class DefaultSessionRequester implements MFSessionRequester {
 
     @Override
     public <T extends ApiResponse> T doApiRequest(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException {
+        logger.info("doApiRequest()");
         if (!sessionStarted) {
+            logger.severe("doApiRequest() called but session has not been started");
             throw new MFException("cannot call doApiRequest() if session has not been started");
         }
 
         SessionToken sessionToken = null;
         if (apiPostRequest.requiresToken()) {
+            logger.info("doApiRequest() borrowing session token");
             //borrow token if available
             synchronized (sessionStore) {
                 if (!sessionStore.available()) {
+                    logger.info("doApiRequest() no session tokens are available from store");
                     if (sessionStore.getAvailableCount() < MIN_TOKENS) {
                         getNewTokens(MIN_TOKENS);
                     }
@@ -109,11 +137,13 @@ public class DefaultSessionRequester implements MFSessionRequester {
                 sessionToken = sessionStore.get();
 
                 if (sessionToken == null) {
+                    logger.severe("doApiRequest() called but could not get a session token from store");
                     throw new MFException("could not get session token from store");
                 }
             }
             apiPostRequest.addSessionToken(sessionToken.getToken());
             apiPostRequest.addSignature(RequestUtil.makeSignatureForApiRequest(sessionToken.getSecretKey(), sessionToken.getTime(), apiPostRequest));
+            logger.info("doApiRequest() added session token and signature to request");
         }
 
         PostRequest postRequest = new PostRequest(apiPostRequest);
@@ -122,9 +152,12 @@ public class DefaultSessionRequester implements MFSessionRequester {
 
         // return token
         synchronized (sessionStore) {
+            logger.info("doApiRequest() returning session token to store if there is space");
             if (sessionStore.getAvailableCount() < MAX_TOKENS) {
+                logger.info("doApiRequest() session token store has space for token");
                 ApiResponse apiResponse = ResponseUtil.makeApiResponseFromHttpResponse(httpResponse, classOfT);
                 if (!apiResponse.hasError() && apiResponse.needNewKey() && sessionToken != null) {
+                    logger.info("doApiRequest() api response made with token requires token update before storing");
                     SessionToken updatedSessionToken = SessionToken.updateSessionToken(sessionToken);
                     sessionStore.put(updatedSessionToken);
                 } else if (!apiResponse.hasError() && sessionToken != null) {
@@ -137,10 +170,31 @@ public class DefaultSessionRequester implements MFSessionRequester {
 
     @Override
     public boolean hasSession() {
+        logger.info("hasSession()");
         return sessionStore.available();
     }
 
+    @Override
+    public <T extends ApiResponse> T doApiRequestWithoutSession(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException {
+        logger.info("doApiRequestWithoutSession()");
+        PostRequest postRequest = new PostRequest(apiPostRequest);
+        HttpApiResponse httpResponse = http.doApiRequest(postRequest);
+        ResponseUtil.validateHttpResponse(httpResponse);
+        return ResponseUtil.makeApiResponseFromHttpResponse(httpResponse, classOfT);
+    }
+
+    @Override
+    public void addLoggerHandler(Handler loggerHandler) {
+        logger.addHandler(loggerHandler);
+    }
+
+    @Override
+    public void setCredentials(MFCredentials credentials) {
+        this.credentials = credentials;
+    }
+
     private void doNewSessionRequestWithCredentials() throws MFException, MFApiException {
+        logger.info("doNewSessionRequestWithCredentials()");
         if (!credentials.isValid()) {
             throw new MFException("cannot make requests if credentials are not valid");
         }
@@ -168,6 +222,7 @@ public class DefaultSessionRequester implements MFSessionRequester {
     }
 
     private <T extends ApiResponse> T doNewSessionRequest(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException {
+        logger.info("doNewSessionRequest()");
         PostRequest postRequest = new PostRequest(apiPostRequest);
         HttpApiResponse httpResponse = http.doApiRequest(postRequest);
         ResponseUtil.validateHttpResponse(httpResponse);
@@ -175,6 +230,7 @@ public class DefaultSessionRequester implements MFSessionRequester {
     }
 
     private void makeNewSessionRequest(ApiPostRequest apiPostRequest, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException {
+        logger.info("makeNewSessionRequest()");
         try {
             UserGetSessionTokenResponse apiResponse = doNewSessionRequest(apiPostRequest, UserGetSessionTokenResponse.class);
             // handle the api response by notifying callback and (if successful) set session to started
@@ -190,6 +246,7 @@ public class DefaultSessionRequester implements MFSessionRequester {
     }
 
     private void handleApiResponse(UserGetSessionTokenResponse apiResponse, List<OnStartSessionCallback> sessionCallbacks) throws MFApiException {
+        logger.info("handleApiResponse()");
         // throw ApiException if request has api error
         if (apiResponse.hasError()) {
             if (sessionCallbacks == null) {
@@ -218,6 +275,7 @@ public class DefaultSessionRequester implements MFSessionRequester {
     }
 
     private void getNewTokens(int numberOfNewTokensToGet) {
+        logger.info("getNewTokens()");
         for (int i = 0; i < numberOfNewTokensToGet; i++) {
             Thread thread = new Thread(new Runnable() {
                 @Override

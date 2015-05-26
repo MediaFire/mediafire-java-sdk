@@ -7,6 +7,9 @@ import com.mediafire.sdk.requests.DocumentRequest;
 import com.mediafire.sdk.requests.HttpApiResponse;
 import com.mediafire.sdk.requests.ImageRequest;
 import com.mediafire.sdk.requests.UploadPostRequest;
+import com.mediafire.sdk.token.ActionToken;
+
+import java.util.logging.Handler;
 
 public interface MFActionRequester {
     /**
@@ -49,4 +52,17 @@ public interface MFActionRequester {
      * @throws MFApiException if an api exception occurred
      */
     public <T extends ApiResponse> T doUploadRequest(UploadPostRequest uploadRequest, Class<T> classOfT) throws MFException, MFApiException;
+
+    /**
+     * attempts to use an image token from the action requester
+     * @return an ActionToken
+     */
+    public ActionToken borrowImageToken() throws MFException, MFApiException;
+
+    /**
+     * sets the Handler for logging
+     *
+     * @param loggerHandler a Handler
+     */
+    public void addLoggerHandler(Handler loggerHandler);
 }

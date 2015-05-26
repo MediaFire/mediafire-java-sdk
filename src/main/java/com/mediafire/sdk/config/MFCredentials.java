@@ -1,6 +1,7 @@
 package com.mediafire.sdk.config;
 
 import java.util.Map;
+import java.util.logging.Handler;
 
 public interface MFCredentials {
 
@@ -35,4 +36,11 @@ public interface MFCredentials {
      * @return true if credentials stored are valid
      */
     public boolean isValid();
+
+    /**
+     * sets the Handler for logging
+     *
+     * @param loggerHandler a Handler
+     */
+    public void addLoggerHandler(Handler loggerHandler);
 }

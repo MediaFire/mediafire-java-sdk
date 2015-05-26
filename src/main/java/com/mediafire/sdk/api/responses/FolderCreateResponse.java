@@ -48,15 +48,8 @@ public class FolderCreateResponse extends ApiResponse {
     }
 
     public boolean isPrivate() {
-        if (privacy == null) {
-            return false;
-        }
+        return privacy != null && "private".equals(privacy);
 
-        if ("private".equals(privacy)) {
-            return true;
-        }
-
-        return false;
     }
 
     public int getFileCount() {

@@ -1,6 +1,5 @@
 package com.mediafire.sdk.api.responses;
 
-import com.mediafire.sdk.api.responses.data_models.DoUpload;
 import com.mediafire.sdk.api.responses.data_models.SimpleDoUpload;
 
 /**

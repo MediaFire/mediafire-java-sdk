@@ -1,11 +1,11 @@
 package com.mediafire.sdk.config;
 
 import com.mediafire.sdk.MFException;
+import com.mediafire.sdk.log.ApiTransaction;
+import com.mediafire.sdk.log.MFLogStore;
 import com.mediafire.sdk.requests.GetRequest;
 import com.mediafire.sdk.requests.HttpApiResponse;
 import com.mediafire.sdk.requests.PostRequest;
-
-import java.util.logging.Handler;
 
 public interface MFHttpRequester {
     /**
@@ -25,9 +25,8 @@ public interface MFHttpRequester {
     public HttpApiResponse doApiRequest(GetRequest getRequest) throws MFException;
 
     /**
-     * sets the Handler for logging
-     *
-     * @param loggerHandler a Handler
+     * sets the store for api transactions
+     * @param store an MFLogStore of ApiTransaction
      */
-    public void setLoggerHandler(Handler loggerHandler);
+    public void setApiTransactionStore(MFLogStore<ApiTransaction> store);
 }

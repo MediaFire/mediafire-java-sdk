@@ -3,8 +3,6 @@ package com.mediafire.sdk.config;
 import com.mediafire.sdk.token.ActionToken;
 import com.mediafire.sdk.token.SessionToken;
 
-import java.util.logging.Handler;
-
 /**
  * This class contains a set of interface objects which are then used to instantiate the MediaFire object.
  * The simplest implementation can call Configuration.getDefault()
@@ -18,7 +16,6 @@ public class Configuration {
     private String alternateDomain;
     private final String apiKey;
     private final String appId;
-    private Handler logger;
 
     public Configuration(String appId, String apiKey) {
         this.appId = appId;
@@ -91,14 +88,6 @@ public class Configuration {
     }
 
     /**
-     * gets the logger used in this configuration
-     * @return Logger
-     */
-    public Handler getLoggerHandler() {
-        return logger;
-    }
-
-    /**
      *  sets the MFCredentials for this configuration
      *
      * @param mediaFireCredentials MFCredentials
@@ -142,14 +131,6 @@ public class Configuration {
      */
     public void setAlternateDomain(String alternateDomain) {
         this.alternateDomain = alternateDomain;
-    }
-
-    /**
-     * sets a logger handler for this configuration
-     * @param logger Handler
-     */
-    public void setLoggerHandler(Handler logger) {
-        this.logger = logger;
     }
 
     /**

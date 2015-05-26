@@ -24,24 +24,15 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
     private final MFCredentials credentials;
     private final MFSessionRequester sessionRequester;
     private final MFActionRequester actionRequester;
-    private final Logger logger;
+    private final Logger logger = Logger.getLogger("com.mediafire.sdk.MediaFire");
     private boolean sessionStarted;
 
 
     public MediaFire(Configuration configuration) {
-        Handler loggerHandler = configuration.getLoggerHandler();
-        this.logger = Logger.getLogger("com.mediafire.sdk.MediaFire");
         this.credentials = configuration.getCredentials();
         this.sessionRequester = configuration.getSessionRequester();
         this.actionRequester = configuration.getActionRequester();
         this.alternateDomain = configuration.getAlternateDomain();
-
-        if (loggerHandler != null) {
-            this.credentials.addLoggerHandler(loggerHandler);
-            this.sessionRequester.addLoggerHandler(loggerHandler);
-            this.actionRequester.addLoggerHandler(loggerHandler);
-            this.logger.addHandler(loggerHandler);
-        }
     }
 
     public MediaFire(String appId, String apiKey) {
@@ -50,6 +41,10 @@ public class MediaFire implements MFSessionRequester.OnStartSessionCallback {
 
     public MediaFire(String appId) {
         this(Configuration.createConfiguration(appId));
+    }
+
+    public void addLoggerHandler(Handler handler) {
+        this.logger.addHandler(handler);
     }
 
     public void endSession() {

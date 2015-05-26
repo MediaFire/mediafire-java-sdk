@@ -6,7 +6,6 @@ import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.requests.ApiPostRequest;
 
 import java.util.List;
-import java.util.logging.Handler;
 
 public interface MFSessionRequester {
     /**
@@ -78,14 +77,6 @@ public interface MFSessionRequester {
      * @throws MFApiException if an api exception occurred
      */
     public <T extends ApiResponse> T doApiRequestWithoutSession(ApiPostRequest apiPostRequest, Class<T> classOfT) throws MFException, MFApiException;
-
-
-    /**
-     * sets the Handler for logging
-     *
-     * @param loggerHandler a Handler
-     */
-    public void addLoggerHandler(Handler loggerHandler);
 
     /**
      * changes the credentials interface used

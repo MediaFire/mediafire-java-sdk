@@ -2,6 +2,9 @@ package com.mediafire.sdk.config;
 
 import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.MFRuntimeException;
+import com.mediafire.sdk.log.ApiTransaction;
+import com.mediafire.sdk.log.DefaultApiTransactionStore;
+import com.mediafire.sdk.log.MFLogStore;
 import com.mediafire.sdk.requests.GetRequest;
 import com.mediafire.sdk.requests.HttpApiResponse;
 import com.mediafire.sdk.requests.PostRequest;
@@ -15,33 +18,30 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
 
 public class DefaultHttpRequester implements MFHttpRequester {
 
     private final int connectionTimeout;
     private final int readTimeout;
-    private final Logger logger;
+    private MFLogStore<ApiTransaction> store = new DefaultApiTransactionStore();
 
     public DefaultHttpRequester(int connectionTimeout, int readTimeout) {
         this.connectionTimeout = connectionTimeout;
         this.readTimeout = readTimeout;
-        this.logger = Logger.getLogger("com.mediafire.sdk.config.DefaultHttpRequester");
+    }
+
+    @Override
+    public void setApiTransactionStore(MFLogStore<ApiTransaction> store) {
+        this.store = store;
     }
 
     @Override
     public HttpApiResponse doApiRequest(PostRequest postRequest) throws MFException {
-        logger.info("doApiRequest()");
         try {
             String urlString = postRequest.getUrl();
             Map<String, Object> headers = postRequest.getHeaders();
             byte[] payload = postRequest.getPayload();
 
-            logger.info("request url: " + urlString);
-            logger.info("request headers: " + headers);
-            logger.info("request payload: " + (payload.length < 1000 ? new String(payload) : payload.length));
-            
             HttpURLConnection connection;
             if ("http".equals(postRequest.getScheme())) {
                 connection = (HttpURLConnection) new URL(urlString).openConnection();
@@ -75,14 +75,22 @@ public class DefaultHttpRequester implements MFHttpRequester {
             byte[] response = readStream(inputStream);
             Map<String, List<String>> headerFields = connection.getHeaderFields();
 
-            logger.info("server response: " + new String(response));
-            logger.info("response headers: " + headerFields);
-            return new HttpApiResponse(responseCode, response, headerFields);
+            HttpApiResponse apiResponse = new HttpApiResponse(responseCode, response, headerFields);
+
+            if (this.store != null) {
+                this.store.addLog(new ApiTransaction(postRequest, apiResponse));
+            }
+
+            return apiResponse;
         } catch (MalformedURLException e) {
-            logger.severe("exception: " + e);
+            if (this.store != null) {
+                this.store.addLog(new ApiTransaction(postRequest, e));
+            }
             throw new MFException("Malformed Url in HttpRequester", e);
         } catch (IOException e) {
-            logger.severe("exception:" + e);
+            if (this.store != null) {
+                this.store.addLog(new ApiTransaction(postRequest, e));
+            }
             throw new MFException("Exception in HttpRequester", e);
         }
     }
@@ -92,9 +100,6 @@ public class DefaultHttpRequester implements MFHttpRequester {
         try {
             String urlString = getRequest.getUrl();
             Map<String, Object> headers = getRequest.getHeaders();
-
-            logger.info("request url: " + urlString);
-            logger.info("request headers: " + headers);
 
             HttpURLConnection connection = (HttpsURLConnection) new URL(urlString).openConnection();
 
@@ -118,21 +123,24 @@ public class DefaultHttpRequester implements MFHttpRequester {
             byte[] response = readStream(inputStream);
             Map<String, List<String>> headerFields = connection.getHeaderFields();
 
-            logger.info("server response: " + new String(response));
-            logger.info("response headers: " + headerFields);
-            return new HttpApiResponse(responseCode, response, headerFields);
+            HttpApiResponse apiResponse = new HttpApiResponse(responseCode, response, headerFields);
+
+            if (this.store != null) {
+                this.store.addLog(new ApiTransaction(getRequest, apiResponse));
+            }
+
+            return apiResponse;
         } catch (MalformedURLException e) {
-            logger.severe("exception: " + e);
+            if (this.store != null) {
+                this.store.addLog(new ApiTransaction(getRequest, e));
+            }
             throw new MFException("Malformed Url in HttpRequester", e);
         } catch (IOException e) {
-            logger.severe("exception:" + e);
+            if (this.store != null) {
+                this.store.addLog(new ApiTransaction(getRequest, e));
+            }
             throw new MFException("Exception in HttpRequester", e);
         }
-    }
-
-    @Override
-    public void setLoggerHandler(Handler loggerHandler) {
-        logger.addHandler(loggerHandler);
     }
 
     private byte[] readStream(InputStream inputStream) throws IOException {

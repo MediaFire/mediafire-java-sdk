@@ -10,8 +10,6 @@ import com.mediafire.sdk.requests.ImageRequest;
 import com.mediafire.sdk.requests.UploadPostRequest;
 import com.mediafire.sdk.token.ActionToken;
 
-import java.util.logging.Handler;
-
 public interface MFActionRequester {
     /**
      * ends the session
@@ -59,11 +57,4 @@ public interface MFActionRequester {
      * @return an ActionToken
      */
     public ActionToken borrowImageToken() throws MFException, MFApiException, MFSessionNotStartedException;
-
-    /**
-     * sets the Handler for logging
-     *
-     * @param loggerHandler a Handler
-     */
-    public void addLoggerHandler(Handler loggerHandler);
 }

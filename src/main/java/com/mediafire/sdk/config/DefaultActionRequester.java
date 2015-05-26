@@ -10,8 +10,6 @@ import com.mediafire.sdk.token.ActionToken;
 import com.mediafire.sdk.util.ResponseUtil;
 
 import java.util.LinkedHashMap;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
 
 public class DefaultActionRequester implements MFActionRequester {
     private static final int REQUESTED_IMAGE_TOKEN_LIFESPAN_MINUTES = 10;
@@ -19,7 +17,6 @@ public class DefaultActionRequester implements MFActionRequester {
     private final MFSessionRequester sessionRequester;
     private final MFStore<ActionToken> imageStore;
     private final MFStore<ActionToken> uploadStore;
-    private final Logger logger;
 
     private boolean sessionStarted;
 
@@ -29,7 +26,6 @@ public class DefaultActionRequester implements MFActionRequester {
         this.sessionRequester = sessionRequester;
         this.imageStore = imageStore;
         this.uploadStore = uploadStore;
-        this.logger = Logger.getLogger("com.mediafire.sdk.config.DefaultActionRequester");
     }
 
     @Override
@@ -41,15 +37,12 @@ public class DefaultActionRequester implements MFActionRequester {
 
     @Override
     public void sessionStarted() {
-        logger.info("sessionStarted()");
         sessionStarted = true;
     }
 
     @Override
     public HttpApiResponse doConversionRequest(ImageRequest imageRequest) throws MFException, MFApiException, MFSessionNotStartedException {
-        logger.info("doConversionRequest()");
         if (!sessionStarted) {
-            logger.severe("doConversionRequest() called when session was not started");
             throw new MFSessionNotStartedException();
         }
 
@@ -60,6 +53,10 @@ public class DefaultActionRequester implements MFActionRequester {
                 getNewImageTokenFromSessionRequester();
             }
             imageToken = imageStore.get();
+
+            if (imageToken == null) {
+                throw new MFException("could not get image token from store");
+            }
         }
 
         GetRequest getRequest = new GetRequest(imageRequest, imageToken);
@@ -75,9 +72,7 @@ public class DefaultActionRequester implements MFActionRequester {
 
     @Override
     public HttpApiResponse doConversionRequest(DocumentRequest documentRequest) throws MFException, MFApiException, MFSessionNotStartedException {
-        logger.info("doConversionRequest()");
         if (!sessionStarted) {
-            logger.severe("doConversionRequest() called when session was not started");
             throw new MFSessionNotStartedException();
         }
 
@@ -107,25 +102,20 @@ public class DefaultActionRequester implements MFActionRequester {
 
     @Override
     public <T extends ApiResponse> T doUploadRequest(UploadPostRequest uploadRequest, Class<T> classOfT) throws MFException, MFApiException, MFSessionNotStartedException {
-        logger.info("doUploadRequest()");
         if (!sessionStarted) {
-            logger.severe("doUploadRequest() called when session was not started");
             throw new MFSessionNotStartedException();
         }
 
         ActionToken uploadToken;
         //borrow token if available
         synchronized (uploadStore) {
-            logger.info("doUploadRequest() borrowing upload token from store");
             if (!uploadStore.available()) {
-                logger.info("doUploadRequest() no upload tokens available");
                 getNewUploadTokenFromSessionRequester();
             }
             uploadToken = uploadStore.get();
 
             if (uploadToken == null) {
-                logger.severe("doUploadRequest() could not get upload token from store");
-                throw new MFException("could not get upload action token from store");
+                throw new MFException("could not get upload token from store");
             }
         }
 
@@ -143,9 +133,7 @@ public class DefaultActionRequester implements MFActionRequester {
 
     @Override
     public ActionToken borrowImageToken() throws MFException, MFApiException, MFSessionNotStartedException {
-        logger.info("borrowImageToken()");
         if (!sessionStarted) {
-            logger.severe("borrowImageToken() called when session was not started");
             throw new MFSessionNotStartedException();
         }
 
@@ -165,13 +153,7 @@ public class DefaultActionRequester implements MFActionRequester {
         return imageToken;
     }
 
-    @Override
-    public void addLoggerHandler(Handler loggerHandler) {
-        logger.addHandler(loggerHandler);
-    }
-
     private void getNewUploadTokenFromSessionRequester() throws MFException, MFApiException {
-        logger.info("getNewUploadTokenFromSessionRequester()");
         LinkedHashMap<String, Object> query = new LinkedHashMap<String, Object>();
         query.put("type", "upload");
         query.put("lifespan", REQUESTED_IMAGE_TOKEN_LIFESPAN_MINUTES);
@@ -181,17 +163,14 @@ public class DefaultActionRequester implements MFActionRequester {
     }
 
     private void makeNewUploadTokenRequest(ApiPostRequest apiPostRequest) throws MFApiException, MFException {
-        logger.info("makeNewUploadTokenRequest()");
         UserGetActionTokenResponse apiResponse = sessionRequester.doApiRequest(apiPostRequest, UserGetActionTokenResponse.class);
         // handle the api response by notifying callback and (if successful) set session to started
         handleUploadTokenResponse(apiResponse);
     }
 
     private void handleUploadTokenResponse(UserGetActionTokenResponse apiResponse) throws MFApiException {
-        logger.info("handleUploadTokenResponse()");
         // throw ApiException if request has api error
         if (apiResponse.hasError()) {
-            logger.info("handleUploadTokenResponse() response had api error: " + apiResponse.getMessage());
             throw new MFApiException(apiResponse.getError(), apiResponse.getMessage());
         }
         // store token
@@ -199,10 +178,7 @@ public class DefaultActionRequester implements MFActionRequester {
         uploadStore.put(sessionToken);
     }
 
-
-
     private void getNewImageTokenFromSessionRequester() throws MFException, MFApiException {
-        logger.info("getNewImageTokenFromSessionRequester()");
         LinkedHashMap<String, Object> query = new LinkedHashMap<String, Object>();
         query.put("type", "image");
         query.put("lifespan", REQUESTED_IMAGE_TOKEN_LIFESPAN_MINUTES);
@@ -212,16 +188,13 @@ public class DefaultActionRequester implements MFActionRequester {
     }
 
     private void makeNewImageTokenRequest(ApiPostRequest apiPostRequest) throws MFException, MFApiException {
-        logger.info("makeNewImageTokenRequest()");
         UserGetActionTokenResponse apiResponse = sessionRequester.doApiRequest(apiPostRequest, UserGetActionTokenResponse.class);
         handleImageTokenResponse(apiResponse);
     }
 
     private void handleImageTokenResponse(UserGetActionTokenResponse apiResponse) throws MFApiException {
-        logger.info("handleImageTokenResponse()");
         // throw ApiException if request has api error
         if (apiResponse.hasError()) {
-            logger.info("handleImageTokenResponse() response had api error: " + apiResponse.getMessage());
             throw new MFApiException(apiResponse.getError(), apiResponse.getMessage());
         }
         // store token

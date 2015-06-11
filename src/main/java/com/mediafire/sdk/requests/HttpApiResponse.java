@@ -65,4 +65,8 @@ public class HttpApiResponse {
         result = 31 * result + (mHeaderFields != null ? mHeaderFields.hashCode() : 0);
         return result;
     }
+
+    public static HttpApiResponse noNetworkResponse() {
+        return new HttpApiResponse(-1, null, null);
+    }
 }

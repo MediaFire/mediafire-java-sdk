@@ -49,7 +49,7 @@ public class ApiTransaction extends MFLog {
     }
 
     public ApiTransaction(PostRequest postRequest, Exception e) {
-        this(postRequest, null, e);
+        this(postRequest, HttpApiResponse.noNetworkResponse(), e);
     }
 
     private ApiTransaction(GetRequest getRequest, HttpApiResponse response, Exception e) {

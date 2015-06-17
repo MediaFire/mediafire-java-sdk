@@ -82,11 +82,11 @@ public class MediaFireUpload implements Runnable {
         this.id = id;
     }
 
-    private void setOptionalFolderKey(String folderKey) {
+    public void setOptionalFolderKey(String folderKey) {
         this.folderKey = folderKey;
     }
 
-    private void setOptionalFolderPath(String folderPath) {
+    public void setOptionalFolderPath(String folderPath) {
         this.folderPath = folderPath;
     }
 

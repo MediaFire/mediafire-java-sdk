@@ -62,6 +62,7 @@ public class MediaFireUpload implements Runnable {
     private String folderKey;
     private String folderPath;
     private final long id;
+    private boolean resumable;
 
     public MediaFireUpload(MediaFire mediaFire, int statusToFinish, File file, String filename, ActionOnInAccount actionOnInAccount, MediaFireUploadHandler handler, long id) {
         this.mediaFire = mediaFire;
@@ -90,6 +91,10 @@ public class MediaFireUpload implements Runnable {
         this.folderPath = folderPath;
     }
 
+    public void setResumable(boolean resumable) {
+        this.resumable = resumable;
+    }
+
     public long getId() {
         return this.id;
     }
@@ -100,7 +105,7 @@ public class MediaFireUpload implements Runnable {
             if (this.url != null && !this.url.isEmpty()) {
                     addWebUpload();
             } else if (file != null && file.exists()) {
-                if (this.file.length() < FOUR_MB) {
+                if (this.file.length() < FOUR_MB && !resumable) {
                     simpleUpload();
                 } else {
                     checkUpload();

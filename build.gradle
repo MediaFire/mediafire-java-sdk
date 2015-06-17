@@ -19,7 +19,7 @@ task sourceJar(type: Jar) {
     from sourceSets.main.java
 }
 
-def pVersion = '4.0.1-SNAPSHOT'
+def pVersion = '4.0.2-SNAPSHOT'
 
 publishing {
     publications {

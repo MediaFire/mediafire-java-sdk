@@ -1,57 +1,50 @@
-apply plugin: 'java'
-apply plugin: 'maven-publish'
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
 
-// repositories
+plugins {
+    id "com.jfrog.bintray" version "1.2"
+    id "java"
+    id "maven-publish"
+}
+
 repositories {
-    maven { url "http://git.site.com:8081/nexus/content/groups/public" }
-    mavenCentral()
+    jcenter()
 }
 
-// dependencies of the SDK
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'com.google.code.gson:gson:2.2.4'
-    compile 'com.google.guava:guava:11.0.2'
 }
-
-// task to make jar from java files
-task sourceJar(type: Jar) {
-    from sourceSets.main.java
-}
-
-def pVersion = '4.0.3-SNAPSHOT'
 
 publishing {
     publications {
-        // create maven publication parameters
-        maven(MavenPublication) {
-            artifactId = 'mediafire-sdk'
-            groupId = 'com.mediafire'
-            version pVersion
+        MyPublication(MavenPublication) {
             from components.java
-
-            artifact sourceJar {
-                classifier "sources"
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            // nexus maven credentials
-            credentials {
-                username "admin"
-                password "qwpo1998"
-            }
-            println(pVersion)
-            if(pVersion.endsWith('-SNAPSHOT')) {
-                url "http://git.site.com:8081/nexus/content/repositories/snapshots"
-            } else {
-                url "http://git.site.com:8081/nexus/content/repositories/releases"
-            }
+            groupId 'mediafire'
+            artifactId 'java-sdk'
+            version '1.0.0'
         }
     }
 }
 
+bintray {
+    user = bintray_user
+    key = bintray_api_key
+    publications = ['MyPublication']
 
+    pkg {
+        repo = 'maven'
+        name = 'mediafire-java-sdk'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://www.github.com/MediaFire/mediafire-java-sdk.git'
+        version {
+            name = 'clockwerk'
+        }
+    }
+}
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}

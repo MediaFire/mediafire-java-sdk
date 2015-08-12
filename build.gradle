@@ -14,10 +14,6 @@ repositories {
     jcenter()
 }
 
-dependencies {
-    compile 'com.google.code.gson:gson:2.2.4'
-}
-
 publishing {
     publications {
         MyPublication(MavenPublication) {
@@ -40,11 +36,7 @@ bintray {
         licenses = ['Apache-2.0']
         vcsUrl = 'https://www.github.com/MediaFire/mediafire-java-sdk.git'
         version {
-            name = 'clockwerk'
+            name = 'rubick'
         }
     }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.4'
 }

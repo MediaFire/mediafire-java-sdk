@@ -35,6 +35,11 @@ public class MFHttpRequester implements MediaFireHttpRequester {
         return makeRequest(request, true);
     }
 
+    @Override
+    public MediaFireHttpsAgent getHttpsAgent() {
+        return httpsAgent;
+    }
+
     private MediaFireHttpResponse makeRequest(MediaFireHttpRequest request, boolean doOutput) throws MediaFireException {
         try {
             String urlString = request.getRequestUrl();
@@ -69,8 +74,8 @@ public class MFHttpRequester implements MediaFireHttpRequester {
 
     private void setupConnection(HttpsURLConnection connection, Map<String, Object> headers, boolean doOutput) {
 
-        if (httpsAgent != null) {
-            httpsAgent.configureHttpsUrlConnection(connection);
+        if (getHttpsAgent() != null) {
+            getHttpsAgent().configureHttpsUrlConnection(connection);
         }
 
         connection.setConnectTimeout(connectionTimeout);

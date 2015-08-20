@@ -1,6 +1,6 @@
 package com.mediafire.sdk;
 
-import com.mediafire.sdk.api.responses.ApiResponse;
+import com.mediafire.sdk.api.responses.MediaFireApiResponse;
 
 public interface MediaFireApiResponseParser {
     /**
@@ -10,5 +10,11 @@ public interface MediaFireApiResponseParser {
      * @param <T>
      * @return null if the response could not be parsed
      */
-    <T extends ApiResponse> T parseResponse(MediaFireHttpResponse response, Class<T> classOfT) throws MediaFireException;
+    <T extends MediaFireApiResponse> T parseResponse(MediaFireHttpResponse response, Class<T> classOfT) throws MediaFireException;
+
+    /**
+     * response format (json or xml)
+     * @return
+     */
+    String getResponseFormat();
 }

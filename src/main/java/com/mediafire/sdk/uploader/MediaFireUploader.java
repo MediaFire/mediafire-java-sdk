@@ -1,11 +1,10 @@
 package com.mediafire.sdk.uploader;
 
-import com.mediafire.sdk.MFApiException;
-import com.mediafire.sdk.MFSessionNotStartedException;
+import com.mediafire.sdk.MediaFireException;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.*;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Uploader which handles MediaFireUpload requests. Pausable.
@@ -116,33 +115,6 @@ public class MediaFireUploader implements MediaFireUploadHandler {
         }
     }
 
-    @Override
-    public void uploadFailed(long id, MFApiException e) {
-        for (MediaFireUploadHandler handler : handlers) {
-            handler.uploadFailed(id, e);
-        }
-    }
-
-    @Override
-    public void uploadFailed(long id, MFSessionNotStartedException e) {
-        for (MediaFireUploadHandler handler : handlers) {
-            handler.uploadFailed(id, e);
-        }
-    }
-
-    @Override
-    public void uploadFailed(long id, IOException e) {
-        for (MediaFireUploadHandler handler : handlers) {
-            handler.uploadFailed(id, e);
-        }
-    }
-
-    @Override
-    public void uploadFailed(long id, InterruptedException e) {
-        for (MediaFireUploadHandler handler : handlers) {
-            handler.uploadFailed(id, e);
-        }
-    }
 
     @Override
     public void uploadProgress(long id, double percentFinished) {

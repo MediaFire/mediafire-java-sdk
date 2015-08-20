@@ -1,49 +1,34 @@
 package com.mediafire.sdk;
 
-import com.mediafire.sdk.api.responses.ApiResponse;
+import com.mediafire.sdk.api.responses.MediaFireApiResponse;
+
+import java.util.Map;
 
 public interface MediaFireClient {
-    /**
-     * makes a request to MediaFire. the ApiResponse matches the class passed.
-     * @param request
-     * @param classOfT
-     * @param <T>
-     * @return
-     */
-    <T extends ApiResponse> T doNoAuthRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException;
 
-    /**
-     *
-     * @param request
-     * @return
-     * @throws MediaFireException
-     */
-    MediaFireHttpResponse doConversionRequest(MediaFireApiRequest request) throws MediaFireException;
+    <T extends MediaFireApiResponse> T noAuthRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException;
 
-    /**
-     *
-     * @param request
-     * @param payload
-     * @return
-     * @throws MediaFireException
-     */
-    <T extends ApiResponse> T doUploadRequest(MediaFireApiRequest request, byte[] payload, Class<T> classOfT) throws MediaFireException;
+    MediaFireHttpResponse conversionServerRequest(String hash, Map<String, Object> requestParameters) throws MediaFireException;
 
-    /**
-     *
-     * @param request
-     * @param classOfT
-     * @param <T>
-     * @return
-     * @throws MediaFireException
-     */
-    <T extends ApiResponse> T doAuthenticatedRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException;
+    <T extends MediaFireApiResponse> T uploadRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException;
 
-    /**
-     *
-     * @return
-     * @throws MediaFireException
-     * @param type
-     */
-    MediaFireActionToken getActionToken(int type) throws MediaFireException;
+    <T extends MediaFireApiResponse> T sessionRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException;
+
+    <T extends MediaFireApiResponse> T authenticationRequest(String apiVersion, int tokenVersion) throws MediaFireException;
+
+    MediaFireHttpRequester getHttpRequester();
+
+    MediaFireSessionStore getSessionStore();
+
+    MediaFireCredentialsStore getCredentialStore();
+
+    MediaFireHasher getHasher();
+
+    MediaFireApiResponseParser getResponseParser();
+
+    String getApplicationId();
+
+    String getApiKey();
+
+    String getOverrideVersion();
 }

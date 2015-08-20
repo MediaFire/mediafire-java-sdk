@@ -1,10 +1,9 @@
 package com.mediafire.sdk.uploader;
 
+import com.mediafire.sdk.MFClient;
 import com.mediafire.sdk.MediaFireException;
-import com.mediafire.sdk.api.UploadApi;
 import com.mediafire.sdk.api.responses.*;
 import com.mediafire.sdk.api.responses.data_models.*;
-import com.mediafire.sdk.util.HashUtil;
 
 import java.io.*;
 import java.io.File;
@@ -45,7 +44,7 @@ public class MediaFireUpload implements Runnable {
     private static final String CONTENT_TYPE_OCTET_STREAM = "application/octet-stream";
 
     // args passed via constructor
-    private final MediaFire mediaFire;
+    private final MFClient mediaFire;
     private final int statusToFinish;
     private File file;
     private ActionOnInAccount actionOnInAccount;
@@ -61,7 +60,7 @@ public class MediaFireUpload implements Runnable {
     private final long id;
     private boolean resumable;
 
-    public MediaFireUpload(MediaFire mediaFire, int statusToFinish, File file, String filename, ActionOnInAccount actionOnInAccount, MediaFireUploadHandler handler, long id) {
+    public MediaFireUpload(MFClient mediaFire, int statusToFinish, File file, String filename, ActionOnInAccount actionOnInAccount, MediaFireUploadHandler handler, long id) {
         this.mediaFire = mediaFire;
         this.statusToFinish = statusToFinish;
         this.file = file;
@@ -71,7 +70,7 @@ public class MediaFireUpload implements Runnable {
         this.id = id;
     }
 
-    public MediaFireUpload(MediaFire mediaFire, int statusToFinish, String url, String filename, MediaFireUploadHandler handler, long id) {
+    public MediaFireUpload(MFClient mediaFire, int statusToFinish, String url, String filename, MediaFireUploadHandler handler, long id) {
         this.mediaFire = mediaFire;
         this.statusToFinish = statusToFinish;
         this.url = url;
@@ -114,26 +113,10 @@ public class MediaFireUpload implements Runnable {
             if (this.handler != null) {
                 this.handler.uploadFailed(this.id, e);
             }
-        } catch (MFApiException e) {
-            if (this.handler != null) {
-                this.handler.uploadFailed(this.id, e);
-            }
-        } catch (IOException e) {
-            if (this.handler != null) {
-                this.handler.uploadFailed(this.id, e);
-            }
-        } catch (InterruptedException e) {
-            if (this.handler != null) {
-                this.handler.uploadFailed(this.id, e);
-            }
-        } catch (MFSessionNotStartedException e) {
-            if (this.handler != null) {
-                this.handler.uploadFailed(this.id, e);
-            }
         }
     }
 
-    private void checkUpload() throws IOException, MediaFireException {
+    private void checkUpload() throws MediaFireException {
         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_RESPONSE_FORMAT, JSON);
         params.put(PARAM_RESUMABLE, "yes");
@@ -148,7 +131,7 @@ public class MediaFireUpload implements Runnable {
             params.put(PARAM_FOLDER_PATH, this.folderPath);
         }
 
-        UploadCheckResponse response = UploadApi.check(this.mediaFire, params, "1.4", UploadCheckResponse.class);
+        UploadCheckResponse response = callCheck(params);
 
         String hashExists = response.getHashExists();
         String inAccount = response.getInAccount();
@@ -188,7 +171,11 @@ public class MediaFireUpload implements Runnable {
         params.put(PARAM_RESPONSE_FORMAT, JSON);
         params.put(PARAM_SIZE, this.file.length());
         params.put(PARAM_HASH, getFileHash());
-        params.put(PARAM_FILENAME, URLEncoder.encode(filename, UTF8));
+        try {
+            params.put(PARAM_FILENAME, URLEncoder.encode(filename, UTF8));
+        } catch (UnsupportedEncodingException e) {
+            throw new MediaFireException("couldn't encode " + filename + " with " + UTF8);
+        }
         if (this.folderKey != null && !this.folderKey.isEmpty()) {
             params.put(PARAM_FOLDER_KEY, folderKey);
         }
@@ -197,7 +184,7 @@ public class MediaFireUpload implements Runnable {
             params.put(PARAM_FOLDER_PATH, this.folderPath);
         }
 
-        UploadInstantResponse response = UploadApi.instant(this.mediaFire, params, "1.4", UploadInstantResponse.class);
+        UploadInstantResponse response = callInstant(params);
         String quickKey = response.getQuickKey();
         String fileName = response.getFileName();
         uploadFinished(quickKey, fileName);
@@ -219,7 +206,11 @@ public class MediaFireUpload implements Runnable {
         headers.put(HEADER_X_FILESIZE, file.length());
         headers.put(HEADER_X_FILEHASH, getFileHash());
         headers.put(HEADER_CONTENT_TYPE, CONTENT_TYPE_OCTET_STREAM);
-        headers.put(HEADER_X_FILENAME, URLEncoder.encode(this.filename, UTF8));
+        try {
+            headers.put(HEADER_X_FILENAME, URLEncoder.encode(this.filename, UTF8));
+        } catch (UnsupportedEncodingException e) {
+            throw new MediaFireException("couldn't encode " + filename + " with " + UTF8);
+        }
 
 
         int numUnits = resumableUpload.getNumberOfUnits();
@@ -232,12 +223,12 @@ public class MediaFireUpload implements Runnable {
 
             int chunkSize = getChunkSize(chunkNumber, numUnits, this.file.length(), unitSize);
             byte[] chunk = makeChunk(unitSize, chunkNumber);
-            String chunkHash = HashUtil.sha256(chunk);
+            String chunkHash = mediaFire.getHasher().sha256(chunk);
 
             headers.put(HEADER_X_UNIT_ID, chunkNumber);
             headers.put(HEADER_X_UNIT_SIZE, chunkSize);
             headers.put(HEADER_X_UNIT_HASH, chunkHash);
-            UploadResumableResponse response = UploadApi.resumable(this.mediaFire, params, headers, chunk, "1.4", UploadResumableResponse.class);
+            UploadResumableResponse response = callResumable(params, headers, chunk);
             ResumableDoUpload doUpload = response.getDoUpload();
             ResumableUpload newResumableUpload = response.getResumableUpload();
             String allUnitsReady = newResumableUpload.getAllUnitsReady();
@@ -298,17 +289,21 @@ public class MediaFireUpload implements Runnable {
             }
 
             if (fileErrorCode != 0) {
-                throw new MFApiException(fileErrorCode, "file error code " + fileErrorCode + " while polling");
+                throw new MediaFireException("file error code " + fileErrorCode + " while polling");
             }
 
             if (resultCode != 0) {
-                throw new MFApiException(fileErrorCode, "resultCode code " + resultCode + " while polling");
+                throw new MediaFireException("result code " + resultCode + " while polling");
             }
 
             if (handler != null) {
                 handler.uploadPolling(id, statusCode, description);
             }
-            Thread.sleep(TIME_BETWEEN_POLLS_MILLIS);
+            try {
+                Thread.sleep(TIME_BETWEEN_POLLS_MILLIS);
+            } catch (InterruptedException e) {
+                throw new MediaFireException("thread interrupted while sleeping between poll attempts", e);
+            }
             pollCount++;
         } while (pollCount <= MAX_POLLS);
     }
@@ -346,13 +341,17 @@ public class MediaFireUpload implements Runnable {
             }
 
             if (errorStatus != 0) {
-                throw new MFApiException(errorStatus, "error status " + errorStatus + " while polling upload/get_web_uploads");
+                throw new MediaFireException("error status " + errorStatus + " while polling upload/get_web_uploads");
             }
 
             if (handler != null) {
                 handler.uploadPolling(id, statusCode, description);
             }
-            Thread.sleep(TIME_BETWEEN_POLLS_MILLIS);
+            try {
+                Thread.sleep(TIME_BETWEEN_POLLS_MILLIS);
+            } catch (InterruptedException e) {
+                throw new MediaFireException("thread interrupted while sleeping between poll attempts", e);
+            }
             pollCount++;
         } while (pollCount <= MAX_POLLS);
     }
@@ -384,7 +383,11 @@ public class MediaFireUpload implements Runnable {
         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_RESPONSE_FORMAT, JSON);
         params.put(PARAM_URL, this.url);
-        params.put(PARAM_FILENAME, URLEncoder.encode(this.filename, UTF8));
+        try {
+            params.put(PARAM_FILENAME, URLEncoder.encode(this.filename, UTF8));
+        } catch (UnsupportedEncodingException e) {
+            throw new MediaFireException("couldn't encode " + filename + " with " + UTF8);
+        }
         if (this.folderKey != null && !this.folderKey.isEmpty()) {
             params.put(PARAM_FOLDER_KEY, this.folderKey);
         }
@@ -413,21 +416,27 @@ public class MediaFireUpload implements Runnable {
         }
     }
 
-    private String getFileHash() throws IOException {
+    private String getFileHash() {
         if (this.fileHash == null) {
-            this.fileHash = HashUtil.sha256(file);
+            this.fileHash = mediaFire.getHasher().sha256(file);
         }
 
         return this.fileHash;
     }
 
-    private byte[] makeChunk(int unitSize, int chunkNumber) throws IOException {
-        FileInputStream fis = new FileInputStream(this.file);
-        BufferedInputStream bis = new BufferedInputStream(fis);
-        byte[] uploadChunk = createUploadChunk(unitSize, chunkNumber, bis);
-        fis.close();
-        bis.close();
-        return uploadChunk;
+    private byte[] makeChunk(int unitSize, int chunkNumber) throws MediaFireException {
+        try {
+            FileInputStream fis = new FileInputStream(this.file);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            byte[] uploadChunk = createUploadChunk(unitSize, chunkNumber, bis);
+            fis.close();
+            bis.close();
+            return uploadChunk;
+        } catch (FileNotFoundException e) {
+            throw new MediaFireException("file not found while uploading", e);
+        } catch (IOException e) {
+            throw new MediaFireException("i/o exception while uploading", e);
+        }
     }
 
     private int getChunkSize(int chunkNumber, int numChunks, long fileSize, int unitSize) {
@@ -447,31 +456,35 @@ public class MediaFireUpload implements Runnable {
         return chunkSize;
     }
 
-    private byte[] createUploadChunk(long unitSize, int chunkNumber, BufferedInputStream fileStream) throws IOException {
-        int offset = (int) (unitSize * chunkNumber);
-        fileStream.skip(offset);
+    private byte[] createUploadChunk(long unitSize, int chunkNumber, BufferedInputStream fileStream) throws MediaFireException {
+        try {
+            int offset = (int) (unitSize * chunkNumber);
+            fileStream.skip(offset);
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream( (int) unitSize);
-        int bufferSize = 65536;
+            ByteArrayOutputStream output = new ByteArrayOutputStream((int) unitSize);
+            int bufferSize = 65536;
 
-        byte[] buffer = new byte[bufferSize];
-        int readSize;
-        int t = 0;
+            byte[] buffer = new byte[bufferSize];
+            int readSize;
+            int t = 0;
 
-        while ((readSize = fileStream.read(buffer)) > 0 && t <= unitSize) {
-            if (output.size() + readSize > unitSize) {
-                int actualReadSize = (int) unitSize - output.size();
-                output.write(buffer, 0, actualReadSize);
-            } else {
-                output.write(buffer, 0, readSize);
+            while ((readSize = fileStream.read(buffer)) > 0 && t <= unitSize) {
+                if (output.size() + readSize > unitSize) {
+                    int actualReadSize = (int) unitSize - output.size();
+                    output.write(buffer, 0, actualReadSize);
+                } else {
+                    output.write(buffer, 0, readSize);
+                }
+
+                if (readSize > 0) {
+                    t += readSize;
+                }
             }
 
-            if (readSize > 0) {
-                t += readSize;
-            }
+            return output.toByteArray();
+        } catch (IOException e) {
+            throw new MediaFireException("i/o exception while uploading", e);
         }
-
-        return output.toByteArray();
     }
 
     private boolean isChunkUploaded(int chunkId) {
@@ -508,13 +521,31 @@ public class MediaFireUpload implements Runnable {
         this.uploadUnits = uploadUnits;
     }
 
-    private static byte[] getFileBytes(File file) throws IOException {
-        byte[] fileBytes = new byte[(int) file.length()];
-        //convert file into array of bytes
-        FileInputStream fileInputStream = new FileInputStream(file);
-        fileInputStream.read(fileBytes);
-        fileInputStream.close();
-        return fileBytes;
+    private static byte[] getFileBytes(File file) throws MediaFireException {
+        try {
+            byte[] fileBytes = new byte[(int) file.length()];
+            //convert file into array of bytes
+            FileInputStream fileInputStream = new FileInputStream(file);
+            fileInputStream.read(fileBytes);
+            fileInputStream.close();
+            return fileBytes;
+        } catch (FileNotFoundException e) {
+            throw new MediaFireException("file not found while uploading", e);
+        } catch (IOException e) {
+            throw new MediaFireException("i/o exception while uploading", e);
+        }
+    }
+
+    private UploadCheckResponse callCheck(LinkedHashMap<String, Object> params) {
+        return null;
+    }
+
+    private UploadInstantResponse callInstant(LinkedHashMap<String, Object> params) {
+        return null;
+    }
+
+    private UploadResumableResponse callResumable(LinkedHashMap<String, Object> params, Map<String, Object> headers, byte[] chunk) {
+        return null;
     }
 
     public enum ActionOnInAccount {

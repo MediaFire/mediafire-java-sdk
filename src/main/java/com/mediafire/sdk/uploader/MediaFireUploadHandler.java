@@ -1,7 +1,6 @@
 package com.mediafire.sdk.uploader;
 
 import com.mediafire.sdk.MFApiException;
-import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.MFSessionNotStartedException;
 
 import java.io.IOException;
@@ -12,11 +11,11 @@ import java.io.IOException;
 public interface MediaFireUploadHandler {
 
     /**
-     * called when an upload has failed with an MFException. the upload may be retried, but likely will continue to fail
+     * called when an upload has failed with an MediaFireException. the upload may be retried, but likely will continue to fail
      * @param id id of upload
-     * @param e MFException
+     * @param e MediaFireException
      */
-    public void uploadFailed(long id, MFException e);
+    public void uploadFailed(long id, MediaFireException e);
 
     /**
      * called when an upload has failed with an MFApiException. the upload may be retried, depending on the error code

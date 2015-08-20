@@ -1,7 +1,6 @@
 package com.mediafire.sdk.uploader;
 
 import com.mediafire.sdk.MFApiException;
-import com.mediafire.sdk.MFException;
 import junit.framework.TestCase;
 
 import java.io.File;

@@ -6,8 +6,6 @@ import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.api.responses.UserGetAvatarResponse;
 import com.mediafire.sdk.api.responses.UserGetInfoResponse;
 import com.mediafire.sdk.api.responses.UserGetSettingsResponse;
-import com.mediafire.sdk.ApiPostRequest;
-import com.mediafire.sdk.token.SessionToken;
 import junit.framework.TestCase;
 
 import java.util.*;

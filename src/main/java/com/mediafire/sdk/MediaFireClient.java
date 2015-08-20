@@ -27,7 +27,7 @@ public interface MediaFireClient {
      * @return
      * @throws MediaFireException
      */
-    <T extends ApiResponse> T doUploadRequest(MediaFireApiRequest request, byte[] payload) throws MediaFireException;
+    <T extends ApiResponse> T doUploadRequest(MediaFireApiRequest request, byte[] payload, Class<T> classOfT) throws MediaFireException;
 
     /**
      *

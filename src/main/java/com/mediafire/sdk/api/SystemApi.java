@@ -1,10 +1,8 @@
 package com.mediafire.sdk.api;
 
-import com.mediafire.sdk.MFApiException;
-import com.mediafire.sdk.MFException;
-import com.mediafire.sdk.MFSessionNotStartedException;
+import com.mediafire.sdk.MediaFireClient;
+import com.mediafire.sdk.MediaFireException;
 import com.mediafire.sdk.api.responses.ApiResponse;
-import com.mediafire.sdk.ApiPostRequest;
 
 import java.util.LinkedHashMap;
 
@@ -26,10 +24,10 @@ public class SystemApi {
      * @param apiVersion version of the api to call e.g. 1.0, 1.1, 1.2
      * @param classOfT the .class file passed which will be used to parse the api JSON response using Gson (must extend ApiResponse)
      * @return an instance of {@param classOfT}
-     * @throws com.mediafire.sdk.MFException if an exception occurred
-     * @throws MFApiException, MFSessionNotStartedException if there was an api error
+     * @throws com.mediafire.sdk.MediaFireException if an exception occurred
+     * @throws  if there was an api error
      */
-    public static <T extends ApiResponse> T getInfo(MediaFire mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MFException, MFApiException, MFSessionNotStartedException {
+    public static <T extends ApiResponse> T getInfo(MediaFireClient mediaFire, LinkedHashMap<String, Object> requestParams, String apiVersion, Class<T> classOfT) throws MediaFireException {
         ApiPostRequest apiPostRequest = new ApiPostRequest("/api/" + apiVersion + "/system/get_info.php", requestParams, false);
         return mediaFire.doApiRequest(apiPostRequest, classOfT);
     }

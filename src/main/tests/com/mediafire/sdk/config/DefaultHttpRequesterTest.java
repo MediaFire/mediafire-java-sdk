@@ -1,7 +1,5 @@
 package com.mediafire.sdk.config;
 
-import com.mediafire.sdk.DefaultHttpRequester;
-import com.mediafire.sdk.ApiPostRequest;
 import com.mediafire.sdk.PostRequest;
 import junit.framework.TestCase;
 

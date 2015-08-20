@@ -29,8 +29,8 @@ public class MFClient implements MediaFireClient {
     }
 
     @Override
-    public <T extends ApiResponse> T doUploadRequest(MediaFireApiRequest request, byte[] payload) throws MediaFireException {
-        return requestCoordinator.uploadRequest(request, payload);
+    public <T extends ApiResponse> T doUploadRequest(MediaFireApiRequest request, byte[] payload, Class<T> classOfT) throws MediaFireException {
+        return requestCoordinator.uploadRequest(request, payload, classOfT);
     }
 
     @Override

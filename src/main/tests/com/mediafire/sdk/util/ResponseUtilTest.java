@@ -1,7 +1,6 @@
 package com.mediafire.sdk.util;
 
 import com.mediafire.sdk.MFApiException;
-import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.api.responses.ApiResponse;
 import junit.framework.TestCase;
 

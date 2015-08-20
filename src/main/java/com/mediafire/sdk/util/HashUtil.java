@@ -1,8 +1,11 @@
 package com.mediafire.sdk.util;
 
-import com.mediafire.sdk.MFRuntimeException;
+import com.mediafire.sdk.MediaFireException;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -15,43 +18,43 @@ public class HashUtil {
         // no instantiation, utility class
     }
 
-    public static String sha1(String string) {
+    public static String sha1(String string) throws MediaFireException {
         return hash(SHA1, string.getBytes());
     }
 
-    public static String md5(String string) {
+    public static String md5(String string) throws MediaFireException {
         return hash(MD5, string.getBytes());
     }
 
-    public static String sha256(String string) {
+    public static String sha256(String string) throws MediaFireException {
         return hash(SHA256, string.getBytes());
     }
 
-    public static String sha1(byte[] bytes) {
+    public static String sha1(byte[] bytes) throws MediaFireException {
         return hash(SHA1, bytes);
     }
 
-    public static String md5(byte[] bytes) {
+    public static String md5(byte[] bytes) throws MediaFireException {
         return hash(MD5, bytes);
     }
 
-    public static String sha256(byte[] bytes) {
+    public static String sha256(byte[] bytes) throws MediaFireException {
         return hash(SHA256, bytes);
     }
 
-    public static String sha1(File file) throws IOException {
+    public static String sha1(File file) throws MediaFireException {
         return hash(SHA1, file);
     }
 
-    public static String md5(File file) throws IOException {
+    public static String md5(File file) throws MediaFireException {
         return hash(MD5, file);
     }
     
-    public static String sha256(File file) throws IOException {
+    public static String sha256(File file) throws MediaFireException {
         return hash(SHA256, file);
     }
 
-    private static String hash(String algorithm, byte[] bytesToHash) {
+    private static String hash(String algorithm, byte[] bytesToHash) throws MediaFireException {
         try {
             MessageDigest md = MessageDigest.getInstance(algorithm);
             md.update(bytesToHash);
@@ -60,12 +63,11 @@ public class HashUtil {
 
             return buildHashString(bytes);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            throw new MFRuntimeException("SDK internal error while using HashUtil with algorithm " + algorithm, e);
+            throw new MediaFireException("error while using HashUtil with algorithm " + algorithm, e);
         }
     }
 
-    private static String hash(String algorithm, File file) throws IOException {
+    private static String hash(String algorithm, File file) throws MediaFireException {
         try {
             MessageDigest md = MessageDigest.getInstance(algorithm);
             FileInputStream fis = new FileInputStream(file);
@@ -81,8 +83,11 @@ public class HashUtil {
 
             return buildHashString(bytes);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            throw new MFRuntimeException("SDK internal error while using HashUtil with algorithm " + algorithm, e);
+            throw new MediaFireException("error while using HashUtil with algorithm " + algorithm, e);
+        } catch (FileNotFoundException e) {
+            throw new MediaFireException("no file found while using HashUtil with algorithm " + algorithm, e);
+        } catch (IOException e) {
+            throw new MediaFireException("i/o exception while using HashUtil with algorithm " + algorithm, e);
         }
     }
 

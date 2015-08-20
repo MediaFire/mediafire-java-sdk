@@ -1,8 +1,5 @@
 package com.mediafire.sdk.util;
 
-import com.mediafire.sdk.ApiPostRequest;
-import com.mediafire.sdk.UploadPostRequest;
-import com.mediafire.sdk.token.ActionToken;
 import junit.framework.TestCase;
 
 import java.util.LinkedHashMap;

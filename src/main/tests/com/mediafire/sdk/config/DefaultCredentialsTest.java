@@ -1,5 +1,6 @@
 package com.mediafire.sdk.config;
 
+import com.mediafire.sdk.MFCredentials;
 import junit.framework.TestCase;
 
 import java.util.HashMap;

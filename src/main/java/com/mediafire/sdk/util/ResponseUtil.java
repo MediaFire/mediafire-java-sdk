@@ -4,7 +4,6 @@ import com.google.gson.*;
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.api.responses.ApiResponse;
-import com.mediafire.sdk.requests.HttpApiResponse;
 
 /**
  * Created by Chris on 5/15/2015.

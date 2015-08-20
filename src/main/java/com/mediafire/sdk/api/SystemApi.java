@@ -3,9 +3,8 @@ package com.mediafire.sdk.api;
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.MFSessionNotStartedException;
-import com.mediafire.sdk.MediaFire;
 import com.mediafire.sdk.api.responses.ApiResponse;
-import com.mediafire.sdk.requests.ApiPostRequest;
+import com.mediafire.sdk.ApiPostRequest;
 
 import java.util.LinkedHashMap;
 

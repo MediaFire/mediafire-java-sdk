@@ -1,15 +1,12 @@
 package com.mediafire.sdk.config;
 
-import com.mediafire.sdk.MFApiException;
-import com.mediafire.sdk.MFException;
-import com.mediafire.sdk.MFSessionNotStartedException;
-import com.mediafire.sdk.MediaFire;
+import com.mediafire.sdk.*;
 import com.mediafire.sdk.api.UserApi;
 import com.mediafire.sdk.api.responses.ApiResponse;
 import com.mediafire.sdk.api.responses.UserGetAvatarResponse;
 import com.mediafire.sdk.api.responses.UserGetInfoResponse;
 import com.mediafire.sdk.api.responses.UserGetSettingsResponse;
-import com.mediafire.sdk.requests.ApiPostRequest;
+import com.mediafire.sdk.ApiPostRequest;
 import com.mediafire.sdk.token.SessionToken;
 import junit.framework.TestCase;
 

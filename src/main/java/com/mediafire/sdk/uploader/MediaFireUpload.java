@@ -3,7 +3,6 @@ package com.mediafire.sdk.uploader;
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.MFSessionNotStartedException;
-import com.mediafire.sdk.MediaFire;
 import com.mediafire.sdk.api.UploadApi;
 import com.mediafire.sdk.api.responses.*;
 import com.mediafire.sdk.api.responses.data_models.*;

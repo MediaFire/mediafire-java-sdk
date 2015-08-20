@@ -1,8 +1,8 @@
 package com.mediafire.sdk.util;
 
 import com.mediafire.sdk.MFRuntimeException;
-import com.mediafire.sdk.requests.ApiPostRequest;
-import com.mediafire.sdk.requests.UploadPostRequest;
+import com.mediafire.sdk.ApiPostRequest;
+import com.mediafire.sdk.UploadPostRequest;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

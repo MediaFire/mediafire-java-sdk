@@ -1,13 +1,11 @@
 package com.mediafire.sdk.config;
 
-import com.mediafire.sdk.requests.ApiPostRequest;
-import com.mediafire.sdk.requests.HttpApiResponse;
-import com.mediafire.sdk.requests.PostRequest;
+import com.mediafire.sdk.DefaultHttpRequester;
+import com.mediafire.sdk.ApiPostRequest;
+import com.mediafire.sdk.PostRequest;
 import junit.framework.TestCase;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class DefaultHttpRequesterTest extends TestCase {
 

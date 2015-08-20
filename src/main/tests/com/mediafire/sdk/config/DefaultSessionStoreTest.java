@@ -1,5 +1,7 @@
 package com.mediafire.sdk.config;
 
+import com.mediafire.sdk.DefaultSessionStore;
+import com.mediafire.sdk.MFStore;
 import com.mediafire.sdk.token.SessionToken;
 import junit.framework.TestCase;
 

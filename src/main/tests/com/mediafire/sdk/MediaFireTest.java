@@ -2,8 +2,6 @@ package com.mediafire.sdk;
 
 import com.mediafire.sdk.api.FolderApi;
 import com.mediafire.sdk.api.responses.FolderCreateResponse;
-import com.mediafire.sdk.requests.HttpApiResponse;
-import com.mediafire.sdk.requests.ImageRequest;
 import junit.framework.TestCase;
 
 import java.util.LinkedHashMap;

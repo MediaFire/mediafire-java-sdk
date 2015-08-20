@@ -3,7 +3,6 @@ package com.mediafire.sdk.util;
 import com.mediafire.sdk.MFApiException;
 import com.mediafire.sdk.MFException;
 import com.mediafire.sdk.api.responses.ApiResponse;
-import com.mediafire.sdk.requests.HttpApiResponse;
 import junit.framework.TestCase;
 
 import java.util.*;

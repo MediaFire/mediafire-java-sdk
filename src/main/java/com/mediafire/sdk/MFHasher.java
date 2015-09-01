@@ -1,7 +1,5 @@
 package com.mediafire.sdk;
 
-import com.mediafire.sdk.util.TextUtils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,7 +17,7 @@ public class MFHasher implements MediaFireHasher {
 
     @Override
     public String sha1(String string) {
-        if (TextUtils.isEmpty(string)) {
+        if (string == null) {
             return null;
         }
         try {
@@ -31,7 +29,7 @@ public class MFHasher implements MediaFireHasher {
 
     @Override
     public String md5(String string) {
-        if (TextUtils.isEmpty(string)) {
+        if (string == null) {
             return null;
         }
         try {
@@ -43,7 +41,7 @@ public class MFHasher implements MediaFireHasher {
 
     @Override
     public String sha256(String string) {
-        if (TextUtils.isEmpty(string)) {
+        if (string == null) {
             return null;
         }
         try {

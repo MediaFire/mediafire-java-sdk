@@ -26,6 +26,7 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
 
     @Override
     public void setEmail(EmailCredentials credentials) {
+        clear();
         this.storedType = TYPE_EMAIL;
         store.put(KEY_EMAIL, credentials.getEmail());
         store.put(KEY_PASSWORD, credentials.getPassword());
@@ -33,6 +34,7 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
 
     @Override
     public void setEkey(EkeyCredentials credentials) {
+        clear();
         this.storedType = TYPE_EKEY;
         store.put(KEY_EKEY, credentials.getEkey());
         store.put(KEY_PASSWORD, credentials.getPassword());
@@ -40,12 +42,14 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
 
     @Override
     public void setFacebook(FacebookCredentials credentials) {
+        clear();
         this.storedType = TYPE_FACEBOOK;
         store.put(KEY_FACEBOOK_ACCESS_TOKEN, credentials.getFacebookAccessToken());
     }
 
     @Override
     public void setTwitter(TwitterCredentials credentials) {
+        clear();
         this.storedType = TYPE_TWITTER;
         store.put(KEY_TWITTER_OAUTH_TOKEN, credentials.getTwitterOauthToken());
         store.put(KEY_TWITTER_OAUTH_TOKEN_SECRET, credentials.getTwitterOauthTokenSecret());
@@ -61,17 +65,7 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
         if (storedType != TYPE_EMAIL) {
             return null;
         }
-        return new EmailCredentials() {
-            @Override
-            public String getEmail() {
-                return store.get(KEY_EMAIL);
-            }
-
-            @Override
-            public String getPassword() {
-                return store.get(KEY_PASSWORD);
-            }
-        };
+        return new EmailCredentials(store.get(KEY_EMAIL), store.get(KEY_PASSWORD));
     }
 
     @Override
@@ -79,17 +73,7 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
         if (storedType != TYPE_EKEY) {
             return null;
         }
-        return new EkeyCredentials() {
-            @Override
-            public String getEkey() {
-                return store.get(KEY_EKEY);
-            }
-
-            @Override
-            public String getPassword() {
-                return store.get(KEY_PASSWORD);
-            }
-        };
+        return new EkeyCredentials(store.get(KEY_EKEY), store.get(KEY_PASSWORD));
     }
 
     @Override
@@ -97,12 +81,7 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
         if (storedType != TYPE_FACEBOOK) {
             return null;
         }
-        return new FacebookCredentials() {
-            @Override
-            public String getFacebookAccessToken() {
-                return store.get(KEY_FACEBOOK_ACCESS_TOKEN);
-            }
-        };
+        return new FacebookCredentials(store.get(KEY_FACEBOOK_ACCESS_TOKEN));
     }
 
     @Override
@@ -110,16 +89,6 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
         if (storedType != TYPE_TWITTER) {
             return null;
         }
-        return new TwitterCredentials() {
-            @Override
-            public String getTwitterOauthToken() {
-                return store.get(KEY_TWITTER_OAUTH_TOKEN);
-            }
-
-            @Override
-            public String getTwitterOauthTokenSecret() {
-                return store.get(KEY_TWITTER_OAUTH_TOKEN_SECRET);
-            }
-        };
+        return new TwitterCredentials(store.get(KEY_TWITTER_OAUTH_TOKEN), store.get(KEY_TWITTER_OAUTH_TOKEN_SECRET));
     }
 }

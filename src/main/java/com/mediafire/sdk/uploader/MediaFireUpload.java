@@ -1,6 +1,8 @@
 package com.mediafire.sdk.uploader;
 
+import com.mediafire.sdk.MFApiRequest;
 import com.mediafire.sdk.MFClient;
+import com.mediafire.sdk.MediaFireApiRequest;
 import com.mediafire.sdk.MediaFireException;
 import com.mediafire.sdk.api.responses.*;
 import com.mediafire.sdk.api.responses.data_models.*;
@@ -59,6 +61,7 @@ public class MediaFireUpload implements Runnable {
     private String folderPath;
     private final long id;
     private boolean resumable;
+    private String apiVersion;
 
     public MediaFireUpload(MFClient mediaFire, int statusToFinish, File file, String filename, ActionOnInAccount actionOnInAccount, MediaFireUploadHandler handler, long id) {
         this.mediaFire = mediaFire;
@@ -89,6 +92,10 @@ public class MediaFireUpload implements Runnable {
 
     public void setResumable(boolean resumable) {
         this.resumable = resumable;
+    }
+
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
     }
 
     public long getId() {
@@ -266,7 +273,8 @@ public class MediaFireUpload implements Runnable {
         params.put(PARAM_KEY, uploadKey);
         long pollCount = 0;
         do {
-            UploadPollUploadResponse response = UploadApi.pollUpload(this.mediaFire, params, "1.4", UploadPollUploadResponse.class);
+            MediaFireApiRequest request = new MFApiRequest("upload/poll_upload.php", params, apiVersion, null, null);
+            UploadPollUploadResponse response = mediaFire.sessionRequest(request, UploadPollUploadResponse.class);
             PollDoUpload doUpload = response.getDoUpload();
 
             int fileErrorCode = doUpload.getFileErrorCode();
@@ -315,7 +323,8 @@ public class MediaFireUpload implements Runnable {
         params.put(PARAM_ALL_WEB_UPLOADS, "yes");
         long pollCount = 0;
         do {
-            UploadGetWebUploadsResponse response = UploadApi.getWebUploads(this.mediaFire, params, "1.4", UploadGetWebUploadsResponse.class);
+            MediaFireApiRequest request = new MFApiRequest("upload/get_web_uploads.php", params, apiVersion, null, null);
+            UploadGetWebUploadsResponse response = mediaFire.sessionRequest(request, UploadGetWebUploadsResponse.class);
             WebUploads[] webUploadsArray = response.getWebUploads();
 
             if (webUploadsArray == null || webUploadsArray.length == 0) {
@@ -374,7 +383,8 @@ public class MediaFireUpload implements Runnable {
         headers.put(HEADER_CONTENT_LENGTH, file.length());
 
         byte[] payload = getFileBytes(file);
-        UploadSimpleResponse response = UploadApi.simple(this.mediaFire, params, headers, payload, "1.4", UploadSimpleResponse.class);
+        MediaFireApiRequest request = new MFApiRequest("upload/simple.php", params, apiVersion, payload, headers);
+        UploadSimpleResponse response = mediaFire.uploadRequest(request, UploadSimpleResponse.class);
         String uploadKey = response.getDoUpload().getUploadKey();
         pollUpload(uploadKey);
     }
@@ -391,7 +401,8 @@ public class MediaFireUpload implements Runnable {
         if (this.folderKey != null && !this.folderKey.isEmpty()) {
             params.put(PARAM_FOLDER_KEY, this.folderKey);
         }
-        UploadAddWebUploadResponse response = UploadApi.addWebUpload(this.mediaFire, params, "1.4", UploadAddWebUploadResponse.class);
+        MediaFireApiRequest request = new MFApiRequest("upload/add_web_upload.php", params, apiVersion, null, null);
+        UploadAddWebUploadResponse response = mediaFire.sessionRequest(request, UploadAddWebUploadResponse.class);
         String uploadKey = response.getUploadKey();
         getWebUploads(uploadKey);
     }
@@ -536,16 +547,19 @@ public class MediaFireUpload implements Runnable {
         }
     }
 
-    private UploadCheckResponse callCheck(LinkedHashMap<String, Object> params) {
-        return null;
+    private UploadCheckResponse callCheck(LinkedHashMap<String, Object> params) throws MediaFireException {
+        MediaFireApiRequest request = new MFApiRequest("upload/check.php", params, apiVersion, null, null);
+        return mediaFire.sessionRequest(request, UploadCheckResponse.class);
     }
 
-    private UploadInstantResponse callInstant(LinkedHashMap<String, Object> params) {
-        return null;
+    private UploadInstantResponse callInstant(LinkedHashMap<String, Object> params) throws MediaFireException {
+        MediaFireApiRequest request = new MFApiRequest("upload/instant.php", params, apiVersion, null, null);
+        return mediaFire.sessionRequest(request, UploadInstantResponse.class);
     }
 
-    private UploadResumableResponse callResumable(LinkedHashMap<String, Object> params, Map<String, Object> headers, byte[] chunk) {
-        return null;
+    private UploadResumableResponse callResumable(LinkedHashMap<String, Object> params, Map<String, Object> headers, byte[] chunk) throws MediaFireException {
+        MediaFireApiRequest request = new MFApiRequest("upload/instant.php", params, apiVersion, chunk, headers);
+        return mediaFire.sessionRequest(request, UploadResumableResponse.class);
     }
 
     public enum ActionOnInAccount {
@@ -555,15 +569,20 @@ public class MediaFireUpload implements Runnable {
     @Override
     public String toString() {
         return "MediaFireUpload{" +
-                "id=" + id +
+                "mediaFire=" + mediaFire +
+                ", statusToFinish=" + statusToFinish +
                 ", file=" + file +
+                ", actionOnInAccount=" + actionOnInAccount +
                 ", url='" + url + '\'' +
+                ", handler=" + handler +
                 ", fileHash='" + fileHash + '\'' +
+                ", uploadUnits=" + uploadUnits +
                 ", filename='" + filename + '\'' +
                 ", folderKey='" + folderKey + '\'' +
                 ", folderPath='" + folderPath + '\'' +
-                ", actionOnInAccount=" + actionOnInAccount +
-                ", statusToFinish=" + statusToFinish +
+                ", id=" + id +
+                ", resumable=" + resumable +
+                ", apiVersion='" + apiVersion + '\'' +
                 '}';
     }
 
@@ -574,20 +593,40 @@ public class MediaFireUpload implements Runnable {
 
         MediaFireUpload that = (MediaFireUpload) o;
 
-        return this.id == that.id && this.actionOnInAccount == that.actionOnInAccount
-                && !(this.file != null ? !file.equals(that.file) : that.file != null)
-                && !(this.fileHash != null ? !fileHash.equals(that.fileHash) : that.fileHash != null)
-                && !(this.url != null ? !url.equals(that.url) : that.url != null);
+        if (statusToFinish != that.statusToFinish) return false;
+        if (getId() != that.getId()) return false;
+        if (resumable != that.resumable) return false;
+        if (mediaFire != null ? !mediaFire.equals(that.mediaFire) : that.mediaFire != null) return false;
+        if (file != null ? !file.equals(that.file) : that.file != null) return false;
+        if (actionOnInAccount != that.actionOnInAccount) return false;
+        if (url != null ? !url.equals(that.url) : that.url != null) return false;
+        if (handler != null ? !handler.equals(that.handler) : that.handler != null) return false;
+        if (getFileHash() != null ? !getFileHash().equals(that.getFileHash()) : that.getFileHash() != null)
+            return false;
+        if (uploadUnits != null ? !uploadUnits.equals(that.uploadUnits) : that.uploadUnits != null) return false;
+        if (filename != null ? !filename.equals(that.filename) : that.filename != null) return false;
+        if (folderKey != null ? !folderKey.equals(that.folderKey) : that.folderKey != null) return false;
+        if (folderPath != null ? !folderPath.equals(that.folderPath) : that.folderPath != null) return false;
+        return !(apiVersion != null ? !apiVersion.equals(that.apiVersion) : that.apiVersion != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = file != null ? file.hashCode() : 0;
+        int result = mediaFire != null ? mediaFire.hashCode() : 0;
+        result = 31 * result + statusToFinish;
+        result = 31 * result + (file != null ? file.hashCode() : 0);
         result = 31 * result + (actionOnInAccount != null ? actionOnInAccount.hashCode() : 0);
         result = 31 * result + (url != null ? url.hashCode() : 0);
-        result = 31 * result + (fileHash != null ? fileHash.hashCode() : 0);
-        result = 31 * result + (int) (id ^ (id >>> 32));
+        result = 31 * result + (handler != null ? handler.hashCode() : 0);
+        result = 31 * result + (getFileHash() != null ? getFileHash().hashCode() : 0);
+        result = 31 * result + (uploadUnits != null ? uploadUnits.hashCode() : 0);
+        result = 31 * result + (filename != null ? filename.hashCode() : 0);
+        result = 31 * result + (folderKey != null ? folderKey.hashCode() : 0);
+        result = 31 * result + (folderPath != null ? folderPath.hashCode() : 0);
+        result = 31 * result + (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + (resumable ? 1 : 0);
+        result = 31 * result + (apiVersion != null ? apiVersion.hashCode() : 0);
         return result;
     }
 }

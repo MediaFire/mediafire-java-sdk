@@ -13,7 +13,7 @@ public class MediaFireCredentialsStoreTest extends TestCase {
     private static final String FACEBOOK = "fbaccesstoken";
     private static final String TWITTER_TOKEN = "oauthtokentwitter";
     private static final String TWITTER_TOKEN_SECRET = "oauthtokensecrettwitter";
-    private MFCredentialsStore credentials;
+    private MediaFireCredentialsStore credentials;
 
     public void setUp() throws Exception {
         super.setUp();

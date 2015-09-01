@@ -88,19 +88,19 @@ public class MFClient implements MediaFireClient {
         MediaFireActionToken mediaFireActionToken;
 
         synchronized (getSessionStore()) {
-            if (!getSessionStore().isMediaFireActionTokenAvailable(MediaFireActionToken.IMAGE)) {
-                mediaFireActionToken = requestNewActionToken(MediaFireActionToken.IMAGE);
+            if (!getSessionStore().isActionTokenAvailable(MediaFireActionToken.TYPE_IMAGE)) {
+                mediaFireActionToken = requestNewActionToken(MediaFireActionToken.TYPE_IMAGE);
                 if (mediaFireActionToken == null) {
-                    throw new MediaFireException("could not request action token type " + MediaFireActionToken.IMAGE);
+                    throw new MediaFireException("could not request action token type " + MediaFireActionToken.TYPE_IMAGE);
                 }
-                getSessionStore().putMediaFireActionToken(mediaFireActionToken);
+                getSessionStore().put(mediaFireActionToken);
             } else {
-                mediaFireActionToken = getSessionStore().getMediaFireActionToken(MediaFireActionToken.IMAGE);
+                mediaFireActionToken = getSessionStore().getActionToken(MediaFireActionToken.TYPE_IMAGE);
             }
         }
 
         if (mediaFireActionToken == null) {
-            throw new MediaFireException("could not get action token type " + MediaFireActionToken.IMAGE + " from store");
+            throw new MediaFireException("could not get action token type " + MediaFireActionToken.TYPE_IMAGE + " from store");
         }
 
         requestParameters.put("session_token", mediaFireActionToken.getSessionToken());
@@ -123,19 +123,19 @@ public class MFClient implements MediaFireClient {
         MediaFireActionToken mediaFireActionToken;
 
         synchronized (getSessionStore()) {
-            if (!getSessionStore().isMediaFireActionTokenAvailable(MediaFireActionToken.UPLOAD)) {
-                mediaFireActionToken = requestNewActionToken(MediaFireActionToken.UPLOAD);
+            if (!getSessionStore().isActionTokenAvailable(MediaFireActionToken.TYPE_UPLOAD)) {
+                mediaFireActionToken = requestNewActionToken(MediaFireActionToken.TYPE_UPLOAD);
                 if (mediaFireActionToken == null) {
-                    throw new MediaFireException("could not request action token type " + MediaFireActionToken.IMAGE);
+                    throw new MediaFireException("could not request action token type " + MediaFireActionToken.TYPE_IMAGE);
                 }
-                getSessionStore().putMediaFireActionToken(mediaFireActionToken);
+                getSessionStore().put(mediaFireActionToken);
             } else {
-                mediaFireActionToken = getSessionStore().getMediaFireActionToken(MediaFireActionToken.UPLOAD);
+                mediaFireActionToken = getSessionStore().getActionToken(MediaFireActionToken.TYPE_UPLOAD);
             }
         }
 
         if (mediaFireActionToken == null) {
-            throw new MediaFireException("could not get action token type " + MediaFireActionToken.UPLOAD + " from store");
+            throw new MediaFireException("could not get action token type " + MediaFireActionToken.TYPE_UPLOAD + " from store");
         }
 
         query.put("session_token", mediaFireActionToken.getSessionToken());
@@ -181,23 +181,23 @@ public class MFClient implements MediaFireClient {
         }
         uri.append(request.getPath());
 
-        MediaFireSessionTokenV2 mediaFireSessionTokenV2;
+        MediaFireSessionToken mediaFireSessionToken;
 
         synchronized (getSessionStore()) {
-            if (!getSessionStore().isMediaFireSessionTokenV2Available()) {
-                mediaFireSessionTokenV2 = requestNewSessionToken();
+            if (!getSessionStore().isSessionTokenV2Available()) {
+                mediaFireSessionToken = requestNewSessionToken();
             } else {
-                mediaFireSessionTokenV2 = getSessionStore().getMediaFireSessionTokenV2();
+                mediaFireSessionToken = getSessionStore().getSessionTokenV2();
             }
         }
 
-        if (mediaFireSessionTokenV2 == null) {
-            throw new MediaFireException("could not get action token type " + MediaFireActionToken.UPLOAD + " from store");
+        if (mediaFireSessionToken == null) {
+            throw new MediaFireException("could not get action token type " + MediaFireActionToken.TYPE_UPLOAD + " from store");
         }
 
-        query.put("session_token", mediaFireSessionTokenV2.getSessionToken());
+        query.put("session_token", mediaFireSessionToken.getSessionToken());
 
-        String signature = createSignatureForAuthenticatedRequest(mediaFireSessionTokenV2.getSecretKey(), mediaFireSessionTokenV2.getTime(), uri.toString(), query);
+        String signature = createSignatureForAuthenticatedRequest(mediaFireSessionToken.getSecretKey(), mediaFireSessionToken.getTime(), uri.toString(), query);
 
         query.put("signature", signature);
 
@@ -213,7 +213,7 @@ public class MFClient implements MediaFireClient {
         T response = getResponseParser().parseResponse(mediaFireHttpResponse, classOfT);
 
         if (!response.hasError()) {
-            getSessionStore().putMediaFireSessionTokenV2(mediaFireSessionTokenV2);
+            getSessionStore().put(mediaFireSessionToken);
         }
 
         return response;
@@ -336,11 +336,11 @@ public class MFClient implements MediaFireClient {
 
         int lifespan;
         switch (type) {
-            case MediaFireActionToken.IMAGE:
+            case MediaFireActionToken.TYPE_IMAGE:
                 lifespan = 60;
                 query.put("type", "image");
                 break;
-            case MediaFireActionToken.UPLOAD:
+            case MediaFireActionToken.TYPE_UPLOAD:
                 lifespan = 360;
                 query.put("type", "upload");
                 break;
@@ -359,7 +359,7 @@ public class MFClient implements MediaFireClient {
         return new MFActionToken(sessionToken, type, System.currentTimeMillis(), lifespan);
     }
 
-    private MediaFireSessionTokenV2 requestNewSessionToken() throws MediaFireException {
+    private MediaFireSessionToken requestNewSessionToken() throws MediaFireException {
         UserGetSessionTokenResponse response = authenticationRequest(getOverrideVersion(), 2);
         if (response.hasError()) {
             return null;
@@ -370,7 +370,7 @@ public class MFClient implements MediaFireClient {
         long secretKey = response.getSecretKey();
         String pkey = response.getPkey();
         String ekey = response.getEkey();
-        return new MFSessionTokenV2(sessionToken, time, secretKey, pkey, ekey);
+        return new MFSessionToken(sessionToken, time, secretKey, pkey, ekey);
     }
 
     public Map<String, Object> createHeadersUsingQueryAsPostBody(String encodedQuery) throws MediaFireException {

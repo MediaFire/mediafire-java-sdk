@@ -23,7 +23,7 @@ public class MediaFireHasherTest extends TestCase {
     private final String SHA256_STRING_B = "077b18fe29036ada4890bdec192186e10678597a67880290521df70df4bac9ab";
     private final String SHA256_STRING_C = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
 
-    private MFHasher hasher;
+    private MediaFireHasher hasher;
 
     public void setUp() throws Exception {
         super.setUp();

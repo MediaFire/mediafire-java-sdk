@@ -4,7 +4,7 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MFSessionStore implements MediaFireSessionStore {
-    private final Queue<MediaFireSessionTokenV2> sessionTokens = new LinkedBlockingQueue<MediaFireSessionTokenV2>();
+    private final Queue<MediaFireSessionToken> sessionTokens = new LinkedBlockingQueue<MediaFireSessionToken>();
     private MediaFireActionToken uploadToken;
     private MediaFireActionToken imageToken;
     private final Object uploadTokenLock = new Object();
@@ -16,35 +16,35 @@ public class MFSessionStore implements MediaFireSessionStore {
     }
 
     @Override
-    public MediaFireSessionTokenV2 getMediaFireSessionTokenV2() {
+    public MediaFireSessionToken getSessionTokenV2() {
         return sessionTokens.poll();
     }
 
     @Override
-    public boolean putMediaFireSessionTokenV2(MediaFireSessionTokenV2 mediaFireSessionTokenV2) {
-        return sessionTokens.offer(mediaFireSessionTokenV2);
+    public boolean put(MediaFireSessionToken token) {
+        return sessionTokens.offer(token);
     }
 
     @Override
-    public int getMediaFireSessionTokenV2Count() {
+    public int getSessionTokenV2Count() {
         return sessionTokens.size();
     }
 
     @Override
-    public boolean isMediaFireSessionTokenV2Available() {
+    public boolean isSessionTokenV2Available() {
         return !sessionTokens.isEmpty();
     }
 
     @Override
-    public MediaFireActionToken getMediaFireActionToken(int type) {
+    public MediaFireActionToken getActionToken(int type) {
         MediaFireActionToken token;
         switch (type) {
-            case MediaFireActionToken.IMAGE:
+            case MediaFireActionToken.TYPE_IMAGE:
                 synchronized (imageTokenLock) {
                     token = imageToken;
                 }
                 break;
-            case MediaFireActionToken.UPLOAD:
+            case MediaFireActionToken.TYPE_UPLOAD:
                 synchronized (uploadTokenLock) {
                     token = uploadToken;
                 }
@@ -58,18 +58,30 @@ public class MFSessionStore implements MediaFireSessionStore {
     }
 
     @Override
-    public boolean putMediaFireActionToken(MediaFireActionToken mediaFireActionToken) {
+    public boolean put(MediaFireActionToken token) {
+        switch (token.getType()) {
+            case MediaFireActionToken.TYPE_IMAGE:
+                synchronized (imageTokenLock) {
+                    this.imageToken = token;
+                    return true;
+                }
+            case MediaFireActionToken.TYPE_UPLOAD:
+                synchronized (uploadTokenLock) {
+                    this.uploadToken = token;
+                    return true;
+                }
+        }
         return false;
     }
 
     @Override
-    public boolean isMediaFireActionTokenAvailable(int type) {
+    public boolean isActionTokenAvailable(int type) {
         boolean available;
         switch (type) {
-            case MediaFireActionToken.IMAGE:
+            case MediaFireActionToken.TYPE_IMAGE:
                 available = isImageTokenAvailable();
                 break;
-            case MediaFireActionToken.UPLOAD:
+            case MediaFireActionToken.TYPE_UPLOAD:
                 available = isUploadTokenAvailable();
                 break;
             default:

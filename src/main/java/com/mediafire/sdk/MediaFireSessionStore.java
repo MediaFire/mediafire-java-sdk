@@ -2,48 +2,48 @@ package com.mediafire.sdk;
 
 public interface MediaFireSessionStore {
     /**
-     * gets a MediaFireSessionTokenV2.
+     * gets a MediaFireSessionToken.
      * @return null if unavailable
      */
-    MediaFireSessionTokenV2 getMediaFireSessionTokenV2();
+    MediaFireSessionToken getSessionTokenV2();
 
     /**
-     * puts a MediaFireSessionTokenV2 in the store
-     * @param mediaFireSessionTokenV2 true if stored
+     * puts a MediaFireSessionToken in the store
+     * @param token true if stored
      */
-    boolean putMediaFireSessionTokenV2(MediaFireSessionTokenV2 mediaFireSessionTokenV2);
+    boolean put(MediaFireSessionToken token);
 
     /**
-     * gets the count of MediaFireSessionTokenV2 available
+     * gets the count of MediaFireSessionToken available
      * @return
      */
-    int getMediaFireSessionTokenV2Count();
+    int getSessionTokenV2Count();
 
     /**
-     * gets whether or not any MediaFireSessionTokenV2 are available
+     * gets whether or not any MediaFireSessionToken are available
      * @return
      */
-    boolean isMediaFireSessionTokenV2Available();
+    boolean isSessionTokenV2Available();
 
     /**
      * gets a MediaFireActionToken.
      * @param type
      * @return null if unavailable
      */
-    MediaFireActionToken getMediaFireActionToken(int type);
+    MediaFireActionToken getActionToken(int type);
 
     /**
      * puts a MediaFireActionToken in the store
-     * @param mediaFireActionToken true if stored
+     * @param token true if stored
      */
-    boolean putMediaFireActionToken(MediaFireActionToken mediaFireActionToken);
+    boolean put(MediaFireActionToken token);
 
     /**
      * gets whether or not a MediaFireActionToken of the type is available
      * @param type
      * @return
      */
-    boolean isMediaFireActionTokenAvailable(int type);
+    boolean isActionTokenAvailable(int type);
 
     /**
      * clears the tokens in the store

@@ -1,12 +1,12 @@
 package com.mediafire.sdk;
 
-public class MFSessionTokenV2 extends MFToken implements MediaFireSessionTokenV2 {
+public class MFSessionToken extends MFToken implements MediaFireSessionToken {
     private final String time;
     private long secretKey;
     private final String pkey;
     private final String ekey;
 
-    public MFSessionTokenV2(String sessionToken, String time, long secretKey, String pkey, String ekey) {
+    public MFSessionToken(String sessionToken, String time, long secretKey, String pkey, String ekey) {
         super(sessionToken);
         this.time = time;
         this.secretKey = secretKey;
@@ -43,7 +43,7 @@ public class MFSessionTokenV2 extends MFToken implements MediaFireSessionTokenV2
 
     @Override
     public String toString() {
-        return "MFSessionTokenV2{" +
+        return "MFSessionToken{" +
                 "time='" + time + '\'' +
                 ", secretKey=" + secretKey +
                 ", pkey='" + pkey + '\'' +
@@ -57,7 +57,7 @@ public class MFSessionTokenV2 extends MFToken implements MediaFireSessionTokenV2
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        MFSessionTokenV2 that = (MFSessionTokenV2) o;
+        MFSessionToken that = (MFSessionToken) o;
 
         if (getSecretKey() != that.getSecretKey()) return false;
         if (!getTime().equals(that.getTime())) return false;

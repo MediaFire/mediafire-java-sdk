@@ -42,7 +42,7 @@ public class MFClient implements MediaFireClient {
 
     @Override
     public <T extends MediaFireApiResponse> T noAuthRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException {
-        logger.info("noAuthRequest()");
+        logger.info("making api request without authentication. request: " + request + ", response class: " + classOfT);
         Map<String, Object> query = new LinkedHashMap<String, Object>();
         query.put("response_format", getResponseParser().getResponseFormat());
         if (request.getQueryParameters() != null) {
@@ -74,7 +74,7 @@ public class MFClient implements MediaFireClient {
 
     @Override
     public MediaFireHttpResponse conversionServerRequest(String hash, Map<String, Object> requestParameters) throws MediaFireException {
-        logger.info("conversionServerRequest()");
+        logger.info("making api request using (image) action token. image hash: " + hash + ", request parameters: " + requestParameters);
         String baseUrl = "https://www.mediafire.com";
 
         StringBuilder url = new StringBuilder();
@@ -116,7 +116,7 @@ public class MFClient implements MediaFireClient {
 
     @Override
     public <T extends MediaFireApiResponse> T uploadRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException {
-        logger.info("uploadRequest()");
+        logger.info("making api request using (upload) action token. request: " + request + ", response class: " + classOfT);
         Map<String, Object> query = new LinkedHashMap<String, Object>();
         query.put("response_format", getResponseParser().getResponseFormat());
         query.putAll(request.getQueryParameters());
@@ -167,7 +167,7 @@ public class MFClient implements MediaFireClient {
 
     @Override
     public <T extends MediaFireApiResponse> T sessionRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException {
-        logger.info("sessionRequest()");
+        logger.info("making api request using session token. request: " + request + ", response class: " + classOfT);
         Map<String, Object> query = new LinkedHashMap<String, Object>();
         query.put("response_format", getResponseParser().getResponseFormat());
         if (request.getQueryParameters() != null) {
@@ -226,7 +226,7 @@ public class MFClient implements MediaFireClient {
 
     @Override
     public <T extends MediaFireApiResponse> T authenticationRequest(Class<T> classOfT) throws MediaFireException {
-        logger.info("authenticationRequest()");
+        logger.info("making authentication request. response class: " + classOfT);
         int credentialType = getCredentialStore().getTypeStored();
 
         Map<String, Object> query = new LinkedHashMap<String, Object>();
@@ -335,9 +335,7 @@ public class MFClient implements MediaFireClient {
         return parser;
     }
 
-    @Override
-    public MediaFireActionToken requestNewActionToken(int type) throws MediaFireException {
-        logger.info("requestNewActionToken()");
+    private MediaFireActionToken requestNewActionToken(int type) throws MediaFireException {
         Map<String, Object> query = new LinkedHashMap<String, Object>();
         query.put("response_format", getResponseParser().getResponseFormat());
 

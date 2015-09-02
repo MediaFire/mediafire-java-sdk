@@ -48,6 +48,7 @@ public class MediaFireClientTest extends TestCase {
     public void testSessionRequest() throws Exception {
         MediaFireApiRequest request = new MFApiRequest("/user/get_info.php", null, null, null, null);
         ApiResponse response = this.mediaFire.sessionRequest(request, ApiResponse.class);
+        System.out.println(response.getMessage() + ", " + response.getError());
         assertFalse(response.hasError());
     }
 

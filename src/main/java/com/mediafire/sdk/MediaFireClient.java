@@ -54,14 +54,6 @@ public interface MediaFireClient {
     <T extends MediaFireApiResponse> T authenticationRequest(Class<T> classOfT) throws MediaFireException;
 
     /**
-     * request for a new action token
-     * @param type
-     * @return
-     * @throws MediaFireException
-     */
-    MediaFireActionToken requestNewActionToken(int type) throws MediaFireException;
-
-    /**
      * the http requester
      * @return
      */

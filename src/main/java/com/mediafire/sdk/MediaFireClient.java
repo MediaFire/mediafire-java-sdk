@@ -99,5 +99,5 @@ public interface MediaFireClient {
      * api version that will always be used (unless null or empty)
      * @return
      */
-    String getOverrideVersion();
+    String getApiVersion();
 }

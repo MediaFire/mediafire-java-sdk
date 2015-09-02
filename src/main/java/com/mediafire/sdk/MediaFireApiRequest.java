@@ -11,12 +11,6 @@ public interface MediaFireApiRequest {
     String getPath();
 
     /**
-     * gets the version for the request, null for legacy
-     * @return
-     */
-    String getVersion();
-
-    /**
      * gets the query parameters that shall be used in the request
      * @return
      */

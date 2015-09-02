@@ -26,14 +26,14 @@ public class MediaFireClientTest extends TestCase {
     }
 
     public void testNoAuthRequest() throws Exception {
-        MediaFireApiRequest request = new MFApiRequest("/system/get_info.php", null, null, null, null);
+        MediaFireApiRequest request = new MFApiRequest("/system/get_info.php", null, null, null);
         ApiResponse response = this.mediaFire.noAuthRequest(request, ApiResponse.class);
         assertFalse(response.hasError());
     }
 
     public void testConversionServerRequest() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("quickkey", "71j7iiaf2q5fu90");
+        params.put("quickkey", "bnv3ne309r2ab06");
         params.put("size_id", "z");
         params.put("doc_type", "i");
         String hash = "5f3df7078a450fe4ccbea773b07117caefa6e1b572abc63928f5e2d57cc9d0be";
@@ -46,7 +46,7 @@ public class MediaFireClientTest extends TestCase {
     }
 
     public void testSessionRequest() throws Exception {
-        MediaFireApiRequest request = new MFApiRequest("/user/get_info.php", null, null, null, null);
+        MediaFireApiRequest request = new MFApiRequest("/user/get_info.php", null, null, null);
         ApiResponse response = this.mediaFire.sessionRequest(request, ApiResponse.class);
         System.out.println(response.getMessage() + ", " + response.getError());
         assertFalse(response.hasError());

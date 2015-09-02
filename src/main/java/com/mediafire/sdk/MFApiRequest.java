@@ -6,12 +6,10 @@ import java.util.Map;
 public class MFApiRequest implements MediaFireApiRequest {
     private final String path;
     private final Map<String, Object> queryParameters;
-    private final String version;
     private final byte[] payload;
     private final Map<String, Object> headers;
 
-    public MFApiRequest(String path, Map<String, Object> queryParameters, String version, byte[] payload, Map<String, Object> headers) {
-        this.version = version;
+    public MFApiRequest(String path, Map<String, Object> queryParameters, byte[] payload, Map<String, Object> headers) {
         this.payload = payload;
         this.path = path;
         this.queryParameters = queryParameters;
@@ -21,11 +19,6 @@ public class MFApiRequest implements MediaFireApiRequest {
     @Override
     public String getPath() {
         return path;
-    }
-
-    @Override
-    public String getVersion() {
-        return version;
     }
 
     @Override
@@ -48,7 +41,6 @@ public class MFApiRequest implements MediaFireApiRequest {
         return "MFApiRequest{" +
                 "path='" + path + '\'' +
                 ", queryParameters=" + queryParameters +
-                ", version='" + version + '\'' +
                 ", payload=" + Arrays.toString(payload) +
                 ", headers=" + headers +
                 '}';
@@ -64,7 +56,6 @@ public class MFApiRequest implements MediaFireApiRequest {
         if (getPath() != null ? !getPath().equals(that.getPath()) : that.getPath() != null) return false;
         if (getQueryParameters() != null ? !getQueryParameters().equals(that.getQueryParameters()) : that.getQueryParameters() != null)
             return false;
-        if (getVersion() != null ? !getVersion().equals(that.getVersion()) : that.getVersion() != null) return false;
         if (!Arrays.equals(getPayload(), that.getPayload())) return false;
         return !(getHeaders() != null ? !getHeaders().equals(that.getHeaders()) : that.getHeaders() != null);
 
@@ -74,7 +65,6 @@ public class MFApiRequest implements MediaFireApiRequest {
     public int hashCode() {
         int result = getPath() != null ? getPath().hashCode() : 0;
         result = 31 * result + (getQueryParameters() != null ? getQueryParameters().hashCode() : 0);
-        result = 31 * result + (getVersion() != null ? getVersion().hashCode() : 0);
         result = 31 * result + (getPayload() != null ? Arrays.hashCode(getPayload()) : 0);
         result = 31 * result + (getHeaders() != null ? getHeaders().hashCode() : 0);
         return result;

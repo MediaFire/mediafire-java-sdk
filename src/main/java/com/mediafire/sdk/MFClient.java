@@ -20,7 +20,7 @@ public class MFClient implements MediaFireClient {
     private static final String UTF8 = "UTF-8";
     private static final int SESSION_TOKEN_VERSION = 2;
 
-    private final String overrideVersion;
+    private final String apiVersion;
     private final MediaFireHttpRequester requester;
     private final MediaFireSessionStore sessionStore;
     private final MediaFireCredentialsStore credentialsStore;
@@ -30,7 +30,7 @@ public class MFClient implements MediaFireClient {
     private final String apiKey;
 
     private MFClient(Builder builder) {
-        this.overrideVersion = builder.overrideVersion;
+        this.apiVersion = builder.apiVersion;
         this.requester = builder.requester;
         this.sessionStore = builder.sessionStore;
         this.credentialsStore = builder.credentialsStore;
@@ -60,10 +60,8 @@ public class MFClient implements MediaFireClient {
         StringBuilder url = new StringBuilder();
         url.append(baseUrl).append("/api");
 
-        if (!TextUtils.isEmpty(getOverrideVersion())) {
-            url.append("/").append(getOverrideVersion());
-        } if (!TextUtils.isEmpty(request.getVersion())) {
-            url.append("/").append(request.getVersion());
+        if (!TextUtils.isEmpty(getApiVersion())) {
+            url.append("/").append(getApiVersion());
         }
         url.append(request.getPath());
 
@@ -85,6 +83,7 @@ public class MFClient implements MediaFireClient {
         }
 
         url.append(hash.substring(0, 4));
+        url.append("&");
 
         MediaFireActionToken mediaFireActionToken;
 
@@ -149,10 +148,8 @@ public class MFClient implements MediaFireClient {
         String baseUrl = "https://www.mediafire.com";
         StringBuilder url = new StringBuilder();
         url.append(baseUrl).append("/api");
-        if (!TextUtils.isEmpty(getOverrideVersion())) {
-            url.append("/").append(getOverrideVersion());
-        } if (!TextUtils.isEmpty(request.getVersion())) {
-            url.append("/").append(request.getVersion());
+        if (!TextUtils.isEmpty(getApiVersion())) {
+            url.append("/").append(getApiVersion());
         }
         url.append(request.getPath()).append("?");
 
@@ -179,10 +176,8 @@ public class MFClient implements MediaFireClient {
         url.append(baseUrl);
         StringBuilder uri = new StringBuilder();
         uri.append("/api");
-        if (!TextUtils.isEmpty(getOverrideVersion())) {
-            uri.append("/").append(getOverrideVersion());
-        } if (!TextUtils.isEmpty(request.getVersion())) {
-            uri.append("/").append(request.getVersion());
+        if (!TextUtils.isEmpty(getApiVersion())) {
+            uri.append("/").append(getApiVersion());
         }
         uri.append(request.getPath());
 
@@ -202,11 +197,16 @@ public class MFClient implements MediaFireClient {
 
         query.put("session_token", mediaFireSessionToken.getSessionToken());
 
+        logger.info("session request query before signature: " + query);
         String signature = createSignatureForAuthenticatedRequest(mediaFireSessionToken.getSecretKey(), mediaFireSessionToken.getTime(), uri.toString(), query);
 
         query.put("signature", signature);
 
+        logger.info("session request query after signature: " + query);
+
         String encodedQuery = makeQueryStringFromMap(query, true);
+        logger.info("unencoded query: " + makeQueryStringFromMap(query, false));
+        logger.info("encoded query: " + encodedQuery);
 
         Map<String, Object> headers = createHeadersUsingQueryAsPostBody(encodedQuery);
 
@@ -284,8 +284,8 @@ public class MFClient implements MediaFireClient {
         String baseUrl = "https://www.mediafire.com";
         StringBuilder url = new StringBuilder();
         url.append(baseUrl).append("/api");
-        if (!TextUtils.isEmpty(getOverrideVersion())) {
-            url.append("/").append(getOverrideVersion());
+        if (!TextUtils.isEmpty(getApiVersion())) {
+            url.append("/").append(getApiVersion());
         }
 
         url.append("/user/get_session_token.php");
@@ -306,8 +306,8 @@ public class MFClient implements MediaFireClient {
     }
 
     @Override
-    public String getOverrideVersion() {
-        return overrideVersion;
+    public String getApiVersion() {
+        return apiVersion;
     }
 
     @Override
@@ -355,7 +355,7 @@ public class MFClient implements MediaFireClient {
 
         query.put("lifespan", lifespan);
 
-        MediaFireApiRequest request = new MFApiRequest("/user/get_action_token.php", query, getOverrideVersion(), null, null);
+        MediaFireApiRequest request = new MFApiRequest("/user/get_action_token.php", query, null, null);
         UserGetActionTokenResponse response = sessionRequest(request, UserGetActionTokenResponse.class);
         if (response.hasError()) {
             return null;
@@ -408,11 +408,13 @@ public class MFClient implements MediaFireClient {
         }
     }
 
-    private String createSignatureForAuthenticatedRequest(long secretKey, String time, String path, Map<String, Object> query) throws MediaFireException {
+    private String createSignatureForAuthenticatedRequest(long secretKey, String time, String uri, Map<String, Object> query) throws MediaFireException {
         long secretKeyMod256 = secretKey % 256;
         String queryMap = makeQueryStringFromMap(query, false);
-        String hashTarget = secretKeyMod256 + time + path + "?" + queryMap;
-        return getHasher().md5(hashTarget);
+        String hashTarget = secretKeyMod256 + time + uri + "?" + queryMap;
+        String signature = getHasher().md5(hashTarget);
+        logger.info("created signature: " + signature + " hash target: " + hashTarget +", secret key: " + secretKey + ", time: " + time + ", uri: " + uri +", query: " + queryMap);
+        return signature;
     }
 
     public static class Builder {
@@ -426,7 +428,7 @@ public class MFClient implements MediaFireClient {
         private final String applicationId;
         private final String apiKey;
 
-        private String overrideVersion;
+        private String apiVersion;
         private MediaFireHttpRequester requester = DEFAULT_REQUESTER;
         private MediaFireSessionStore sessionStore = DEFAULT_SESSION_STORE;
         private MediaFireCredentialsStore credentialsStore = DEFAULT_CREDENTIALS_STORE;
@@ -464,8 +466,8 @@ public class MFClient implements MediaFireClient {
             return this;
         }
 
-        public Builder overrideVersion(String overrideVersion) {
-            this.overrideVersion = overrideVersion;
+        public Builder apiVersion(String apiVersion) {
+            this.apiVersion = apiVersion;
             return this;
         }
 

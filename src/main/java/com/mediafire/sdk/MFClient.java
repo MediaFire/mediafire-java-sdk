@@ -185,6 +185,7 @@ public class MFClient implements MediaFireClient {
 
         synchronized (getSessionStore()) {
             if (!getSessionStore().isSessionTokenV2Available()) {
+                logger.info("no session tokens available for request: " + request);
                 mediaFireSessionToken = requestNewSessionToken();
             } else {
                 mediaFireSessionToken = getSessionStore().getSessionTokenV2();
@@ -197,16 +198,12 @@ public class MFClient implements MediaFireClient {
 
         query.put("session_token", mediaFireSessionToken.getSessionToken());
 
-        logger.info("session request query before signature: " + query);
         String signature = createSignatureForAuthenticatedRequest(mediaFireSessionToken.getSecretKey(), mediaFireSessionToken.getTime(), uri.toString(), query);
 
         query.put("signature", signature);
 
-        logger.info("session request query after signature: " + query);
 
         String encodedQuery = makeQueryStringFromMap(query, true);
-        logger.info("unencoded query: " + makeQueryStringFromMap(query, false));
-        logger.info("encoded query: " + encodedQuery);
 
         Map<String, Object> headers = createHeadersUsingQueryAsPostBody(encodedQuery);
 
@@ -218,7 +215,10 @@ public class MFClient implements MediaFireClient {
         T response = getResponseParser().parseResponse(mediaFireHttpResponse, classOfT);
 
         if (!response.hasError()) {
-            getSessionStore().put(mediaFireSessionToken);
+            mediaFireSessionToken.update();
+            synchronized (getSessionStore()) {
+                getSessionStore().put(mediaFireSessionToken);
+            }
         }
 
         return response;
@@ -368,6 +368,7 @@ public class MFClient implements MediaFireClient {
 
         UserGetSessionTokenResponse response = authenticationRequest(UserGetSessionTokenResponse.class);
         if (response.hasError()) {
+            logger.info("requested new session token, but received error: " + " (" + response.getError() + ") " + response.getMessage());
             return null;
         }
 
@@ -413,7 +414,6 @@ public class MFClient implements MediaFireClient {
         String queryMap = makeQueryStringFromMap(query, false);
         String hashTarget = secretKeyMod256 + time + uri + "?" + queryMap;
         String signature = getHasher().md5(hashTarget);
-        logger.info("created signature: " + signature + " hash target: " + hashTarget +", secret key: " + secretKey + ", time: " + time + ", uri: " + uri +", query: " + queryMap);
         return signature;
     }
 

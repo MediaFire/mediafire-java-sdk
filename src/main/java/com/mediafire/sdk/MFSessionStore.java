@@ -1,16 +1,19 @@
 package com.mediafire.sdk;
 
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MFSessionStore implements MediaFireSessionStore {
+    private static final long EXPIRE_THRESHOLD = 1000 * 60;
 
-    private final Queue<MediaFireSessionToken> sessionTokens = new LinkedBlockingQueue<MediaFireSessionToken>();
+    // tokens
+    private final BlockingQueue<MediaFireSessionToken> sessionTokens = new LinkedBlockingQueue<MediaFireSessionToken>();
     private MediaFireActionToken uploadToken;
     private MediaFireActionToken imageToken;
+
+    // locks
     private final Object uploadTokenLock = new Object();
     private final Object imageTokenLock = new Object();
-    private static final long EXPIRE_THRESHOLD = 1000 * 60;
 
     public MFSessionStore() {
     }

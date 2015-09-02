@@ -34,7 +34,7 @@ public class MFHttpResponse implements MediaFireHttpResponse {
     public String toString() {
         return "MFHttpResponse{" +
                 "statusCode=" + statusCode +
-                ", body=" + Arrays.toString(body) +
+                ", body=" + (body == null || body.length == 0 ? "null or empty" : body.length > 1000 ? "size: " + body.length : new String(body)) +
                 ", headers=" + headers +
                 '}';
     }

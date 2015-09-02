@@ -14,10 +14,6 @@ repositories {
     jcenter()
 }
 
-dependencies {
-    compile 'com.google.code.gson:gson:2.2.4'
-}
-
 publishing {
     publications {
         MyPublication(MavenPublication) {
@@ -43,8 +39,4 @@ bintray {
             name = 'clockwerk'
         }
     }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.4'
 }

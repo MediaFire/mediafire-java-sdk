@@ -30,7 +30,7 @@ public interface MediaFireSessionStore {
      * @param type
      * @return null if unavailable
      */
-    MediaFireActionToken getActionToken(int type);
+    MediaFireActionToken getActionToken(int type) throws MediaFireException;
 
     /**
      * puts a MediaFireActionToken in the store

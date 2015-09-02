@@ -35,7 +35,7 @@ public class MFHttpRequest implements MediaFireHttpRequest {
     public String toString() {
         return "MFHttpRequest{" +
                 "url='" + url + '\'' +
-                ", payload=" + Arrays.toString(payload) +
+                ", payload=" + (payload == null || payload.length == 0 ? "null or empty" : payload.length > 500 ? "size: " + payload.length : new String(payload)) +
                 ", headers=" + headers +
                 '}';
     }

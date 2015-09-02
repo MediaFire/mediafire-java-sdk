@@ -50,11 +50,9 @@ public class MFHttpRequester implements MediaFireHttpRequester {
 
             setupConnection(connection, headers, doOutput);
 
-            if (doOutput) {
+            if (doOutput && payload != null) {
                 connection.getOutputStream().write(payload);
             }
-
-            connection.getOutputStream().write(payload);
 
             return getResponse(connection);
         } catch (IOException e) {
@@ -74,23 +72,25 @@ public class MFHttpRequester implements MediaFireHttpRequester {
 
     private void setupConnection(HttpsURLConnection connection, Map<String, Object> headers, boolean doOutput) {
 
-        if (getHttpsAgent() != null) {
-            getHttpsAgent().configureHttpsUrlConnection(connection);
-        }
-
         connection.setConnectTimeout(connectionTimeout);
         connection.setReadTimeout(readTimeout);
 
         connection.setDoOutput(doOutput);
 
-        for (String key : headers.keySet()) {
-            if (headers.get(key) != null) {
-                connection.addRequestProperty(key, String.valueOf(headers.get(key)));
+        if (headers != null && !headers.isEmpty()) {
+            for (String key : headers.keySet()) {
+                if (headers.get(key) != null) {
+                    connection.addRequestProperty(key, String.valueOf(headers.get(key)));
+                }
             }
+        }
+
+        if (getHttpsAgent() != null) {
+            getHttpsAgent().configureHttpsUrlConnection(connection);
         }
     }
 
-    private MFHttpResponse getResponse(HttpsURLConnection connection) throws IOException {
+    private MediaFireHttpResponse getResponse(HttpsURLConnection connection) throws IOException {
         int responseCode = connection.getResponseCode();
         InputStream inputStream;
         if (responseCode / 100 != 2) {
@@ -103,7 +103,9 @@ public class MFHttpRequester implements MediaFireHttpRequester {
         inputStream.close();
         Map<String, List<String>> headerFields = connection.getHeaderFields();
 
-        return new MFHttpResponse(responseCode, response, headerFields);
+        MediaFireHttpResponse httpResponse  = new MFHttpResponse(responseCode, response, headerFields);
+
+        return httpResponse;
     }
 
     private byte[] readStream(InputStream inputStream) throws IOException {

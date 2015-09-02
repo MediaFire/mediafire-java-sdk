@@ -15,7 +15,6 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
     private int storedType = TYPE_NONE;
 
     public MFCredentialsStore() {
-
     }
 
     @Override

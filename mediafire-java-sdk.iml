@@ -25,5 +25,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" exported="" name="org.slf4j:slf4j-api:1.7.12" level="project" />
+    <orderEntry type="library" exported="" name="org.slf4j:slf4j-simple:1.7.12" level="project" />
   </component>
 </module>

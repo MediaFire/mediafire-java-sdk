@@ -4,6 +4,7 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MFSessionStore implements MediaFireSessionStore {
+
     private final Queue<MediaFireSessionToken> sessionTokens = new LinkedBlockingQueue<MediaFireSessionToken>();
     private MediaFireActionToken uploadToken;
     private MediaFireActionToken imageToken;
@@ -12,7 +13,6 @@ public class MFSessionStore implements MediaFireSessionStore {
     private static final long EXPIRE_THRESHOLD = 1000 * 60;
 
     public MFSessionStore() {
-
     }
 
     @Override
@@ -36,7 +36,7 @@ public class MFSessionStore implements MediaFireSessionStore {
     }
 
     @Override
-    public MediaFireActionToken getActionToken(int type) {
+    public MediaFireActionToken getActionToken(int type) throws MediaFireException {
         MediaFireActionToken token;
         switch (type) {
             case MediaFireActionToken.TYPE_IMAGE:
@@ -50,8 +50,7 @@ public class MFSessionStore implements MediaFireSessionStore {
                 }
                 break;
             default:
-                token = null;
-                break;
+                throw new MediaFireException("invalid token type passed: " + type);
         }
 
         return token;
@@ -95,9 +94,10 @@ public class MFSessionStore implements MediaFireSessionStore {
         return imageToken != null && !isTokenExpired(imageToken);
     }
 
-    private boolean isTokenExpired(MediaFireActionToken imageToken) {
-        long requestTime = imageToken.getRequestTime();
-        int lifespanMinutes = imageToken.getLifespan();
+    private boolean isTokenExpired(MediaFireActionToken token) {
+
+        long requestTime = token.getRequestTime();
+        int lifespanMinutes = token.getLifespan();
         long lifespan = lifespanMinutes * 60 * 1000;
 
         long expireTime = requestTime + lifespan;

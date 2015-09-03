@@ -74,7 +74,7 @@ public class MFHttpRequester implements MediaFireHttpRequester {
         } catch (MalformedURLException e) {
             throw new MediaFireException("bad url: " + url, e);
         } catch (IOException e) {
-            throw new MediaFireException("I/O exception: " + e);
+            throw new MediaFireException("I/O exception: ", e);
         }
     }
 

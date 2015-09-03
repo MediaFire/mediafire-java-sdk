@@ -37,7 +37,7 @@ class MFRunnableInstantUpload implements Runnable {
     public void run() {
         logger.info("upload thread started");
 
-        LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+        LinkedHashMap<String, Object> params = new LinkedHashMap<>();
         if (this.upload.getFileSize() == 0) {
             params.put(PARAM_SIZE, this.upload.getFile().length());
         } else {
@@ -61,7 +61,7 @@ class MFRunnableInstantUpload implements Runnable {
         }
 
         MediaFireApiRequest request = new MFApiRequest("/upload/instant.php", params, null, null);
-        UploadInstantResponse response = null;
+        UploadInstantResponse response;
         try {
             response = mediaFire.sessionRequest(request, UploadInstantResponse.class);
         } catch (MediaFireException e) {

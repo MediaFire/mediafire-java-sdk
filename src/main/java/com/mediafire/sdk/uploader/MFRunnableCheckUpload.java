@@ -33,7 +33,7 @@ class MFRunnableCheckUpload implements Runnable {
     @Override
     public void run() {
         logger.info("upload thread started");
-        LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+        LinkedHashMap<String, Object> params = new LinkedHashMap<>();
         params.put(PARAM_RESUMABLE, this.upload.isResumable() ? "yes" : "no");
 
         if (this.upload.getFileSize() == 0) {

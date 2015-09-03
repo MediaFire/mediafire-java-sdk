@@ -1,196 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_TEST_SOURCES" value="false" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="662b8f75-f138-43af-9835-9df76600a49e" name="Default" comment="sdk update&#10;&#10;">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/AutoBandwidthModel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/DoUploadModel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/LinksModel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/ShowDownloadPageModel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/SimpleDoUploadModel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/user/UserGetInfoResponse.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/UserSettingsModel.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/ApiResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/ContactAddResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/ContactDeleteResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/ContactFetchResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/ContactGetAvatarResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/ContactGetSourcesResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/ContactSummaryResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceEmptyTrashResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceFollowResourceResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceGetChangesResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceGetForeignChangesResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceGetForeignResourcesResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceGetPatchResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceGetResourceSharesResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceGetStatusResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceGetTrashResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceGetUpdatesResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceGetUserSharesResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceRequestForeignResource.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceSetForeignResourceSync.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceShareResourcesResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceToggleForeignResourceSync.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceUnfollowResourceResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/DeviceUnshareResourcesResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FileCopyResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FileDeleteResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FileGetInfoResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FileGetLinksResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FileGetVersionResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FileMoveResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FileUpdateResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FolderCopyResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FolderCreateResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FolderDeleteResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FolderGetContentsResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FolderGetInfoResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FolderGetRevisionResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FolderMoveResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FolderPurgeResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FolderSearchResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/FolderUpdateResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/MediaFireApiResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/NotificationsGetCacheResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/NotificationsPeekCacheResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/NotificationsSendMessageResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/NotificationsSendNotificationResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/SystemGetInfoResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UploadAddWebUploadResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UploadCheckResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UploadGetWebUploadsResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UploadInstantResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UploadPollUploadResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UploadResumableResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UploadSimpleResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UploadUpdateResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UserDestroyActionTokenResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UserGetActionTokenResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UserGetAvatarResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UserGetInfoResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UserGetSessionTokenResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UserGetSettingsResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UserRegisterResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UserSetAvatarResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/UserSetSettingsResponse.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/ChangedItems.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/Contact.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/DoUpload.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/FacebookInfo.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/File.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/FileInfo.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/FileInfos$Links.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/FileInfos.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/Folder.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/FolderContents.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/FolderInfo.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/Link$OneTime.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/Link.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/MediaFireNotification.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/MyFilesRevision.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/PollDoUpload.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/ResumableBitmap.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/ResumableDoUpload.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/ResumableUpload.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/Revision.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/SearchResult.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/SimpleDoUpload.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/TermsOfService.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/TwitterInfo.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/UserInfo.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/UserSettings$AutoBandwidth.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/UserSettings$ShowDownloadPage.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/UserSettings.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/api/responses/data_models/WebUploads.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/ContactDeleteResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceEmptyTrashResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceFollowResourceResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceGetForeignChangesResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceGetForeignResourcesResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceGetPatchResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceGetResourceSharesResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceGetTrashResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceGetUpdatesResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceGetUserSharesResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceRequestForeignResource.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceSetForeignResourceSync.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceShareResourcesResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceToggleForeignResourceSync.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceUnfollowResourceResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceUnshareResourcesResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FileGetVersionResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/NotificationsSendMessageResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/NotificationsSendNotificationResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UserDestroyActionTokenResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UserGetInfoResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UserSetSettingsResponse.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/DoUpload.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/SimpleDoUpload.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/UserSettings.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/ApiResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/ApiResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/ContactAddResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/contact/ContactAddResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/ContactFetchResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/contact/ContactFetchResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/ContactGetAvatarResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/contact/ContactGetAvatarResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/ContactGetSourcesResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/contact/ContactGetSourcesResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/ContactSummaryResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/contact/ContactSummaryResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceGetChangesResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/device/DeviceGetChangesResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/DeviceGetStatusResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/device/DeviceGetStatusResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FileCopyResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/file/FileCopyResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FileDeleteResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/file/FileDeleteResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FileGetInfoResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/file/FileGetInfoResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FileGetLinksResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/file/FileGetLinksResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FileMoveResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/file/FileMoveResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FileUpdateResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/file/FileUpdateResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FolderCopyResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/folder/FolderCopyResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FolderCreateResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/folder/FolderCreateResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FolderDeleteResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/folder/FolderDeleteResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FolderGetContentsResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/folder/FolderGetContentsResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FolderGetInfoResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/folder/FolderGetInfoResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FolderGetRevisionResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/folder/FolderGetRevisionResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FolderMoveResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/folder/FolderMoveResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FolderPurgeResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/folder/FolderPurgeResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FolderSearchResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/folder/FolderSearchResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/FolderUpdateResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/folder/FolderUpdateResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/MediaFireApiResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/MediaFireApiResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/NotificationsGetCacheResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/notifications/NotificationsGetCacheResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/NotificationsPeekCacheResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/notifications/NotificationsPeekCacheResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/SystemGetInfoResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/system/SystemGetInfoResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UploadAddWebUploadResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/upload/UploadAddWebUploadResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UploadCheckResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/upload/UploadCheckResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UploadGetWebUploadsResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/upload/UploadGetWebUploadsResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UploadInstantResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/upload/UploadInstantResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UploadPollUploadResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/upload/UploadPollUploadResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UploadResumableResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/upload/UploadResumableResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UploadSimpleResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/upload/UploadSimpleResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UploadUpdateResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/upload/UploadUpdateResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UserGetActionTokenResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/user/UserGetActionTokenResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UserGetAvatarResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/user/UserGetAvatarResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UserGetSessionTokenResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/user/UserGetSessionTokenResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UserGetSettingsResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/user/UserGetSettingsResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UserRegisterResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/user/UserRegisterResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/UserSetAvatarResponse.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/user/UserSetAvatarResponse.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/ChangedItems.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/ChangedItemsModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/Contact.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/ContactModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/FacebookInfo.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/FacebookInfoModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/File.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/FileModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/FileInfo.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/FileInfoModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/FileInfos.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/FileInfosModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/Folder.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/FolderModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/FolderContents.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/FolderContentsModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/FolderInfo.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/FolderInfoModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/Link.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/LinkModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/MediaFireNotification.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/NotificationModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/MyFilesRevision.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/MyFilesRevisionModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/PollDoUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/DoUploadPollModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/ResumableBitmap.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/ResumableBitmapModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/ResumableDoUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/DoUploadResumableModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/ResumableUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/ResumableUploadModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/Revision.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/RevisionModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/SearchResult.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/SearchResultModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/TermsOfService.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/TermsOfServiceModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/TwitterInfo.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/TwitterInfoModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/UserInfo.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/UserInfoModel.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/api/responses/data_models/WebUploads.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/WebUploadsModel.java" />
+    <list default="true" id="662b8f75-f138-43af-9835-9df76600a49e" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFApiResponseParser.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFApiResponseParser.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFClient.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFClient.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFHttpRequester.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFHttpRequester.class" />
@@ -214,33 +28,18 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/test/com/mediafire/sdk/MediaFireClientTest.class" afterPath="$PROJECT_DIR$/build/classes/test/com/mediafire/sdk/MediaFireClientTest.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/util/TextUtils.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/util/TextUtils.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.4/taskArtifacts/cache.properties.lock" afterPath="$PROJECT_DIR$/.gradle/2.4/taskArtifacts/cache.properties.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/FullInspection.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/FullInspection.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFApiResponseParser.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFApiResponseParser.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFCredentialsStore.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFCredentialsStore.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableCheckUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableCheckUpload.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableInstantUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableInstantUpload.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnablePollUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnablePollUpload.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableWebUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableWebUpload.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFSessionStore.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFSessionStore.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUpload.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploadStore.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploadStore.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploader.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFWebUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFWebUpload.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireActionToken.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireActionToken.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireApiResponseParser.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireApiResponseParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/MediaFireApiResponseParserTest.java" afterPath="$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/MediaFireApiResponseParserTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireClient.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireClient.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/MediaFireClientTest.java" afterPath="$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/MediaFireClientTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireSessionStore.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireSessionStore.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/MediaFireSessionStoreTest.java" afterPath="$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/MediaFireSessionStoreTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireSessionToken.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireSessionToken.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/util/TextUtils.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/util/TextUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MediaFireUploadStore.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MediaFireUploadStore.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.4/taskArtifacts/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/2.4/taskArtifacts/fileHashes.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.4/taskArtifacts/fileSnapshots.bin" afterPath="$PROJECT_DIR$/.gradle/2.4/taskArtifacts/fileSnapshots.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.4/taskArtifacts/taskArtifacts.bin" afterPath="$PROJECT_DIR$/.gradle/2.4/taskArtifacts/taskArtifacts.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -291,70 +90,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="MediaFireCredentialsStore.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireCredentialsStore.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="80" column="22" selection-start-line="80" selection-start-column="22" selection-end-line="80" selection-end-column="22" />
-              <folding>
-                <element signature="e#1738#1739#0" expanded="true" />
-                <element signature="e#1774#1775#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SystemGetInfoResponse.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/system/SystemGetInfoResponse.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="9" column="31" selection-start-line="9" selection-start-column="31" selection-end-line="9" selection-end-column="31" />
-              <folding>
-                <element signature="e#340#341#0" expanded="true" />
-                <element signature="e#379#380#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UploadCheckResponse.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/upload/UploadCheckResponse.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="18" column="16" selection-start-line="18" selection-start-column="16" selection-end-line="18" selection-end-column="16" />
-              <folding>
-                <element signature="e#669#670#0" expanded="true" />
-                <element signature="e#709#710#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MFHttpResponse.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpResponse.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="62" column="0" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MFUploader.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploader.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="27" column="38" selection-start-line="27" selection-start-column="38" selection-end-line="27" selection-end-column="38" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="MFClient.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="39" column="51" selection-start-line="39" selection-start-column="51" selection-end-line="39" selection-end-column="51" />
+              <caret line="53" column="50" selection-start-line="53" selection-start-column="50" selection-end-line="53" selection-end-column="50" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MediaFireActionToken.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireActionToken.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -380,21 +130,61 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MFRunnableGetWebUpload.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java">
+      <file leaf-file-name="MFRunnableWebUpload.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableWebUpload.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
+              <caret line="13" column="6" selection-start-line="13" selection-start-column="6" selection-end-line="13" selection-end-column="6" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MFRunnableResumableUpload.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="gradle.properties" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/gradle.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MFRunnableGetWebUpload.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="50" column="48" selection-start-line="50" selection-start-column="48" selection-end-line="50" selection-end-column="48" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MFRunnableInstantUpload.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableInstantUpload.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="13" column="6" selection-start-line="13" selection-start-column="6" selection-end-line="13" selection-end-column="6" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MFRunnableResumableUpload.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.28996283">
-              <caret line="39" column="18" selection-start-line="39" selection-start-column="18" selection-end-line="39" selection-end-column="18" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="217" column="19" selection-start-line="217" selection-start-column="19" selection-end-line="217" selection-end-column="19" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MediaFireUploadStore.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MediaFireUploadStore.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -684,8 +474,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireException.java" />
-        <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/ApiResponse.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/contact/ContactAddResponse.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/contact/ContactDeleteResponse.java" />
@@ -732,9 +520,11 @@
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireActionToken.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFSessionStore.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploader.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MediaFireUploadStore.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableWebUpload.java" />
       </list>
     </option>
   </component>
@@ -1686,7 +1476,13 @@
       <option name="project" value="LOCAL" />
       <updated>1441311895800</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="sdk update&#10;&#10;cleaned up unused response classes">
+      <created>1441315174355</created>
+      <option name="number" value="00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1441315174355</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1700,7 +1496,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="149" y="55" width="2192" height="1491" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -1720,7 +1516,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20837209" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39985433" sideWeight="0.4714863" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39985433" sideWeight="0.4714863" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35032776" sideWeight="0.75707227" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1772,7 +1568,8 @@
     <MESSAGE value="changes" />
     <MESSAGE value="junk" />
     <MESSAGE value="sdk update&#10;&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="sdk update&#10;&#10;" />
+    <MESSAGE value="sdk update&#10;&#10;cleaned up unused response classes" />
+    <option name="LAST_COMMIT_MESSAGE" value="sdk update&#10;&#10;cleaned up unused response classes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1785,38 +1582,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/upload/UploadSimpleResponse.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/upload/UploadUpdateResponse.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/user/UserGetActionTokenResponse.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/user/UserGetAvatarResponse.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/user/UserGetInfoResponse.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1988,14 +1753,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireActionToken.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableCheckUpload.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2059,14 +1816,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="36" column="16" selection-start-line="36" selection-start-column="16" selection-end-line="36" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MediaFireUploadStore.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="37" column="73" selection-start-line="37" selection-start-column="73" selection-end-line="37" selection-end-column="73" />
           <folding />
         </state>
       </provider>
@@ -2167,15 +1916,40 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="27" column="38" selection-start-line="27" selection-start-column="38" selection-end-line="27" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="39" column="51" selection-start-line="39" selection-start-column="51" selection-end-line="39" selection-end-column="51" />
-          <folding />
+          <folding>
+            <element signature="e#2901#2903#0" expanded="false" />
+            <element signature="e#3551#3553#0" expanded="false" />
+            <element signature="e#4207#4209#0" expanded="false" />
+            <element signature="e#4905#4907#0" expanded="false" />
+            <element signature="e#5634#5636#0" expanded="false" />
+            <element signature="e#6354#6356#0" expanded="false" />
+            <element signature="e#6871#6873#0" expanded="false" />
+            <element signature="e#7693#7695#0" expanded="false" />
+            <element signature="e#8486#8488#0" expanded="false" />
+            <element signature="e#9953#9955#0" expanded="false" />
+            <element signature="e#10733#10735#0" expanded="false" />
+            <element signature="e#11392#11394#0" expanded="false" />
+            <element signature="e#12187#12189#0" expanded="false" />
+            <element signature="e#12871#12873#0" expanded="false" />
+            <element signature="e#13583#13585#0" expanded="false" />
+            <element signature="e#14164#14166#0" expanded="false" />
+            <element signature="e#14711#14713#0" expanded="false" />
+            <element signature="e#15434#15436#0" expanded="false" />
+            <element signature="e#15969#15971#0" expanded="false" />
+            <element signature="e#16708#16710#0" expanded="false" />
+            <element signature="e#17382#17384#0" expanded="false" />
+            <element signature="e#18022#18024#0" expanded="false" />
+            <element signature="e#18762#18764#0" expanded="false" />
+            <element signature="e#19455#19457#0" expanded="false" />
+            <element signature="e#20132#20134#0" expanded="false" />
+            <element signature="e#20668#20670#0" expanded="false" />
+            <element signature="e#21295#21297#0" expanded="false" />
+            <element signature="e#21749#21751#0" expanded="false" />
+            <element signature="e#22187#22189#0" expanded="false" />
+            <element signature="e#22699#22701#0" expanded="false" />
+            <element signature="e#23167#23169#0" expanded="false" />
+            <element signature="e#23551#23553#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2183,6 +1957,62 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="184" column="19" selection-start-line="184" selection-start-column="19" selection-end-line="184" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MediaFireUploadStore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="53" column="50" selection-start-line="53" selection-start-column="50" selection-end-line="53" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireActionToken.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home/src.zip!/java/io/BufferedInputStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33291456">
+          <caret line="355" column="29" selection-start-line="355" selection-start-column="29" selection-end-line="355" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="217" column="19" selection-start-line="217" selection-start-column="19" selection-end-line="217" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="50" column="48" selection-start-line="50" selection-start-column="48" selection-end-line="50" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableInstantUpload.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="13" column="6" selection-start-line="13" selection-start-column="6" selection-end-line="13" selection-end-column="6" />
           <folding />
         </state>
       </provider>
@@ -2195,18 +2025,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableWebUpload.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
+          <caret line="13" column="6" selection-start-line="13" selection-start-column="6" selection-end-line="13" selection-end-column="6" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java">
+    <entry file="file://$PROJECT_DIR$/gradle.properties">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.28996283">
-          <caret line="39" column="18" selection-start-line="39" selection-start-column="18" selection-end-line="39" selection-end-column="18" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>

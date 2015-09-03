@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MFUploadStore implements MediaFireUploadStore {
     private final Logger logger = LoggerFactory.getLogger(MFUploadStore.class);
 
-    private final LinkedBlockingQueue<MediaFireUpload> uploads = new LinkedBlockingQueue<MediaFireUpload>();
+    private final LinkedBlockingQueue<MediaFireUpload> uploads = new LinkedBlockingQueue<>();
     private final AtomicInteger currentId = new AtomicInteger(0);
 
     @Override

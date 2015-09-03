@@ -44,14 +44,14 @@ public class MFClient implements MediaFireClient {
     @Override
     public <T extends MediaFireApiResponse> T noAuthRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException {
         logger.info("making api request without authentication. request: " + request + ", response class: " + classOfT);
-        Map<String, Object> query = new LinkedHashMap<String, Object>();
+        Map<String, Object> query = new LinkedHashMap<>();
         query.put("response_format", getResponseParser().getResponseFormat());
         if (request.getQueryParameters() != null) {
             query.putAll(request.getQueryParameters());
         }
 
         byte[] payload = makeQueryStringFromMap(query, true).getBytes();
-        Map<String, Object> headers = new HashMap<String, Object>();
+        Map<String, Object> headers = new HashMap<>();
         headers.put("Content-Type", "application/x-www-form-urlencoded;charset=" + UTF8);
         headers.put("Content-Length", payload.length);
         headers.put("Accept-Charset", "UTF-8");
@@ -117,7 +117,7 @@ public class MFClient implements MediaFireClient {
     @Override
     public <T extends MediaFireApiResponse> T uploadRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException {
         logger.info("making api request using (upload) action token. request: " + request + ", response class: " + classOfT);
-        Map<String, Object> query = new LinkedHashMap<String, Object>();
+        Map<String, Object> query = new LinkedHashMap<>();
         query.put("response_format", getResponseParser().getResponseFormat());
         query.putAll(request.getQueryParameters());
 
@@ -141,7 +141,7 @@ public class MFClient implements MediaFireClient {
 
         query.put("session_token", mediaFireActionToken.getSessionToken());
 
-        Map<String, Object> headers = new HashMap<String, Object>();
+        Map<String, Object> headers = new HashMap<>();
         headers.put("Content-Type", "application/octet-stream");
         headers.put("Content-Length", request.getPayload().length);
         headers.put("Accept-Charset", "UTF-8");
@@ -169,7 +169,7 @@ public class MFClient implements MediaFireClient {
     @Override
     public <T extends MediaFireApiResponse> T sessionRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException {
         logger.info("making api request using session token. request: " + request + ", response class: " + classOfT);
-        Map<String, Object> query = new LinkedHashMap<String, Object>();
+        Map<String, Object> query = new LinkedHashMap<>();
         query.put("response_format", getResponseParser().getResponseFormat());
         if (request.getQueryParameters() != null) {
             query.putAll(request.getQueryParameters());
@@ -231,7 +231,7 @@ public class MFClient implements MediaFireClient {
         logger.info("making authentication request. response class: " + classOfT);
         int credentialType = getCredentialStore().getTypeStored();
 
-        Map<String, Object> query = new LinkedHashMap<String, Object>();
+        Map<String, Object> query = new LinkedHashMap<>();
         query.put("response_format", getResponseParser().getResponseFormat());
         query.put("token_version", SESSION_TOKEN_VERSION);
         query.put("application_id", getApplicationId());
@@ -278,7 +278,7 @@ public class MFClient implements MediaFireClient {
 
         byte[] payload = makeQueryStringFromMap(query, true).getBytes();
 
-        Map<String, Object> headers = new HashMap<String, Object>();
+        Map<String, Object> headers = new HashMap<>();
         headers.put("Content-Type", "application/x-www-form-urlencoded;charset=" + UTF8);
         headers.put("Content-Length", payload.length);
         headers.put("Accept-Charset", "UTF-8");
@@ -338,7 +338,7 @@ public class MFClient implements MediaFireClient {
     }
 
     private MediaFireActionToken requestNewActionToken(int type) throws MediaFireException {
-        Map<String, Object> query = new LinkedHashMap<String, Object>();
+        Map<String, Object> query = new LinkedHashMap<>();
         query.put("response_format", getResponseParser().getResponseFormat());
 
         int lifespan;
@@ -384,7 +384,7 @@ public class MFClient implements MediaFireClient {
     }
 
     private Map<String, Object> createHeadersUsingQueryAsPostBody(String encodedQuery) {
-        Map<String, Object> headers = new HashMap<String, Object>();
+        Map<String, Object> headers = new HashMap<>();
         headers.put("Accept-Charset", "UTF-8");
         headers.put("Content-Length", encodedQuery.length());
         headers.put("Content-Type", "application/x-www-form-urlencoded;charset=" + UTF8);

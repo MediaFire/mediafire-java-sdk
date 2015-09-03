@@ -32,7 +32,7 @@ class MFRunnableResumableUpload implements Runnable {
     private static final String HEADER_X_UNIT_SIZE = "x-unit-size";
     private static final String CONTENT_TYPE_OCTET_STREAM = "application/octet-stream";
 
-    private List<Boolean> uploadUnits = new LinkedList<Boolean>();
+    private List<Boolean> uploadUnits = new LinkedList<>();
 
     private final MediaFireClient mediaFire;
     private final MediaFireFileUpload upload;
@@ -50,7 +50,7 @@ class MFRunnableResumableUpload implements Runnable {
     public void run() {
         logger.info("upload thread started");
 
-        LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+        LinkedHashMap<String, Object> params = new LinkedHashMap<>();
         params.put(PARAM_ACTION_ON_DUPLICATE, "keep");
         if (!TextUtils.isEmpty(this.upload.getFolderKey())) {
             params.put(PARAM_FOLDER_KEY, this.upload.getFolderKey());
@@ -63,7 +63,7 @@ class MFRunnableResumableUpload implements Runnable {
         int numUnits = resumableUpload.getNumberOfUnits();
         int unitSize = resumableUpload.getUnitSize();
 
-        Map<String, Object> headers = new HashMap<String, Object>();
+        Map<String, Object> headers = new HashMap<>();
         if (this.upload.getFileSize() == 0) {
             headers.put(HEADER_X_FILESIZE, this.upload.getFile().length());
         } else {
@@ -161,7 +161,7 @@ class MFRunnableResumableUpload implements Runnable {
     }
 
     private void updateUploadBitmap(int count, List<Integer> words) {
-        List<Boolean> uploadUnits = new LinkedList<Boolean>();
+        List<Boolean> uploadUnits = new LinkedList<>();
 
         if (words == null || words.isEmpty()) {
             this.uploadUnits = uploadUnits;

@@ -40,12 +40,12 @@ class MFRunnablePollUpload implements Runnable {
     public void run() {
         logger.info("upload thread started");
 
-        final LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+        final LinkedHashMap<String, Object> params = new LinkedHashMap<>();
         params.put(PARAM_KEY, uploadKey);
         long pollCount = 0;
         do {
             MediaFireApiRequest request = new MFApiRequest("/upload/poll_upload.php", params, null, null);
-            UploadPollUploadResponse response = null;
+            UploadPollUploadResponse response;
             try {
                 response = mediaFire.sessionRequest(request, UploadPollUploadResponse.class);
             } catch (MediaFireException e) {

@@ -34,7 +34,7 @@ class MFRunnableWebUpload implements Runnable {
     public void run() {
         logger.info("upload thread started");
 
-        LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+        LinkedHashMap<String, Object> params = new LinkedHashMap<>();
         params.put(PARAM_URL, this.upload.getUrl());
         params.put(PARAM_FILENAME, this.upload.getFileName());
 
@@ -43,7 +43,7 @@ class MFRunnableWebUpload implements Runnable {
         }
 
         MediaFireApiRequest request = new MFApiRequest("/upload/add_web_upload.php", params, null, null);
-        UploadAddWebUploadResponse response = null;
+        UploadAddWebUploadResponse response;
         try {
             response = mediaFire.sessionRequest(request, UploadAddWebUploadResponse.class);
         } catch (MediaFireException e) {

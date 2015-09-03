@@ -1,9 +1,13 @@
 package com.mediafire.sdk;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class MFCredentialsStore implements MediaFireCredentialsStore {
+    private final Logger logger = LoggerFactory.getLogger(MFCredentialsStore.class);
 
     private static final String KEY_EMAIL = "email";
     private static final String KEY_PASSWORD = "password";
@@ -19,6 +23,7 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
 
     @Override
     public void clear() {
+        logger.info("clearing credentials");
         store.clear();
         storedType = TYPE_NONE;
     }
@@ -26,6 +31,7 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
     @Override
     public void setEmail(EmailCredentials credentials) {
         clear();
+        logger.info("storing email credentials: " + credentials);
         this.storedType = TYPE_EMAIL;
         store.put(KEY_EMAIL, credentials.getEmail());
         store.put(KEY_PASSWORD, credentials.getPassword());
@@ -34,6 +40,7 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
     @Override
     public void setEkey(EkeyCredentials credentials) {
         clear();
+        logger.info("storing ekey credentials: " + credentials);
         this.storedType = TYPE_EKEY;
         store.put(KEY_EKEY, credentials.getEkey());
         store.put(KEY_PASSWORD, credentials.getPassword());
@@ -42,6 +49,7 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
     @Override
     public void setFacebook(FacebookCredentials credentials) {
         clear();
+        logger.info("storing facebook credentials: " + credentials);
         this.storedType = TYPE_FACEBOOK;
         store.put(KEY_FACEBOOK_ACCESS_TOKEN, credentials.getFacebookAccessToken());
     }
@@ -49,6 +57,7 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
     @Override
     public void setTwitter(TwitterCredentials credentials) {
         clear();
+        logger.info("storing twitter credentials: " + credentials);
         this.storedType = TYPE_TWITTER;
         store.put(KEY_TWITTER_OAUTH_TOKEN, credentials.getTwitterOauthToken());
         store.put(KEY_TWITTER_OAUTH_TOKEN_SECRET, credentials.getTwitterOauthTokenSecret());

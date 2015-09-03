@@ -3,8 +3,11 @@ package com.mediafire.sdk;
 import com.google.gson.*;
 import com.mediafire.sdk.api.responses.MediaFireApiResponse;
 import com.mediafire.sdk.util.TextUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MFApiResponseParser implements MediaFireApiResponseParser {
+    private final Logger logger = LoggerFactory.getLogger(MFApiResponseParser.class);
 
     public MFApiResponseParser() {
 
@@ -12,6 +15,7 @@ public class MFApiResponseParser implements MediaFireApiResponseParser {
 
     @Override
     public <T extends MediaFireApiResponse> T parseResponse(MediaFireHttpResponse response, Class<T> classOfT) throws MediaFireException {
+        logger.info("parsing response: " + response + ", into " + classOfT);
         if (response == null) {
             throw new MediaFireException("MediaFireHttpResponse was null while trying to parse an ApiResponse");
         }

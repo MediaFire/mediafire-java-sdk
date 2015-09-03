@@ -1,9 +1,14 @@
 package com.mediafire.sdk;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MFSessionStore implements MediaFireSessionStore {
+    private final Logger logger = LoggerFactory.getLogger(MFSessionStore.class);
+
     private static final long EXPIRE_THRESHOLD = 1000 * 60;
 
     // tokens
@@ -20,11 +25,14 @@ public class MFSessionStore implements MediaFireSessionStore {
 
     @Override
     public MediaFireSessionToken getSessionTokenV2() {
-        return sessionTokens.poll();
+        MediaFireSessionToken token = sessionTokens.poll();
+        logger.info("session token requested. giving: " + token);
+        return token;
     }
 
     @Override
     public boolean put(MediaFireSessionToken token) {
+        logger.info("session token being stored. storing: " + token);
         return sessionTokens.offer(token);
     }
 
@@ -56,11 +64,14 @@ public class MFSessionStore implements MediaFireSessionStore {
                 throw new MediaFireException("invalid token type passed: " + type);
         }
 
+        logger.info("action token being requested. giving: " + token);
         return token;
     }
 
     @Override
     public boolean put(MediaFireActionToken token) {
+        logger.info("action token being stored. storing: " + token);
+
         switch (token.getType()) {
             case MediaFireActionToken.TYPE_IMAGE:
                 synchronized (imageTokenLock) {
@@ -114,6 +125,7 @@ public class MFSessionStore implements MediaFireSessionStore {
 
     @Override
     public void clear() {
+        logger.info("clearing store of all tokens");
         synchronized (this) {
             sessionTokens.clear();
             uploadToken = null;

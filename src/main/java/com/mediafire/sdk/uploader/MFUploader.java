@@ -29,7 +29,7 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, MFRunn
         this.store = store;
         this.concurrentUploads = concurrentUploads;
         this.queue = new LinkedBlockingDeque<Runnable>();
-        this.executor = new PausableExecutor(concurrentUploads, 10, 10, TimeUnit.SECONDS, queue);
+        this.executor = new PausableExecutor(concurrentUploads, concurrentUploads, 10, TimeUnit.SECONDS, queue);
     }
 
     public int getQueueSize() {
@@ -37,11 +37,11 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, MFRunn
     }
 
     public void schedule(MediaFireWebUpload upload) {
-        newWebUpload(upload);
+        this.store.insert(upload);
     }
 
     public void schedule(MediaFireFileUpload upload) {
-        newFileUpload(upload);
+        this.store.insert(upload);
     }
 
     public void pause() {
@@ -392,15 +392,27 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, MFRunn
     }
 
     private void signalStartNewUpload() {
-        // TODO
+        MediaFireUpload upload = store.getNextUpload();
+
+        if (upload == null) {
+            return;
+        }
+
+        switch (upload.getType()) {
+            case MediaFireUpload.TYPE_FILE_UPLOAD:
+                checkUpload((MediaFireFileUpload) upload);
+                break;
+            case MediaFireUpload.TYPE_WEB_UPLOAD:
+                webUpload((MediaFireWebUpload) upload);
+                break;
+            default:
+                throw new IllegalStateException("MediaFireUploadStore has an invalid value for upload type: " + upload.getType());
+        }
     }
 
-
-    private void newWebUpload(MediaFireWebUpload upload) {
-        this.store.insert(upload);
-    }
-
-    private void newFileUpload(MediaFireFileUpload upload) {
-        this.store.insert(upload);
+    private boolean canStartNewUpload() {
+        int coreSize = executor.getCorePoolSize();
+        int activeCount = executor.getActiveCount();
+        return activeCount < coreSize;
     }
 }

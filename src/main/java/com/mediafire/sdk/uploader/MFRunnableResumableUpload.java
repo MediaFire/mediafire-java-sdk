@@ -13,7 +13,7 @@ import com.mediafire.sdk.util.TextUtils;
 import java.io.*;
 import java.util.*;
 
-public class MFRunnableResumableUpload implements Runnable {
+class MFRunnableResumableUpload implements Runnable {
 
     private static final String PARAM_FOLDER_KEY = "folder_key";
     private static final String PARAM_FOLDER_PATH = "path";

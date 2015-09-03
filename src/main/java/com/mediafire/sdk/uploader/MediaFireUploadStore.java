@@ -57,4 +57,6 @@ public interface MediaFireUploadStore {
     void update(MediaFireFileUpload mediaFireUpload, Map<String, Object> valuesMap);
 
     void update(MediaFireWebUpload mediaFireUpload, Map<String, Object> valuesMap);
+
+    MediaFireUpload getNextUpload();
 }

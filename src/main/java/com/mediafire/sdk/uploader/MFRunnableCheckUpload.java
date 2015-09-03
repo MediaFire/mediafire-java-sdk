@@ -6,7 +6,7 @@ import com.mediafire.sdk.util.TextUtils;
 
 import java.util.LinkedHashMap;
 
-public class MFRunnableCheckUpload implements Runnable {
+class MFRunnableCheckUpload implements Runnable {
 
     private static final String PARAM_RESPONSE_FORMAT = "response_format";
     private static final String PARAM_FILENAME = "filename";

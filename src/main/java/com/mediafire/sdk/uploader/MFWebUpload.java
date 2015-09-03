@@ -30,4 +30,9 @@ public class MFWebUpload extends MFUpload implements MediaFireWebUpload {
     public String getQuickKey() {
         return this.quickKey;
     }
+
+    @Override
+    public int getType() {
+        return MediaFireUpload.TYPE_WEB_UPLOAD;
+    }
 }

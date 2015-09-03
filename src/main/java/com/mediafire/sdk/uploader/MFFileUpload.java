@@ -79,6 +79,11 @@ public class MFFileUpload extends MFUpload implements MediaFireFileUpload {
         return this.actionOnInAccount;
     }
 
+    @Override
+    public int getType() {
+        return MediaFireUpload.TYPE_FILE_UPLOAD;
+    }
+
     public static class Builder {
         private final File file;
         private final String fileName;

@@ -9,7 +9,7 @@ import com.mediafire.sdk.util.TextUtils;
 
 import java.util.LinkedHashMap;
 
-public class MFRunnableInstantUpload implements Runnable {
+class MFRunnableInstantUpload implements Runnable {
 
     private static final String PARAM_FILENAME = "filename";
     private static final String PARAM_FOLDER_KEY = "folder_key";

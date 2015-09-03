@@ -1,6 +1,16 @@
 package com.mediafire.sdk.uploader;
 
-public interface MediaFireUpload {
+interface MediaFireUpload {
+
+    int TYPE_WEB_UPLOAD = 0;
+    int TYPE_FILE_UPLOAD = 1;
+
+    /**
+     * type of the upload
+     * @return
+     */
+    int getType();
+
     /**
      * The UTF-8 encoded name, plus extension, of the file to be created(between 3 and 255 characters in length).
      * @return

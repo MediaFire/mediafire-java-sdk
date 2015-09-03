@@ -1,6 +1,6 @@
 package com.mediafire.sdk.uploader;
 
-public class MFUpload implements MediaFireUpload {
+abstract class MFUpload implements MediaFireUpload {
     private final String fileName;
     private final String folderKey;
     private long id = -1;

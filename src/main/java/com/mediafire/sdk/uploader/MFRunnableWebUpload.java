@@ -11,7 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 
-public class MFRunnableWebUpload implements Runnable {
+class MFRunnableWebUpload implements Runnable {
 
     private static final String PARAM_URL = "url";
     private static final String PARAM_FILENAME = "filename";

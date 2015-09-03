@@ -10,7 +10,7 @@ import com.mediafire.sdk.util.TextUtils;
 
 import java.util.LinkedHashMap;
 
-public class MFRunnableGetWebUpload implements Runnable {
+class MFRunnableGetWebUpload implements Runnable {
     private static final int TIME_BETWEEN_POLLS_MILLIS = 1000 * 5;
     private static final int MAX_POLLS = 24;
 

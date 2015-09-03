@@ -337,7 +337,7 @@ public class MFClient implements MediaFireClient {
         return parser;
     }
 
-    private MediaFireActionToken requestNewActionToken(int type) throws MediaFireException {
+    public MediaFireActionToken requestNewActionToken(int type) throws MediaFireException {
         Map<String, Object> query = new LinkedHashMap<>();
         query.put("response_format", getResponseParser().getResponseFormat());
 
@@ -366,7 +366,7 @@ public class MFClient implements MediaFireClient {
         return new MFActionToken(sessionToken, type, System.currentTimeMillis(), lifespan);
     }
 
-    private MediaFireSessionToken requestNewSessionToken() throws MediaFireException {
+    public MediaFireSessionToken requestNewSessionToken() throws MediaFireException {
 
         UserGetSessionTokenResponse response = authenticationRequest(UserGetSessionTokenResponse.class);
         if (response.hasError()) {

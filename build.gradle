@@ -14,13 +14,19 @@ repositories {
     jcenter()
 }
 
+dependencies {
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'org.slf4j:slf4j-api:1.7.12'
+    compile 'org.slf4j:slf4j-simple:1.7.12'
+}
+
 publishing {
     publications {
         MyPublication(MavenPublication) {
             from components.java
-            groupId 'mediafire'
-            artifactId 'java-sdk'
-            version '1.0.0'
+            groupId 'com.github.mediafire'
+            artifactId 'mediafire-java-sdk'
+            version '5.0.1'
         }
     }
 }
@@ -36,7 +42,7 @@ bintray {
         licenses = ['Apache-2.0']
         vcsUrl = 'https://www.github.com/MediaFire/mediafire-java-sdk.git'
         version {
-            name = 'rubick'
+            name = 'clockwerk'
         }
     }
 }

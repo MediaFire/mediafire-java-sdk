@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class MFSessionStore implements MediaFireSessionStore {
     private final Logger logger = LoggerFactory.getLogger(MFSessionStore.class);
@@ -25,7 +26,12 @@ public class MFSessionStore implements MediaFireSessionStore {
 
     @Override
     public MediaFireSessionToken getSessionTokenV2() {
-        MediaFireSessionToken token = sessionTokens.poll();
+        MediaFireSessionToken token = null;
+        try {
+            token = sessionTokens.poll(3, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            return null;
+        }
         logger.info("session token requested. giving: " + token);
         return token;
     }

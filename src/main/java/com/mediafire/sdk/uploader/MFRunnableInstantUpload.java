@@ -6,10 +6,14 @@ import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireException;
 import com.mediafire.sdk.api.responses.UploadInstantResponse;
 import com.mediafire.sdk.util.TextUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 
 class MFRunnableInstantUpload implements Runnable {
+
+    private final Logger logger = LoggerFactory.getLogger(MFRunnableInstantUpload.class);
 
     private static final String PARAM_FILENAME = "filename";
     private static final String PARAM_FOLDER_KEY = "folder_key";
@@ -31,6 +35,8 @@ class MFRunnableInstantUpload implements Runnable {
 
     @Override
     public void run() {
+        logger.info("upload thread started");
+
         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_SIZE, this.upload.getFileSize());
         params.put(PARAM_HASH, this.upload.getSha256Hash());
@@ -44,7 +50,7 @@ class MFRunnableInstantUpload implements Runnable {
             params.put(PARAM_FOLDER_PATH, this.upload.getMediaFirePath());
         }
 
-        MediaFireApiRequest request = new MFApiRequest("upload/instant.php", params, null, null);
+        MediaFireApiRequest request = new MFApiRequest("/upload/instant.php", params, null, null);
         UploadInstantResponse response = null;
         try {
             response = mediaFire.sessionRequest(request, UploadInstantResponse.class);

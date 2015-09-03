@@ -134,7 +134,7 @@ public class MFHasher implements MediaFireHasher {
     }
 
     private String hash(String algorithm, byte[] bytesToHash) throws NoSuchAlgorithmException {
-        logger.info(algorithm + " hashing byte[] of length: " + bytesToHash);
+        logger.info(algorithm + " hashing byte[] of length: " + bytesToHash.length);
         MessageDigest md = MessageDigest.getInstance(algorithm);
         md.update(bytesToHash);
 

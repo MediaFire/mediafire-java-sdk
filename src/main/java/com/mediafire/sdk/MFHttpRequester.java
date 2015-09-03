@@ -108,7 +108,9 @@ public class MFHttpRequester implements MediaFireHttpRequester {
         }
         byte[] response = readStream(inputStream);
 
-        inputStream.close();
+        if (inputStream != null) {
+            inputStream.close();
+        }
         Map<String, List<String>> headerFields = connection.getHeaderFields();
 
         return new MFHttpResponse(responseCode, response, headerFields);

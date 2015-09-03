@@ -3,10 +3,14 @@ package com.mediafire.sdk.uploader;
 import com.mediafire.sdk.*;
 import com.mediafire.sdk.api.responses.UploadCheckResponse;
 import com.mediafire.sdk.util.TextUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 
 class MFRunnableCheckUpload implements Runnable {
+
+    private final Logger logger = LoggerFactory.getLogger(MFRunnableCheckUpload.class);
 
     private static final String PARAM_RESPONSE_FORMAT = "response_format";
     private static final String PARAM_FILENAME = "filename";
@@ -28,6 +32,7 @@ class MFRunnableCheckUpload implements Runnable {
 
     @Override
     public void run() {
+        logger.info("upload thread started");
         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_RESUMABLE, this.upload.isResumable() ? "yes" : "no");
         params.put(PARAM_SIZE, this.upload.getFileSize());
@@ -41,7 +46,7 @@ class MFRunnableCheckUpload implements Runnable {
             params.put(PARAM_FOLDER_PATH, this.upload.getMediaFirePath());
         }
 
-        MediaFireApiRequest request = new MFApiRequest("upload/check.php", params, null, null);
+        MediaFireApiRequest request = new MFApiRequest("/upload/check.php", params, null, null);
 
         try {
             UploadCheckResponse response = mediaFire.sessionRequest(request, UploadCheckResponse.class);

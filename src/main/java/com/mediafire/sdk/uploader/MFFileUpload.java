@@ -161,4 +161,61 @@ public class MFFileUpload extends MFUpload implements MediaFireFileUpload {
             return new MFFileUpload(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "MFFileUpload{" +
+                "sha256Hash='" + sha256Hash + '\'' +
+                ", fileSize=" + fileSize +
+                ", jsonFormattedUploadsArray='" + jsonFormattedUploadsArray + '\'' +
+                ", deviceId='" + deviceId + '\'' +
+                ", preemptive=" + preemptive +
+                ", fileDropKey='" + fileDropKey + '\'' +
+                ", mediaFirePath='" + mediaFirePath + '\'' +
+                ", resumable=" + resumable +
+                ", actionOnInAccount=" + actionOnInAccount +
+                ", file=" + file +
+                "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MFFileUpload that = (MFFileUpload) o;
+
+        if (getFileSize() != that.getFileSize()) return false;
+        if (isPreemptive() != that.isPreemptive()) return false;
+        if (isResumable() != that.isResumable()) return false;
+        if (getSha256Hash() != null ? !getSha256Hash().equals(that.getSha256Hash()) : that.getSha256Hash() != null)
+            return false;
+        if (getJsonFormattedUploadsArray() != null ? !getJsonFormattedUploadsArray().equals(that.getJsonFormattedUploadsArray()) : that.getJsonFormattedUploadsArray() != null)
+            return false;
+        if (getDeviceId() != null ? !getDeviceId().equals(that.getDeviceId()) : that.getDeviceId() != null)
+            return false;
+        if (getFileDropKey() != null ? !getFileDropKey().equals(that.getFileDropKey()) : that.getFileDropKey() != null)
+            return false;
+        if (getMediaFirePath() != null ? !getMediaFirePath().equals(that.getMediaFirePath()) : that.getMediaFirePath() != null)
+            return false;
+        if (getActionOnInAccount() != that.getActionOnInAccount()) return false;
+        if (getFile() != null ? !getFile().equals(that.getFile()) : that.getFile() != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getSha256Hash() != null ? getSha256Hash().hashCode() : 0;
+        result = 31 * result + (int) (getFileSize() ^ (getFileSize() >>> 32));
+        result = 31 * result + (getJsonFormattedUploadsArray() != null ? getJsonFormattedUploadsArray().hashCode() : 0);
+        result = 31 * result + (getDeviceId() != null ? getDeviceId().hashCode() : 0);
+        result = 31 * result + (isPreemptive() ? 1 : 0);
+        result = 31 * result + (getFileDropKey() != null ? getFileDropKey().hashCode() : 0);
+        result = 31 * result + (getMediaFirePath() != null ? getMediaFirePath().hashCode() : 0);
+        result = 31 * result + (isResumable() ? 1 : 0);
+        result = 31 * result + (getActionOnInAccount() != null ? getActionOnInAccount().hashCode() : 0);
+        result = 31 * result + (getFile() != null ? getFile().hashCode() : 0);
+        return result;
+    }
 }

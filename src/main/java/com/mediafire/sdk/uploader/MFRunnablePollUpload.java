@@ -7,10 +7,15 @@ import com.mediafire.sdk.MediaFireException;
 import com.mediafire.sdk.api.responses.UploadPollUploadResponse;
 import com.mediafire.sdk.api.responses.data_models.PollDoUpload;
 import com.mediafire.sdk.util.TextUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 
 class MFRunnablePollUpload implements Runnable {
+
+    private final Logger logger = LoggerFactory.getLogger(MFRunnablePollUpload.class);
+
     private static final int TIME_BETWEEN_POLLS_MILLIS = 1000 * 5;
     private static final int MAX_POLLS = 24;
 
@@ -33,11 +38,13 @@ class MFRunnablePollUpload implements Runnable {
 
     @Override
     public void run() {
+        logger.info("upload thread started");
+
         final LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_KEY, uploadKey);
         long pollCount = 0;
         do {
-            MediaFireApiRequest request = new MFApiRequest("upload/poll_upload.php", params, null, null);
+            MediaFireApiRequest request = new MFApiRequest("/upload/poll_upload.php", params, null, null);
             UploadPollUploadResponse response = null;
             try {
                 response = mediaFire.sessionRequest(request, UploadPollUploadResponse.class);
@@ -74,14 +81,14 @@ class MFRunnablePollUpload implements Runnable {
 
             if (fileErrorCode != 0) {
                 if (this.callback != null) {
-                    this.callback.onPollUploadError(this.upload, fileErrorCode, resultCode, statusCode);
+                    this.callback.onPollUploadError(this.upload, fileErrorCode, resultCode, statusCode, description);
                 }
                 return;
             }
 
             if (resultCode != 0) {
                 if (this.callback != null) {
-                    this.callback.onPollUploadError(this.upload, fileErrorCode, resultCode, statusCode);
+                    this.callback.onPollUploadError(this.upload, fileErrorCode, resultCode, statusCode, description);
                 }
                 return;
             }
@@ -106,7 +113,7 @@ class MFRunnablePollUpload implements Runnable {
     public interface OnPollUploadStatusListener {
         void onPollUploadFinished(MediaFireFileUpload upload, String quickKey, String fileName);
         void onPollUploadProgress(MediaFireFileUpload upload, int statusCode, String description);
-        void onPollUploadError(MediaFireFileUpload upload, int fileErrorCode, int resultCode, int statusCode);
+        void onPollUploadError(MediaFireFileUpload upload, int fileErrorCode, int resultCode, int statusCode, String description);
         void onPollUploadMediaFireException(MediaFireFileUpload upload, MediaFireException e);
         void onPollUploadThreadInterrupted(MediaFireFileUpload upload);
     }

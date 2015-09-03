@@ -9,11 +9,15 @@ import com.mediafire.sdk.api.responses.data_models.ResumableBitmap;
 import com.mediafire.sdk.api.responses.data_models.ResumableDoUpload;
 import com.mediafire.sdk.api.responses.data_models.ResumableUpload;
 import com.mediafire.sdk.util.TextUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
 
 class MFRunnableResumableUpload implements Runnable {
+
+    private final Logger logger = LoggerFactory.getLogger(MFRunnableResumableUpload.class);
 
     private static final String PARAM_FOLDER_KEY = "folder_key";
     private static final String PARAM_FOLDER_PATH = "path";
@@ -43,6 +47,8 @@ class MFRunnableResumableUpload implements Runnable {
 
     @Override
     public void run() {
+        logger.info("upload thread started");
+
         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         if (TextUtils.isEmpty(this.upload.getFolderKey())) {
             params.put(PARAM_FOLDER_KEY, this.upload.getFolderKey());
@@ -99,7 +105,7 @@ class MFRunnableResumableUpload implements Runnable {
         headers.put(HEADER_X_UNIT_SIZE, chunkSize);
         headers.put(HEADER_X_UNIT_HASH, chunkHash);
 
-        MediaFireApiRequest request = new MFApiRequest("upload/resumable.php", params, chunk, headers);
+        MediaFireApiRequest request = new MFApiRequest("/upload/resumable.php", params, chunk, headers);
         UploadResumableResponse response = mediaFire.uploadRequest(request, UploadResumableResponse.class);
 
         ResumableDoUpload doUpload = response.getDoUpload();

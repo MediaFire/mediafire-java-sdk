@@ -41,10 +41,6 @@ public class MediaFireClientTest extends TestCase {
         assertTrue(response.getStatusCode() == 200);
     }
 
-    public void testUploadRequest() throws Exception {
-        fail("not implemented");
-    }
-
     public void testSessionRequest() throws Exception {
         MediaFireApiRequest request = new MFApiRequest("/user/get_info.php", null, null, null);
         ApiResponse response = this.mediaFire.sessionRequest(request, ApiResponse.class);

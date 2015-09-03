@@ -216,9 +216,7 @@ public class MFClient implements MediaFireClient {
 
         if (!response.hasError()) {
             mediaFireSessionToken.update();
-            synchronized (getSessionStore()) {
-                getSessionStore().put(mediaFireSessionToken);
-            }
+            getSessionStore().put(mediaFireSessionToken);
         }
 
         return response;

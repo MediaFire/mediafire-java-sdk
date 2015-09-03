@@ -7,10 +7,15 @@ import com.mediafire.sdk.MediaFireException;
 import com.mediafire.sdk.api.responses.UploadGetWebUploadsResponse;
 import com.mediafire.sdk.api.responses.data_models.WebUploads;
 import com.mediafire.sdk.util.TextUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 
 class MFRunnableGetWebUpload implements Runnable {
+
+    private final Logger logger = LoggerFactory.getLogger(MFRunnableGetWebUpload.class);
+
     private static final int TIME_BETWEEN_POLLS_MILLIS = 1000 * 5;
     private static final int MAX_POLLS = 24;
 
@@ -35,12 +40,14 @@ class MFRunnableGetWebUpload implements Runnable {
 
     @Override
     public void run() {
+        logger.info("upload thread started");
+
         final LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_UPLOAD_KEY, uploadKey);
         params.put(PARAM_ALL_WEB_UPLOADS, "yes");
         long pollCount = 0;
         do {
-            MediaFireApiRequest request = new MFApiRequest("upload/get_web_uploads.php", params, null, null);
+            MediaFireApiRequest request = new MFApiRequest("/upload/get_web_uploads.php", params, null, null);
             UploadGetWebUploadsResponse response = null;
             try {
                 response = mediaFire.sessionRequest(request, UploadGetWebUploadsResponse.class);

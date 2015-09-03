@@ -1,5 +1,6 @@
 package com.mediafire.sdk.uploader;
 
+import java.util.List;
 import java.util.Map;
 
 public interface MediaFireUploadStore {
@@ -25,30 +26,6 @@ public interface MediaFireUploadStore {
 
     // status'
     String UPLOAD_STATUS = "upload_status";
-    String WEB_UPLOAD_POLLING = "";
-    Object WEB_UPLOAD_FINISHED = "";
-    Object WEB_UPLOAD_ERROR = "";
-    Object WEB_UPLOAD_MEDIAFIRE_EXCEPTION_THROWN = "";
-    Object WEB_UPLOAD_THREAD_INTERRUPTED = "";
-    Object WEB_UPLOAD_READY_TO_POLL = "";
-    Object FILE_UPLOAD_CHECK_UPLOAD_FINISHED = "";
-    Object FILE_UPLOAD_CHECK_UPLOAD_MEDIAFIRE_EXCEPTION = "";
-    Object FILE_UPLOAD_INSTANT_UPLOAD_MEDIAFIRE_EXCEPTION = "";
-    Object FILE_UPLOAD_FINISHED = "";
-    Object FILE_UPLOAD_RESUMABLE_UPLOADING = "";
-    Object FILE_UPLOAD_MEDIAFIRE_EXCEPTION = "";
-    Object FILE_UPLOAD_RESUMABLE_FINISHED_WITHOUT_ALL_UNITS_READY = "";
-    Object FILE_UPLOAD_IO_EXCEPTION = "";
-    Object FILE_UPLOAD_POLLING = "";
-    Object FILE_UPLOAD_ERROR = "";
-    Object FILE_UPLOAD_RESULT_CODE_ERROR = "";
-    Object FILE_UPLOAD_THREAD_INTERRUPTED = "";
-    Object FILE_UPLOAD_READY_TO_POLL = "";
-    Object GET_WEB_UPLOAD_FINISHED_WITHOUT_VERIFICATION_OF_COMPLETED_UPLOADS = "";
-    Object WEB_UPLOAD_NEW = "";
-    Object FILE_UPLOAD_NEW = "";
-    Object FILE_UPLOAD_RESUMABLE_STARTING = "";
-    Object FILE_UPLOAD_INSTANT_STARTING = "";
 
     void insert(MediaFireWebUpload upload);
 
@@ -59,4 +36,31 @@ public interface MediaFireUploadStore {
     void update(MediaFireWebUpload mediaFireUpload, Map<String, Object> valuesMap);
 
     MediaFireUpload getNextUpload();
+    
+    enum MediaFireUploadStatus {
+        WEB_UPLOAD_POLLING,
+        WEB_UPLOAD_FINISHED,
+        WEB_UPLOAD_ERROR,
+        WEB_UPLOAD_MEDIAFIRE_EXCEPTION_THROWN,
+        WEB_UPLOAD_THREAD_INTERRUPTED,
+        WEB_UPLOAD_READY_TO_POLL,
+        WEB_UPLOAD_NEW,
+        WEB_UPLOAD_FINISHED_WITHOUT_VERIFICATION_OF_COMPLETED_UPLOADS,
+        FILE_UPLOAD_CHECK_UPLOAD_FINISHED,
+        FILE_UPLOAD_CHECK_UPLOAD_MEDIAFIRE_EXCEPTION,
+        FILE_UPLOAD_INSTANT_UPLOAD_MEDIAFIRE_EXCEPTION,
+        FILE_UPLOAD_FINISHED,
+        FILE_UPLOAD_RESUMABLE_UPLOADING,
+        FILE_UPLOAD_MEDIAFIRE_EXCEPTION,
+        FILE_UPLOAD_RESUMABLE_FINISHED_WITHOUT_ALL_UNITS_READY,
+        FILE_UPLOAD_IO_EXCEPTION,
+        FILE_UPLOAD_POLLING,
+        FILE_UPLOAD_ERROR,
+        FILE_UPLOAD_RESULT_CODE_ERROR,
+        FILE_UPLOAD_THREAD_INTERRUPTED,
+        FILE_UPLOAD_READY_TO_POLL,
+        FILE_UPLOAD_NEW,
+        FILE_UPLOAD_RESUMABLE_STARTING,
+        FILE_UPLOAD_INSTANT_STARTING,
+    }
 }

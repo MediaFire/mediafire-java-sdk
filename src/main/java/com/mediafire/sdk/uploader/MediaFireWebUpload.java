@@ -6,10 +6,4 @@ public interface MediaFireWebUpload extends MediaFireUpload {
      * @return
      */
     String getUrl();
-
-    /**
-     * The file key of a preexisting file in the session user's account. This file will be updated with the content of the uploaded file.
-     * @return
-     */
-    String getQuickKey();
 }

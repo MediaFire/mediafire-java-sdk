@@ -13,7 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Matthew A. Johnston
  * @see <a href="https://gist.github.com/warmwaffles/8534618">PausableThreadPoolExecutor</a>
  */
-public class PausableExecutor extends ThreadPoolExecutor implements Pausable {
+public class PausableExecutor extends ThreadPoolExecutor {
     private boolean isPaused = true;
     private final ReentrantLock lock;
     private final Condition condition;
@@ -50,17 +50,14 @@ public class PausableExecutor extends ThreadPoolExecutor implements Pausable {
         }
     }
 
-    @Override
     public boolean isRunning() {
         return !isPaused;
     }
 
-    @Override
     public boolean isPaused() {
         return isPaused;
     }
 
-    @Override
     public void pause() {
         lock.lock();
         try {
@@ -70,7 +67,6 @@ public class PausableExecutor extends ThreadPoolExecutor implements Pausable {
         }
     }
 
-    @Override
     public void resume() {
         lock.lock();
         try {

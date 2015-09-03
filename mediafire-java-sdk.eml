@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component jdk="1.7" jdk_type="JavaSDK">
+	<output-test url="file://$MODULE_DIR$/build/classes/test"/>
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<testFolder url="file://$MODULE_DIR$/src/test/java"/>
+		<testFolder url="file://$MODULE_DIR$/src/test/resources"/>
+		<testFolder url="file://$MODULE_DIR$/src/main/tests"/>
+		<excludeFolder url="file://$MODULE_DIR$/.gradle"/>
+		<excludeFolder url="file://$MODULE_DIR$/build"/>
+	</contentEntry>
+	<lib name="junit.jar" scope="TEST"/>
+	<levels>
+		<level name="Gradle: com.google.code.gson:gson:2.2.4" value="project"/>
+		<level name="org.slf4j:slf4j-api:1.7.12" value="project"/>
+		<level name="org.slf4j:slf4j-simple:1.7.12" value="project"/>
+	</levels>
+</component>

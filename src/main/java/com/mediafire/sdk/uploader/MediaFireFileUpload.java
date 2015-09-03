@@ -2,9 +2,6 @@ package com.mediafire.sdk.uploader;
 
 import java.io.File;
 
-/**
- * Created by christophernajar on 9/2/15.
- */
 public interface MediaFireFileUpload extends MediaFireUpload {
     /**
      * The SHA256 hash of the file being uploaded. If not passed, no content checks can be made. Required if isResumable() or isPreemptive()
@@ -75,4 +72,8 @@ public interface MediaFireFileUpload extends MediaFireUpload {
     File getFile();
 
     ActionOnInAccount getActionOnInAccount();
+
+    enum ActionOnInAccount {
+        UPLOAD_IF_NOT_IN_FOLDER, DO_NOT_UPLOAD, UPLOAD_ALWAYS,
+    }
 }

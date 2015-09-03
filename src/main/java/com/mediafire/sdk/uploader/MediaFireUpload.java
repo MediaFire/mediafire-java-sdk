@@ -1,8 +1,5 @@
 package com.mediafire.sdk.uploader;
 
-/**
- * Created by christophernajar on 9/2/15.
- */
 public interface MediaFireUpload {
     /**
      * The UTF-8 encoded name, plus extension, of the file to be created(between 3 and 255 characters in length).

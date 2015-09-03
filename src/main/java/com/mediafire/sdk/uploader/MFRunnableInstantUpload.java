@@ -9,9 +9,6 @@ import com.mediafire.sdk.util.TextUtils;
 
 import java.util.LinkedHashMap;
 
-/**
- * Created by christophernajar on 9/2/15.
- */
 public class MFRunnableInstantUpload implements Runnable {
 
     private static final String PARAM_FILENAME = "filename";

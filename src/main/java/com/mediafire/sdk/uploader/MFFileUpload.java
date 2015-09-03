@@ -2,9 +2,6 @@ package com.mediafire.sdk.uploader;
 
 import java.io.File;
 
-/**
- * Created by christophernajar on 9/2/15.
- */
 public class MFFileUpload extends MFUpload implements MediaFireFileUpload {
 
     private final String sha256Hash;
@@ -95,7 +92,7 @@ public class MFFileUpload extends MFUpload implements MediaFireFileUpload {
         private String fileDropKey;
         private String mediaFirePath;
         private boolean resumable;
-        private ActionOnInAccount actionOnInAccount;
+        private ActionOnInAccount actionOnInAccount = ActionOnInAccount.UPLOAD_IF_NOT_IN_FOLDER;
 
         public Builder(File file, String fileName, String folderKey) {
             this.file = file;
@@ -148,6 +145,9 @@ public class MFFileUpload extends MFUpload implements MediaFireFileUpload {
         }
 
         public Builder setActionOnInAccount(ActionOnInAccount actionOnInAccount) {
+            if (actionOnInAccount == null) {
+                return this;
+            }
             this.actionOnInAccount = actionOnInAccount;
             return this;
         }

@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Uploader which handles MediaFireUploadRunnable requests. Pausable.
  */
-public class MFUploader implements MFRunnableUploadStatusListener, MFRunnablePollUpload.OnPollUploadStatusListener {
+public class MFUploader implements MediaFireRunnableUploadStatusListener, MFRunnablePollUpload.OnPollUploadStatusListener {
     private final PausableExecutor executor;
     private final LinkedBlockingDeque<Runnable> queue;
 

@@ -13,9 +13,6 @@ import com.mediafire.sdk.util.TextUtils;
 import java.io.*;
 import java.util.*;
 
-/**
- * Created by christophernajar on 9/2/15.
- */
 public class MFRunnableResumableUpload implements Runnable {
 
     private static final String PARAM_FOLDER_KEY = "folder_key";

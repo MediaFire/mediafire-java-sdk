@@ -1,8 +1,5 @@
 package com.mediafire.sdk;
 
-/**
- * Created by christophernajar on 8/20/15.
- */
 public class MFActionToken extends MFToken implements MediaFireActionToken {
     private final int type;
     private final long requestTime;

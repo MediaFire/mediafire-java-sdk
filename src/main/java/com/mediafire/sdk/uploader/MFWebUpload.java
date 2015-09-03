@@ -2,9 +2,6 @@ package com.mediafire.sdk.uploader;
 
 import java.net.URL;
 
-/**
- * Created by christophernajar on 9/2/15.
- */
 public class MFWebUpload extends MFUpload implements MediaFireWebUpload {
 
     private final String url;

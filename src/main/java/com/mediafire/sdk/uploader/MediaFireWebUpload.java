@@ -1,8 +1,5 @@
 package com.mediafire.sdk.uploader;
 
-/**
- * Created by christophernajar on 9/2/15.
- */
 public interface MediaFireWebUpload extends MediaFireUpload {
     /**
      * The URL to the file to be saved

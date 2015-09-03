@@ -2,9 +2,6 @@ package com.mediafire.sdk.uploader;
 
 import java.util.Map;
 
-/**
- * Created by christophernajar on 9/2/15.
- */
 public interface MediaFireUploadStore {
     // result info
     String QUICK_KEY = "quick_key";

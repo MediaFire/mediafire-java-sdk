@@ -1,6 +1,6 @@
 package com.mediafire.sdk;
 
-import com.mediafire.sdk.api.responses.MediaFireApiResponse;
+import com.mediafire.sdk.response_models.MediaFireApiResponse;
 
 import java.util.Map;
 

@@ -2,11 +2,11 @@ package com.mediafire.sdk.uploader;
 
 import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireException;
-import com.mediafire.sdk.api.responses.UploadCheckResponse;
-import com.mediafire.sdk.api.responses.UploadInstantResponse;
-import com.mediafire.sdk.api.responses.UploadPollUploadResponse;
-import com.mediafire.sdk.api.responses.UploadResumableResponse;
-import com.mediafire.sdk.api.responses.data_models.ResumableUpload;
+import com.mediafire.sdk.response_models.upload.UploadCheckResponse;
+import com.mediafire.sdk.response_models.upload.UploadInstantResponse;
+import com.mediafire.sdk.response_models.upload.UploadPollUploadResponse;
+import com.mediafire.sdk.response_models.upload.UploadResumableResponse;
+import com.mediafire.sdk.response_models.data_models.ResumableUploadModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,16 +25,14 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, MFRunn
     private final PausableExecutor executor;
     private final LinkedBlockingDeque<Runnable> queue;
 
-    private boolean coreThreadsStarted = false;
+    private boolean coreThreadsStarted;
     private final MediaFireClient mediaFire;
     private final MediaFireUploadStore store;
-    private final int concurrentUploads;
 
 
     public MFUploader(MediaFireClient mediaFire, MediaFireUploadStore store, int concurrentUploads) {
         this.mediaFire = mediaFire;
         this.store = store;
-        this.concurrentUploads = concurrentUploads;
         this.queue = new LinkedBlockingDeque<Runnable>();
         this.executor = new PausableExecutor(concurrentUploads, concurrentUploads, 10, TimeUnit.SECONDS, queue);
     }
@@ -225,7 +223,7 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, MFRunn
         if ("yes".equals(hashExists)) {
             instantUpload(upload);
         } else {
-            ResumableUpload resumableUpload = response.getResumableUpload();
+            ResumableUploadModel resumableUpload = response.getResumableUpload();
             resumableUpload(upload, resumableUpload);
         }
     }
@@ -473,7 +471,7 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, MFRunn
         executor.execute(runnableCheckUpload);
     }
 
-    private void resumableUpload(MediaFireFileUpload upload, ResumableUpload resumableUpload) {
+    private void resumableUpload(MediaFireFileUpload upload, ResumableUploadModel resumableUpload) {
         MFRunnableResumableUpload runnableResumableUpload = new MFRunnableResumableUpload(mediaFire, upload, resumableUpload, this);
 
         Map<String, Object> valuesMap = new HashMap<String, Object>();

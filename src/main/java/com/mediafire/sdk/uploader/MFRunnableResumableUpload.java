@@ -4,10 +4,10 @@ import com.mediafire.sdk.MFApiRequest;
 import com.mediafire.sdk.MediaFireApiRequest;
 import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireException;
-import com.mediafire.sdk.api.responses.UploadResumableResponse;
-import com.mediafire.sdk.api.responses.data_models.ResumableBitmap;
-import com.mediafire.sdk.api.responses.data_models.ResumableDoUpload;
-import com.mediafire.sdk.api.responses.data_models.ResumableUpload;
+import com.mediafire.sdk.response_models.upload.UploadResumableResponse;
+import com.mediafire.sdk.response_models.data_models.ResumableBitmapModel;
+import com.mediafire.sdk.response_models.data_models.DoUploadResumableModel;
+import com.mediafire.sdk.response_models.data_models.ResumableUploadModel;
 import com.mediafire.sdk.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,10 +36,10 @@ class MFRunnableResumableUpload implements Runnable {
 
     private final MediaFireClient mediaFire;
     private final MediaFireFileUpload upload;
-    private final ResumableUpload resumableUpload;
+    private final ResumableUploadModel resumableUpload;
     private final OnResumableUploadStatusListener callback;
 
-    public MFRunnableResumableUpload(MediaFireClient mediaFire, MediaFireFileUpload upload, ResumableUpload resumableUpload, OnResumableUploadStatusListener callback) {
+    public MFRunnableResumableUpload(MediaFireClient mediaFire, MediaFireFileUpload upload, ResumableUploadModel resumableUpload, MFRunnableResumableUpload.OnResumableUploadStatusListener callback) {
         this.mediaFire = mediaFire;
         this.upload = upload;
         this.resumableUpload = resumableUpload;
@@ -103,8 +103,8 @@ class MFRunnableResumableUpload implements Runnable {
                     return;
                 }
 
-                ResumableDoUpload doUpload = response.getDoUpload();
-                ResumableUpload newResumableUpload = response.getResumableUpload();
+                DoUploadResumableModel doUpload = response.getDoUpload();
+                ResumableUploadModel newResumableUpload = response.getResumableUpload();
                 String allUnitsReady = newResumableUpload.getAllUnitsReady();
 
                 if (allUnitsReady != null && "yes".equals(allUnitsReady) && doUpload != null) {
@@ -115,7 +115,7 @@ class MFRunnableResumableUpload implements Runnable {
                     return;
                 }
 
-                ResumableBitmap bitmap = resumableUpload.getBitmap();
+                ResumableBitmapModel bitmap = resumableUpload.getBitmap();
                 if (bitmap != null) {
                     int count = bitmap.getCount();
                     List<Integer> words = bitmap.getWords();

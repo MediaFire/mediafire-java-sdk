@@ -5,12 +5,12 @@ abstract class MFUpload implements MediaFireUpload {
     private final String folderKey;
     private long id = -1;
 
-    public MFUpload(String fileName, String folderKey) {
+    protected MFUpload(String fileName, String folderKey) {
         this.fileName = fileName;
         this.folderKey = folderKey;
     }
 
-    public MFUpload(String fileName) {
+    protected MFUpload(String fileName) {
         this(fileName, null);
     }
 
@@ -56,10 +56,8 @@ abstract class MFUpload implements MediaFireUpload {
         if (getId() != mfUpload.getId()) return false;
         if (getFileName() != null ? !getFileName().equals(mfUpload.getFileName()) : mfUpload.getFileName() != null)
             return false;
-        if (getFolderKey() != null ? !getFolderKey().equals(mfUpload.getFolderKey()) : mfUpload.getFolderKey() != null)
-            return false;
+        return !(getFolderKey() != null ? !getFolderKey().equals(mfUpload.getFolderKey()) : mfUpload.getFolderKey() != null);
 
-        return true;
     }
 
     @Override

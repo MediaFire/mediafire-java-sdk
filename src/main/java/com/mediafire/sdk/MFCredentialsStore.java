@@ -15,7 +15,7 @@ public class MFCredentialsStore implements MediaFireCredentialsStore {
     private static final String KEY_FACEBOOK_ACCESS_TOKEN = "facebook_access_token";
     private static final String KEY_TWITTER_OAUTH_TOKEN = "twitter_oauth_token";
     private static final String KEY_TWITTER_OAUTH_TOKEN_SECRET = "twitter_oauth_token_secret";
-    private final Map<String, String> store = new HashMap<String, String>();
+    private final Map<String, String> store = new HashMap<>();
     private int storedType = TYPE_NONE;
 
     public MFCredentialsStore() {

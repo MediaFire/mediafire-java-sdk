@@ -4,8 +4,8 @@ import com.mediafire.sdk.MFApiRequest;
 import com.mediafire.sdk.MediaFireApiRequest;
 import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireException;
-import com.mediafire.sdk.api.responses.UploadGetWebUploadsResponse;
-import com.mediafire.sdk.api.responses.data_models.WebUploads;
+import com.mediafire.sdk.response_models.upload.UploadGetWebUploadsResponse;
+import com.mediafire.sdk.response_models.data_models.WebUploadsModel;
 import com.mediafire.sdk.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,14 +57,14 @@ class MFRunnableGetWebUpload implements Runnable {
                 }
                 return;
             }
-            WebUploads[] webUploadsArray = response.getWebUploads();
+            WebUploadsModel[] webUploadsArray = response.getWebUploads();
 
             if (webUploadsArray == null || webUploadsArray.length == 0) {
                 pollCount++;
                 continue;
             }
 
-            WebUploads webUpload = webUploadsArray[0];
+            WebUploadsModel webUpload = webUploadsArray[0];
 
             int statusCode = webUpload.getStatusCode();
             int errorStatus = webUpload.getErrorStatus();

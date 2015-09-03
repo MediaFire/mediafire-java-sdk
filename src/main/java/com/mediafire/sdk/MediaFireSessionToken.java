@@ -1,6 +1,6 @@
 package com.mediafire.sdk;
 
-interface MediaFireSessionToken extends MediaFireToken {
+public interface MediaFireSessionToken extends MediaFireToken {
     /**
      * A component used in the construction of session token v2 signatures
      * @return

@@ -1,6 +1,6 @@
 package com.mediafire.sdk.util;
 
-public class TextUtils {
+public final class TextUtils {
 
     private TextUtils() {
 

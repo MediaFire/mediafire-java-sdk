@@ -1,7 +1,7 @@
 package com.mediafire.sdk;
 
 import com.google.gson.*;
-import com.mediafire.sdk.api.responses.MediaFireApiResponse;
+import com.mediafire.sdk.response_models.MediaFireApiResponse;
 import com.mediafire.sdk.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

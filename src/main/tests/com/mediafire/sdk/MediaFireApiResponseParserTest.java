@@ -1,6 +1,6 @@
 package com.mediafire.sdk;
 
-import com.mediafire.sdk.api.responses.ApiResponse;
+import com.mediafire.sdk.response_models.ApiResponse;
 import junit.framework.TestCase;
 
 /**

@@ -4,8 +4,8 @@ import com.mediafire.sdk.MFApiRequest;
 import com.mediafire.sdk.MediaFireApiRequest;
 import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireException;
-import com.mediafire.sdk.api.responses.UploadPollUploadResponse;
-import com.mediafire.sdk.api.responses.data_models.PollDoUpload;
+import com.mediafire.sdk.response_models.upload.UploadPollUploadResponse;
+import com.mediafire.sdk.response_models.data_models.DoUploadPollModel;
 import com.mediafire.sdk.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ class MFRunnablePollUpload implements Runnable {
                 return;
             }
 
-            PollDoUpload doUpload = response.getDoUpload();
+            DoUploadPollModel doUpload = response.getDoUpload();
 
             int fileErrorCode = doUpload.getFileErrorCode();
             int resultCode = doUpload.getResultCode();

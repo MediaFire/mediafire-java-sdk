@@ -4,7 +4,7 @@ import com.mediafire.sdk.MFApiRequest;
 import com.mediafire.sdk.MediaFireApiRequest;
 import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireException;
-import com.mediafire.sdk.api.responses.UploadInstantResponse;
+import com.mediafire.sdk.response_models.upload.UploadInstantResponse;
 import com.mediafire.sdk.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

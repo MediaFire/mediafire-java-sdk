@@ -1,7 +1,7 @@
 package com.mediafire.sdk;
 
-import com.mediafire.sdk.api.responses.ApiResponse;
-import com.mediafire.sdk.api.responses.UserGetSessionTokenResponse;
+import com.mediafire.sdk.response_models.ApiResponse;
+import com.mediafire.sdk.response_models.user.UserGetSessionTokenResponse;
 import junit.framework.TestCase;
 
 import java.util.*;

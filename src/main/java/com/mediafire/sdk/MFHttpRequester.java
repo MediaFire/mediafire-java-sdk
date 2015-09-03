@@ -64,7 +64,7 @@ public class MFHttpRequester implements MediaFireHttpRequester {
             logger.info("response: " + response + " for request: " + request);
             return response;
         } catch (IOException e) {
-            throw new MediaFireException("I/O exception: " + e);
+            throw new MediaFireException("IO exception: ", e);
         }
     }
 
@@ -74,7 +74,7 @@ public class MFHttpRequester implements MediaFireHttpRequester {
         } catch (MalformedURLException e) {
             throw new MediaFireException("bad url: " + url, e);
         } catch (IOException e) {
-            throw new MediaFireException("I/O exception: ", e);
+            throw new MediaFireException("IO exception: ", e);
         }
     }
 
@@ -101,11 +101,7 @@ public class MFHttpRequester implements MediaFireHttpRequester {
     private MediaFireHttpResponse getResponse(HttpsURLConnection connection) throws IOException {
         int responseCode = connection.getResponseCode();
         InputStream inputStream;
-        if (responseCode / 100 != 2) {
-            inputStream = connection.getErrorStream();
-        } else {
-            inputStream = connection.getInputStream();
-        }
+        inputStream = responseCode / 100 != 2 ? connection.getErrorStream() : connection.getInputStream();
         byte[] response = readStream(inputStream);
 
         if (inputStream != null) {

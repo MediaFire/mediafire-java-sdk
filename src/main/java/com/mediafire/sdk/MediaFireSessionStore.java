@@ -11,7 +11,7 @@ public interface MediaFireSessionStore {
      * puts a MediaFireSessionToken in the store
      * @param token true if stored
      */
-    boolean put(MediaFireSessionToken token);
+    boolean store(MediaFireSessionToken token);
 
     /**
      * gets the count of MediaFireSessionToken available
@@ -36,7 +36,7 @@ public interface MediaFireSessionStore {
      * puts a MediaFireActionToken in the store
      * @param token true if stored
      */
-    boolean put(MediaFireActionToken token);
+    boolean store(MediaFireActionToken token);
 
     /**
      * gets whether or not a MediaFireActionToken of the type is available

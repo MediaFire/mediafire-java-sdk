@@ -1,7 +1,7 @@
 package com.mediafire.sdk.uploader;
 
 import com.mediafire.sdk.*;
-import com.mediafire.sdk.api.responses.UploadCheckResponse;
+import com.mediafire.sdk.response_models.upload.UploadCheckResponse;
 import com.mediafire.sdk.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

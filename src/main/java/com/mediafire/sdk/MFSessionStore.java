@@ -13,7 +13,7 @@ public class MFSessionStore implements MediaFireSessionStore {
     private static final long EXPIRE_THRESHOLD = 1000 * 60;
 
     // tokens
-    private final BlockingQueue<MediaFireSessionToken> sessionTokens = new LinkedBlockingQueue<MediaFireSessionToken>();
+    private final BlockingQueue<MediaFireSessionToken> sessionTokens = new LinkedBlockingQueue<>();
     private MediaFireActionToken uploadToken;
     private MediaFireActionToken imageToken;
 
@@ -26,10 +26,10 @@ public class MFSessionStore implements MediaFireSessionStore {
 
     @Override
     public MediaFireSessionToken getSessionTokenV2() {
-        MediaFireSessionToken token = null;
+        MediaFireSessionToken token;
         try {
             token = sessionTokens.poll(3, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ignored) {
             return null;
         }
         logger.info("session token requested. giving: " + token);
@@ -37,7 +37,7 @@ public class MFSessionStore implements MediaFireSessionStore {
     }
 
     @Override
-    public boolean put(MediaFireSessionToken token) {
+    public boolean store(MediaFireSessionToken token) {
         logger.info("session token being stored. storing: " + token);
         return sessionTokens.offer(token);
     }
@@ -75,7 +75,7 @@ public class MFSessionStore implements MediaFireSessionStore {
     }
 
     @Override
-    public boolean put(MediaFireActionToken token) {
+    public boolean store(MediaFireActionToken token) {
         logger.info("action token being stored. storing: " + token);
 
         switch (token.getType()) {
@@ -132,10 +132,8 @@ public class MFSessionStore implements MediaFireSessionStore {
     @Override
     public void clear() {
         logger.info("clearing store of all tokens");
-        synchronized (this) {
-            sessionTokens.clear();
-            uploadToken = null;
-            imageToken = null;
-        }
+        sessionTokens.clear();
+        uploadToken = null;
+        imageToken = null;
     }
 }

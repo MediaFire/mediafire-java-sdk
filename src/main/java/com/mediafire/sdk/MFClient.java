@@ -1,8 +1,8 @@
 package com.mediafire.sdk;
 
-import com.mediafire.sdk.api.responses.MediaFireApiResponse;
-import com.mediafire.sdk.api.responses.UserGetActionTokenResponse;
-import com.mediafire.sdk.api.responses.UserGetSessionTokenResponse;
+import com.mediafire.sdk.response_models.MediaFireApiResponse;
+import com.mediafire.sdk.response_models.user.UserGetActionTokenResponse;
+import com.mediafire.sdk.response_models.user.UserGetSessionTokenResponse;
 import com.mediafire.sdk.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +94,7 @@ public class MFClient implements MediaFireClient {
                 if (mediaFireActionToken == null) {
                     throw new MediaFireException("could not request action token type " + MediaFireActionToken.TYPE_IMAGE);
                 }
-                getSessionStore().put(mediaFireActionToken);
+                getSessionStore().store(mediaFireActionToken);
             } else {
                 mediaFireActionToken = getSessionStore().getActionToken(MediaFireActionToken.TYPE_IMAGE);
             }
@@ -129,7 +129,7 @@ public class MFClient implements MediaFireClient {
                 if (mediaFireActionToken == null) {
                     throw new MediaFireException("could not request action token type " + MediaFireActionToken.TYPE_IMAGE);
                 }
-                getSessionStore().put(mediaFireActionToken);
+                getSessionStore().store(mediaFireActionToken);
             } else {
                 mediaFireActionToken = getSessionStore().getActionToken(MediaFireActionToken.TYPE_UPLOAD);
             }
@@ -220,7 +220,7 @@ public class MFClient implements MediaFireClient {
 
         if (!response.hasError() && response.needNewKey()) {
             mediaFireSessionToken.update();
-            getSessionStore().put(mediaFireSessionToken);
+            getSessionStore().store(mediaFireSessionToken);
         }
 
         return response;
@@ -383,7 +383,7 @@ public class MFClient implements MediaFireClient {
         return token;
     }
 
-    private Map<String, Object> createHeadersUsingQueryAsPostBody(String encodedQuery) throws MediaFireException {
+    private Map<String, Object> createHeadersUsingQueryAsPostBody(String encodedQuery) {
         Map<String, Object> headers = new HashMap<String, Object>();
         headers.put("Accept-Charset", "UTF-8");
         headers.put("Content-Length", encodedQuery.length());

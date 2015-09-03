@@ -27,14 +27,14 @@ public class MediaFireSessionStoreTest extends TestCase {
     }
 
     public void testGetSessionTokenV2() throws Exception {
-        if (!this.sessionStore.put(sessionToken)) {
+        if (!this.sessionStore.store(sessionToken)) {
             fail("didn't store session token");
         }
         assertEquals(sessionToken, this.sessionStore.getSessionTokenV2());
     }
 
     public void testPutSessionTokenV2() throws Exception {
-        assertTrue(this.sessionStore.put(sessionToken));
+        assertTrue(this.sessionStore.store(sessionToken));
     }
 
     public void testGetSessionTokenV2CountWhenEmpty() throws Exception {
@@ -42,7 +42,7 @@ public class MediaFireSessionStoreTest extends TestCase {
     }
 
     public void testGetSessionTokenV2Count() throws Exception {
-        if (!this.sessionStore.put(sessionToken)) {
+        if (!this.sessionStore.store(sessionToken)) {
             fail("didn't store session token");
         }
         assertEquals(1, this.sessionStore.getSessionTokenV2Count());
@@ -53,7 +53,7 @@ public class MediaFireSessionStoreTest extends TestCase {
     }
 
     public void testIsSessionTokenV2Available() throws Exception {
-        if (!this.sessionStore.put(sessionToken)) {
+        if (!this.sessionStore.store(sessionToken)) {
             fail("didn't store session token");
         }
         assertTrue(this.sessionStore.isSessionTokenV2Available());
@@ -68,7 +68,7 @@ public class MediaFireSessionStoreTest extends TestCase {
     }
 
     public void testGetUploadToken() throws Exception {
-        if (!this.sessionStore.put(uploadToken)) {
+        if (!this.sessionStore.store(uploadToken)) {
             fail("didn't store upload token");
         }
 
@@ -76,7 +76,7 @@ public class MediaFireSessionStoreTest extends TestCase {
     }
 
     public void testGetImageToken() throws Exception {
-        if (!this.sessionStore.put(imageToken)) {
+        if (!this.sessionStore.store(imageToken)) {
             fail("didn't store image token");
         }
 
@@ -84,11 +84,11 @@ public class MediaFireSessionStoreTest extends TestCase {
     }
 
     public void testPutUploadToken() throws Exception {
-        assertTrue(this.sessionStore.put(uploadToken));
+        assertTrue(this.sessionStore.store(uploadToken));
     }
 
     public void testPutImageToken() throws Exception {
-        assertTrue(this.sessionStore.put(imageToken));
+        assertTrue(this.sessionStore.store(imageToken));
     }
 
     public void testIsUploadTokenAvailableWhenEmpty() throws Exception {
@@ -100,7 +100,7 @@ public class MediaFireSessionStoreTest extends TestCase {
     }
 
     public void testIsUploadTokenAvailable() throws Exception {
-        if (!this.sessionStore.put(uploadToken)) {
+        if (!this.sessionStore.store(uploadToken)) {
             fail("didn't store upload token");
         }
 
@@ -108,7 +108,7 @@ public class MediaFireSessionStoreTest extends TestCase {
     }
 
     public void testIsImageTokenAvailable() throws Exception {
-        if (!this.sessionStore.put(imageToken)) {
+        if (!this.sessionStore.store(imageToken)) {
             fail("didn't store image token");
         }
 

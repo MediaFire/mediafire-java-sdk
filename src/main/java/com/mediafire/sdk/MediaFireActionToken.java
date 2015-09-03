@@ -1,6 +1,6 @@
 package com.mediafire.sdk;
 
-interface MediaFireActionToken extends MediaFireToken {
+public interface MediaFireActionToken extends MediaFireToken {
 
     int TYPE_IMAGE = 1;
     int TYPE_UPLOAD = 2;

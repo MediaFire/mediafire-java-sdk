@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by christophernajar on 9/3/15.
- */
 public class MFUploaderFileUploadsTest  extends TestCase {
     private MFClient mediaFire;
     private MFUploader uploader;
@@ -60,7 +57,7 @@ public class MFUploaderFileUploadsTest  extends TestCase {
         uploader.resume();
 
         List<File> files = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 6; i++) {
             File file = createTemporaryFile("testfile", ".tmp", 10000);
             files.add(file);
         }
@@ -118,7 +115,7 @@ public class MFUploaderFileUploadsTest  extends TestCase {
         uploader.resume();
 
         List<File> files = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 6; i++) {
             File file = createTemporaryFile("testfile", ".tmp", 20000000);
             files.add(file);
         }

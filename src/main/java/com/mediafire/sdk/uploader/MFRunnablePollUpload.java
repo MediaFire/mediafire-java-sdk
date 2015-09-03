@@ -114,6 +114,10 @@ class MFRunnablePollUpload implements Runnable {
             }
             pollCount++;
         } while (pollCount <= MAX_POLLS);
+
+        if (this.callback != null) {
+            this.callback.onPollUploadReachedMaxPollsWithoutConfirmationOfCompletion(this.upload);
+        }
     }
 
     public interface OnPollUploadStatusListener {
@@ -123,5 +127,6 @@ class MFRunnablePollUpload implements Runnable {
         void onPollUploadMediaFireException(MediaFireFileUpload upload, MediaFireException e);
         void onPollUploadThreadInterrupted(MediaFireFileUpload upload);
         void onPollUploadApiError(MediaFireFileUpload upload, UploadPollUploadResponse response);
+        void onPollUploadReachedMaxPollsWithoutConfirmationOfCompletion(MediaFireFileUpload upload);
     }
 }

@@ -25,6 +25,26 @@ public class MediaFireClientTest extends TestCase {
         mediaFire = null;
     }
 
+    public void testAuthRequestNoCredentials() throws Exception {
+        MFClient.Builder builder = new MFClient.Builder("40767", null);
+        builder.apiVersion("1.5");
+        MFClient mediaFire = builder.build();
+        mediaFire.getCredentialStore().clear();
+        assertTrue("type stored should be NONE", mediaFire.getCredentialStore().getTypeStored() == MediaFireCredentialsStore.TYPE_NONE);
+        UserGetSessionTokenResponse response = mediaFire.authenticationRequest(UserGetSessionTokenResponse.class);
+        assertTrue("response: " + response.getMessage(), response.hasError());
+    }
+
+    public void testAuthRequestBadCredentials() throws Exception {
+        MFClient.Builder builder = new MFClient.Builder("40767", null);
+        builder.apiVersion("1.5");
+        MFClient mediaFire = builder.build();
+        mediaFire.getCredentialStore().clear();
+        mediaFire.getCredentialStore().setEmail(new MediaFireCredentialsStore.EmailCredentials("a@b.c", "abc"));
+        UserGetSessionTokenResponse response = mediaFire.authenticationRequest(UserGetSessionTokenResponse.class);
+        assertTrue("response: " + response.getMessage(), response.hasError());
+    }
+
     public void testNoAuthRequest() throws Exception {
         MediaFireApiRequest request = new MFApiRequest("/system/get_info.php", null, null, null);
         ApiResponse response = this.mediaFire.noAuthRequest(request, ApiResponse.class);

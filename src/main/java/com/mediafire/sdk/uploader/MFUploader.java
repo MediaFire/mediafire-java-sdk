@@ -443,6 +443,16 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, MFRunn
         signalStartNewUpload();
     }
 
+    @Override
+    public void onPollUploadReachedMaxPollsWithoutConfirmationOfCompletion(MediaFireFileUpload upload) {
+        logger.info("file upload api error while polling: " + upload);
+        Map<String, Object> valuesMap = new HashMap<String, Object>();
+        valuesMap.put(MediaFireUploadStore.UPLOAD_STATUS, MediaFireUploadStore.MediaFireUploadStatus.FILE_UPLOAD_POLLING_FINISHED_WITHOUT_ALL_UNITS_READY);
+        this.store.update(upload, valuesMap);
+
+        signalStartNewUpload();
+    }
+
     private void webUpload(MediaFireWebUpload upload) {
         MFRunnableWebUpload runnableWebUpload = new MFRunnableWebUpload(mediaFire, upload, this);
 
@@ -492,6 +502,10 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, MFRunn
     }
 
     private void signalStartNewUpload() {
+        if (!canStartNewUpload()) {
+            return;
+        }
+
         MediaFireUpload upload = store.getNextUpload();
 
         if (upload == null) {

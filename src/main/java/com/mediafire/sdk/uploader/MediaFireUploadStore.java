@@ -27,6 +27,10 @@ public interface MediaFireUploadStore {
     // status'
     String UPLOAD_STATUS = "upload_status";
 
+    // api error
+    String API_ERROR_NUMBER = "api_error_number";
+    String API_ERROR_MESSAGE = "api_error_message";
+
     void insert(MediaFireWebUpload upload);
 
     void insert(MediaFireFileUpload upload);
@@ -62,5 +66,6 @@ public interface MediaFireUploadStore {
         FILE_UPLOAD_NEW,
         FILE_UPLOAD_RESUMABLE_STARTING,
         FILE_UPLOAD_INSTANT_STARTING,
+        FILE_UPLOAD_API_ERROR,
     }
 }

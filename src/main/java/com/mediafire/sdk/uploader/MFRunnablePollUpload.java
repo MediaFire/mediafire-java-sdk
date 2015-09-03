@@ -54,6 +54,12 @@ class MFRunnablePollUpload implements Runnable {
                 }
                 return;
             }
+
+            if (callback != null && response.hasError()) {
+                callback.onPollUploadApiError(this.upload, response);
+                return;
+            }
+
             PollDoUpload doUpload = response.getDoUpload();
 
             int fileErrorCode = doUpload.getFileErrorCode();
@@ -116,5 +122,6 @@ class MFRunnablePollUpload implements Runnable {
         void onPollUploadError(MediaFireFileUpload upload, int fileErrorCode, int resultCode, int statusCode, String description);
         void onPollUploadMediaFireException(MediaFireFileUpload upload, MediaFireException e);
         void onPollUploadThreadInterrupted(MediaFireFileUpload upload);
+        void onPollUploadApiError(MediaFireFileUpload upload, UploadPollUploadResponse response);
     }
 }

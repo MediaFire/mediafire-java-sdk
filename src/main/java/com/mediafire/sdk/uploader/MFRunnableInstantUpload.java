@@ -38,8 +38,18 @@ class MFRunnableInstantUpload implements Runnable {
         logger.info("upload thread started");
 
         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-        params.put(PARAM_SIZE, this.upload.getFileSize());
-        params.put(PARAM_HASH, this.upload.getSha256Hash());
+        if (this.upload.getFileSize() == 0) {
+            params.put(PARAM_SIZE, this.upload.getFile().length());
+        } else {
+            params.put(PARAM_SIZE, this.upload.getFileSize());
+        }
+
+        if (!TextUtils.isEmpty(this.upload.getSha256Hash())) {
+            params.put(PARAM_HASH, this.upload.getSha256Hash());
+        } else {
+            params.put(PARAM_HASH, mediaFire.getHasher().sha256(this.upload.getFile()));
+        }
+
         params.put(PARAM_FILENAME, this.upload.getFileName());
 
         if (!TextUtils.isEmpty(this.upload.getFolderKey())) {
@@ -61,16 +71,21 @@ class MFRunnableInstantUpload implements Runnable {
             return;
         }
 
-        String quickKey = response.getQuickKey();
-        String fileName = response.getFileName();
-
         if (this.callback != null) {
-            this.callback.onInstantUploadFinished(this.upload, quickKey, fileName);
+            if (response.hasError()) {
+                this.callback.onInstantUploadApiError(this.upload, response);
+            } else {
+                String quickKey = response.getQuickKey();
+                String fileName = response.getFileName();
+                this.callback.onInstantUploadFinished(this.upload, quickKey, fileName);
+            }
+
         }
     }
 
     public interface OnInstantUploadStatusListener {
         void onInstantUploadFinished(MediaFireFileUpload upload, String quickKey, String fileName);
         void onInstantUploadMediaFireException(MediaFireFileUpload upload, MediaFireException exception);
+        void onInstantUploadApiError(MediaFireFileUpload upload, UploadInstantResponse response);
     }
 }

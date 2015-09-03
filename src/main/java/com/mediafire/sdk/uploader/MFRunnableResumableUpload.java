@@ -21,6 +21,7 @@ class MFRunnableResumableUpload implements Runnable {
 
     private static final String PARAM_FOLDER_KEY = "folder_key";
     private static final String PARAM_FOLDER_PATH = "path";
+    private static final String PARAM_ACTION_ON_DUPLICATE = "action_on_duplicate";
 
     private static final String HEADER_CONTENT_TYPE = "Content-Type";
     private static final String HEADER_X_FILENAME = "x-filename";
@@ -50,20 +51,90 @@ class MFRunnableResumableUpload implements Runnable {
         logger.info("upload thread started");
 
         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-        if (TextUtils.isEmpty(this.upload.getFolderKey())) {
+        params.put(PARAM_ACTION_ON_DUPLICATE, "keep");
+        if (!TextUtils.isEmpty(this.upload.getFolderKey())) {
             params.put(PARAM_FOLDER_KEY, this.upload.getFolderKey());
         }
 
-        if (TextUtils.isEmpty(this.upload.getMediaFirePath())) {
+        if (!TextUtils.isEmpty(this.upload.getMediaFirePath())) {
             params.put(PARAM_FOLDER_PATH, this.upload.getMediaFirePath());
         }
 
         int numUnits = resumableUpload.getNumberOfUnits();
         int unitSize = resumableUpload.getUnitSize();
 
+        Map<String, Object> headers = new HashMap<String, Object>();
+        if (this.upload.getFileSize() == 0) {
+            headers.put(HEADER_X_FILESIZE, this.upload.getFile().length());
+        } else {
+            headers.put(HEADER_X_FILESIZE, this.upload.getFileSize());
+        }
+
+        if (!TextUtils.isEmpty(this.upload.getSha256Hash())) {
+            headers.put(HEADER_X_FILEHASH, this.upload.getSha256Hash());
+        } else {
+            headers.put(HEADER_X_FILEHASH, mediaFire.getHasher().sha256(this.upload.getFile()));
+        }
+
+        headers.put(HEADER_CONTENT_TYPE, CONTENT_TYPE_OCTET_STREAM);
+        headers.put(HEADER_X_FILENAME, this.upload.getFileName());
+
         for (int chunkNumber = 0; chunkNumber < numUnits; chunkNumber++) {
             try {
-                upload(chunkNumber, numUnits, unitSize, params, getBaseHeaders());
+                if (isChunkUploaded(chunkNumber)) {
+                    return;
+                }
+
+                int chunkSize = getChunkSize(chunkNumber, numUnits, this.upload.getFileSize(), unitSize);
+                byte[] chunk = makeChunk(unitSize, chunkNumber);
+                String chunkHash = mediaFire.getHasher().sha256(chunk);
+
+                headers.put(HEADER_X_UNIT_ID, chunkNumber);
+                headers.put(HEADER_X_UNIT_SIZE, chunkSize);
+                headers.put(HEADER_X_UNIT_HASH, chunkHash);
+
+                MediaFireApiRequest request = new MFApiRequest("/upload/resumable.php", params, chunk, headers);
+                UploadResumableResponse response = mediaFire.uploadRequest(request, UploadResumableResponse.class);
+
+                if (response.hasError()) {
+                    if (callback != null) {
+                        this.callback.onResumableUploadApiError(this.upload, response);
+                    }
+                    return;
+                }
+
+                ResumableDoUpload doUpload = response.getDoUpload();
+                ResumableUpload newResumableUpload = response.getResumableUpload();
+                String allUnitsReady = newResumableUpload.getAllUnitsReady();
+
+                if (allUnitsReady != null && "yes".equals(allUnitsReady) && doUpload != null) {
+                    String uploadKey = doUpload.getKey();
+                    if (this.callback != null) {
+                        this.callback.onResumableUploadReadyToPoll(this.upload, uploadKey);
+                    }
+                    return;
+                }
+
+                ResumableBitmap bitmap = resumableUpload.getBitmap();
+                if (bitmap != null) {
+                    int count = bitmap.getCount();
+                    List<Integer> words = bitmap.getWords();
+
+                    updateUploadBitmap(count, words);
+                }
+
+                int numUploaded = 0;
+                for (int chunkCount = 0; chunkCount < numUnits; chunkCount++) {
+                    if (isChunkUploaded(chunkCount)) {
+                        numUploaded++;
+                    }
+                }
+
+                double percentFinished = (double) numUploaded / (double) numUnits;
+                percentFinished *= 100;
+                if (this.callback != null) {
+                    this.callback.onResumableUploadProgress(this.upload, percentFinished);
+                }
             } catch (MediaFireException e) {
                 if (callback != null) {
                     callback.onResumableUploadMediaFireException(upload, e);
@@ -79,66 +150,6 @@ class MFRunnableResumableUpload implements Runnable {
 
         if (callback != null) {
             callback.onResumableUploadFinishedUploadingWithoutAllUnitsReady(this.upload);
-        }
-    }
-
-    private Map<String, Object> getBaseHeaders() {
-        Map<String, Object> headers = new HashMap<String, Object>();
-        headers.put(HEADER_X_FILESIZE, this.upload.getFileSize());
-        headers.put(HEADER_X_FILEHASH, this.upload.getSha256Hash());
-        headers.put(HEADER_CONTENT_TYPE, CONTENT_TYPE_OCTET_STREAM);
-        headers.put(HEADER_X_FILENAME, this.upload.getFileName());
-
-        return headers;
-    }
-
-    private void upload(int chunkNumber, int numUnits, int unitSize, Map<String, Object> params, Map<String, Object> headers) throws MediaFireException, IOException {
-        if (isChunkUploaded(chunkNumber)) {
-            return;
-        }
-
-        int chunkSize = getChunkSize(chunkNumber, numUnits, this.upload.getFileSize(), unitSize);
-        byte[] chunk = makeChunk(unitSize, chunkNumber);
-        String chunkHash = mediaFire.getHasher().sha256(chunk);
-
-        headers.put(HEADER_X_UNIT_ID, chunkNumber);
-        headers.put(HEADER_X_UNIT_SIZE, chunkSize);
-        headers.put(HEADER_X_UNIT_HASH, chunkHash);
-
-        MediaFireApiRequest request = new MFApiRequest("/upload/resumable.php", params, chunk, headers);
-        UploadResumableResponse response = mediaFire.uploadRequest(request, UploadResumableResponse.class);
-
-        ResumableDoUpload doUpload = response.getDoUpload();
-        ResumableUpload newResumableUpload = response.getResumableUpload();
-        String allUnitsReady = newResumableUpload.getAllUnitsReady();
-
-        if (allUnitsReady != null && "yes".equals(allUnitsReady) && doUpload != null) {
-            String uploadKey = doUpload.getKey();
-            if (this.callback != null) {
-                this.callback.onResumableUploadReadyToPoll(this.upload, uploadKey);
-            }
-            return;
-        }
-
-        ResumableBitmap bitmap = resumableUpload.getBitmap();
-        if (bitmap != null) {
-            int count = bitmap.getCount();
-            List<Integer> words = bitmap.getWords();
-
-            updateUploadBitmap(count, words);
-        }
-
-        int numUploaded = 0;
-        for (int chunkCount = 0; chunkCount < numUnits; chunkCount++) {
-            if (isChunkUploaded(chunkCount)) {
-                numUploaded++;
-            }
-        }
-
-        double percentFinished = (double) numUploaded / (double) numUnits;
-        percentFinished *= 100;
-        if (this.callback != null) {
-            this.callback.onResumableUploadProgress(this.upload, percentFinished);
         }
     }
 
@@ -235,5 +246,6 @@ class MFRunnableResumableUpload implements Runnable {
         void onResumableUploadMediaFireException(MediaFireFileUpload upload, MediaFireException e);
         void onResumableUploadFinishedUploadingWithoutAllUnitsReady(MediaFireFileUpload upload);
         void onResumableUploadIOException(MediaFireFileUpload upload, IOException e);
+        void onResumableUploadApiError(MediaFireFileUpload upload, UploadResumableResponse response);
     }
 }

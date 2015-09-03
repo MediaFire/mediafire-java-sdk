@@ -41,7 +41,7 @@ public class MFApiRequest implements MediaFireApiRequest {
         return "MFApiRequest{" +
                 "path='" + path + '\'' +
                 ", queryParameters=" + queryParameters +
-                ", payload=" + Arrays.toString(payload) +
+                ", payload=" + (payload == null || payload.length == 0 ? "null or empty" : payload.length > 5000 ? "size: " + payload.length : new String(payload)) +
                 ", headers=" + headers +
                 '}';
     }

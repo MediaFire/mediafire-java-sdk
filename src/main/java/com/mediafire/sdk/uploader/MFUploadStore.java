@@ -35,7 +35,7 @@ public class MFUploadStore implements MediaFireUploadStore {
 
     @Override
     public void update(MediaFireFileUpload mediaFireUpload, Map<String, Object> valuesMap) {
-        
+
     }
 
     @Override

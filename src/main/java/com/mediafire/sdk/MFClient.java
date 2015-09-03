@@ -28,6 +28,7 @@ public class MFClient implements MediaFireClient {
     private final MediaFireApiResponseParser parser;
     private final String applicationId;
     private final String apiKey;
+    private final Object storeLock = new Object();
 
     private MFClient(Builder builder) {
         this.apiVersion = builder.apiVersion;
@@ -122,7 +123,7 @@ public class MFClient implements MediaFireClient {
 
         MediaFireActionToken mediaFireActionToken;
 
-        synchronized (getSessionStore()) {
+        synchronized (storeLock) {
             if (!getSessionStore().isActionTokenAvailable(MediaFireActionToken.TYPE_UPLOAD)) {
                 mediaFireActionToken = requestNewActionToken(MediaFireActionToken.TYPE_UPLOAD);
                 if (mediaFireActionToken == null) {
@@ -144,6 +145,9 @@ public class MFClient implements MediaFireClient {
         headers.put("Content-Type", "application/octet-stream");
         headers.put("Content-Length", request.getPayload().length);
         headers.put("Accept-Charset", "UTF-8");
+        if (request.getHeaders() != null) {
+            headers.putAll(request.getHeaders());
+        }
 
         String baseUrl = "https://www.mediafire.com";
         StringBuilder url = new StringBuilder();
@@ -183,7 +187,7 @@ public class MFClient implements MediaFireClient {
 
         MediaFireSessionToken mediaFireSessionToken;
 
-        synchronized (getSessionStore()) {
+        synchronized (storeLock) {
             if (!getSessionStore().isSessionTokenV2Available()) {
                 logger.info("no session tokens available for request: " + request);
                 mediaFireSessionToken = requestNewSessionToken();

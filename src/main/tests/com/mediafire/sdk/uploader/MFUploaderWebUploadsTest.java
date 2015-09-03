@@ -8,9 +8,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by christophernajar on 9/2/15.
- */
 public class MFUploaderWebUploadsTest extends TestCase {
 
     private static final List<String> URLS = new ArrayList<String>();
@@ -53,6 +50,20 @@ public class MFUploaderWebUploadsTest extends TestCase {
     public void testSingleWebUpload() throws Exception {
         uploader.resume();
         MediaFireWebUpload webUpload = new MFWebUpload(URLS.get(0), URI.create(URLS.get(0)).toURL().getFile().replaceFirst("/", ""), null);
+        uploader.schedule(webUpload);
+
+        while (uploader.areJobsInProgress()) {
+            Thread.sleep(250);
+        }
+
+        assertTrue(true);
+    }
+
+    public void testSingleWebUploadLarge() throws Exception {
+        String url = "https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg";
+
+        uploader.resume();
+        MediaFireWebUpload webUpload = new MFWebUpload(url, "LARGE_elevation.jpg", null);
         uploader.schedule(webUpload);
 
         while (uploader.areJobsInProgress()) {

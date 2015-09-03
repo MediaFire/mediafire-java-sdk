@@ -35,9 +35,21 @@ class MFRunnableCheckUpload implements Runnable {
         logger.info("upload thread started");
         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
         params.put(PARAM_RESUMABLE, this.upload.isResumable() ? "yes" : "no");
-        params.put(PARAM_SIZE, this.upload.getFileSize());
-        params.put(PARAM_HASH, this.upload.getSha256Hash());
+
+        if (this.upload.getFileSize() == 0) {
+            params.put(PARAM_SIZE, this.upload.getFile().length());
+        } else {
+            params.put(PARAM_SIZE, this.upload.getFileSize());
+        }
+
+        if (!TextUtils.isEmpty(this.upload.getSha256Hash())) {
+            params.put(PARAM_HASH, this.upload.getSha256Hash());
+        } else {
+            params.put(PARAM_HASH, mediaFire.getHasher().sha256(this.upload.getFile()));
+        }
+
         params.put(PARAM_FILENAME, this.upload.getFileName());
+
         if (!TextUtils.isEmpty(this.upload.getFolderKey())) {
             params.put(PARAM_FOLDER_KEY, this.upload.getFolderKey());
         }
@@ -52,7 +64,11 @@ class MFRunnableCheckUpload implements Runnable {
             UploadCheckResponse response = mediaFire.sessionRequest(request, UploadCheckResponse.class);
 
             if (this.callback != null) {
-                this.callback.onCheckUploadFinished(this.upload, response);
+                if (response.hasError()) {
+                    this.callback.onCheckUploadApiError(this.upload, response);
+                } else {
+                    this.callback.onCheckUploadFinished(this.upload, response);
+                }
             }
         } catch (MediaFireException e) {
             if (this.callback != null) {
@@ -64,5 +80,6 @@ class MFRunnableCheckUpload implements Runnable {
     public interface OnCheckUploadStatusListener {
         void onCheckUploadFinished(MediaFireFileUpload mediaFireUpload, UploadCheckResponse response);
         void onCheckUploadMediaFireException(MediaFireFileUpload mediaFireUpload, MediaFireException e);
+        void onCheckUploadApiError(MediaFireFileUpload upload, UploadCheckResponse response);
     }
 }

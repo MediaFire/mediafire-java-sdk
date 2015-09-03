@@ -3,6 +3,9 @@ package com.mediafire.sdk.uploader;
 import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireException;
 import com.mediafire.sdk.api.responses.UploadCheckResponse;
+import com.mediafire.sdk.api.responses.UploadInstantResponse;
+import com.mediafire.sdk.api.responses.UploadPollUploadResponse;
+import com.mediafire.sdk.api.responses.UploadResumableResponse;
 import com.mediafire.sdk.api.responses.data_models.ResumableUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -242,6 +245,18 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, MFRunn
     }
 
     @Override
+    public void onCheckUploadApiError(MediaFireFileUpload upload, UploadCheckResponse response) {
+        logger.info("file upload api error during check: " + upload + ", error: " + response.getMessage() + "(" + response.getError() + ")");
+        Map<String, Object> valuesMap = new HashMap<String, Object>();
+        valuesMap.put(MediaFireUploadStore.API_ERROR_NUMBER, response.getError());
+        valuesMap.put(MediaFireUploadStore.API_ERROR_MESSAGE, response.getMessage());
+        valuesMap.put(MediaFireUploadStore.UPLOAD_STATUS, MediaFireUploadStore.MediaFireUploadStatus.FILE_UPLOAD_API_ERROR);
+        this.store.update(upload, valuesMap);
+
+        signalStartNewUpload();
+    }
+
+    @Override
     public void onInstantUploadMediaFireException(MediaFireFileUpload upload, MediaFireException e) {
         logger.info("file upload MediaFireException in instant thread: " + upload + ", exception:" + e);
 
@@ -250,6 +265,18 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, MFRunn
         valuesMap.put(MediaFireUploadStore.EXCEPTION_MESSAGE, e.getMessage());
         valuesMap.put(MediaFireUploadStore.EXCEPTION_LOCALIZED_MESSAGE, e.getLocalizedMessage());
         valuesMap.put(MediaFireUploadStore.UPLOAD_STATUS, MediaFireUploadStore.MediaFireUploadStatus.FILE_UPLOAD_INSTANT_UPLOAD_MEDIAFIRE_EXCEPTION);
+        this.store.update(upload, valuesMap);
+
+        signalStartNewUpload();
+    }
+
+    @Override
+    public void onInstantUploadApiError(MediaFireFileUpload upload, UploadInstantResponse response) {
+        logger.info("file upload api error during instant upload: " + upload + ", error: " + response.getMessage() + "(" + response.getError() + ")");
+        Map<String, Object> valuesMap = new HashMap<String, Object>();
+        valuesMap.put(MediaFireUploadStore.API_ERROR_NUMBER, response.getError());
+        valuesMap.put(MediaFireUploadStore.API_ERROR_MESSAGE, response.getMessage());
+        valuesMap.put(MediaFireUploadStore.UPLOAD_STATUS, MediaFireUploadStore.MediaFireUploadStatus.FILE_UPLOAD_API_ERROR);
         this.store.update(upload, valuesMap);
 
         signalStartNewUpload();
@@ -330,6 +357,18 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, MFRunn
     }
 
     @Override
+    public void onResumableUploadApiError(MediaFireFileUpload upload, UploadResumableResponse response) {
+        logger.info("file upload api error during resumable: " + upload + ", error: " + response.getMessage() + "(" + response.getError() + ")");
+        Map<String, Object> valuesMap = new HashMap<String, Object>();
+        valuesMap.put(MediaFireUploadStore.API_ERROR_NUMBER, response.getError());
+        valuesMap.put(MediaFireUploadStore.API_ERROR_MESSAGE, response.getMessage());
+        valuesMap.put(MediaFireUploadStore.UPLOAD_STATUS, MediaFireUploadStore.MediaFireUploadStatus.FILE_UPLOAD_API_ERROR);
+        this.store.update(upload, valuesMap);
+
+        signalStartNewUpload();
+    }
+
+    @Override
     public void onPollUploadFinished(MediaFireFileUpload upload, String quickKey, String fileName) {
         logger.info("file upload polling finished: " + upload + ", quick key:" + quickKey + ", file name: " + fileName);
 
@@ -387,6 +426,18 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, MFRunn
 
         Map<String, Object> valuesMap = new HashMap<String, Object>();
         valuesMap.put(MediaFireUploadStore.UPLOAD_STATUS, MediaFireUploadStore.MediaFireUploadStatus.FILE_UPLOAD_THREAD_INTERRUPTED);
+        this.store.update(upload, valuesMap);
+
+        signalStartNewUpload();
+    }
+
+    @Override
+    public void onPollUploadApiError(MediaFireFileUpload upload, UploadPollUploadResponse response) {
+        logger.info("file upload api error while polling: " + upload + ", error: " + response.getMessage() + "(" + response.getError() + ")");
+        Map<String, Object> valuesMap = new HashMap<String, Object>();
+        valuesMap.put(MediaFireUploadStore.API_ERROR_NUMBER, response.getError());
+        valuesMap.put(MediaFireUploadStore.API_ERROR_MESSAGE, response.getMessage());
+        valuesMap.put(MediaFireUploadStore.UPLOAD_STATUS, MediaFireUploadStore.MediaFireUploadStatus.FILE_UPLOAD_API_ERROR);
         this.store.update(upload, valuesMap);
 
         signalStartNewUpload();

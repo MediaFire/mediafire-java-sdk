@@ -85,6 +85,9 @@ public class MFFileUpload extends MFUpload implements MediaFireFileUpload {
     }
 
     public static class Builder {
+        private static final boolean DEFAULT_PREEMPTIVE = false;
+        private static final boolean DEFAULT_RESUMABLE = true;
+
         private final File file;
         private final String fileName;
         private final String folderKey;
@@ -93,10 +96,10 @@ public class MFFileUpload extends MFUpload implements MediaFireFileUpload {
         private long fileSize;
         private String jsonFormattedUploadsArray;
         private String deviceId;
-        private boolean preemptive;
+        private boolean preemptive = DEFAULT_PREEMPTIVE;
         private String fileDropKey;
         private String mediaFirePath;
-        private boolean resumable;
+        private boolean resumable = DEFAULT_RESUMABLE;
         private ActionOnInAccount actionOnInAccount = ActionOnInAccount.UPLOAD_IF_NOT_IN_FOLDER;
 
         public Builder(File file, String fileName, String folderKey) {

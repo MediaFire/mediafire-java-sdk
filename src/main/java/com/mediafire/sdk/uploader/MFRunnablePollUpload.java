@@ -1,0 +1,116 @@
+package com.mediafire.sdk.uploader;
+
+import com.mediafire.sdk.MFApiRequest;
+import com.mediafire.sdk.MediaFireApiRequest;
+import com.mediafire.sdk.MediaFireClient;
+import com.mediafire.sdk.MediaFireException;
+import com.mediafire.sdk.api.responses.UploadPollUploadResponse;
+import com.mediafire.sdk.api.responses.data_models.PollDoUpload;
+import com.mediafire.sdk.util.TextUtils;
+
+import java.util.LinkedHashMap;
+
+/**
+ * Created by christophernajar on 9/2/15.
+ */
+public class MFRunnablePollUpload implements Runnable {
+    private static final int TIME_BETWEEN_POLLS_MILLIS = 1000 * 5;
+    private static final int MAX_POLLS = 24;
+
+    private static final String PARAM_KEY = "key";
+
+    private final MediaFireClient mediaFire;
+    private final MediaFireFileUpload upload;
+    private final String uploadKey;
+    private final OnPollUploadStatusListener callback;
+    private final int statusToFinish;
+
+    public MFRunnablePollUpload(MediaFireClient mediaFire, MediaFireFileUpload upload, String uploadKey, OnPollUploadStatusListener callback, int statusToFinish) {
+
+        this.mediaFire = mediaFire;
+        this.upload = upload;
+        this.uploadKey = uploadKey;
+        this.callback = callback;
+        this.statusToFinish = statusToFinish;
+    }
+
+    @Override
+    public void run() {
+        final LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+        params.put(PARAM_KEY, uploadKey);
+        long pollCount = 0;
+        do {
+            MediaFireApiRequest request = new MFApiRequest("upload/poll_upload.php", params, null, null);
+            UploadPollUploadResponse response = null;
+            try {
+                response = mediaFire.sessionRequest(request, UploadPollUploadResponse.class);
+            } catch (MediaFireException e) {
+                if (this.callback != null) {
+                    this.callback.onPollUploadMediaFireException(this.upload, e);
+                }
+                return;
+            }
+            PollDoUpload doUpload = response.getDoUpload();
+
+            int fileErrorCode = doUpload.getFileErrorCode();
+            int resultCode = doUpload.getResultCode();
+            int statusCode = doUpload.getStatusCode();
+
+            String description = doUpload.getDescription();
+
+            String quickKey = doUpload.getQuickKey();
+            String filename = doUpload.getFilename();
+
+            if (TextUtils.isEmpty(quickKey)) {
+                if (this.callback != null) {
+                    this.callback.onPollUploadFinished(this.upload, quickKey, filename);
+                }
+                return;
+            }
+
+            if (statusCode >= statusToFinish) {
+                if (this.callback != null) {
+                    this.callback.onPollUploadFinished(this.upload, quickKey, filename);
+                }
+                return;
+            }
+
+            if (fileErrorCode != 0) {
+                if (this.callback != null) {
+                    this.callback.onPollUploadError(this.upload, fileErrorCode, resultCode, statusCode);
+                }
+                return;
+            }
+
+            if (resultCode != 0) {
+                if (this.callback != null) {
+                    this.callback.onPollUploadError(this.upload, fileErrorCode, resultCode, statusCode);
+                }
+                return;
+            }
+
+            if (this.callback != null) {
+                this.callback.onPollUploadProgress(this.upload, statusCode, description);
+            }
+
+            try {
+                Thread.sleep(TIME_BETWEEN_POLLS_MILLIS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                if (this.callback != null) {
+                    this.callback.onPollUploadThreadInterrupted(this.upload);
+                }
+                return;
+            }
+            pollCount++;
+        } while (pollCount <= MAX_POLLS);
+    }
+
+    public interface OnPollUploadStatusListener {
+        void onPollUploadFinished(MediaFireFileUpload upload, String quickKey, String fileName);
+        void onPollUploadProgress(MediaFireFileUpload upload, int statusCode, String description);
+        void onPollUploadError(MediaFireFileUpload upload, int fileErrorCode, int resultCode, int statusCode);
+        void onPollUploadMediaFireException(MediaFireFileUpload upload, MediaFireException e);
+        void onPollUploadThreadInterrupted(MediaFireFileUpload upload);
+    }
+}

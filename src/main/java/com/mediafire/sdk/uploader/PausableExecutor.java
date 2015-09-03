@@ -13,7 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Matthew A. Johnston
  * @see <a href="https://gist.github.com/warmwaffles/8534618">PausableThreadPoolExecutor</a>
  */
-public class MediaFireUploadExecutor extends ThreadPoolExecutor {
+public class PausableExecutor extends ThreadPoolExecutor implements Pausable {
     private boolean isPaused = true;
     private final ReentrantLock lock;
     private final Condition condition;
@@ -26,7 +26,7 @@ public class MediaFireUploadExecutor extends ThreadPoolExecutor {
      * @param workQueue       The queue that holds your tasks
      * @see {@link ThreadPoolExecutor#ThreadPoolExecutor(int, int, long, TimeUnit, BlockingQueue)}
      */
-    public MediaFireUploadExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
+    public PausableExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
         lock = new ReentrantLock();
         condition = lock.newCondition();
@@ -50,17 +50,17 @@ public class MediaFireUploadExecutor extends ThreadPoolExecutor {
         }
     }
 
+    @Override
     public boolean isRunning() {
         return !isPaused;
     }
 
+    @Override
     public boolean isPaused() {
         return isPaused;
     }
 
-    /**
-     * Pause the execution
-     */
+    @Override
     public void pause() {
         lock.lock();
         try {
@@ -70,9 +70,7 @@ public class MediaFireUploadExecutor extends ThreadPoolExecutor {
         }
     }
 
-    /**
-     * Resume pool execution
-     */
+    @Override
     public void resume() {
         lock.lock();
         try {

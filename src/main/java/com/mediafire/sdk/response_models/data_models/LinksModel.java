@@ -1,8 +1,5 @@
 package com.mediafire.sdk.response_models.data_models;
 
-/**
- * Created by christophernajar on 9/3/15.
- */
 public class LinksModel {
     private String view;
     private String edit;

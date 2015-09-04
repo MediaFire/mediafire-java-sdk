@@ -379,8 +379,7 @@ public class MFClient implements MediaFireClient {
         long secretKey = response.getSecretKey();
         String pkey = response.getPkey();
         String ekey = response.getEkey();
-        MFSessionToken token = new MFSessionToken(sessionToken, time, secretKey, pkey, ekey);
-        return token;
+        return new MFSessionToken(sessionToken, time, secretKey, pkey, ekey);
     }
 
     private Map<String, Object> createHeadersUsingQueryAsPostBody(String encodedQuery) {
@@ -415,8 +414,7 @@ public class MFClient implements MediaFireClient {
         long secretKeyMod256 = secretKey % 256;
         String queryMap = makeQueryStringFromMap(query, false);
         String hashTarget = secretKeyMod256 + time + uri + "?" + queryMap;
-        String signature = getHasher().md5(hashTarget);
-        return signature;
+        return getHasher().md5(hashTarget);
     }
 
     public static class Builder {

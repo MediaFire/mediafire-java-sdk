@@ -57,7 +57,9 @@ public class MFHttpRequester implements MediaFireHttpRequester {
             setupConnection(connection, headers, doOutput);
 
             if (doOutput && payload != null) {
+                logger.info("start upload payload size: " + payload.length);
                 connection.getOutputStream().write(payload);
+                logger.info("end upload payload size: " + payload.length);
             }
 
             MediaFireHttpResponse response = getResponse(connection);

@@ -4,6 +4,7 @@ import com.mediafire.sdk.MFApiRequest;
 import com.mediafire.sdk.MediaFireApiRequest;
 import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireException;
+import com.mediafire.sdk.response_models.MediaFireApiResponse;
 import com.mediafire.sdk.response_models.upload.UploadResumableResponse;
 import com.mediafire.sdk.response_models.data_models.ResumableBitmapModel;
 import com.mediafire.sdk.response_models.data_models.DoUploadResumableModel;
@@ -82,7 +83,7 @@ class MFRunnableResumableUpload implements Runnable {
         for (int chunkNumber = 0; chunkNumber < numUnits; chunkNumber++) {
             try {
                 if (isChunkUploaded(chunkNumber)) {
-                    return;
+                    continue;
                 }
 
                 int chunkSize = getChunkSize(chunkNumber, numUnits, this.upload.getFileSize(), unitSize);
@@ -137,7 +138,7 @@ class MFRunnableResumableUpload implements Runnable {
                 }
             } catch (MediaFireException e) {
                 if (callback != null) {
-                    callback.onResumableUploadMediaFireException(upload, e);
+                    callback.onResumableUploadSdkException(upload, e);
                 }
                 return;
             } catch (IOException e) {
@@ -149,7 +150,7 @@ class MFRunnableResumableUpload implements Runnable {
         }
 
         if (callback != null) {
-            callback.onResumableUploadFinishedUploadingWithoutAllUnitsReady(this.upload);
+            callback.onResumableUploadFinishedIncomplete(this.upload);
         }
     }
 
@@ -243,9 +244,9 @@ class MFRunnableResumableUpload implements Runnable {
     public interface OnResumableUploadStatusListener {
         void onResumableUploadReadyToPoll(MediaFireFileUpload upload, String uploadKey);
         void onResumableUploadProgress(MediaFireFileUpload upload, double percentFinished);
-        void onResumableUploadMediaFireException(MediaFireFileUpload upload, MediaFireException e);
-        void onResumableUploadFinishedUploadingWithoutAllUnitsReady(MediaFireFileUpload upload);
+        void onResumableUploadSdkException(MediaFireFileUpload upload, MediaFireException e);
+        void onResumableUploadFinishedIncomplete(MediaFireFileUpload upload);
         void onResumableUploadIOException(MediaFireFileUpload upload, IOException e);
-        void onResumableUploadApiError(MediaFireFileUpload upload, UploadResumableResponse response);
+        void onResumableUploadApiError(MediaFireFileUpload upload, MediaFireApiResponse response);
     }
 }

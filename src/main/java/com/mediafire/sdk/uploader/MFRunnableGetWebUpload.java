@@ -19,7 +19,6 @@ class MFRunnableGetWebUpload implements Runnable {
     private static final int TIME_BETWEEN_POLLS_MILLIS = 1000 * 5;
     private static final int MAX_POLLS = 24;
 
-    private static final String PARAM_RESPONSE_FORMAT = "response_format";
     private static final String PARAM_UPLOAD_KEY = "upload_key";
     private static final String PARAM_ALL_WEB_UPLOADS = "all_web_uploads";
 
@@ -53,7 +52,7 @@ class MFRunnableGetWebUpload implements Runnable {
                 response = mediaFire.sessionRequest(request, UploadGetWebUploadsResponse.class);
             } catch (MediaFireException e) {
                 if (callback != null) {
-                    callback.onGetWebUploadsMediaFireException(upload, e);
+                    callback.onGetWebUploadsSdkException(upload, e);
                 }
                 return;
             }
@@ -110,7 +109,7 @@ class MFRunnableGetWebUpload implements Runnable {
         } while (pollCount <= MAX_POLLS);
 
         if (callback != null) {
-            callback.onGetWebUploadsFinishedWithoutVerificationOfCompletedUpload(upload);
+            callback.onGetWebUploadsLimitExceeded(upload);
         }
     }
 
@@ -118,8 +117,8 @@ class MFRunnableGetWebUpload implements Runnable {
         void onGetWebUploadsProgress(MediaFireWebUpload upload, int statusCode, String description);
         void onGetWebUploadsFinished(MediaFireWebUpload upload, String quickKey, String filename);
         void onGetWebUploadsError(MediaFireWebUpload upload, int statusCode, int errorStatus, String description);
-        void onGetWebUploadsMediaFireException(MediaFireWebUpload upload, MediaFireException e);
+        void onGetWebUploadsSdkException(MediaFireWebUpload upload, MediaFireException e);
         void onGetWebUploadsInterrupted(MediaFireWebUpload upload, InterruptedException e);
-        void onGetWebUploadsFinishedWithoutVerificationOfCompletedUpload(MediaFireWebUpload upload);
+        void onGetWebUploadsLimitExceeded(MediaFireWebUpload upload);
     }
 }

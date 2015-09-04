@@ -189,7 +189,7 @@
     </option>
     <push-targets>
       <push-target-info repo="$PROJECT_DIR$" source="logout_fix" target-remote="origin" target-branch="logout_fix" />
-      <push-target-info repo="$PROJECT_DIR$" source="temp" target-remote="origin" target-branch="master" />
+      <push-target-info repo="$PROJECT_DIR$" source="temp" target-remote="origin" target-branch="temp" />
     </push-targets>
   </component>
   <component name="GradleLocalSettings">
@@ -1222,7 +1222,13 @@
       <option name="project" value="LOCAL" />
       <updated>1441399996467</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="uploader changes&#10;&#10;swapped mapped values to explicit interface calls">
+      <created>1441400038814</created>
+      <option name="number" value="00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1441400038814</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TodoView">

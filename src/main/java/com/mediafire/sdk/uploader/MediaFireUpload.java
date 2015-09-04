@@ -1,6 +1,6 @@
 package com.mediafire.sdk.uploader;
 
-interface MediaFireUpload {
+public interface MediaFireUpload {
 
     int TYPE_WEB_UPLOAD = 0;
     int TYPE_FILE_UPLOAD = 1;

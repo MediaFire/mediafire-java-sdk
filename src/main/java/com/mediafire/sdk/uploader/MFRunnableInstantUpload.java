@@ -4,6 +4,7 @@ import com.mediafire.sdk.MFApiRequest;
 import com.mediafire.sdk.MediaFireApiRequest;
 import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireException;
+import com.mediafire.sdk.response_models.MediaFireApiResponse;
 import com.mediafire.sdk.response_models.upload.UploadInstantResponse;
 import com.mediafire.sdk.util.TextUtils;
 import org.slf4j.Logger;
@@ -66,7 +67,7 @@ class MFRunnableInstantUpload implements Runnable {
             response = mediaFire.sessionRequest(request, UploadInstantResponse.class);
         } catch (MediaFireException e) {
             if (this.callback != null) {
-                this.callback.onInstantUploadMediaFireException(this.upload, e);
+                this.callback.onInstantUploadSdkException(this.upload, e);
             }
             return;
         }
@@ -85,7 +86,7 @@ class MFRunnableInstantUpload implements Runnable {
 
     public interface OnInstantUploadStatusListener {
         void onInstantUploadFinished(MediaFireFileUpload upload, String quickKey, String fileName);
-        void onInstantUploadMediaFireException(MediaFireFileUpload upload, MediaFireException exception);
-        void onInstantUploadApiError(MediaFireFileUpload upload, UploadInstantResponse response);
+        void onInstantUploadSdkException(MediaFireFileUpload upload, MediaFireException exception);
+        void onInstantUploadApiError(MediaFireFileUpload upload, MediaFireApiResponse response);
     }
 }

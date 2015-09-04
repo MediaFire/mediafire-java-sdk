@@ -31,8 +31,11 @@ public class MediaFireClientTest extends TestCase {
         MFClient mediaFire = builder.build();
         mediaFire.getCredentialStore().clear();
         assertTrue("type stored should be NONE", mediaFire.getCredentialStore().getTypeStored() == MediaFireCredentialsStore.TYPE_NONE);
-        UserGetSessionTokenResponse response = mediaFire.authenticationRequest(UserGetSessionTokenResponse.class);
-        assertTrue("response: " + response.getMessage(), response.hasError());
+        try {
+            UserGetSessionTokenResponse response = mediaFire.authenticationRequest(UserGetSessionTokenResponse.class);
+            fail("no credentials stored, should not be able to authenticate, but exception was not thrown");
+        } catch (MediaFireException ignored) {
+        }
     }
 
     public void testAuthRequestBadCredentials() throws Exception {

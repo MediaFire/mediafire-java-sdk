@@ -50,7 +50,7 @@ class MFRunnablePollUpload implements Runnable {
                 response = mediaFire.sessionRequest(request, UploadPollUploadResponse.class);
             } catch (MediaFireException e) {
                 if (this.callback != null) {
-                    this.callback.onPollUploadMediaFireException(this.upload, e);
+                    this.callback.onPollUploadSdkException(this.upload, e);
                 }
                 return;
             }
@@ -108,7 +108,7 @@ class MFRunnablePollUpload implements Runnable {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 if (this.callback != null) {
-                    this.callback.onPollUploadThreadInterrupted(this.upload);
+                    this.callback.onPollUploadThreadInterrupted(this.upload, e);
                 }
                 return;
             }
@@ -116,7 +116,7 @@ class MFRunnablePollUpload implements Runnable {
         } while (pollCount <= MAX_POLLS);
 
         if (this.callback != null) {
-            this.callback.onPollUploadReachedMaxPollsWithoutConfirmationOfCompletion(this.upload);
+            this.callback.onPollUploadLimitExceeded(this.upload);
         }
     }
 
@@ -124,9 +124,9 @@ class MFRunnablePollUpload implements Runnable {
         void onPollUploadFinished(MediaFireFileUpload upload, String quickKey, String fileName);
         void onPollUploadProgress(MediaFireFileUpload upload, int statusCode, String description);
         void onPollUploadError(MediaFireFileUpload upload, int fileErrorCode, int resultCode, int statusCode, String description);
-        void onPollUploadMediaFireException(MediaFireFileUpload upload, MediaFireException e);
-        void onPollUploadThreadInterrupted(MediaFireFileUpload upload);
+        void onPollUploadSdkException(MediaFireFileUpload upload, MediaFireException e);
+        void onPollUploadThreadInterrupted(MediaFireFileUpload upload, InterruptedException e);
         void onPollUploadApiError(MediaFireFileUpload upload, UploadPollUploadResponse response);
-        void onPollUploadReachedMaxPollsWithoutConfirmationOfCompletion(MediaFireFileUpload upload);
+        void onPollUploadLimitExceeded(MediaFireFileUpload upload);
     }
 }

@@ -1,6 +1,7 @@
 package com.mediafire.sdk.uploader;
 
 import com.mediafire.sdk.*;
+import com.mediafire.sdk.response_models.MediaFireApiResponse;
 import com.mediafire.sdk.response_models.upload.UploadCheckResponse;
 import com.mediafire.sdk.util.TextUtils;
 import org.slf4j.Logger;
@@ -12,7 +13,6 @@ class MFRunnableCheckUpload implements Runnable {
 
     private final Logger logger = LoggerFactory.getLogger(MFRunnableCheckUpload.class);
 
-    private static final String PARAM_RESPONSE_FORMAT = "response_format";
     private static final String PARAM_FILENAME = "filename";
     private static final String PARAM_FOLDER_KEY = "folder_key";
     private static final String PARAM_FOLDER_PATH = "path";
@@ -32,7 +32,7 @@ class MFRunnableCheckUpload implements Runnable {
 
     @Override
     public void run() {
-        logger.info("upload thread started");
+        this.logger.info("upload thread started");
         LinkedHashMap<String, Object> params = new LinkedHashMap<>();
         params.put(PARAM_RESUMABLE, this.upload.isResumable() ? "yes" : "no");
 
@@ -45,7 +45,7 @@ class MFRunnableCheckUpload implements Runnable {
         if (!TextUtils.isEmpty(this.upload.getSha256Hash())) {
             params.put(PARAM_HASH, this.upload.getSha256Hash());
         } else {
-            params.put(PARAM_HASH, mediaFire.getHasher().sha256(this.upload.getFile()));
+            params.put(PARAM_HASH, this.mediaFire.getHasher().sha256(this.upload.getFile()));
         }
 
         params.put(PARAM_FILENAME, this.upload.getFileName());
@@ -61,7 +61,7 @@ class MFRunnableCheckUpload implements Runnable {
         MediaFireApiRequest request = new MFApiRequest("/upload/check.php", params, null, null);
 
         try {
-            UploadCheckResponse response = mediaFire.sessionRequest(request, UploadCheckResponse.class);
+            UploadCheckResponse response = this.mediaFire.sessionRequest(request, UploadCheckResponse.class);
 
             if (this.callback != null) {
                 if (response.hasError()) {
@@ -72,14 +72,14 @@ class MFRunnableCheckUpload implements Runnable {
             }
         } catch (MediaFireException e) {
             if (this.callback != null) {
-                this.callback.onCheckUploadMediaFireException(this.upload, e);
+                this.callback.onCheckUploadSdkException(this.upload, e);
             }
         }
     }
 
     public interface OnCheckUploadStatusListener {
-        void onCheckUploadFinished(MediaFireFileUpload mediaFireUpload, UploadCheckResponse response);
-        void onCheckUploadMediaFireException(MediaFireFileUpload mediaFireUpload, MediaFireException e);
-        void onCheckUploadApiError(MediaFireFileUpload upload, UploadCheckResponse response);
+        void onCheckUploadFinished(MediaFireFileUpload upload, UploadCheckResponse response);
+        void onCheckUploadSdkException(MediaFireFileUpload upload, MediaFireException e);
+        void onCheckUploadApiError(MediaFireFileUpload upload, MediaFireApiResponse response);
     }
 }

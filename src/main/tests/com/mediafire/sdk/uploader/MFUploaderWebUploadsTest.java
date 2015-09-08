@@ -8,6 +8,8 @@ import junit.framework.TestCase;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class MFUploaderWebUploadsTest extends TestCase {
 
@@ -32,6 +34,7 @@ public class MFUploaderWebUploadsTest extends TestCase {
     private MediaFireClient mediaFire;
     private MFUploader uploader;
     private MFUploadStore store;
+    private PausableExecutor executor;
 
     public void setUp() throws Exception {
         super.setUp();
@@ -40,8 +43,7 @@ public class MFUploaderWebUploadsTest extends TestCase {
         mediaFire = builder.build();
         mediaFire.getCredentialStore().setEmail(new MediaFireCredentialsStore.EmailCredentials("badtestemail@badtestemail.com", "badtestemail"));
 
-        store = new MFUploadStore();
-        uploader = new MFUploader(mediaFire, store, 3);
+        executor = new PausableExecutor(3, 3, 10L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     public void tearDown() throws Exception {
@@ -49,39 +51,48 @@ public class MFUploaderWebUploadsTest extends TestCase {
     }
 
     public void testSingleWebUpload() throws Exception {
-        uploader.resume();
+        store = new MFUploadStore(1);
+        uploader = new MFUploader(mediaFire, store, executor);
+        executor.resume();
         MediaFireWebUpload webUpload = new MFWebUpload(URLS.get(0), URI.create(URLS.get(0)).toURL().getFile().replaceFirst("/", ""), null);
         uploader.schedule(webUpload);
 
-        while (uploader.areJobsInProgress()) {
+        while (store.isWaitingForUploads()) {
             Thread.sleep(250);
+            System.out.println("uploader still running");
         }
 
         assertTrue(true);
     }
 
     public void testSingleWebUploadLarge() throws Exception {
+        store = new MFUploadStore(1);
+        uploader = new MFUploader(mediaFire, store, executor);
         String url = "https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg";
 
-        uploader.resume();
+        executor.resume();
         MediaFireWebUpload webUpload = new MFWebUpload(url, "LARGE_elevation.jpg", null);
         uploader.schedule(webUpload);
 
-        while (uploader.areJobsInProgress()) {
+        while (store.isWaitingForUploads()) {
             Thread.sleep(250);
+            System.out.println("uploader still running");
         }
 
         assertTrue(true);
     }
 
     public void testMultiWebUpload() throws Exception {
-        uploader.resume();
+        store = new MFUploadStore(URLS.size());
+        uploader = new MFUploader(mediaFire, store, executor);
+        executor.resume();
         for (String url : URLS) {
             uploader.schedule(new MFWebUpload(url, URI.create(url).toURL().getFile().replaceFirst("/", ""), null));
         }
 
-        while (uploader.areJobsInProgress()) {
+        while (store.isWaitingForUploads()) {
             Thread.sleep(250);
+            System.out.println("uploader still running");
         }
 
         assertTrue(true);

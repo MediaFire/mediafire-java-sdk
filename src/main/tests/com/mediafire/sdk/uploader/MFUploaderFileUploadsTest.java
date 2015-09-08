@@ -11,11 +11,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class MFUploaderFileUploadsTest  extends TestCase {
     private MediaFireClient mediaFire;
     private MFUploader uploader;
     private MFUploadStore store;
+    private PausableExecutor executor;
 
     public void setUp() throws Exception {
         super.setUp();
@@ -24,17 +27,17 @@ public class MFUploaderFileUploadsTest  extends TestCase {
         mediaFire = builder.build();
         mediaFire.getCredentialStore().setEmail(new MediaFireCredentialsStore.EmailCredentials("badtestemail@badtestemail.com", "badtestemail"));
 
-        store = new MFUploadStore();
-        uploader = new MFUploader(mediaFire, store, 3);
-        uploader.resume();
+        executor = new PausableExecutor(3, 3, 10L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     public void tearDown() throws Exception {
-        uploader.clear();
+
     }
 
     public void testSingleFileSmallUpload() throws Exception {
-        uploader.resume();
+        store = new MFUploadStore(1);
+        uploader = new MFUploader(mediaFire, store, executor);
+        executor.resume();
         File file = createTemporaryFile("testfile", ".tmp", 10000);
 
         MFFileUpload.Builder builder = new MFFileUpload.Builder(file, "testSingleFileSmallUpload" + System.currentTimeMillis() + ".tmp");
@@ -44,18 +47,18 @@ public class MFUploaderFileUploadsTest  extends TestCase {
         builder.setSha256Hash(mediaFire.getHasher().sha256(file));
         uploader.schedule(builder.build());
 
-
-        boolean firstRun = true;
-        while (uploader.areJobsInProgress() || firstRun) {
+        while (store.isWaitingForUploads()) {
             Thread.sleep(250);
-            firstRun = false;
+            System.out.println("uploader still running");
         }
 
         assertTrue(deleteTemporaryFile(file));
     }
 
     public void testMultiFileSmallUpload() throws Exception {
-        uploader.resume();
+        store = new MFUploadStore(6);
+        uploader = new MFUploader(mediaFire, store, executor);
+        executor.resume();
 
         List<File> files = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
@@ -78,13 +81,10 @@ public class MFUploaderFileUploadsTest  extends TestCase {
             uploader.schedule(upload);
         }
 
-        boolean firstRun = true;
-        while (uploader.areJobsInProgress() || firstRun) {
+        while (store.isWaitingForUploads()) {
             Thread.sleep(250);
-            firstRun = false;
+            System.out.println("uploader still running");
         }
-
-        boolean allFilesDeleted = true;
 
         for (File file : files) {
             assertTrue("could not delete all temporary files", deleteTemporaryFile(file));
@@ -92,7 +92,9 @@ public class MFUploaderFileUploadsTest  extends TestCase {
     }
 
     public void testSingleFileLargeUpload() throws Exception {
-        uploader.resume();
+        store = new MFUploadStore(1);
+        uploader = new MFUploader(mediaFire, store, executor);
+        executor.resume();
         File file = createTemporaryFile("testfile", ".tmp", 20000000);
 
         MFFileUpload.Builder builder = new MFFileUpload.Builder(file, "testSingleFileLargeUpload" + System.currentTimeMillis() + ".tmp");
@@ -102,18 +104,18 @@ public class MFUploaderFileUploadsTest  extends TestCase {
         builder.setSha256Hash(mediaFire.getHasher().sha256(file));
         uploader.schedule(builder.build());
 
-
-        boolean firstRun = true;
-        while (uploader.areJobsInProgress() || firstRun) {
+        while (store.isWaitingForUploads()) {
             Thread.sleep(250);
-            firstRun = false;
+            System.out.println("uploader still running");
         }
 
         assertTrue(deleteTemporaryFile(file));
     }
 
     public void testMultiFileLargeUpload() throws Exception {
-        uploader.resume();
+        store = new MFUploadStore(6);
+        uploader = new MFUploader(mediaFire, store, executor);
+        executor.resume();
 
         List<File> files = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
@@ -136,13 +138,10 @@ public class MFUploaderFileUploadsTest  extends TestCase {
             uploader.schedule(upload);
         }
 
-        boolean firstRun = true;
-        while (uploader.areJobsInProgress() || firstRun) {
+        while (store.isWaitingForUploads()) {
             Thread.sleep(250);
-            firstRun = false;
+            System.out.println("uploader still running");
         }
-
-        boolean allFilesDeleted = true;
 
         for (File file : files) {
             assertTrue("could not delete all temporary files", deleteTemporaryFile(file));

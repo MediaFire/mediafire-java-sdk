@@ -4,8 +4,6 @@ import com.mediafire.sdk.response_models.MediaFireApiResponse;
 import com.mediafire.sdk.response_models.user.UserGetActionTokenResponse;
 import com.mediafire.sdk.response_models.user.UserGetSessionTokenResponse;
 import com.mediafire.sdk.util.TextUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -14,8 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MFClient implements MediaFireClient {
-
-    private final Logger logger = LoggerFactory.getLogger(MFClient.class);
 
     private static final String UTF8 = "UTF-8";
     private static final int SESSION_TOKEN_VERSION = 2;
@@ -43,7 +39,6 @@ public class MFClient implements MediaFireClient {
 
     @Override
     public <T extends MediaFireApiResponse> T noAuthRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException {
-        logger.info("making api request without authentication. request: " + request + ", response class: " + classOfT);
         Map<String, Object> query = new LinkedHashMap<>();
         query.put("response_format", getResponseParser().getResponseFormat());
         if (request.getQueryParameters() != null) {
@@ -73,7 +68,6 @@ public class MFClient implements MediaFireClient {
 
     @Override
     public MediaFireHttpResponse conversionServerRequest(String hash, Map<String, Object> requestParameters) throws MediaFireException {
-        logger.info("making api request using (image) action token. image hash: " + hash + ", request parameters: " + requestParameters);
         String baseUrl = "https://www.mediafire.com";
 
         StringBuilder url = new StringBuilder();
@@ -116,7 +110,6 @@ public class MFClient implements MediaFireClient {
 
     @Override
     public <T extends MediaFireApiResponse> T uploadRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException {
-        logger.info("making api request using (upload) action token. request: " + request + ", response class: " + classOfT);
         Map<String, Object> query = new LinkedHashMap<>();
         query.put("response_format", getResponseParser().getResponseFormat());
         query.putAll(request.getQueryParameters());
@@ -168,7 +161,6 @@ public class MFClient implements MediaFireClient {
 
     @Override
     public <T extends MediaFireApiResponse> T sessionRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException {
-        logger.info("making api request using session token. request: " + request + ", response class: " + classOfT);
         Map<String, Object> query = new LinkedHashMap<>();
         query.put("response_format", getResponseParser().getResponseFormat());
         if (request.getQueryParameters() != null) {
@@ -189,7 +181,6 @@ public class MFClient implements MediaFireClient {
 
         synchronized (storeLock) {
             if (!getSessionStore().isSessionTokenV2Available()) {
-                logger.info("no session tokens available for request: " + request);
                 mediaFireSessionToken = requestNewSessionToken();
             } else {
                 mediaFireSessionToken = getSessionStore().getSessionTokenV2();
@@ -228,7 +219,6 @@ public class MFClient implements MediaFireClient {
 
     @Override
     public <T extends MediaFireApiResponse> T authenticationRequest(Class<T> classOfT) throws MediaFireException {
-        logger.info("making authentication request. response class: " + classOfT);
         int credentialType = getCredentialStore().getTypeStored();
 
         Map<String, Object> query = new LinkedHashMap<>();
@@ -370,7 +360,6 @@ public class MFClient implements MediaFireClient {
 
         UserGetSessionTokenResponse response = authenticationRequest(UserGetSessionTokenResponse.class);
         if (response.hasError()) {
-            logger.info("requested new session token, but received error: " + " (" + response.getError() + ") " + response.getMessage());
             return null;
         }
 

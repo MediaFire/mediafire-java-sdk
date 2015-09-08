@@ -7,8 +7,6 @@ import com.mediafire.sdk.response_models.data_models.ResumableUploadModel;
 import com.mediafire.sdk.response_models.upload.UploadCheckResponse;
 import com.mediafire.sdk.response_models.upload.UploadPollUploadResponse;
 import com.mediafire.sdk.uploader.MFRunnablePollUpload.OnPollUploadStatusListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -19,7 +17,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPollUploadStatusListener {
     public static final long KEEP_ALIVE_TIME = 10L;
-    private final Logger logger = LoggerFactory.getLogger(MFUploader.class);
 
     private final PausableExecutor executor;
     private final LinkedBlockingDeque<Runnable> queue;
@@ -88,7 +85,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onGetWebUploadsProgress(MediaFireWebUpload upload, int statusCode, String description) {
-        this.logger.info("web upload polling in progress: " + upload + ", status:" + statusCode + ", description: " + description);
         this.store.polling(upload, statusCode, description);
 
         this.signalStartNewUpload();
@@ -96,7 +92,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onGetWebUploadsFinished(MediaFireWebUpload upload, String quickKey, String filename) {
-        this.logger.info("web upload finished polling: " + upload + ", quickKey:" + quickKey + ", filename: " + filename);
         this.store.uploadFinished(upload, quickKey, filename);
 
         this.signalStartNewUpload();
@@ -104,7 +99,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onGetWebUploadsError(MediaFireWebUpload upload, int statusCode, int errorStatus, String description) {
-        this.logger.info("web upload error while polling: " + upload + ", status:" + statusCode + ", description: " + description);
         this.store.pollingError(upload, statusCode, errorStatus, description);
 
         this.signalStartNewUpload();
@@ -112,7 +106,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onGetWebUploadsSdkException(MediaFireWebUpload upload, MediaFireException e) {
-        this.logger.info("web upload MediaFireException while polling: " + upload + ", exception:" + e);
         this.store.sdkException(upload, e);
 
         this.signalStartNewUpload();
@@ -120,7 +113,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onGetWebUploadsInterrupted(MediaFireWebUpload upload, InterruptedException e) {
-        this.logger.info("web upload interrupted thread while polling: " + upload + ", exception:" + e);
         this.store.pollingInterrupted(upload, e);
 
         this.signalStartNewUpload();
@@ -128,7 +120,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onGetWebUploadsLimitExceeded(MediaFireWebUpload upload) {
-        this.logger.info("web upload finished without verification of completion: " + upload);
         this.store.pollingLimitExceeded(upload);
 
         this.signalStartNewUpload();
@@ -136,7 +127,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onWebUploadException(MediaFireWebUpload upload, MediaFireException e) {
-        this.logger.info("web upload MediaFireException in web upload thread: " + upload + ", exception:" + e);
         this.store.sdkException(upload, e);
 
         this.signalStartNewUpload();
@@ -144,7 +134,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onWebUploadFinish(MediaFireWebUpload upload, String uploadKey) {
-        this.logger.info("web upload finished: " + upload + ", upload key:" + uploadKey);
         this.store.pollingReady(upload, uploadKey);
         MFRunnableGetWebUpload runnableGetWebUpload = new MFRunnableGetWebUpload(this.mediaFire, upload, uploadKey, this, 99);
         this.executor.execute(runnableGetWebUpload);
@@ -152,7 +141,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onCheckUploadFinished(MediaFireFileUpload upload, UploadCheckResponse response) {
-        this.logger.info("file upload finished check thread: " + upload + ", response:" + response);
 
         String hashExists = response.getHashExists();
         String inAccount = response.getInAccount();
@@ -193,7 +181,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onCheckUploadSdkException(MediaFireFileUpload upload, MediaFireException e) {
-        this.logger.info("file upload MediaFireException in check thread: " + upload + ", exception:" + e);
         this.store.sdkException(upload, e);
 
         this.signalStartNewUpload();
@@ -201,7 +188,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onCheckUploadApiError(MediaFireFileUpload upload, MediaFireApiResponse response) {
-        this.logger.info("file upload api error during check: " + upload + ", error: " + response.getMessage() + "(" + response.getError() + ")");
         this.store.apiError(upload, response);
 
         this.signalStartNewUpload();
@@ -209,7 +195,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onInstantUploadSdkException(MediaFireFileUpload upload, MediaFireException e) {
-        this.logger.info("file upload MediaFireException in instant thread: " + upload + ", exception:" + e);
         this.store.sdkException(upload, e);
 
         this.signalStartNewUpload();
@@ -217,7 +202,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onInstantUploadApiError(MediaFireFileUpload upload, MediaFireApiResponse response) {
-        this.logger.info("file upload api error during instant upload: " + upload + ", error: " + response.getMessage() + "(" + response.getError() + ")");
         this.store.apiError(upload, response);
 
         this.signalStartNewUpload();
@@ -225,7 +209,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onInstantUploadFinished(MediaFireFileUpload upload, String quickKey, String fileName) {
-        this.logger.info("file upload instant upload finished: " + upload + ", quick key:" + quickKey + ", file name: " + fileName);
         this.store.uploadFinished(upload, quickKey, fileName);
 
         this.signalStartNewUpload();
@@ -233,7 +216,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onResumableUploadReadyToPoll(MediaFireFileUpload upload, String uploadKey) {
-        this.logger.info("file upload ready to poll: " + upload + ", upload key:" + uploadKey);
         this.store.pollingReady(upload, uploadKey);
         MFRunnablePollUpload runnablePollUpload = new MFRunnablePollUpload(this.mediaFire, upload, uploadKey, this, 99);
         this.executor.execute(runnablePollUpload);
@@ -241,13 +223,11 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onResumableUploadProgress(MediaFireFileUpload upload, double percentFinished) {
-        this.logger.info("file upload in progress: " + upload + ", percent finished:" + percentFinished + "%");
         this.store.uploadProgress(upload, percentFinished);
     }
 
     @Override
     public void onResumableUploadSdkException(MediaFireFileUpload upload, MediaFireException e) {
-        this.logger.info("file upload MediaFireException during resumable: " + upload + ", exception:" + e);
         this.store.sdkException(upload, e);
 
         this.signalStartNewUpload();
@@ -255,7 +235,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onResumableUploadFinishedIncomplete(MediaFireFileUpload upload) {
-        this.logger.info("file upload resumable thread ended without all units ready: " + upload);
         this.store.resumableFinishedWithoutAllUnitsReady(upload);
 
         this.signalStartNewUpload();
@@ -263,14 +242,12 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onResumableUploadIOException(MediaFireFileUpload upload, IOException e) {
-        this.logger.info("file upload IOException during resumable: " + upload + ", exception:" + e);
         this.store.fileIOException(upload, e);
         this.signalStartNewUpload();
     }
 
     @Override
     public void onResumableUploadApiError(MediaFireFileUpload upload, MediaFireApiResponse response) {
-        this.logger.info("file upload api error during resumable: " + upload + ", error: " + response.getMessage() + "(" + response.getError() + ")");
         this.store.apiError(upload, response);
 
         this.signalStartNewUpload();
@@ -278,7 +255,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onPollUploadFinished(MediaFireFileUpload upload, String quickKey, String fileName) {
-        this.logger.info("file upload polling finished: " + upload + ", quick key:" + quickKey + ", file name: " + fileName);
         this.store.uploadFinished(upload, quickKey, fileName);
 
         this.signalStartNewUpload();
@@ -286,14 +262,11 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onPollUploadProgress(MediaFireFileUpload upload, int statusCode, String description) {
-        this.logger.info("file upload polling progress: " + upload + ", status:" + statusCode + ", description: " + description);
         this.store.polling(upload, statusCode, description);
     }
 
     @Override
     public void onPollUploadError(MediaFireFileUpload upload, int fileErrorCode, int resultCode, int statusCode, String description) {
-        this.logger.info("file upload error while polling: " + upload + ", file error code:" + fileErrorCode + ", result code: " + resultCode + ", status code: " + statusCode + ", description: " + description);
-
         this.store.pollingError(upload, fileErrorCode, resultCode, statusCode, description);
 
         this.signalStartNewUpload();
@@ -301,7 +274,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onPollUploadSdkException(MediaFireFileUpload upload, MediaFireException e) {
-        this.logger.info("file upload MediaFireException while polling: " + upload + ", exception:" + e);
         this.store.sdkException(upload, e);
 
         this.signalStartNewUpload();
@@ -309,7 +281,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onPollUploadThreadInterrupted(MediaFireFileUpload upload, InterruptedException e) {
-        this.logger.info("file upload interrupted while polling: " + upload);
         this.store.pollingInterrupted(upload, e);
 
         this.signalStartNewUpload();
@@ -317,7 +288,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onPollUploadApiError(MediaFireFileUpload upload, UploadPollUploadResponse response) {
-        this.logger.info("file upload api error while polling: " + upload + ", error: " + response.getMessage() + "(" + response.getError() + ")");
         this.store.apiError(upload, response);
 
         this.signalStartNewUpload();
@@ -325,7 +295,6 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     @Override
     public void onPollUploadLimitExceeded(MediaFireFileUpload upload) {
-        this.logger.info("file upload api error while polling: " + upload);
         this.store.pollingLimitExceeded(upload);
 
         this.signalStartNewUpload();

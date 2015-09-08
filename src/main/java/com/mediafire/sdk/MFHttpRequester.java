@@ -1,8 +1,5 @@
 package com.mediafire.sdk;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public class MFHttpRequester implements MediaFireHttpRequester {
-    private final Logger logger = LoggerFactory.getLogger(MFHttpRequester.class);
-
     private final MediaFireHttpsAgent httpsAgent;
     private final int connectionTimeout;
     private final int readTimeout;
@@ -31,13 +26,11 @@ public class MFHttpRequester implements MediaFireHttpRequester {
 
     @Override
     public MediaFireHttpResponse get(MediaFireHttpRequest request) throws MediaFireException {
-        logger.info("GET request: " + request);
         return makeRequest(request, false);
     }
 
     @Override
     public MediaFireHttpResponse post(MediaFireHttpRequest request) throws MediaFireException {
-        logger.info("POST request: " + request);
         return makeRequest(request, true);
     }
 
@@ -57,13 +50,10 @@ public class MFHttpRequester implements MediaFireHttpRequester {
             setupConnection(connection, headers, doOutput);
 
             if (doOutput && payload != null) {
-                logger.info("start upload payload size: " + payload.length);
                 connection.getOutputStream().write(payload);
-                logger.info("end upload payload size: " + payload.length);
             }
 
             MediaFireHttpResponse response = getResponse(connection);
-            logger.info("response: " + response + " for request: " + request);
             return response;
         } catch (IOException e) {
             throw new MediaFireException("IO exception: ", e);

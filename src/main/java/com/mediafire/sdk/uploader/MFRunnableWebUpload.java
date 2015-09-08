@@ -6,14 +6,10 @@ import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireException;
 import com.mediafire.sdk.response_models.upload.UploadAddWebUploadResponse;
 import com.mediafire.sdk.util.TextUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 
 class MFRunnableWebUpload implements Runnable {
-
-    private final Logger logger = LoggerFactory.getLogger(MFRunnableWebUpload.class);
 
     private static final String PARAM_URL = "url";
     private static final String PARAM_FILENAME = "filename";
@@ -32,8 +28,6 @@ class MFRunnableWebUpload implements Runnable {
 
     @Override
     public void run() {
-        logger.info("upload thread started");
-
         LinkedHashMap<String, Object> params = new LinkedHashMap<>();
         params.put(PARAM_URL, this.upload.getUrl());
         params.put(PARAM_FILENAME, this.upload.getFileName());

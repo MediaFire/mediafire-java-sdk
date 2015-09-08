@@ -4,17 +4,13 @@ import com.mediafire.sdk.MFApiRequest;
 import com.mediafire.sdk.MediaFireApiRequest;
 import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireException;
-import com.mediafire.sdk.response_models.upload.UploadPollUploadResponse;
 import com.mediafire.sdk.response_models.data_models.DoUploadPollModel;
+import com.mediafire.sdk.response_models.upload.UploadPollUploadResponse;
 import com.mediafire.sdk.util.TextUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 
 class MFRunnablePollUpload implements Runnable {
-
-    private final Logger logger = LoggerFactory.getLogger(MFRunnablePollUpload.class);
 
     private static final int TIME_BETWEEN_POLLS_MILLIS = 1000 * 5;
     private static final int MAX_POLLS = 24;
@@ -38,8 +34,6 @@ class MFRunnablePollUpload implements Runnable {
 
     @Override
     public void run() {
-        logger.info("upload thread started");
-
         final LinkedHashMap<String, Object> params = new LinkedHashMap<>();
         params.put(PARAM_KEY, uploadKey);
         long pollCount = 0;

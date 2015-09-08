@@ -4,16 +4,30 @@
     <option name="ANALYZE_TEST_SOURCES" value="false" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="662b8f75-f138-43af-9835-9df76600a49e" name="Default" comment="uploader changes&#10;&#10;swapped mapped values to explicit interface calls">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFApiResponseParser.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFApiResponseParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFCredentialsStore.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFCredentialsStore.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHasher.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHasher.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFSessionStore.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFSessionStore.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploadStore.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploadStore.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploader.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
+    <list default="true" id="662b8f75-f138-43af-9835-9df76600a49e" name="Default" comment="removed test logging">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFApiResponseParser.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFApiResponseParser.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFClient$Builder.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFClient$Builder.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFClient.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFClient.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFCredentialsStore.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFCredentialsStore.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFHasher.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFHasher.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFHttpRequester.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFHttpRequester.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFRunnableCheckUpload.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFRunnableCheckUpload.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFRunnableInstantUpload.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFRunnableInstantUpload.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFRunnablePollUpload.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFRunnablePollUpload.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFRunnableResumableUpload.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFRunnableResumableUpload.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFRunnableWebUpload.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFRunnableWebUpload.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFSessionStore.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/MFSessionStore.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFUploadStore.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFUploadStore.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFUploader$1.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFUploader$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFUploader.class" afterPath="$PROJECT_DIR$/build/classes/main/com/mediafire/sdk/uploader/MFUploader.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableCheckUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableCheckUpload.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableInstantUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableInstantUpload.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnablePollUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnablePollUpload.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableWebUpload.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableWebUpload.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="mediafire-java-sdk.iws" />
@@ -63,94 +77,98 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="MFClient.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MFClient.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="3.5166667">
-              <caret line="220" column="114" selection-start-line="220" selection-start-column="114" selection-end-line="220" selection-end-column="114" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="31" column="49" selection-start-line="31" selection-start-column="49" selection-end-line="31" selection-end-column="49" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MFCredentialsStore.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFCredentialsStore.java">
+      <file leaf-file-name="MFUploader.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="49" column="16" selection-start-line="49" selection-start-column="16" selection-end-line="49" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MFHasher.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHasher.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="139" column="99" selection-start-line="139" selection-start-column="99" selection-end-line="139" selection-end-column="99" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MFHttpRequest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MFHttpRequester.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="55" column="69" selection-start-line="55" selection-start-column="69" selection-end-line="55" selection-end-column="69" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MFHttpResponse.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpResponse.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MFSessionStore.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFSessionStore.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="124" column="25" selection-start-line="124" selection-start-column="25" selection-end-line="124" selection-end-column="25" />
+            <state vertical-scroll-proportion="1.4759107">
+              <caret line="324" column="5" selection-start-line="324" selection-start-column="5" selection-end-line="324" selection-end-column="5" />
               <folding>
-                <element signature="e#1016#1017#0" expanded="true" />
-                <element signature="e#1065#1066#0" expanded="true" />
+                <element signature="e#1468#1469#0" expanded="true" />
+                <element signature="e#1508#1509#0" expanded="true" />
+                <element signature="e#1910#1911#0" expanded="true" />
+                <element signature="e#1947#1948#0" expanded="true" />
+                <element signature="e#2499#2500#0" expanded="true" />
+                <element signature="e#2556#2557#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MFWebUpload.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFWebUpload.java">
+      <file leaf-file-name="MFRunnablePollUpload.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnablePollUpload.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="48" column="8" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="8" />
+              <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PausableExecutor.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/PausableExecutor.java">
+      <file leaf-file-name="MFRunnableResumableUpload.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="28" column="87" selection-start-line="28" selection-start-column="87" selection-end-line="28" selection-end-column="87" />
+              <caret line="19" column="53" selection-start-line="19" selection-start-column="53" selection-end-line="19" selection-end-column="53" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MFRunnableWebUpload.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableWebUpload.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="11" column="47" selection-start-line="11" selection-start-column="47" selection-end-line="11" selection-end-column="47" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MFRunnableCheckUpload.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableCheckUpload.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="12" column="49" selection-start-line="12" selection-start-column="49" selection-end-line="12" selection-end-column="49" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MFRunnableGetWebUpload.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MFRunnableInstantUpload.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableInstantUpload.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -475,13 +493,7 @@
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/FileInfosModel.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireSessionToken.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireActionToken.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableWebUpload.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MediaFireUpload.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableCheckUpload.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableInstantUpload.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnablePollUpload.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/AutoBandwidthModel.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/file/FileDeleteResponse.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/file/FileUpdateResponse.java" />
@@ -490,13 +502,11 @@
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/ShowDownloadPageModel.java" />
         <option value="$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/MediaFireClientTest.java" />
         <option value="$PROJECT_DIR$/gradle.properties" />
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MediaFireWebUploadStore.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MediaFireFileUploadStore.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MediaFireUploadStore.java" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/build.gradle" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploader.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploadStore.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFCredentialsStore.java" />
@@ -504,6 +514,14 @@
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFSessionStore.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFApiResponseParser.java" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableCheckUpload.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableInstantUpload.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnablePollUpload.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableWebUpload.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploader.java" />
       </list>
     </option>
   </component>
@@ -880,7 +898,7 @@
       <recent name="com.mediafire.sdk" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.publish-bintray">
+  <component name="RunManager" selected="JUnit.unit tests">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
@@ -1313,7 +1331,13 @@
       <option name="project" value="LOCAL" />
       <updated>1441400872508</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="removed test logging">
+      <created>1441728228482</created>
+      <option name="number" value="00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1441728228482</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1334,25 +1358,25 @@
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2199563" sideWeight="0.49438706" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32509091" sideWeight="0.37348837" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32483613" sideWeight="0.37348837" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32509091" sideWeight="0.62651163" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39985433" sideWeight="0.49842837" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32556444" sideWeight="0.62651163" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15731974" sideWeight="0.37629098" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32993445" sideWeight="0.49842837" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32974505" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20837209" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35979608" sideWeight="0.7516279" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39985433" sideWeight="0.49842837" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15731974" sideWeight="0.37629098" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39985433" sideWeight="0.4714863" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35979608" sideWeight="0.7516279" order="2" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1403,7 +1427,8 @@
     <MESSAGE value="sdk update&#10;&#10;cleaned up redunancies" />
     <MESSAGE value="sdk update&#10;&#10;modifier on MediaFireClient implementation method" />
     <MESSAGE value="uploader changes&#10;&#10;swapped mapped values to explicit interface calls" />
-    <option name="LAST_COMMIT_MESSAGE" value="uploader changes&#10;&#10;swapped mapped values to explicit interface calls" />
+    <MESSAGE value="removed test logging" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed test logging" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1455,17 +1480,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableInstantUpload.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="88" column="31" selection-start-line="88" selection-start-column="31" selection-end-line="88" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/uploader/MFUploaderFileUploadsTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="112" column="0" selection-start-line="112" selection-start-column="0" selection-end-line="112" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1541,13 +1560,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="30" column="145" selection-start-line="30" selection-start-column="145" selection-end-line="30" selection-end-column="145" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/user/UserSetAvatarResponse.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.044609666">
@@ -1567,20 +1579,6 @@
         <state vertical-scroll-proportion="0.022304833">
           <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnablePollUpload.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableWebUpload.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.267658">
-          <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
         </state>
       </provider>
     </entry>
@@ -1620,32 +1618,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableCheckUpload.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="81" column="29" selection-start-line="81" selection-start-column="29" selection-end-line="81" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="79" column="35" selection-start-line="79" selection-start-column="35" selection-end-line="79" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/gradle.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="22" selection-start-line="0" selection-start-column="22" selection-end-line="0" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="13" column="11" selection-start-line="13" selection-start-column="11" selection-end-line="13" selection-end-column="11" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1710,14 +1686,6 @@
             <element signature="e#365#366#0" expanded="true" />
             <element signature="e#401#402#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1806,9 +1774,80 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="3.5166667">
-          <caret line="220" column="114" selection-start-line="220" selection-start-column="114" selection-end-line="220" selection-end-column="114" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="31" column="49" selection-start-line="31" selection-start-column="49" selection-end-line="31" selection-end-column="49" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableCheckUpload.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="12" column="49" selection-start-line="12" selection-start-column="49" selection-end-line="12" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableInstantUpload.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnablePollUpload.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="19" column="53" selection-start-line="19" selection-start-column="53" selection-end-line="19" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableWebUpload.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="11" column="47" selection-start-line="11" selection-start-column="47" selection-end-line="11" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.4759107">
+          <caret line="324" column="5" selection-start-line="324" selection-start-column="5" selection-end-line="324" selection-end-column="5" />
+          <folding>
+            <element signature="e#1468#1469#0" expanded="true" />
+            <element signature="e#1508#1509#0" expanded="true" />
+            <element signature="e#1910#1911#0" expanded="true" />
+            <element signature="e#1947#1948#0" expanded="true" />
+            <element signature="e#2499#2500#0" expanded="true" />
+            <element signature="e#2556#2557#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

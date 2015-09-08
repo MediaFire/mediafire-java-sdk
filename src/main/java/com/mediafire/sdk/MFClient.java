@@ -26,7 +26,7 @@ public class MFClient implements MediaFireClient {
     private final String apiKey;
     private final Object storeLock = new Object();
 
-    private MFClient(Builder builder) {
+    protected MFClient(Builder builder) {
         this.apiVersion = builder.apiVersion;
         this.requester = builder.requester;
         this.sessionStore = builder.sessionStore;
@@ -193,7 +193,7 @@ public class MFClient implements MediaFireClient {
 
         query.put("session_token", mediaFireSessionToken.getSessionToken());
 
-        String signature = createSignatureForAuthenticatedRequest(mediaFireSessionToken.getSecretKey(), mediaFireSessionToken.getTime(), uri.toString(), query);
+        String signature = getSessionSignature(mediaFireSessionToken, uri.toString(), query);
 
         query.put("signature", signature);
 
@@ -401,7 +401,10 @@ public class MFClient implements MediaFireClient {
         }
     }
 
-    private String createSignatureForAuthenticatedRequest(long secretKey, String time, String uri, Map<String, Object> query) throws MediaFireException {
+    @Override
+    public String getSessionSignature(MediaFireSessionToken token, String uri, Map<String, Object> query) throws MediaFireException {
+        long secretKey = token.getSecretKey();
+        String time = token.getTime();
         long secretKeyMod256 = secretKey % 256;
         String queryMap = makeQueryStringFromMap(query, false);
         String hashTarget = secretKeyMod256 + time + uri + "?" + queryMap;

@@ -1,8 +1,5 @@
 package com.mediafire.sdk;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,8 +7,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MFHasher implements MediaFireHasher {
-    private final Logger logger = LoggerFactory.getLogger(MFHasher.class);
-
     private static final String MD5 = "MD5";
     private static final String SHA1 = "SHA-1";
     private static final String SHA256 = "SHA-256";
@@ -134,7 +129,6 @@ public class MFHasher implements MediaFireHasher {
     }
 
     private String hash(String algorithm, byte[] bytesToHash) throws NoSuchAlgorithmException {
-        logger.info(algorithm + " hashing byte[] of length: " + bytesToHash.length);
         MessageDigest md = MessageDigest.getInstance(algorithm);
         md.update(bytesToHash);
 
@@ -144,7 +138,6 @@ public class MFHasher implements MediaFireHasher {
     }
 
     private String hash(String algorithm, File file) throws NoSuchAlgorithmException, IOException {
-        logger.info(algorithm + " hashing file " + file);
         MessageDigest md = MessageDigest.getInstance(algorithm);
         FileInputStream fis = new FileInputStream(file);
 

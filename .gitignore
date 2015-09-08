@@ -11,12 +11,10 @@
 *.ear
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+/src/main/tests
 hs_err_pid*
 
 
-### Gradle template
-.gradle
-build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -25,6 +23,13 @@ gradle-app.setting
 !gradle-wrapper.jar
 
 
-
+### Gradle template
+.gradle
+build/
+/gradle.properties
+/.idea
+/.gitignore
+/build
+/.gradle
 .idea
 gradle.properties

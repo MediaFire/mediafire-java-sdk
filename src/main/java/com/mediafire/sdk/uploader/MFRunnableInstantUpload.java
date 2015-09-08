@@ -7,14 +7,10 @@ import com.mediafire.sdk.MediaFireException;
 import com.mediafire.sdk.response_models.MediaFireApiResponse;
 import com.mediafire.sdk.response_models.upload.UploadInstantResponse;
 import com.mediafire.sdk.util.TextUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 
 class MFRunnableInstantUpload implements Runnable {
-
-    private final Logger logger = LoggerFactory.getLogger(MFRunnableInstantUpload.class);
 
     private static final String PARAM_FILENAME = "filename";
     private static final String PARAM_FOLDER_KEY = "folder_key";
@@ -36,8 +32,6 @@ class MFRunnableInstantUpload implements Runnable {
 
     @Override
     public void run() {
-        logger.info("upload thread started");
-
         LinkedHashMap<String, Object> params = new LinkedHashMap<>();
         if (this.upload.getFileSize() == 0) {
             params.put(PARAM_SIZE, this.upload.getFile().length());

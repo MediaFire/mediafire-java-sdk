@@ -2,15 +2,12 @@ package com.mediafire.sdk.uploader;
 
 import com.mediafire.sdk.MediaFireException;
 import com.mediafire.sdk.response_models.MediaFireApiResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MFUploadStore implements MediaFireUploadStore {
-    private final Logger logger = LoggerFactory.getLogger(MFUploadStore.class);
 
     private final LinkedBlockingQueue<MediaFireUpload> uploads = new LinkedBlockingQueue<>();
     private final AtomicInteger currentId = new AtomicInteger(0);
@@ -20,7 +17,6 @@ public class MFUploadStore implements MediaFireUploadStore {
         int id = currentId.addAndGet(1);
         upload.setId(id);
         boolean added = uploads.offer(upload);
-        logger.info("inserted new web upload: " + upload + ": " + added);
     }
 
     @Override
@@ -29,17 +25,13 @@ public class MFUploadStore implements MediaFireUploadStore {
         upload.setId(id);
         uploads.offer(upload);
         boolean added = uploads.offer(upload);
-        logger.info("inserted new file upload: " + upload + ": " + added);
     }
 
 
     @Override
     public MediaFireUpload getNextUpload() {
-        MediaFireUpload upload =  uploads.poll();
 
-        logger.info("getting next upload: " + upload);
-
-        return upload;
+        return uploads.poll();
     }
 
     @Override

@@ -5,20 +5,19 @@ import com.mediafire.sdk.MediaFireApiRequest;
 import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireException;
 import com.mediafire.sdk.response_models.MediaFireApiResponse;
-import com.mediafire.sdk.response_models.upload.UploadResumableResponse;
-import com.mediafire.sdk.response_models.data_models.ResumableBitmapModel;
 import com.mediafire.sdk.response_models.data_models.DoUploadResumableModel;
+import com.mediafire.sdk.response_models.data_models.ResumableBitmapModel;
 import com.mediafire.sdk.response_models.data_models.ResumableUploadModel;
+import com.mediafire.sdk.response_models.upload.UploadResumableResponse;
 import com.mediafire.sdk.util.TextUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 
 class MFRunnableResumableUpload implements Runnable {
-
-    private final Logger logger = LoggerFactory.getLogger(MFRunnableResumableUpload.class);
 
     private static final String PARAM_FOLDER_KEY = "folder_key";
     private static final String PARAM_FOLDER_PATH = "path";
@@ -49,8 +48,6 @@ class MFRunnableResumableUpload implements Runnable {
 
     @Override
     public void run() {
-        logger.info("upload thread started");
-
         LinkedHashMap<String, Object> params = new LinkedHashMap<>();
         params.put(PARAM_ACTION_ON_DUPLICATE, "keep");
         if (!TextUtils.isEmpty(this.upload.getFolderKey())) {

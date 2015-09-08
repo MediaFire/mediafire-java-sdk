@@ -1,17 +1,16 @@
 package com.mediafire.sdk.uploader;
 
-import com.mediafire.sdk.*;
+import com.mediafire.sdk.MFApiRequest;
+import com.mediafire.sdk.MediaFireApiRequest;
+import com.mediafire.sdk.MediaFireClient;
+import com.mediafire.sdk.MediaFireException;
 import com.mediafire.sdk.response_models.MediaFireApiResponse;
 import com.mediafire.sdk.response_models.upload.UploadCheckResponse;
 import com.mediafire.sdk.util.TextUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 
 class MFRunnableCheckUpload implements Runnable {
-
-    private final Logger logger = LoggerFactory.getLogger(MFRunnableCheckUpload.class);
 
     private static final String PARAM_FILENAME = "filename";
     private static final String PARAM_FOLDER_KEY = "folder_key";
@@ -32,7 +31,6 @@ class MFRunnableCheckUpload implements Runnable {
 
     @Override
     public void run() {
-        this.logger.info("upload thread started");
         LinkedHashMap<String, Object> params = new LinkedHashMap<>();
         params.put(PARAM_RESUMABLE, this.upload.isResumable() ? "yes" : "no");
 

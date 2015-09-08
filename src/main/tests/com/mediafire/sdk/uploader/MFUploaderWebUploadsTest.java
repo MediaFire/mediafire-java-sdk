@@ -52,7 +52,7 @@ public class MFUploaderWebUploadsTest extends TestCase {
 
     public void testSingleWebUpload() throws Exception {
         store = new MFUploadStore(1);
-        uploader = new MFUploader(mediaFire, store, executor);
+        uploader = new MFUploader(mediaFire, store, executor, 98);
         executor.resume();
         MediaFireWebUpload webUpload = new MFWebUpload(URLS.get(0), URI.create(URLS.get(0)).toURL().getFile().replaceFirst("/", ""), null);
         uploader.schedule(webUpload);
@@ -67,7 +67,7 @@ public class MFUploaderWebUploadsTest extends TestCase {
 
     public void testSingleWebUploadLarge() throws Exception {
         store = new MFUploadStore(1);
-        uploader = new MFUploader(mediaFire, store, executor);
+        uploader = new MFUploader(mediaFire, store, executor, 98);
         String url = "https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg";
 
         executor.resume();
@@ -84,7 +84,7 @@ public class MFUploaderWebUploadsTest extends TestCase {
 
     public void testMultiWebUpload() throws Exception {
         store = new MFUploadStore(URLS.size());
-        uploader = new MFUploader(mediaFire, store, executor);
+        uploader = new MFUploader(mediaFire, store, executor, 98);
         executor.resume();
         for (String url : URLS) {
             uploader.schedule(new MFWebUpload(url, URI.create(url).toURL().getFile().replaceFirst("/", ""), null));

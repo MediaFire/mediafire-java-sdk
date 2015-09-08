@@ -1,6 +1,7 @@
 package com.mediafire.sdk.uploader;
 
 import com.mediafire.sdk.MFClient;
+import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireCredentialsStore;
 import junit.framework.TestCase;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 public class MFUploaderFileUploadsTest  extends TestCase {
-    private MFClient mediaFire;
+    private MediaFireClient mediaFire;
     private MFUploader uploader;
     private MFUploadStore store;
 

@@ -45,3 +45,18 @@ public class MyFolderContentResponse extends ApiResponse {
   // your getters
 }
 ```
+
+### Gradle
+repository:
+```
+repositories {
+  maven {
+    url "https://dl.bintray.com/mediafire/maven/"
+  }
+```
+dependencies:
+```
+dependencies {
+    compile 'com.github.mediafire:mediafire-java-sdk:5.0.2'
+}
+```

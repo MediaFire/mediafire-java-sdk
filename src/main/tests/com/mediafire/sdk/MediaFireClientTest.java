@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class MediaFireClientTest extends TestCase {
 
-    private MFClient mediaFire;
+    private MediaFireClient mediaFire;
 
     public void setUp() throws Exception {
         super.setUp();
@@ -28,7 +28,7 @@ public class MediaFireClientTest extends TestCase {
     public void testAuthRequestNoCredentials() throws Exception {
         MFClient.Builder builder = new MFClient.Builder("40767", null);
         builder.apiVersion("1.5");
-        MFClient mediaFire = builder.build();
+        MediaFireClient mediaFire = builder.build();
         mediaFire.getCredentialStore().clear();
         assertTrue("type stored should be NONE", mediaFire.getCredentialStore().getTypeStored() == MediaFireCredentialsStore.TYPE_NONE);
         try {
@@ -41,7 +41,7 @@ public class MediaFireClientTest extends TestCase {
     public void testAuthRequestBadCredentials() throws Exception {
         MFClient.Builder builder = new MFClient.Builder("40767", null);
         builder.apiVersion("1.5");
-        MFClient mediaFire = builder.build();
+        MediaFireClient mediaFire = builder.build();
         mediaFire.getCredentialStore().clear();
         mediaFire.getCredentialStore().setEmail(new MediaFireCredentialsStore.EmailCredentials("a@b.c", "abc"));
         UserGetSessionTokenResponse response = mediaFire.authenticationRequest(UserGetSessionTokenResponse.class);

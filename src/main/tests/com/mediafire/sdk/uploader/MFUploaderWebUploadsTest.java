@@ -1,6 +1,7 @@
 package com.mediafire.sdk.uploader;
 
 import com.mediafire.sdk.MFClient;
+import com.mediafire.sdk.MediaFireClient;
 import com.mediafire.sdk.MediaFireCredentialsStore;
 import junit.framework.TestCase;
 
@@ -28,7 +29,7 @@ public class MFUploaderWebUploadsTest extends TestCase {
         URLS.add("http://i.imgur.com/tNj8M2L.gif");
     }
 
-    private MFClient mediaFire;
+    private MediaFireClient mediaFire;
     private MFUploader uploader;
     private MFUploadStore store;
 

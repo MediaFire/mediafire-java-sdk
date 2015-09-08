@@ -27,7 +27,6 @@ client.getCredentialStore().setTwitter(...);
 ### Get Links for a file
 ```
 LinkedHashMap<String, Object> query = new LinkedHashMap<String, Object>();
-query.put("response_format", "json");
 query.put("link_type", "direct_download");
 query.put("quick_key", QUICK_KEY);
 MediaFireApiRequest request = new MFApiRequest("/file/get_links.php", query, null, null);

@@ -100,4 +100,14 @@ public interface MediaFireClient {
      * @return
      */
     String getApiVersion();
+
+    /**
+     * creates a signature for a request with a session token.
+     * @param token
+     * @param uri
+     * @param query
+     * @return
+     * @throws MediaFireException
+     */
+    String getSessionSignature(MediaFireSessionToken token, String uri, Map<String, Object> query) throws MediaFireException;
 }

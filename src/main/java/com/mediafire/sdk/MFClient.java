@@ -210,7 +210,9 @@ public class MFClient implements MediaFireClient {
         T response = getResponseParser().parseResponse(mediaFireHttpResponse, classOfT);
 
         if (!response.hasError() && response.needNewKey()) {
-            mediaFireSessionToken.update();
+            if (response.needNewKey()) {
+                mediaFireSessionToken.update();
+            }
             getSessionStore().store(mediaFireSessionToken);
         }
 

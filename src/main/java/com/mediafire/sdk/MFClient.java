@@ -465,7 +465,7 @@ public class MFClient implements MediaFireClient {
             return this;
         }
 
-        public MFClient build() {
+        public MediaFireClient build() {
             return new MFClient(this);
         }
     }

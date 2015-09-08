@@ -4,61 +4,44 @@ MediaFire Java SDK
 Quickstart
 ----------
 
-### Start session
+### Create MediaFire Client
 ```
-// create mediafire object
-com.mediafire.sdk.MediaFire mf = new...
-// start session
-mf.startSessionWithEmail("email@domain.com", "password", null);
+// create mediafire client
+MFClient.Builder builder = new MFClient.Builder(APPLICATION_ID, API_KEY);
+builder.apiVersion("1.4"); // current api version, all api calls will use this api version
+MediaFireClient client = builder.build();
 ```
 
-### Get Folder Content (using FolderApi class)
+### Set User Credentials
 ```
-// use convenience class from com.mediafire.sdk.api to make call to api/folder/get_content.php
+client.getCredentialStore().setEmail(...);
+or
+client.getCredentialStore().setEkey(...);
+or
+client.getCredentialStore().setFacebook(...);
+or
+client.getCredentialStore().setTwitter(...);
+```
+
+### Get Links for a file
+```
 LinkedHashMap<String, Object> query = new LinkedHashMap<String, Object>();
 query.put("response_format", "json");
-query.put("content_type", "files");
-query.put("chunk_size", 150);
-FolderGetContentResponse response = FolderApi.getContent(mf, query, "1.3", FolderGetContentResponse.class);
-// do something with response e.g. store info from response to a db
+query.put("link_type", "direct_download");
+query.put("quick_key", QUICK_KEY);
+MediaFireApiRequest request = new MFApiRequest("/file/get_links.php", query, null, null);
+// since file/get_links requires a session token...
+FileGetLinksResponse response = client.sessionRequest(request, FileGetLinksResponse.class);
 ```
 
 ### Create API Response Class
-Gson is used to parse responses in json. 
+Gson is used to parse responses in json (using the default response parser). 
 Different API versions might have different json responses (different json objects, etc.)
-You can create your own response class to use when making an API call
+You can create your own response class to use when making an API call by extending the ApiResponse class or implementing MediaFireApiResponse
 ```
 public class MyFolderContentResponse extends ApiResponse {
   // your fields
   
   // your getters
 }
-// use convenience class from com.mediafire.sdk.api to make call to api/folder/get_content.php
-LinkedHashMap<String, Object> query = new LinkedHashMap<String, Object>();
-query.put("response_format", "json");
-query.put("content_type", "files");
-query.put("chunk_size", 150);
-MyFolderContentResponse response = FolderApi.getContent(mf, query, "1.3", MyFolderContentResponse.class);
-// do something with response e.g. store info from response to a db
-```
-
-### Get Folder Content (using MediaFire class)
-```
-LinkedHashMap<String, Object> query = new LinkedHashMap<String, Object>();
-query.put("response_format", "json");
-query.put("content_type", "files");
-query.put("chunk_size", 150);
-ApiPostRequest apiPostRequest = new ApiPostRequest("/api/folder/get_content.php", query);
-FolderGetContentResponse response = mediaFire.doApiRequest(apiRequest, FolderGetContentResponse.class);
-```
-
-Uploading
-----------
-
-### Using Uploader
-```
-MediaFireUploader mfu = new MediaFireUploader(3); // pass the number of concurrent uploads
-mfu.schedule(upload1);
-mfu.schedule(...);
-mfu.resume();
 ```

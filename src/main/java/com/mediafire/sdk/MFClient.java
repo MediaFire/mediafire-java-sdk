@@ -74,7 +74,7 @@ public class MFClient implements MediaFireClient {
         url.append(baseUrl);
         url.append("/conversion_server.php?");
         if (hash == null || hash.length() < 4) {
-            throw new MediaFireException("invalid hash passed in conversion request");
+            throw new MediaFireException("invalid hash passed in conversion request", MediaFireException.CLIENT_RECEIVED_INVALID_HASH_FOR_CONVERSION_REQUEST);
         }
 
         url.append(hash.substring(0, 4));
@@ -86,7 +86,7 @@ public class MFClient implements MediaFireClient {
             if (!getSessionStore().isActionTokenAvailable(MediaFireActionToken.TYPE_IMAGE)) {
                 mediaFireActionToken = requestNewActionToken(MediaFireActionToken.TYPE_IMAGE);
                 if (mediaFireActionToken == null) {
-                    throw new MediaFireException("could not request action token type " + MediaFireActionToken.TYPE_IMAGE);
+                    throw new MediaFireException("could not request action token type " + MediaFireActionToken.TYPE_IMAGE, MediaFireException.CLIENT_COULD_NOT_OBTAIN_ACTION_TOKEN);
                 }
                 getSessionStore().store(mediaFireActionToken);
             } else {
@@ -95,7 +95,7 @@ public class MFClient implements MediaFireClient {
         }
 
         if (mediaFireActionToken == null) {
-            throw new MediaFireException("could not get action token type " + MediaFireActionToken.TYPE_IMAGE + " from store");
+            throw new MediaFireException("could not get action token type " + MediaFireActionToken.TYPE_IMAGE + " from store", MediaFireException.CLIENT_COULD_NOT_OBTAIN_ACTION_TOKEN);
         }
 
         requestParameters.put("session_token", mediaFireActionToken.getSessionToken());
@@ -120,7 +120,7 @@ public class MFClient implements MediaFireClient {
             if (!getSessionStore().isActionTokenAvailable(MediaFireActionToken.TYPE_UPLOAD)) {
                 mediaFireActionToken = requestNewActionToken(MediaFireActionToken.TYPE_UPLOAD);
                 if (mediaFireActionToken == null) {
-                    throw new MediaFireException("could not request action token type " + MediaFireActionToken.TYPE_IMAGE);
+                    throw new MediaFireException("could not request action token type " + MediaFireActionToken.TYPE_IMAGE, MediaFireException.CLIENT_COULD_NOT_OBTAIN_ACTION_TOKEN);
                 }
                 getSessionStore().store(mediaFireActionToken);
             } else {
@@ -129,7 +129,7 @@ public class MFClient implements MediaFireClient {
         }
 
         if (mediaFireActionToken == null) {
-            throw new MediaFireException("could not get action token type " + MediaFireActionToken.TYPE_UPLOAD + " from store");
+            throw new MediaFireException("could not get action token type " + MediaFireActionToken.TYPE_UPLOAD + " from store", MediaFireException.CLIENT_COULD_NOT_OBTAIN_ACTION_TOKEN);
         }
 
         query.put("session_token", mediaFireActionToken.getSessionToken());
@@ -188,7 +188,7 @@ public class MFClient implements MediaFireClient {
         }
 
         if (mediaFireSessionToken == null) {
-            throw new MediaFireException("could not get session token from store");
+            throw new MediaFireException("could not get session token from store", MediaFireException.CLIENT_COULD_NOT_OBTAIN_SESSION_TOKEN);
         }
 
         query.put("session_token", mediaFireSessionToken.getSessionToken());
@@ -255,7 +255,7 @@ public class MFClient implements MediaFireClient {
                 break;
             case MediaFireCredentialsStore.TYPE_NONE:
             default:
-                throw new MediaFireException("no credentials stored, cannot authenticate");
+                throw new MediaFireException("no credentials stored, cannot authenticate", MediaFireException.CLIENT_NO_CREDENTIALS_STORED);
         }
 
         unhashedSignature.append(getApplicationId());
@@ -344,7 +344,7 @@ public class MFClient implements MediaFireClient {
                 query.put("type", "upload");
                 break;
             default:
-                throw new MediaFireException("invalid action token type passed: " + type);
+                throw new MediaFireException("invalid action token type passed: " + type, MediaFireException.CLIENT_RECEIVED_INVALID_ACTION_TOKEN_TYPE);
         }
 
         query.put("lifespan", lifespan);
@@ -394,7 +394,7 @@ public class MFClient implements MediaFireClient {
             try {
                 return "&" + key + "=" + URLEncoder.encode(String.valueOf(value), UTF8);
             } catch (UnsupportedEncodingException e) {
-                throw new MediaFireException("could not encode string using " + UTF8, e);
+                throw new MediaFireException("could not encode " + value + " using " + UTF8, MediaFireException.CLIENT_COULD_NOT_UTF8_ENCODE_STRING, e);
             }
         } else {
             return "&" + key + "=" + value;

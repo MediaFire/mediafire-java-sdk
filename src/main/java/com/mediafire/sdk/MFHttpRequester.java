@@ -56,7 +56,7 @@ public class MFHttpRequester implements MediaFireHttpRequester {
             MediaFireHttpResponse response = getResponse(connection);
             return response;
         } catch (IOException e) {
-            throw new MediaFireException("IO exception: ", e);
+            throw new MediaFireException("IO exception: ", MediaFireException.HTTP_REQUESTER_IO_EXCEPTION, e);
         }
     }
 
@@ -64,9 +64,9 @@ public class MFHttpRequester implements MediaFireHttpRequester {
         try {
             return (HttpsURLConnection) new URL(url).openConnection();
         } catch (MalformedURLException e) {
-            throw new MediaFireException("bad url: " + url, e);
+            throw new MediaFireException("bad url: " + url, MediaFireException.HTTP_REQUESTER_MALFORMED_URL, e);
         } catch (IOException e) {
-            throw new MediaFireException("IO exception: ", e);
+            throw new MediaFireException("IO exception: ", MediaFireException.HTTP_REQUESTER_IO_EXCEPTION, e);
         }
     }
 

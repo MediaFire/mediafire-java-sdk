@@ -4,9 +4,13 @@
     <option name="ANALYZE_TEST_SOURCES" value="false" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="662b8f75-f138-43af-9835-9df76600a49e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/uploader/MFUploadStore.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+    <list default="true" id="662b8f75-f138-43af-9835-9df76600a49e" name="Default" comment="unit test for uploads was ignored. readded.">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFApiResponseParser.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFApiResponseParser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFSessionStore.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFSessionStore.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireException.java" afterPath="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireException.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="mediafire-java-sdk.iws" />
@@ -55,7 +59,65 @@
     <favorites_list name="mediafire-java-sdk" />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file leaf-file-name="MediaFireException.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireException.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="19" column="38" selection-start-line="19" selection-start-column="38" selection-end-line="19" selection-end-column="38" />
+              <folding>
+                <element signature="e#1145#1146#0" expanded="true" />
+                <element signature="e#1175#1176#0" expanded="true" />
+                <element signature="e#1252#1253#0" expanded="true" />
+                <element signature="e#1289#1290#0" expanded="true" />
+                <element signature="e#1318#1319#0" expanded="true" />
+                <element signature="e#1346#1347#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.31226766">
+              <caret line="28" column="29" selection-start-line="28" selection-start-column="29" selection-end-line="28" selection-end-column="29" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MFHttpRequester.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="55" column="36" selection-start-line="55" selection-start-column="36" selection-end-line="55" selection-end-column="36" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MFClient.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="257" column="117" selection-start-line="257" selection-start-column="117" selection-end-line="257" selection-end-column="117" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MFApiResponseParser.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFApiResponseParser.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="31" column="121" selection-start-line="31" selection-start-column="121" selection-end-line="31" selection-end-column="121" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -343,7 +405,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/ResumableBitmap.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/FolderContents.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireHasher.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/response_models/data_models/AutoBandwidth.java" />
@@ -375,25 +436,26 @@
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFCredentialsStore.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHasher.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFSessionStore.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFApiResponseParser.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableCheckUpload.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableGetWebUpload.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableInstantUpload.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableResumableUpload.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnableWebUpload.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireClient.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java" />
         <option value="$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/MediaFireClientTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploadStore.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFUploader.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/uploader/MFRunnablePollUpload.java" />
-        <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/uploader/MFUploaderFileUploadsTest.java" />
         <option value="$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/uploader/MFUploaderWebUploadsTest.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/uploader/MFUploadStore.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFApiResponseParser.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFSessionStore.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireException.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java" />
+        <option value="$PROJECT_DIR$/build.gradle" />
       </list>
     </option>
   </component>
@@ -827,7 +889,7 @@
       <recent name="com.mediafire.sdk" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.unit tests">
+  <component name="RunManager" selected="Gradle.publish-bintray">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
@@ -1308,7 +1370,13 @@
       <option name="project" value="LOCAL" />
       <updated>1441745882329</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="unit test for uploads was ignored. readded.">
+      <created>1442448676878</created>
+      <option name="number" value="00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1442448676878</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1322,7 +1390,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="149" y="56" width="2192" height="1491" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -1339,7 +1407,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20837209" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20837209" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32483613" sideWeight="0.37348837" order="1" side_tool="false" content_ui="tabs" />
@@ -1402,7 +1470,8 @@
     <MESSAGE value="modifiers" />
     <MESSAGE value="unit test update" />
     <MESSAGE value="rm non src folders" />
-    <option name="LAST_COMMIT_MESSAGE" value="rm non src folders" />
+    <MESSAGE value="unit test for uploads was ignored. readded." />
+    <option name="LAST_COMMIT_MESSAGE" value="unit test for uploads was ignored. readded." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1572,32 +1641,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="55" column="69" selection-start-line="55" selection-start-column="69" selection-end-line="55" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpResponse.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFSessionStore.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="124" column="25" selection-start-line="124" selection-start-column="25" selection-end-line="124" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFApiResponseParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="55" selection-start-line="40" selection-start-column="55" selection-end-line="40" selection-end-column="55" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1648,21 +1695,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="413" column="24" selection-start-line="413" selection-start-column="24" selection-end-line="413" selection-end-column="24" />
-          <folding>
-            <element signature="e#19170#19171#0" expanded="true" />
-            <element signature="e#19219#19220#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/tests/com/mediafire/sdk/MediaFireClientTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="43" column="23" selection-start-line="43" selection-start-column="23" selection-end-line="43" selection-end-column="23" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1741,14 +1778,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="27" selection-start-line="28" selection-start-column="27" selection-end-line="28" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.15943313">
@@ -1816,6 +1845,61 @@
             <element signature="e#3550#3551#0" expanded="true" />
             <element signature="e#3572#3573#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFSessionStore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3330855">
+          <caret line="63" column="102" selection-start-line="63" selection-start-column="102" selection-end-line="63" selection-end-column="102" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="257" column="117" selection-start-line="257" selection-start-column="117" selection-end-line="257" selection-end-column="117" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFApiResponseParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="31" column="121" selection-start-line="31" selection-start-column="121" selection-end-line="31" selection-end-column="121" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MediaFireException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="19" column="38" selection-start-line="19" selection-start-column="38" selection-end-line="19" selection-end-column="38" />
+          <folding>
+            <element signature="e#1145#1146#0" expanded="true" />
+            <element signature="e#1175#1176#0" expanded="true" />
+            <element signature="e#1252#1253#0" expanded="true" />
+            <element signature="e#1289#1290#0" expanded="true" />
+            <element signature="e#1318#1319#0" expanded="true" />
+            <element signature="e#1346#1347#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mediafire/sdk/MFHttpRequester.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="55" column="36" selection-start-line="55" selection-start-column="36" selection-end-line="55" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.31226766">
+          <caret line="28" column="29" selection-start-line="28" selection-start-column="29" selection-end-line="28" selection-end-column="29" />
+          <folding />
         </state>
       </provider>
     </entry>

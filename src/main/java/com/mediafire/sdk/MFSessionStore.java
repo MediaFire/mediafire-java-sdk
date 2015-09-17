@@ -61,7 +61,7 @@ public class MFSessionStore implements MediaFireSessionStore {
                 }
                 break;
             default:
-                throw new MediaFireException("invalid token type passed: " + type);
+                throw new MediaFireException("invalid token type passed: " + type, MediaFireException.SESSION_STORE_RECEIVED_INVALID_TOKEN_TYPE);
         }
 
         return token;

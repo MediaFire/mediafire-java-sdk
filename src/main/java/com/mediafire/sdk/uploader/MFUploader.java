@@ -20,12 +20,14 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
 
     private final MediaFireClient mediaFire;
     private final MediaFireUploadStore store;
+    private final int statusCodeToFinish;
 
 
-    public MFUploader(MediaFireClient mediaFire, MediaFireUploadStore store, ExecutorService executor) {
+    public MFUploader(MediaFireClient mediaFire, MediaFireUploadStore store, ExecutorService executor, int statusCodeToFinish) {
         this.mediaFire = mediaFire;
         this.store = store;
         this.executor = executor;
+        this.statusCodeToFinish = statusCodeToFinish;
     }
 
     public void schedule(MediaFireWebUpload upload) {
@@ -76,7 +78,7 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
     @Override
     public void onWebUploadFinish(MediaFireWebUpload upload, String uploadKey) {
         this.store.pollingReady(upload, uploadKey);
-        MFRunnableGetWebUpload runnableGetWebUpload = new MFRunnableGetWebUpload(this.mediaFire, upload, uploadKey, this, 99);
+        MFRunnableGetWebUpload runnableGetWebUpload = new MFRunnableGetWebUpload(this.mediaFire, upload, uploadKey, this, statusCodeToFinish);
         this.executor.execute(runnableGetWebUpload);
     }
 
@@ -146,7 +148,7 @@ public class MFUploader implements MediaFireRunnableUploadStatusListener, OnPoll
     @Override
     public void onResumableUploadReadyToPoll(MediaFireFileUpload upload, String uploadKey) {
         this.store.pollingReady(upload, uploadKey);
-        MFRunnablePollUpload runnablePollUpload = new MFRunnablePollUpload(this.mediaFire, upload, uploadKey, this, 99);
+        MFRunnablePollUpload runnablePollUpload = new MFRunnablePollUpload(this.mediaFire, upload, uploadKey, this, statusCodeToFinish);
         this.executor.execute(runnablePollUpload);
     }
 

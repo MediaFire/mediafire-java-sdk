@@ -36,7 +36,7 @@ public class MFUploaderFileUploadsTest  extends TestCase {
 
     public void testSingleFileSmallUpload() throws Exception {
         store = new MFUploadStore(1);
-        uploader = new MFUploader(mediaFire, store, executor);
+        uploader = new MFUploader(mediaFire, store, executor, 98);
         executor.resume();
         File file = createTemporaryFile("testfile", ".tmp", 10000);
 
@@ -57,7 +57,7 @@ public class MFUploaderFileUploadsTest  extends TestCase {
 
     public void testMultiFileSmallUpload() throws Exception {
         store = new MFUploadStore(6);
-        uploader = new MFUploader(mediaFire, store, executor);
+        uploader = new MFUploader(mediaFire, store, executor, 98);
         executor.resume();
 
         List<File> files = new ArrayList<>();
@@ -93,7 +93,7 @@ public class MFUploaderFileUploadsTest  extends TestCase {
 
     public void testSingleFileLargeUpload() throws Exception {
         store = new MFUploadStore(1);
-        uploader = new MFUploader(mediaFire, store, executor);
+        uploader = new MFUploader(mediaFire, store, executor, 98);
         executor.resume();
         File file = createTemporaryFile("testfile", ".tmp", 20000000);
 
@@ -114,7 +114,7 @@ public class MFUploaderFileUploadsTest  extends TestCase {
 
     public void testMultiFileLargeUpload() throws Exception {
         store = new MFUploadStore(6);
-        uploader = new MFUploader(mediaFire, store, executor);
+        uploader = new MFUploader(mediaFire, store, executor, 98);
         executor.resume();
 
         List<File> files = new ArrayList<>();

@@ -65,7 +65,7 @@ class MFRunnablePollUpload implements Runnable {
             String quickKey = doUpload.getQuickKey();
             String filename = doUpload.getFilename();
 
-            if (TextUtils.isEmpty(quickKey)) {
+            if (!TextUtils.isEmpty(quickKey)) {
                 if (this.callback != null) {
                     this.callback.onPollUploadFinished(this.upload, quickKey, filename);
                 }

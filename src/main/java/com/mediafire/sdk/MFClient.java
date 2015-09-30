@@ -109,6 +109,30 @@ public class MFClient implements MediaFireClient {
     }
 
     @Override
+    public MediaFireHttpResponse conversionServerRequest(String hash, Map<String, Object> requestParameters, MediaFireActionToken token) throws MediaFireException {
+        String baseUrl = "https://www.mediafire.com";
+
+        StringBuilder url = new StringBuilder();
+        url.append(baseUrl);
+        url.append("/conversion_server.php?");
+        if (hash == null || hash.length() < 4) {
+            throw new MediaFireException("invalid hash passed in conversion request", MediaFireException.CLIENT_RECEIVED_INVALID_HASH_FOR_CONVERSION_REQUEST);
+        }
+
+        url.append(hash.substring(0, 4));
+        url.append("&");
+
+        requestParameters.put("session_token", token.getSessionToken());
+
+        String encodedQuery = makeQueryStringFromMap(requestParameters, true);
+
+        url.append(encodedQuery);
+
+        MediaFireHttpRequest mediaFireHttpRequest = new MFHttpRequest(url.toString(), null, null);
+        return getHttpRequester().get(mediaFireHttpRequest);
+    }
+
+    @Override
     public <T extends MediaFireApiResponse> T uploadRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException {
         Map<String, Object> query = new LinkedHashMap<>();
         query.put("response_format", getResponseParser().getResponseFormat());
@@ -133,6 +157,39 @@ public class MFClient implements MediaFireClient {
         }
 
         query.put("session_token", mediaFireActionToken.getSessionToken());
+
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("Content-Type", "application/octet-stream");
+        headers.put("Content-Length", request.getPayload().length);
+        headers.put("Accept-Charset", "UTF-8");
+        if (request.getHeaders() != null) {
+            headers.putAll(request.getHeaders());
+        }
+
+        String baseUrl = "https://www.mediafire.com";
+        StringBuilder url = new StringBuilder();
+        url.append(baseUrl).append("/api");
+        if (!TextUtils.isEmpty(getApiVersion())) {
+            url.append("/").append(getApiVersion());
+        }
+        url.append(request.getPath()).append("?");
+
+        String encodedQuery = makeQueryStringFromMap(query, true);
+
+        url.append(encodedQuery);
+
+        MediaFireHttpRequest mediaFireHttpRequest = new MFHttpRequest(url.toString(), request.getPayload(), headers);
+        MediaFireHttpResponse mediaFireHttpResponse = getHttpRequester().post(mediaFireHttpRequest);
+        return getResponseParser().parseResponse(mediaFireHttpResponse, classOfT);
+    }
+
+    @Override
+    public <T extends MediaFireApiResponse> T uploadRequest(MediaFireApiRequest request, Class<T> classOfT, MediaFireActionToken token) throws MediaFireException {
+        Map<String, Object> query = new LinkedHashMap<>();
+        query.put("response_format", getResponseParser().getResponseFormat());
+        query.putAll(request.getQueryParameters());
+
+        query.put("session_token", token.getSessionToken());
 
         Map<String, Object> headers = new HashMap<>();
         headers.put("Content-Type", "application/octet-stream");
@@ -217,6 +274,77 @@ public class MFClient implements MediaFireClient {
         }
 
         return response;
+    }
+
+    @Override
+    public <T extends MediaFireApiResponse> T sessionRequest(MediaFireApiRequest request, Class<T> classOfT, MediaFireSessionToken token) throws MediaFireException {
+        Map<String, Object> query = new LinkedHashMap<>();
+        query.put("response_format", getResponseParser().getResponseFormat());
+        if (request.getQueryParameters() != null) {
+            query.putAll(request.getQueryParameters());
+        }
+
+        String baseUrl = "https://www.mediafire.com";
+        StringBuilder url = new StringBuilder();
+        url.append(baseUrl);
+        StringBuilder uri = new StringBuilder();
+        uri.append("/api");
+        if (!TextUtils.isEmpty(getApiVersion())) {
+            uri.append("/").append(getApiVersion());
+        }
+        uri.append(request.getPath());
+
+
+        query.put("session_token", token.getSessionToken());
+
+        String signature = getSessionSignature(token, uri.toString(), query);
+
+        query.put("signature", signature);
+
+
+        String encodedQuery = makeQueryStringFromMap(query, true);
+
+        Map<String, Object> headers = createHeadersUsingQueryAsPostBody(encodedQuery);
+
+        url.append(uri);
+
+        MediaFireHttpRequest mediaFireHttpRequest = new MFHttpRequest(url.toString(), encodedQuery.getBytes(), headers);
+        MediaFireHttpResponse mediaFireHttpResponse = getHttpRequester().post(mediaFireHttpRequest);
+
+        return getResponseParser().parseResponse(mediaFireHttpResponse, classOfT);
+    }
+
+    @Override
+    public <T extends MediaFireApiResponse> T sessionRequest(MediaFireApiRequest request, Class<T> classOfT, String token) throws MediaFireException {
+        Map<String, Object> query = new LinkedHashMap<>();
+        query.put("response_format", getResponseParser().getResponseFormat());
+        if (request.getQueryParameters() != null) {
+            query.putAll(request.getQueryParameters());
+        }
+
+        String baseUrl = "https://www.mediafire.com";
+        StringBuilder url = new StringBuilder();
+        url.append(baseUrl);
+        StringBuilder uri = new StringBuilder();
+        uri.append("/api");
+        if (!TextUtils.isEmpty(getApiVersion())) {
+            uri.append("/").append(getApiVersion());
+        }
+        uri.append(request.getPath());
+
+
+        query.put("session_token", token);
+
+        String encodedQuery = makeQueryStringFromMap(query, true);
+
+        Map<String, Object> headers = createHeadersUsingQueryAsPostBody(encodedQuery);
+
+        url.append(uri);
+
+        MediaFireHttpRequest mediaFireHttpRequest = new MFHttpRequest(url.toString(), encodedQuery.getBytes(), headers);
+        MediaFireHttpResponse mediaFireHttpResponse = getHttpRequester().post(mediaFireHttpRequest);
+
+        return getResponseParser().parseResponse(mediaFireHttpResponse, classOfT);
     }
 
     @Override

@@ -82,7 +82,7 @@ public class MFClient implements MediaFireClient {
 
         MediaFireActionToken mediaFireActionToken;
 
-        synchronized (getSessionStore()) {
+        synchronized (storeLock) {
             if (!getSessionStore().isActionTokenAvailable(MediaFireActionToken.TYPE_IMAGE)) {
                 mediaFireActionToken = requestNewActionToken(MediaFireActionToken.TYPE_IMAGE);
                 if (mediaFireActionToken == null) {

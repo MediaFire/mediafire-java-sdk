@@ -57,7 +57,7 @@ public interface MediaFireClient {
     <T extends MediaFireApiResponse> T uploadRequest(MediaFireApiRequest request, Class<T> classOfT, MediaFireActionToken token) throws MediaFireException;
 
     /**
-     * request that will append a session token
+     * request that will append a session token from the session token interface used to build client
      * @param request
      * @param classOfT
      * @param <T>
@@ -67,7 +67,7 @@ public interface MediaFireClient {
     <T extends MediaFireApiResponse> T sessionRequest(MediaFireApiRequest request, Class<T> classOfT) throws MediaFireException;
 
     /**
-     * request that will append a session token using the token passed (will not be returned when finished with the request)
+     * request that will append a session token using the token passed (will not be returned when finished with the request!)
      * @param request
      * @param classOfT
      * @param <T>

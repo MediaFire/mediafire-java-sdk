@@ -8,12 +8,22 @@ public class MFApiRequest implements MediaFireApiRequest {
     private final Map<String, Object> queryParameters;
     private final byte[] payload;
     private final Map<String, Object> headers;
+    private String basePath;
 
     public MFApiRequest(String path, Map<String, Object> queryParameters, byte[] payload, Map<String, Object> headers) {
         this.payload = payload;
         this.path = path;
         this.queryParameters = queryParameters;
         this.headers = headers;
+    }
+
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
+    }
+
+    @Override
+    public String getBasePath() {
+        return basePath;
     }
 
     @Override

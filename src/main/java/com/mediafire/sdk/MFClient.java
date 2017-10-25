@@ -51,7 +51,10 @@ public class MFClient implements MediaFireClient {
         headers.put("Content-Length", payload.length);
         headers.put("Accept-Charset", "UTF-8");
 
-        String baseUrl = "https://www.mediafire.com";
+        String baseUrl = request.getBasePath();
+        if (baseUrl == null) {
+            baseUrl = "https://www.mediafire.com";
+        }
 
         StringBuilder url = new StringBuilder();
         url.append(baseUrl).append("/api");
@@ -166,7 +169,10 @@ public class MFClient implements MediaFireClient {
             headers.putAll(request.getHeaders());
         }
 
-        String baseUrl = "https://www.mediafire.com";
+        String baseUrl = request.getBasePath();
+        if (baseUrl == null) {
+            baseUrl = "https://www.mediafire.com";
+        }
         StringBuilder url = new StringBuilder();
         url.append(baseUrl).append("/api");
         if (!TextUtils.isEmpty(getApiVersion())) {
@@ -199,7 +205,10 @@ public class MFClient implements MediaFireClient {
             headers.putAll(request.getHeaders());
         }
 
-        String baseUrl = "https://www.mediafire.com";
+        String baseUrl = request.getBasePath();
+        if (baseUrl == null) {
+            baseUrl = "https://www.mediafire.com";
+        }
         StringBuilder url = new StringBuilder();
         url.append(baseUrl).append("/api");
         if (!TextUtils.isEmpty(getApiVersion())) {
@@ -224,7 +233,10 @@ public class MFClient implements MediaFireClient {
             query.putAll(request.getQueryParameters());
         }
 
-        String baseUrl = "https://www.mediafire.com";
+        String baseUrl = request.getBasePath();
+        if (baseUrl == null) {
+            baseUrl = "https://www.mediafire.com";
+        }
         StringBuilder url = new StringBuilder();
         url.append(baseUrl);
         StringBuilder uri = new StringBuilder();
@@ -284,7 +296,10 @@ public class MFClient implements MediaFireClient {
             query.putAll(request.getQueryParameters());
         }
 
-        String baseUrl = "https://www.mediafire.com";
+        String baseUrl = request.getBasePath();
+        if (baseUrl == null) {
+            baseUrl = "https://www.mediafire.com";
+        }
         StringBuilder url = new StringBuilder();
         url.append(baseUrl);
         StringBuilder uri = new StringBuilder();
@@ -322,7 +337,10 @@ public class MFClient implements MediaFireClient {
             query.putAll(request.getQueryParameters());
         }
 
-        String baseUrl = "https://www.mediafire.com";
+        String baseUrl = request.getBasePath();
+        if (baseUrl == null) {
+            baseUrl = "https://www.mediafire.com";
+        }
         StringBuilder url = new StringBuilder();
         url.append(baseUrl);
         StringBuilder uri = new StringBuilder();

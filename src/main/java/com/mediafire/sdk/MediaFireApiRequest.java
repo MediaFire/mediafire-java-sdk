@@ -5,6 +5,12 @@ import java.util.Map;
 public interface MediaFireApiRequest {
 
     /**
+     * gets the base path for the request (e.g. http://mediafire.com), null for default url
+     * @return
+     */
+    String getBasePath();
+
+    /**
      * gets the path of the request (e.g. user/get_info)
      * @return
      */
